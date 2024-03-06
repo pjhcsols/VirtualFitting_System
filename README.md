@@ -9,7 +9,7 @@ Chore : 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore
 Docs : 문서(주석) 수정  
 Refactor : 기능의 변화가 아닌 코드 리팩터링 ex) 변수 이름 변경  
 Test : 테스트 코드 추가/수정  
-
+Init : 초기화  
 
 ## 주제
 가상 피팅 서비스 & 의류 브랜드 입점 웹 서비스 : “BASILIUM"
