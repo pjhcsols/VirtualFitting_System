@@ -10,7 +10,6 @@ import java.util.Optional;
 @Slf4j
 @Repository
 public class JpaNormalUserRepository implements NormalUserRepository{
-
     private final EntityManager em;
     public JpaNormalUserRepository(EntityManager em) {
         this.em = em;

@@ -13,12 +13,13 @@ import org.springframework.data.annotation.Id;
 @MappedSuperclass
 public class User {
 
+
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long userNumber;
     @Id
-    //@GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id; //유저 번호
-    private String userId; //유저아이디
-    private String userPassword;
-    private String userEmail;//emailAddress;
+    private String id;
+    private String password;
+    private String emailAddress;
     private String phoneNumber;
     private Grade userGrade;
 
