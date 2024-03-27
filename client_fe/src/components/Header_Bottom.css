@@ -1,0 +1,17 @@
+.header_Bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1E1E1E;
+    color: white;
+    padding: 10px 20px;
+}
+
+.menu {
+    display: flex; 
+}
+
+.menu_Bottom span{
+    color: white;
+    margin: -5px 100px;
+}
