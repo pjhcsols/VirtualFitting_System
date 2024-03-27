@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain;
+package basilium.basiliumserver.domain.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.MappedSuperclass;
