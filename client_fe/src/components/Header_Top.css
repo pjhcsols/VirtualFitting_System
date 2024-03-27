@@ -1,0 +1,22 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+}
+  
+.menu span{
+    color: white;
+    margin-right: 15px;
+}
+
+.menu span:not(:first-child) {
+    margin-left: 20px;
+}
+  
+.logo img {
+    height: 20px; 
+    margin-top: 5px;
+}
