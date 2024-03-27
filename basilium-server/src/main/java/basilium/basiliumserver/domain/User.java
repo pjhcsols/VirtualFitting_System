@@ -1,7 +1,10 @@
 package basilium.basiliumserver.domain;
 
+import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
@@ -21,7 +24,7 @@ public class User {
     public User() {
 
     }
-
+/*
     public String getId() {
         return id;
     }
@@ -61,4 +64,6 @@ public class User {
     public void setUserGrade(Grade userGrade) {
         this.userGrade = userGrade;
     }
+
+ */
 }
