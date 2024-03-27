@@ -1,6 +1,8 @@
 package basilium.basiliumserver.domain.user;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,9 +14,11 @@ import org.springframework.data.annotation.Id;
 public class User {
 
     @Id
-    private String id;
-    private String password;
-    private String emailAddress;
+    //@GeneratedValue(strategy = GenerationType.IDENTITY)
+    private String id; //유저 번호
+    private String userId; //유저아이디
+    private String userPassword;
+    private String userEmail;//emailAddress;
     private String phoneNumber;
     private Grade userGrade;
 
