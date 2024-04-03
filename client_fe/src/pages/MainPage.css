@@ -1,0 +1,50 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #1E1E1E;
+    color: white;
+}
+
+.content {
+    color: white;
+    text-align: center;
+    white-space: pre-line;
+    margin-bottom: 20px;
+}
+
+.imageContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.image {
+    display: flex;
+    width: 200px;
+    height: 300px;
+    background-color: #ccc;
+    margin: 0 30px;
+}
+
+.loadMore {
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 120px;
+    font-size: 10px;
+}
+
+.imageNew {
+    display: flex;
+    width: 350px;
+    height: 200px;
+    background-color: #ccc;
+    margin: 50px 20px;
+}
+
+.location {
+    text-align: center;
+    margin-top: 10px;
+}
