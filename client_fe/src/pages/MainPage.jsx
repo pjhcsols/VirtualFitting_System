@@ -3,6 +3,8 @@ import HeaderTop from '../components/Header_Top';
 import Header_Bottom from '../components/Header_Bottom';
 import './MainPage.css';
 import rightImage from '../assets/img/right.png'
+import mainImg from '../assets/img/mainImg.jpg';
+import playbtn from '../assets/img/playBtn.png';
 
 function MainPage() {
   return (
@@ -10,8 +12,24 @@ function MainPage() {
         <HeaderTop />
         <Header_Bottom />
         <div className='main'>
-            <div className='mainImg'></div>
-            <div className='bestSeller'></div>
+        <div className='mainImg'>
+            <img src={mainImg} alt="mainImage" />
+            <p className='imgText1'>BASILIUM</p>
+            <p className='imgText2'>Basilium of the King and Queen casual & street brand</p>
+            <button className='imgBtn'>
+              <img src={playbtn} alt='playbtn'/>Store
+            </button>
+          </div>
+          <div className='bestSeller'>
+            <p className='bestSellertitle'>Best Seller</p>
+            <div className='bestSellerImagesContainer'>
+              <div className='bestSellerImg'></div>
+              <div className='bestSellerImg'></div>
+              <div className='bestSellerImg'></div>
+              <div className='bestSellerImg'></div>
+              <div className='bestSellerImg'></div>
+            </div>
+          </div>
             <div className='mainBrand'>
                 <div className='content'>
                     <h2>Casual & street brand</h2>
