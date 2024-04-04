@@ -118,4 +118,22 @@ public class NormalUserService {
         Optional<NormalUser> ret = normalUserRepository.findById(userId);
         return ret.orElse(null);
     }
+    //리프레쉬
+    public boolean validateRefreshToken(String refreshToken) {
+        try {
+            Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(refreshToken);
+            return true;
+        } catch (Exception e) {
+            log.error("리프레시 토큰 검증 실패: {}", e.getMessage());
+            return false;
+        }
+    }
+
+    public String refreshAccessToken(String refreshToken) {
+        if (validateRefreshToken(refreshToken)) {
+            String userId = JwtUtil.getUserName(refreshToken, secretKey);
+            return JwtUtil.createJwt(userId, "normal", secretKey, expiredMs);
+        }
+        return null;
+    }
 }
