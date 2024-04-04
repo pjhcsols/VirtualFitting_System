@@ -1,21 +1,18 @@
 package basilium.basiliumserver.domain.user;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.MappedSuperclass;
+
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
+
+
 
 @Getter
 @Setter
 @MappedSuperclass
 public class User {
 
-
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long userNumber;
+    private Long userNumber;
     @Id
     private String id;
     private String password;
@@ -30,7 +27,7 @@ public class User {
 
     }
 /*
-    public String getId() {
+    public Long getId() {
         return id;
     }
 

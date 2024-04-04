@@ -1,10 +1,18 @@
 package basilium.basiliumserver.service.user;
 
+import basilium.basiliumserver.domain.user.JoinStatus;
+import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
+
+import basilium.basiliumserver.util.JwtUtil;
+
+import io.jsonwebtoken.Jwts;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -13,16 +21,23 @@ import java.util.Optional;
 
 
 @Slf4j
+@Service
 //@Transactional //같은 아이디로 로그인한 경우 나중에 처리
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
+
+    //bean
+    @Autowired
+    public NormalUserService(NormalUserRepository normalUserRepository) {
+        this.normalUserRepository = normalUserRepository;
+    }
+
+
     @Value("${jwt.secret}")
     private String secretKey;
     private Long expiredMs = 1000 * 60 * 60l;
 
-    public NormalUserService(NormalUserRepository normalUserRepository) {
-        this.normalUserRepository = normalUserRepository;
-    }
+
 
     public List<NormalUser> getAllNormalUsers() {
         return normalUserRepository.getAllNormalUsers();

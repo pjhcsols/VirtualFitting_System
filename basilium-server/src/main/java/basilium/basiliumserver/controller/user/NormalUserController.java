@@ -1,21 +1,31 @@
 package basilium.basiliumserver.controller.user;
 
+import basilium.basiliumserver.domain.user.JoinStatus;
+import basilium.basiliumserver.domain.user.LoginRequest;
+import basilium.basiliumserver.domain.user.LoginStatus;
+import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.service.user.NormalUserService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/v1/normalUser")
+@RequestMapping("/normalUser")
+@PreAuthorize("isAuthenticated()")
 public class NormalUserController {
     private final NormalUserService normalUserService;
 
+    //bean
     @Autowired
     public NormalUserController(NormalUserService normalUserService) {
+
         this.normalUserService = normalUserService;
     }
 
