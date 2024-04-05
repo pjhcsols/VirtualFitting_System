@@ -18,9 +18,15 @@ public class JpaNormalUserRepository implements NormalUserRepository{
         this.em = em;
     }
 
+    //총사용자 수
     @Override
     public long count() {
         return em.createQuery("select count(u) from NormalUser u", Long.class).getSingleResult();
+    }
+
+    @Override
+    public List<NormalUser> getAllNormalUsers() {
+        return em.createQuery("SELECT m FROM NormalUser m", NormalUser.class).getResultList();
     }
 
     @Override
@@ -28,17 +34,6 @@ public class JpaNormalUserRepository implements NormalUserRepository{
         em.persist(normalUser);
         return normalUser;
     }
-/*
-    @Override
-    @Transactional
-    public NormalUser createNormalUser(NormalUser normalUser) {
-        // 고유 ID 생성 및 설정
-        normalUser.setUserNumber(null); // ID는 자동 생성
-        em.persist(normalUser);
-        return normalUser;
-    }
-    */
-
 
 
     @Override
@@ -81,6 +76,7 @@ public class JpaNormalUserRepository implements NormalUserRepository{
     }
 
     @Override
+    @Transactional
     public void modify(NormalUser normalUser) {
         NormalUser existingUser = em.find(NormalUser.class, normalUser.getId());
         if (existingUser != null) {
@@ -98,14 +94,6 @@ public class JpaNormalUserRepository implements NormalUserRepository{
     }
 
 
-/*
-    @Override
-    public Optional<NormalUser> findById(String id) {
-        NormalUser normalUser = em.find(NormalUser.class, id);
-        return Optional.ofNullable(normalUser);
-    }
-
- */
 
 
 
@@ -120,13 +108,4 @@ public class JpaNormalUserRepository implements NormalUserRepository{
         return Optional.ofNullable(normalUser);
     }
 
-    @Override
-    public List<NormalUser> findAll() {
-        return em.createQuery("select m from NormalUser m", NormalUser.class).getResultList();
-    }
-
-    @Override
-    public List<NormalUser> getAllNormalUsers() {
-        return em.createQuery("SELECT m FROM NormalUser m", NormalUser.class).getResultList();
-    }
 }

@@ -22,7 +22,7 @@ public interface NormalUserRepository {
     Optional<NormalUser> findByEmail(String emailAddress);
     List<NormalUser> findByName(String name);
     Optional<NormalUser> findByPhoneNumber(String phoneNumber);
-    List<NormalUser> findAll();
+
 /*
     NormalUser createNormalUser(NormalUser normalUser);
 

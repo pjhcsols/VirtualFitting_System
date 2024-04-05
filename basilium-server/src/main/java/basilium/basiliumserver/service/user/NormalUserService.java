@@ -77,6 +77,7 @@ public class NormalUserService {
         }
         return LoginStatus.SUCCESS;
     }
+
     public String afterSuccessLogin(String userId){
         return JwtUtil.createJwt(userId, "normal", secretKey, expiredMs);
     }
@@ -118,7 +119,23 @@ public class NormalUserService {
         Optional<NormalUser> ret = normalUserRepository.findById(userId);
         return ret.orElse(null);
     }
-    //리프레쉬
+
+    //로그아웃
+    public void logout(HttpServletRequest request) {
+        // 클라이언트 측에서 토큰을 삭제하거나 무효화하는 로직 추가
+        // 여기서는 클라이언트 측에서 토큰을 삭제하는 방법으로 가정
+
+        // 로그아웃한 토큰을 블랙리스트에 추가
+        String authorizationHeader = request.getHeader("Authorization");
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            String token = authorizationHeader.substring(7);
+            JwtUtil.blacklistToken(token);
+        }
+        // 다른 로그아웃 관련 로직 추가 가능
+    }
+
+
+//리프레쉬
     public boolean validateRefreshToken(String refreshToken) {
         try {
             Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(refreshToken);
@@ -136,9 +153,5 @@ public class NormalUserService {
         }
         return null;
     }
-/*
-    public NormalUser createNormalUser(NormalUser normalUser) {
-        return NormalUserRepository.createNormalUser(normalUser);
-    }
-    */
+
 }

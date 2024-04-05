@@ -37,42 +37,62 @@ public class JwtFilter extends OncePerRequestFilter {
     @Value("${jwt.secret}")
     private final String secretKey;
 
+    //로그아웃 토큰 검증 로직
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.info("[토큰 검증]");
         log.info("authorization:{}", authorization);
 
         if(authorization == null || !authorization.startsWith("Bearer ")){
-            log.error("authorization을 잘못보냈습니다.");
+            //log.error("authorization을 잘못보냈습니다.");
             filterChain.doFilter(request, response);
             return;
         }
 
         //Token 꺼내기
         String token = authorization.split(" ")[1];
-        log.info(token);
 
-        //Token Expiration 체크
-        if (JwtUtil.isExpired(token, secretKey)){
+        // Token 검증
+        if (!JwtUtil.isTokenValid(token, secretKey)) {
+            log.error("유효하지 않은 토큰입니다.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // 블랙리스트에 있는 토큰인지 확인
+        if (JwtUtil.isTokenBlacklisted(token)) {
+            log.error("블랙리스트에 등록된 토큰입니다.");
+            filterChain.doFilter(request, response);
+            return;
+        }
+
+        // Token Expiration 체크
+        if (JwtUtil.isExpired(token, secretKey)) {
             log.error("토큰이 만료되었습니다.");
             filterChain.doFilter(request, response);
             return;
         }
-        log.info(token);
+        //log.info(token);
 
-        //UserName Token에서 꺼내기
+
+        //**** 로그아웃 성공시 로직 ****
         String userName = JwtUtil.getUserName(token, secretKey);
         String userType = JwtUtil.getUserType(token, secretKey);
-        log.info("userName:{}", userName);
+        log.info("------------------------------------------------------------");
+        log.info("userName:[{}]님 로그아웃 시도", userName);
         log.info("userType:{}", userType);
+
         //권환 부여
         if (userType.equals("normal")) {
-            log.info("WTF");
+            //log.info("일반사용자 토큰 발급");
             UsernamePasswordAuthenticationToken authenticationToken =
                     new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority("ROLE_NORMAL_USER")));
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             filterChain.doFilter(request, response);
+            log.info("[normalUser 로그아웃 성공]");
+            log.info("------------------------------------------------------------");
         }
         else if(userType.equals("brand")){
             UsernamePasswordAuthenticationToken authenticationToken =
@@ -80,6 +100,8 @@ public class JwtFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             filterChain.doFilter(request, response);
+            log.info("[brandUser 로그아웃 성공]");
+            log.info("------------------------------------------------------------");
         }
         else{
             UsernamePasswordAuthenticationToken authenticationToken =
@@ -87,6 +109,9 @@ public class JwtFilter extends OncePerRequestFilter {
             authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             filterChain.doFilter(request, response);
+            log.info("[superUser 로그아웃 성공]");
+            log.info("------------------------------------------------------------");
         }
+
     }
 }

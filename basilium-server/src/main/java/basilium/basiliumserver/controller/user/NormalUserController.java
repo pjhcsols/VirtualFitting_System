@@ -36,22 +36,37 @@ public class NormalUserController {
 
     @PostMapping("/login")
     public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest){
-        log.info("-------------------" + loginRequest.getUserPassword() + "-------------------");
+        log.info("------------------------------------------------------------");
+        log.info("1. normalUser 로그인 시도");
+        log.info("ID: " + loginRequest.getUserId() + " ");
+        log.info("Password: " + loginRequest.getUserPassword() + " ");
         LoginStatus loginResult = normalUserService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
         if (loginResult != LoginStatus.SUCCESS)return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
         log.info("------------------------------------------------------------");
+        log.info("2. 로그인 성공");
         String token = normalUserService.afterSuccessLogin(loginRequest.getUserId());
+        log.info("[normalUser 토큰 정상 발급]");
         log.info(token);
         return ResponseEntity.ok().body(token);
     }
-/*
+
+
+
+
+//***************토큰으로 로그아웃 버튼은 1개이니 로그아웃 로직만 유저 전체 합치기*************************
+    //예외가 생길수가 없는 로직이니 수정하기
     @GetMapping("/logout")
     public ResponseEntity<String> logout(HttpServletRequest request) {
-        normalUserService.logout(request);
-        return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+        try {
+            normalUserService.logout(request);
+            return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
+        } catch (Exception e) {
+            //return new ResponseEntity<>("로그아웃 실패: " + e.getMessage(), HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>("로그아웃 실패", HttpStatus.BAD_REQUEST);
+        }
     }
+//***************토큰으로 로그아웃 로직만 유저 전체 합치기*************************
 
- */
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
