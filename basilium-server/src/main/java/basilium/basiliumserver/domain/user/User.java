@@ -11,9 +11,10 @@ import lombok.Setter;
 @Setter
 @MappedSuperclass
 public class User {
-
-    private Long userNumber;
     @Id
+    @GeneratedValue
+    private Long userNumber;
+    //@Id
     private String id;
     private String password;
     private String emailAddress;

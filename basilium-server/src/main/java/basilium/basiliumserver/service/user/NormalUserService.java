@@ -22,7 +22,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-//@Transactional //같은 아이디로 로그인한 경우 나중에 처리
+@Transactional //같은 아이디로 로그인한 경우 나중에 처리
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
 
@@ -42,7 +42,7 @@ public class NormalUserService {
     public List<NormalUser> getAllNormalUsers() {
         return normalUserRepository.getAllNormalUsers();
     }
-
+//회원가입
     public JoinStatus join(NormalUser normalUser){
         try{
             validateDuplicateMember(normalUser);
@@ -136,4 +136,9 @@ public class NormalUserService {
         }
         return null;
     }
+/*
+    public NormalUser createNormalUser(NormalUser normalUser) {
+        return NormalUserRepository.createNormalUser(normalUser);
+    }
+    */
 }

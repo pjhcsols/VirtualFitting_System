@@ -5,12 +5,14 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 @Entity
 @Getter
 @Setter
 public class NormalUser extends User {
     private String name;
-    private Long age;
+    private Date birthDate;
     private String address;
 
     public NormalUser() {
