@@ -1,5 +1,4 @@
 import React from 'react';
-import HeaderTop from '../components/Header_Top';
 import Header_Bottom from '../components/Header_Bottom';
 import './MainPage.css';
 import rightImage from '../assets/img/right.png'
@@ -9,7 +8,6 @@ import playbtn from '../assets/img/playBtn.png';
 function MainPage() {
   return (
     <div>
-        <HeaderTop />
         <Header_Bottom />
         <div className='main'>
         <div className='mainImg'>
@@ -21,7 +19,7 @@ function MainPage() {
             </button>
           </div>
           <div className='bestSeller'>
-            <p className='bestSellertitle'>Best Seller</p>
+            <h2>Best Seller</h2>
             <div className='bestSellerImagesContainer'>
               <div className='bestSellerImg'></div>
               <div className='bestSellerImg'></div>
@@ -39,7 +37,7 @@ function MainPage() {
                     </br>design that combines basic silhouette with trendy and modern sensibility
                     </span>
                 </div>
-                <div className='imageContainer'>
+                <div className='brandimageContainer'>
                     <div className='image'></div>
                     <div className='image'></div>
                     <div className='image'></div>
@@ -54,11 +52,23 @@ function MainPage() {
                     <h2>BASILIUM AI service</h2>
                 </div>
                 <div className='imageContainer'>
+                  <div className='imageGroup'>
                     <div className='imageNew'></div>
+                      <div>360 view of clothes</div>
+                      <div>의류를 3D로 간접 체험 가능</div>
+                    </div>
+                  <div className='imageGroup'>
                     <div className='imageNew'></div>
+                      <div>3D Modeling</div>
+                      <div>자신을 3D모델로 의류 착용 가능</div>
+                    </div>
+                  </div>
+                  <div className='loadMore'>
+                    <span>Load More</span>
+                    <img style={{width: '12px', height: '12px', marginLeft: '2px', marginBottom: '-3px'}} src={rightImage} alt='right'/>
+                  </div>
                 </div>
             </div>
-        </div>
     </div>
   );
 }
