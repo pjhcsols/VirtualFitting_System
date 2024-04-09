@@ -19,6 +19,7 @@
     margin: -5px 100px;
     font-weight: 600;
     margin-top: 5px;
+    cursor: pointer;
 }
 
 .searchBarContainer {

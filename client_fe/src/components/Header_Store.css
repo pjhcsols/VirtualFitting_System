@@ -1,0 +1,60 @@
+.header_store {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #000000;
+    color: white;
+    width: auto;
+    height: 50px;
+    position: relative;
+}
+
+.right-icons {
+    position: absolute;
+    right: 10px;
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    margin-bottom: 30px;
+    margin-top: 15px;
+}
+
+.menu_store {
+    display: flex;
+    justify-content: flex-start;
+    gap: 18px;
+    color: white;
+    font-size: 18px;
+}
+
+.menu_store span:not(:first-child):not(:last-child), 
+.menu_store div > span {
+    margin-right: 82px;
+}
+
+.Store_searchBarContainer {
+    position: absolute;
+    right: 150px;
+    width: 200px;
+    z-index: 1000;
+    background: #1E1E1E;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: none;
+    border-radius: 20px;
+    border: 1px solid white;
+}
+
+.Store_searchBarContainer.active {
+    display: block;
+}
+
+.Store_searchBarContainer input {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+}
