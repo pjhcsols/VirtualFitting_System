@@ -154,4 +154,9 @@ public class NormalUserService {
         return null;
     }
 
+    //수정
+    public void modify(NormalUser normalUser) {
+        normalUserRepository.modify(normalUser);
+    }
+
 }

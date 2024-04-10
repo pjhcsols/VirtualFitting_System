@@ -29,6 +29,7 @@ public class JpaNormalUserRepository implements NormalUserRepository{
         return em.createQuery("SELECT m FROM NormalUser m", NormalUser.class).getResultList();
     }
 
+
     @Override
     public NormalUser save(NormalUser normalUser) {
         em.persist(normalUser);

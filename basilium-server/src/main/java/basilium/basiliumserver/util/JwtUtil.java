@@ -12,6 +12,7 @@ import java.util.Set;
 
 @Slf4j
 public class JwtUtil {
+    //클레임(Claim)은 JWT(JSON Web Token)의 페이로드(Payload)에 포함되는 정보
     public static String getUserName(String token, String secretKey){
         return Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token)
                 .getBody().get("userName", String.class);
@@ -44,21 +45,6 @@ public class JwtUtil {
                 .compact();
     }
 
-    //refresh token 발급
-    /*
-    public static String createRefreshToken(String userName, String secretKey, Long expireMs) {
-        Claims claims = Jwts.claims();
-        claims.put("userName", userName);
-
-        return Jwts.builder()
-                .setClaims(claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expireMs))
-                .signWith(SignatureAlgorithm.HS256, secretKey.getBytes())
-                .compact();
-    }
-
-     */
 
     //블랙리스트
     private static Set<String> blacklistedTokens = new HashSet<>();

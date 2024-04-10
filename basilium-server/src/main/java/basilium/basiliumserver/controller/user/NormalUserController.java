@@ -65,7 +65,8 @@ public class NormalUserController {
             return new ResponseEntity<>("로그아웃 실패", HttpStatus.BAD_REQUEST);
         }
     }
-//***************토큰으로 로그아웃 로직만 유저 전체 합치기*************************
+//***************토큰으로 로그아웃 로그인? 로직만 유저 전체 합치기*************************
+    //회원가입 로직만 별도로 만들기?
 
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
@@ -92,6 +93,16 @@ public class NormalUserController {
     @GetMapping("/allNomalUser")
     public List<NormalUser> getAllNomalUsers() {
         return normalUserService.getAllNormalUsers();
+    }
+
+    @PutMapping("/modify")
+    public ResponseEntity<String> modifyUser(@RequestBody NormalUser normalUser) {
+        try {
+            normalUserService.modify(normalUser);
+            return ResponseEntity.ok("사용자 정보 수정 성공");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("사용자 정보 수정 실패: " + e.getMessage());
+        }
     }
 
     @PostMapping("/review")
