@@ -13,6 +13,7 @@ import lombok.Setter;
 public class User {
     @Id
     @GeneratedValue
+    @Column(name="userNumber")
     private Long userNumber;
     //@Id
     private String id;
