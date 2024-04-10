@@ -27,7 +27,7 @@ public class Product {
 
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "category_id")
-    Category productCategory;
+    basilium.basiliumserver.domain.product.Category productCategory;
 
 
     @Column(name="product_name", nullable = false)
