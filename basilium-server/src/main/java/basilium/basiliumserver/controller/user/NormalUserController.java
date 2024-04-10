@@ -95,7 +95,7 @@ public class NormalUserController {
         return normalUserService.getAllNormalUsers();
     }
 
-    @PutMapping("/modify")
+    @PostMapping("/modify")
     public ResponseEntity<String> modifyUser(@RequestBody NormalUser normalUser) {
         try {
             normalUserService.modify(normalUser);

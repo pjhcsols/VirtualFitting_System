@@ -79,7 +79,8 @@ public class JpaNormalUserRepository implements NormalUserRepository{
     @Override
     @Transactional
     public void modify(NormalUser normalUser) {
-        NormalUser existingUser = em.find(NormalUser.class, normalUser.getId());
+        //NormalUser existingUser = em.find(NormalUser.class, normalUser.getId());
+        NormalUser existingUser = em.find(NormalUser.class, normalUser.getUserNumber());
         if (existingUser != null) {
             existingUser.setId(normalUser.getId());
             existingUser.setPassword(normalUser.getPassword());
