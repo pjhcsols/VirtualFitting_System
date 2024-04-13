@@ -17,5 +17,4 @@ public class NormalUser extends User {
     private Date birthDate;
     private String address;
 
-
 }

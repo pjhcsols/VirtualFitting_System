@@ -32,7 +32,6 @@ public class NormalUserService {
         this.normalUserRepository = normalUserRepository;
     }
 
-
     @Value("${jwt.secret}")
     private String secretKey;
     private Long expiredMs = 1000 * 60 * 60l;

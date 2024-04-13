@@ -97,8 +97,6 @@ public class JpaNormalUserRepository implements NormalUserRepository{
 
 
 
-
-
     @Override
     public List<NormalUser> findByName(String name) {
         return em.createQuery("select m from NormalUser m where m.name = :name", NormalUser.class).setParameter("name", name).getResultList();
