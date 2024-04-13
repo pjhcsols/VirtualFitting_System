@@ -22,9 +22,12 @@ public class User {
     private String phoneNumber;
     private Grade userGrade;
 
+    /*
     @Column(length = 1000000000)
     String user64Image;
+    */
 
+    String userImageUrl;
     public User() {
 
     }

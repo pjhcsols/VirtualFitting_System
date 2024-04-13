@@ -40,7 +40,7 @@ public class PurchaseTransaction {
 
     @Column(name = "payment_type")
     String paymentType;
-    
+
     @CreationTimestamp
     @Column(name = "transaction_creation_time")
     String creationTime;
