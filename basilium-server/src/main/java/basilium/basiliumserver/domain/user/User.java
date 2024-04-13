@@ -1,7 +1,9 @@
 package basilium.basiliumserver.domain.user;
 
 
+import basilium.basiliumserver.auth.entity.Provider;
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +23,7 @@ public class User {
     private String emailAddress;
     private String phoneNumber;
     private Grade userGrade;
-
+    private Provider loginType;
     /*
     @Column(length = 1000000000)
     String user64Image;
