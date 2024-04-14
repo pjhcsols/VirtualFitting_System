@@ -1,12 +1,18 @@
-.order_list_container {
+.like_list_container {
     margin: auto;
     width: 70%;
     margin-top: 10%;
 }
 
-.order_list_title {
+.like_list_title {
+    margin-left : 10px;
     margin-bottom: 20px;
     font-size: 24px;
+}
+
+.like {
+    width: 35px;
+    height: 35px;
 }
 
 .header_div {
@@ -15,24 +21,24 @@
     border-bottom: solid 2px black; /* 이 줄을 추가하여 헤더 아래에 밑줄을 추가합니다. */
 }
 
-.order_list_table {
+.like_list_table {
     width: 100%;
     border-collapse: collapse;
 }
 
-.order_list_thead{
+.like_list_thead{
     width: 100%;
     border-bottom: solid 1px black;
 }
 
-.order_list_thead th,
-.order_list_table td {
+.like_list_thead th,
+.like_list_table td {
     padding: 10px;
     text-align: center;
 }
 
-.order_list_thead th:first-child,
-.order_list_table td:first-child {
+.like_list_thead th:first-child,
+.like_list_table td:first-child {
     width: 25%; /* 첫 번째 열의 너비를 25%로 지정 */
 }
 
@@ -57,19 +63,22 @@
     height: 100%;
 }
 
-.order_list_thead th:nth-child(2),
-.order_list_table td:nth-child(2) {
+.like_list_thead th:nth-child(2),
+.like_list_table td:nth-child(2) {
     width: 25%; /* 두 번째 열의 너비를 25%로 지정 */
 }
 
-.order_list_thead th:nth-child(3),
-.order_list_table td:nth-child(3) {
+.like_list_thead th:nth-child(3),
+.like_list_table td:nth-child(3) {
     width: 20%; /* 세 번째 열의 너비를 20%로 지정 */
 }
 
-.order_list_thead th:nth-child(4),
-.order_list_table td:nth-child(4) {
+.like_list_thead th:nth-child(4),
+.like_list_table td:nth-child(4) {
     width: 30%; /* 네 번째 열의 너비를 30%로 지정 */
 }
 
 
+.product-card-container {
+    margin-top :30px;
+}

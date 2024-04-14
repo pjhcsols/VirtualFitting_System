@@ -5,11 +5,13 @@ import product from '../assets/img/product.svg';
 const Product_Order_List = (props) => {
     const productList = props.orderData;
 
-    const [isEmpty, setIsEmpty] = useState(productList.length === 0);
+    const isEmpty = productList.length === 0;
 
     return (
         <div className="order_list_container">
-            <h2 className="order_list_title">주문 내역 조회</h2>
+            <div className="header_div">
+                <h2 className="order_list_title">주문 내역 조회</h2>
+            </div>
             {isEmpty ? (
                 <p>구매한 물품이 없습니다.</p>
             ) : (
@@ -23,26 +25,25 @@ const Product_Order_List = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {productList.map(product => (
-                        <tr key={product.id}>
+                    {productList.map((product, index) => (
+                        <tr key={index}>
                             <td>
-                                <div>
-                                    <img src={product} alt="product"/>
+                                <div className="image_div">
+                                    <img className={product.photoUrl ? "image2" : "image1"} src={product.photoUrl ? product.photoUrl : product} alt="product"/>
                                 </div>
                                 <span style={{ wordWrap: 'break-word' }}>
-                                    {product.name}
+                                    {product.productName}
                                 </span>
                             </td>
-                            <td>{product.date}</td>
-                            <td>{product.price}</td>
-                            <td>{product.status}</td>
+                            <td>{product.creationTime}</td>
+                            <td>{product.price * product.totalCnt}원</td>
+                            <td>배송중</td>
                         </tr>
                     ))}
                 </tbody>
             </table>
             )}
-            
-            
+                
         </div>
     );
 }
