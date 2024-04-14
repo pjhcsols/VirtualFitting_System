@@ -86,7 +86,9 @@ public class JpaNormalUserRepository implements NormalUserRepository{
             existingUser.setPassword(normalUser.getPassword());
             existingUser.setEmailAddress(normalUser.getEmailAddress());
             existingUser.setPhoneNumber(normalUser.getPhoneNumber());
-            existingUser.setUserGrade(normalUser.getUserGrade());
+            existingUser.setUserImageUrl(normalUser.getUserImageUrl());
+
+
             existingUser.setName(normalUser.getName());
             existingUser.setBirthDate(normalUser.getBirthDate());
             existingUser.setAddress(normalUser.getAddress());

@@ -70,7 +70,10 @@ public class JpaBrandUserRepository implements BrandUserRepository {
             existingUser.setPassword(brandUser.getPassword());
             existingUser.setEmailAddress(brandUser.getEmailAddress());
             existingUser.setPhoneNumber(brandUser.getPhoneNumber());
-            existingUser.setUserGrade(brandUser.getUserGrade());
+            //existingUser.setUserGrade(brandUser.getUserGrade());//등급은 사용자 정보 수정에서 변경되면 안됨
+            //existingUser.setLoginType(brandUser.getLoginType());//브랜드 유저는 일반사용자가 될수없음
+            existingUser.setUserImageUrl(brandUser.getUserImageUrl());
+
             existingUser.setFirmName(brandUser.getFirmName());
             existingUser.setFirmAddress(brandUser.getFirmAddress());
             existingUser.setBusinessRegistration(brandUser.getBusinessRegistration());

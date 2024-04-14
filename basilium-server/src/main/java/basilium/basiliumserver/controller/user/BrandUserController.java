@@ -31,7 +31,7 @@ public class BrandUserController {
     }
 
 
-    @GetMapping("/all-brand-users")
+    @GetMapping("/allBrandUsers")
     public List<BrandUser> getAllBrandUsers() {
         return brandUserService.getAllBrandUsers();
     }

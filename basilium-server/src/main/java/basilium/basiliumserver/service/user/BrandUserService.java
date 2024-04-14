@@ -8,11 +8,13 @@ import basilium.basiliumserver.repository.user.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Service
+@Transactional
 public class BrandUserService {
 
     private final BrandUserRepository brandUserRepository;
