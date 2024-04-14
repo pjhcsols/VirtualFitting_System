@@ -7,6 +7,8 @@ import java.util.Arrays;
 
 public enum Provider {
     NORMAL("normal"),
+    BRAND("brand"),
+    SUPER("super"),
     GOOGLE("google"),
     KAKAO("kakao"),
     NAVER("naver");
