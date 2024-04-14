@@ -4,6 +4,7 @@ import basilium.basiliumserver.auth.support.AuthUser;
 import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.*;
 import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
+import basilium.basiliumserver.service.Like.LikeService;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import basilium.basiliumserver.service.shoppingCart.ShoppingCartService;
 import basilium.basiliumserver.service.user.NormalUserService;
@@ -30,7 +31,7 @@ public class NormalUserController {
 
     private final PurchaseTransactionService purchaseTransactionService;
     private final ShoppingCartService shoppingCartService;
-
+    private final LikeService likeService;
 
 
     @PostMapping(value = "/signup")
@@ -132,6 +133,13 @@ public class NormalUserController {
         NormalUser ret = normalUserService.userInfoById(userId);
 
         return ResponseEntity.ok(shoppingCartService.userShoppingCartHistory(ret.getUserNumber()));
+    }
+
+    @GetMapping("/like/list")
+    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+
+        return ResponseEntity.ok(likeService.userLikeInfo(ret.getUserNumber()));
     }
 
 }
