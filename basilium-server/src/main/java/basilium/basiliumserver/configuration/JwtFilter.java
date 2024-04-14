@@ -37,6 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Token 꺼내기
         String token = authorization.split(" ")[1];
+        log.info("[logout 시도]");
         log.info(token);
 
         // Token 검증
@@ -59,7 +60,7 @@ public class JwtFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        log.info(token);
+        //log.info(token);
 
         // UserName Token에서 꺼내기
         String userName = jwtUtil.getUserEmail(token);

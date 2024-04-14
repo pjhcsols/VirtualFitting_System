@@ -1,8 +1,12 @@
 package basilium.basiliumserver.service.user;
 
+import basilium.basiliumserver.domain.user.BrandUser;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
+import basilium.basiliumserver.domain.user.SuperUser;
+import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
+import basilium.basiliumserver.repository.user.SuperUserRepository;
 import basilium.basiliumserver.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,15 +22,15 @@ import java.util.Optional;
 public class UserStateService {
 
     private final NormalUserRepository normalUserRepository;
-    //private final BrandUserRepository brandUserRepository;
-    //private final SuperUserRepository superUserRepository;
+    private final BrandUserRepository brandUserRepository;
+    private final SuperUserRepository superUserRepository;
 
     @Autowired
-    public UserStateService(NormalUserRepository normalUserRepository) {
-    //public UserStateService(NormalUserRepository normalUserRepository, BrandUserRepository brandUserRepository, SuperUserRepository superUserRepository) {
+    //public UserStateService(NormalUserRepository normalUserRepository) {
+    public UserStateService(NormalUserRepository normalUserRepository, BrandUserRepository brandUserRepository, SuperUserRepository superUserRepository) {
         this.normalUserRepository = normalUserRepository;
-        //this.brandUserRepository = brandUserRepository;
-        //this.superUserRepository = superUserRepository;
+        this.brandUserRepository = brandUserRepository;
+        this.superUserRepository = superUserRepository;
     }
 
 
@@ -35,18 +39,7 @@ public class UserStateService {
     private Long expiredMs = 1000 * 60 * 60l;
 
 
-    public LoginStatus login(String userId, String userPassword){
-        //Optional<User> tar = userRepository.findById(userId);
-        Optional<NormalUser> tar = normalUserRepository.findById(userId);
-        //Optional<BrandUser> tar = brandUserRepository.findById(userId);
-        //Optional<SuperUser> tar = superUserRepository.findById(userId);
-        if (tar.isEmpty() || !(tar.get().getPassword().equals(userPassword))){
-            return LoginStatus.FAIL;
-        }
-        return LoginStatus.SUCCESS;
-    }
-    //유저 전부 추가 후 밑에 로직으로 변경
-    /*
+
     public LoginStatus login(String userId, String userPassword) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
@@ -62,23 +55,9 @@ public class UserStateService {
             return LoginStatus.FAIL;
         }
     }
-}
-
-     */
-
-    public String createTokenByUserType(String userId) {
-        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
-        if (normalUser.isPresent()) {
-            return createNormalUserToken(userId);
-        } else {
-                    // 브랜드 유저 및 슈퍼 유저도 존재하지 않으면 예외 처리 혹은 기본 토큰 생성 로직 추가
-                    // 여기서는 슈퍼 유저가 없다고 가정하고 노말 유저 토큰 생성
-                    return createNormalUserToken(userId);
-        }
-    }
 
 
-/* 밑에 로직으로 추후 변경
+
     public String createTokenByUserType(String userId) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         if (normalUser.isPresent()) {
@@ -89,12 +68,14 @@ public class UserStateService {
             Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
             if (brandUser.isPresent()) {
                 return createBrandUserToken(userId);
-            } else {
+            }
+            else {
                 // 브랜드 유저가 존재하지 않으면 슈퍼 유저에서 토큰 생성
                 Optional<SuperUser> superUser = superUserRepository.findById(userId);
                 if (superUser.isPresent()) {
                     return createSuperUserToken(userId);
-                } else {
+                }
+                else {
                     // 브랜드 유저 및 슈퍼 유저도 존재하지 않으면 예외 처리 혹은 기본 토큰 생성 로직 추가
                     // 여기서는 슈퍼 유저가 없다고 가정하고 노말 유저 토큰 생성
                     return createNormalUserToken(userId);
@@ -103,7 +84,7 @@ public class UserStateService {
         }
     }
 
- */
+
 
 
     private String createNormalUserToken(String userId) {
@@ -117,25 +98,6 @@ public class UserStateService {
     private String createSuperUserToken(String userId) {
         return JwtUtil.createJwt(userId, "super", secretKey, expiredMs);
     }
-
-/*
-    public String afterSuccessLogin(String userId){
-        return JwtUtil.createJwt(userId, "normal", secretKey, expiredMs);
-    }
-
-    public String createNormalUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "normal", secretKey, expiredMs);
-    }
-
-    public String createBrandUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "brand", secretKey, expiredMs);
-    }
-
-    public String createSuperUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "super", secretKey, expiredMs);
-    }
-
- */
 
 
 
