@@ -1,0 +1,69 @@
+.product-card {
+    width: calc(33.33% - 20px);
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+}
+
+.product-image {
+    height: 250px;
+    overflow: hidden;
+}
+
+.product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.product-details {
+    padding: 15px;
+}
+
+.product-details h3 {
+    margin-top: 0;
+    margin-bottom: 10px;
+    font-size: 18px;
+}
+
+.product-details p {
+    margin: 0;
+    font-size: 14px;
+    color: #555;
+}
+
+.product-details button {
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block; /* 버튼을 블록 요소로 설정하여 가로 중앙 정렬을 위한 준비를 합니다. */
+    margin: 0 auto; /* 가로 중앙 정렬을 합니다. */
+}
+
+
+.product-details button:hover {
+    background-color: #0056b3;
+}
+
+
+.product-card {
+    width: calc(33.33% - 20px); /* 한 줄에 3개씩 배치하므로 너비는 총 너비의 1/3에서 간격을 빼줍니다. */
+    margin-right: 20px; /* 카드 간의 간격을 조절합니다. */
+    margin-bottom: 20px; /* 아래 여백을 추가합니다. */
+    float: left; /* 왼쪽으로 떠 있도록 설정합니다. */
+}
+
+.product-card:nth-child(3n) {
+    margin-right: 0; /* 3번째 카드의 오른쪽 여백을 제거하여 한 줄에 3개만 표시될 수 있도록 합니다. */
+}
