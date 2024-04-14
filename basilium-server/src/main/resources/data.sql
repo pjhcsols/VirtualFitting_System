@@ -34,4 +34,16 @@ commit;
 
 INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, name, birth_date, address)
 VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj', '우정잉', null, '서울특별시 강남구');
+
+insert into basilium.purchase_transaction (product_id, total_cnt, user_number, payment_type, transaction_creation_time)
+values (1, 1, 1, 'credit', CURRENT_TIMESTAMP);
+
+insert into basilium.purchase_transaction (product_id, total_cnt, user_number, payment_type, transaction_creation_time)
+values (2, 1, 1, 'credit', CURRENT_TIMESTAMP);
+
+insert into basilium.purchase_transaction (product_id, total_cnt, user_number, payment_type, transaction_creation_time)
+values (3, 1, 1, 'credit', CURRENT_TIMESTAMP);
+
+insert into basilium.purchase_transaction (product_id, total_cnt, user_number, payment_type, transaction_creation_time)
+values (4, 1, 1, 'credit', CURRENT_TIMESTAMP);
 commit;

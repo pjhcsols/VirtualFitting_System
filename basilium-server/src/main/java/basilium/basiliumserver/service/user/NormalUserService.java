@@ -153,6 +153,10 @@ public class NormalUserService {
         return null;
     }
 
+    public NormalUser userInfoById(String userId){
+        return normalUserRepository.findById(userId).get();
+    }
+
     //수정
     public void modify(NormalUser normalUser) {
         normalUserRepository.modify(normalUser);

@@ -25,7 +25,7 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
         return parameter.hasParameterAnnotation(AuthUser.class) &&
-                parameter.getParameterType().equals(Long.class);
+                parameter.getParameterType().equals(String.class);
     }
 
     @Override
@@ -43,8 +43,8 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
             if (token != null && !token.trim().isEmpty()) {
                 if (jwtUtil.validateToken(token)) {
                     log.info("jwtUtil.getUserInfoFromToken(token).getId() : {}",
-                            jwtUtil.getUserInfoFromToken(token).getId());
-                    return jwtUtil.getUserInfoFromToken(token).getId();
+                            jwtUtil.getUserEmail(token));
+                    return jwtUtil.getUserEmail(token);
                 }
             }
             AuthUser annotation = parameter.getParameterAnnotation(AuthUser.class);

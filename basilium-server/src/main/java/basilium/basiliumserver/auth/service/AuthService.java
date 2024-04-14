@@ -7,7 +7,6 @@ import basilium.basiliumserver.auth.exception.AuthExceptionType;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.repository.user.JpaUserRepo;
 import basilium.basiliumserver.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;

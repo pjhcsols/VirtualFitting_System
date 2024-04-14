@@ -29,11 +29,11 @@ public class PurchaseTransaction {
 
     @ManyToOne
     @JoinColumn(name = "userNumber")
-    NormalUser userId;
+    NormalUser normalUser;
 
     @ManyToOne
     @JoinColumn(name = "product_id")
-    Product productId;
+    Product product;
 
     @Column(name = "total_cnt")
     Long totalCnt;

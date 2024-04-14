@@ -1,9 +1,13 @@
 package basilium.basiliumserver.controller.user;
 
+import basilium.basiliumserver.auth.support.AuthUser;
+import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.*;
+import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
 import basilium.basiliumserver.service.user.NormalUserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,15 +22,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/normalUser")
 @PreAuthorize("isAuthenticated()")
+@RequiredArgsConstructor
 public class NormalUserController {
     private final NormalUserService normalUserService;
 
-    //bean
-    @Autowired
-    public NormalUserController(NormalUserService normalUserService) {
+    private final JpaPurchaseTransactionRepo transactionRepo;
 
-        this.normalUserService = normalUserService;
-    }
+
+
 
     @PostMapping(value = "/signup")
     public ResponseEntity<String> createNormalUser(@RequestBody NormalUser normalUser) {
@@ -111,13 +114,15 @@ public class NormalUserController {
     }
 
     @GetMapping("/userInfo")
-    public ResponseEntity<NormalUser> userInfo(HttpServletRequest request){
-        log.info("시작 !!!!");
-        NormalUser ret = normalUserService.getUserInfoByJWT(request);
-        log.info(ret.getName());
-        log.info(ret.getId());
-
+    public ResponseEntity<NormalUser> userInfo(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
         return ResponseEntity.ok(ret);
+    }
+
+    @GetMapping("/order/history")
+    public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+        return ResponseEntity.ok(transactionRepo.userOrderHistory(ret.getUserNumber()));
     }
 
 }

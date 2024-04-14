@@ -53,7 +53,7 @@ public class JwtUtil {
         log.info(secretKey);
         log.info(expireMs.toString());
         Claims claims = Jwts.claims();
-        claims.put("userName", userName);
+        claims.put("userEmail", userName);
         claims.put("userType", userType);
         log.info("*********************************************");
         return Jwts.builder()
