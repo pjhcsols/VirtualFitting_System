@@ -39,7 +39,7 @@ public class NormalUserController {
         JoinStatus result = normalUserService.join(normalUser);
         return new ResponseEntity<>(result.getMessage(), result.getStatus());
     }
-
+/*
     @PostMapping("/login")
     public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest){
         log.info("------------------------------------------------------------");
@@ -74,6 +74,8 @@ public class NormalUserController {
 //***************토큰으로 로그아웃 로그인? 로직만 유저 전체 합치기*************************
     //회원가입 로직만 별도로 만들기?
 
+
+ */
     @PostMapping("/refresh")
     public ResponseEntity<?> refreshAccessToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         String refreshToken = refreshTokenRequest.getRefreshToken();
