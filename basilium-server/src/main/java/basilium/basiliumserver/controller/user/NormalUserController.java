@@ -4,6 +4,8 @@ import basilium.basiliumserver.auth.support.AuthUser;
 import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.*;
 import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
+import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
+import basilium.basiliumserver.service.shoppingCart.ShoppingCartService;
 import basilium.basiliumserver.service.user.NormalUserService;
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,8 +28,8 @@ import java.util.List;
 public class NormalUserController {
     private final NormalUserService normalUserService;
 
-    private final JpaPurchaseTransactionRepo transactionRepo;
-
+    private final PurchaseTransactionService purchaseTransactionService;
+    private final ShoppingCartService shoppingCartService;
 
 
 
@@ -122,7 +124,14 @@ public class NormalUserController {
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
         NormalUser ret = normalUserService.userInfoById(userId);
-        return ResponseEntity.ok(transactionRepo.userOrderHistory(ret.getUserNumber()));
+        return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
+    }
+
+    @GetMapping("/shopping/list")
+    public ResponseEntity<List<?>> userShoppingCartList(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+
+        return ResponseEntity.ok(shoppingCartService.userShoppingCartHistory(ret.getUserNumber()));
     }
 
 }
