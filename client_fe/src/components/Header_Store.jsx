@@ -34,8 +34,8 @@ const Header_Store = () => {
                 <img style={{width: '20px', height: '20px'}} src={UserImg} alt="user" />
             </div>
             <div className="menu_store">
-                <img style={{width: '30px', height: '30px', marginLeft: '18px', marginRight: '-10px', marginTop: '-3px'}} src={CrownImg} alt="crown" />
-                <span>Basilium</span>
+                <img style={{width: '30px', height: '30px', marginLeft: '40px', marginRight: '-10px', marginTop: '-3px'}} src={CrownImg} alt="crown" />
+                <span className="menu-title">Basilium</span>
                 <span>New Arrival</span>
                 <span>Best 50</span>
                 <span>Top</span>
@@ -43,7 +43,7 @@ const Header_Store = () => {
                 <span>Bottom</span>
                 <span>Bag & Acc</span>
                 <div onClick={toggleSearchBar}>
-                    <img style={{width: '20px', height:'20px'}} src={SearchImg} alt="Search" />
+                    <img style={{width: '12px', height:'12px', marginRight: '3px', marginLeft: '100px'}} src={SearchImg} alt="Search" />
                     <span>Search</span>   
                 </div>
                 {showSearchBar && (
