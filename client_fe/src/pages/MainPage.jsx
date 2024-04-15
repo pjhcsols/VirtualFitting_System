@@ -1,14 +1,15 @@
 import React from 'react';
-import Header_Bottom from '../components/Header_Bottom';
+import HeaderBottom from '../components/Header_Bottom';
 import './MainPage.css';
 import rightImage from '../assets/img/right.png'
 import mainImg from '../assets/img/mainImg.jpg';
 import playbtn from '../assets/img/playBtn.png';
 
+
 function MainPage() {
   return (
     <div>
-        <Header_Bottom />
+        <HeaderBottom />
         <div className='main'>
         <div className='mainImg'>
             <img src={mainImg} alt="mainImage" />
