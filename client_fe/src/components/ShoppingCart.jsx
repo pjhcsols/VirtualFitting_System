@@ -12,7 +12,7 @@ const ShoppingCart = (props) => {
         <div className="shopping_list_container">
             <div className="header_div">
                 <h2 className="shopping_list_title">장바구니</h2>
-                <button>결제하기</button>
+                <button className="shopping_list_button">결제하기</button>
             </div>
             {isEmpty ? (
                 <p>담은 물품이 없습니다.</p>

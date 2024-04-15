@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import SearchImage from '../assets/img/Search.png';
 import { useNavigate } from 'react-router-dom';
 import CrownImage from '../assets/img/Crown.png';

@@ -14,7 +14,7 @@
     width: 100%;
     border-collapse: collapse;
 }
-button {
+.shopping_list_button {
     margin-left: auto; /* 버튼을 오른쪽으로 밀어내기 위해 필요 */
     width: 100px;
     height: 33px;

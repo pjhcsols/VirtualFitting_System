@@ -24,7 +24,7 @@
 
 .searchBarContainer {
     position: absolute;
-    right: 150px;
+    right: 80px;
     width: 200px;
     z-index: 1000;
     background: #1E1E1E;
