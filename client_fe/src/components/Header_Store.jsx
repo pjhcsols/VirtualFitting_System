@@ -5,11 +5,14 @@ import CrownImg from '../assets/img/Crown.png';
 import SearchImg from '../assets/img/Search.png';
 import './Header_Store.css'
 import { useNavigate } from "react-router-dom";
-import PopUp from "./PopUp";
+import PopUpStore from "./PopUp_Store.jsx";
+import { useAuth } from "../context/AuthContext.jsx";
 
 const Header_Store = () => {
+    const {user, logout} = useAuth();
     const navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
+    const storedUser = localStorage.getItem('login-token');
 
     const togglePopup = () => {
         console.log('클릭');
@@ -20,6 +23,14 @@ const Header_Store = () => {
         console.log('클릭됨');
         navigate(path);
     };
+
+    const handleUserImgClick = () => {
+        if (storedUser) {
+            togglePopup();
+        } else {
+            navigate('/login');
+        }
+    }
 
      // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
      const [showSearchBar, setShowSearchBar] = useState(false);
@@ -45,9 +56,9 @@ const Header_Store = () => {
         <div className="header_store">
             <div className="right-icons">
                 <img style={{width: '20px', height: '20px', marginRight: '10px'}} src={CartImg} alt="cart"/>
-                <img style={{width: '20px', height: '20px'}} src={UserImg} alt="user" onClick={togglePopup} />
+                <img style={{width: '20px', height: '20px'}} src={UserImg} alt="user" onClick={handleUserImgClick} />
             </div>
-            {popupOpen && <PopUp logout={togglePopup} />}
+            {popupOpen && <PopUpStore logout={togglePopup} />}
             <div className="menu_store">
                 <img style={{width: '30px', height: '30px', marginLeft: '40px', marginRight: '-10px', marginTop: '-3px'}} src={CrownImg} alt="crown" onClick={() => handleClick('/')} />
                 <span className="menu-title" onClick={() => handleClick('/')}>Basilium</span>

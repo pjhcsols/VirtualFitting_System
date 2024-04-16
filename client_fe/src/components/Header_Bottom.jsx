@@ -5,7 +5,7 @@ import CrownImage from '../assets/img/Crown.png';
 import './Header_Bottom.css';
 import cartIcon from '../assets/img/Cart.png';
 import MYIcon from '../assets/img/MY.png';
-import PopUp from './PopUp';
+import PopUpBottom from './PopUp_Bottom.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
 
 const Header_Bottom = () => {
@@ -13,6 +13,7 @@ const Header_Bottom = () => {
         const [isLoggedIn, setIsLoggedIn] = useState(false);
         const [popupOpen, setPopupOpen] = useState(false);
         const {user, logout, login, loading} = useAuth();
+        const storedUser = localStorage.getItem('login-token');
         
         const handleClick = (path) => {
             console.log('클릭됨');
@@ -22,6 +23,14 @@ const Header_Bottom = () => {
         const togglePopup = () => {
             setPopupOpen(!popupOpen);
         };
+
+        const handleUserImgClick = () => {
+            if (storedUser) {
+                togglePopup();
+            } else {
+                navigate('/login');
+            }
+        }
 
         // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
         const [showSearchBar, setShowSearchBar] = useState(false);
@@ -41,12 +50,6 @@ const Header_Bottom = () => {
                 console.log(searchText); // 현재 검색어 출력 또는 처리
                 // 검색 처리 로직 추가 위치
             }
-        };
-
-        const handleLogout = () => {
-            logout();
-            setIsLoggedIn(false);
-            togglePopup();
         };
 
         return (
@@ -70,14 +73,8 @@ const Header_Bottom = () => {
                 </div>
                 <div className='iconContainer'>
                     <img className='cartIcon' src={cartIcon} alt='cartIcon' onClick={() => handleClick('/MyPage')} style={{cursor:'pointer'}}/>
-                    {isLoggedIn ? (
-                        <div onClick={togglePopup}>
-                            <img className='MyIcon' src={MYIcon} alt='MYIcon' style={{cursor: 'pointer'}}/>
-                            {popupOpen && <PopUp logout={handleLogout} />}
-                        </div>
-                    ) : (
-                        <img className='MyIcon' src={MYIcon} alt='MYIcon' onClick={() => handleClick('/login')} style={{cursor:'pointer'}}/>
-                    )}
+                    <img className='MyIcon' src={MYIcon} alt='MYIcon' onClick={handleUserImgClick} style={{cursor:'pointer'}}/>
+                    {popupOpen && <PopUpBottom logout={togglePopup} />}
                 </div>
             </div>
         );
