@@ -105,7 +105,7 @@
                     </div>
                 </div>
             </div>
-        );
+        );  
     };
 
     const LoginForm = () => {
@@ -115,27 +115,27 @@
         const {user, logout, loading} = useAuth();
         const {login} = useAuth();
 
-        const checkLoginStatus = useCallback(async () => {
-            const token = localStorage.getItem('login-token');
+        // const checkLoginStatus = useCallback(async () => {
+        //     const token = localStorage.getItem('login-token');
         
-            if (token) {
-                try {
-                    const response = await ServerAPI.post('/User/login', {}, {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
+        //     if (token) {
+        //         try {
+        //             const response = await ServerAPI.post('/User/login', {
+        //                 headers: {
+        //                     Authorization: `Bearer ${token}`
+        //                 }
+        //             });
         
-                    login({ username: response.data.userData });
-                } catch (error) {
-                    console.error('오류발생');
-                }
-            }
-        }, [login]);
+        //             login({ username: response.data.userData });
+        //         } catch (error) {
+        //             console.error('오류발생');
+        //         }
+        //     }
+        // }, [login]);
 
-        useEffect( () => {
-            checkLoginStatus();
-          }, [checkLoginStatus]);
+        // useEffect( () => {
+        //     checkLoginStatus();
+        //   }, [checkLoginStatus]);
 
         const handleEmailChange = (e) => {
             setEmail(e.target.value);
@@ -157,12 +157,11 @@
                 const response = await ServerAPI.post('/User/login', data);
 
                 if (response.status === 200) {
-                    console.log(data.userId);
+                    console.log(response.data);
                     localStorage.clear()
                     localStorage.setItem('login-token', response.data)
-                    console.log(response.data);
                     
-                    checkLoginStatus();
+                    //checkLoginStatus();
                     
                     navigate('/');
                   }

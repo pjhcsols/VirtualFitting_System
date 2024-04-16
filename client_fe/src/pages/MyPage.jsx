@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
-import Header_Bottom from "../components/Header_Bottom";
-import Profile_Header from "../components/Profile_Header";
-import Product_Order_List from "../components/Product_Order_List";
+import HeaderBottom from "../components/Header_Bottom";
+import ProfileHeader from "../components/Profile_Header";
+import ProductOrderList from "../components/Product_Order_List";
 import ShoppingCart from "../components/ShoppingCart";
-import Like_List from "../components/Like_List";
+import LikeList from "../components/Like_List";
 import axios from "axios";
 
 const MyPage = () => {
@@ -70,11 +70,11 @@ const MyPage = () => {
 
     return (
         <div>
-            <Header_Bottom/>
-            <Profile_Header userData={userData}/>
-            <Product_Order_List orderData={orderData}/>
+            <HeaderBottom/>
+            <ProfileHeader userData={userData}/>
+            <ProductOrderList orderData={orderData}/>
             <ShoppingCart shoppingData={shoppingData} />
-            <Like_List likeData={likeData} />
+            <LikeList likeData={likeData} />
         </div>
     );
 }

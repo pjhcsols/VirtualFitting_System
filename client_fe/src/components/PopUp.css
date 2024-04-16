@@ -1,0 +1,42 @@
+.popup-container-store {
+    position: absolute;
+    bottom: -92px; 
+    right: 3px; 
+    width: 280px;
+    height: 120px;
+    border-radius: 10px;
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    z-index: 1; 
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-start; 
+}
+
+.popup-container-bottom {
+    position: absolute;
+    top: 25px;
+    right: -15px; 
+    width: 280px;
+    height: 120px;
+    border-radius: 10px;
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    z-index: 1; 
+    display: flex;
+    justify-content: flex-end; 
+    align-items: flex-start; 
+}
+
+.logoutButton {
+    background-color: #dee2e6; 
+    border: none; 
+    padding: 8px 15px;
+    border-radius: 10px;
+    color: black; 
+    font-size: 12px; 
+    font-weight: bold;
+    margin-top: 10px; 
+    margin-right: 10px; 
+    cursor: pointer; 
+}
