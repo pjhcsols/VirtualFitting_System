@@ -12,12 +12,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
 
-//user 통합 로그인 로그아웃
+//user 통합 로그인 로그아웃 이미지 업로드
 @Service
 public class UserStateService {
 
@@ -37,6 +40,9 @@ public class UserStateService {
     @Value("${jwt.secret}")
     private String secretKey;
     private Long expiredMs = 1000 * 60 * 60l;
+
+    @Value("${uploadDir}")
+    private String uploadDir;
 
 
 
@@ -114,5 +120,89 @@ public class UserStateService {
         }
         // 다른 로그아웃 관련 로직 추가 가능
     }
+
+
+    public String uploadImage(String userId, MultipartFile file) {
+        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
+        Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
+        Optional<SuperUser> superUser = superUserRepository.findById(userId);
+
+        if (normalUser.isPresent()) {
+            return saveUserImage(normalUser.get(), file);
+        } else if (brandUser.isPresent()) {
+            return saveUserImage(brandUser.get(), file);
+        } else if (superUser.isPresent()) {
+            return saveUserImage(superUser.get(), file);
+        }
+        return null;
+    }
+/*
+    private String saveUserImage(Object user, MultipartFile file) {
+        if (file.isEmpty()) {
+            return null;
+        }
+
+        try {
+            String fileName = user.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String filePath = uploadDir + fileName;
+            file.transferTo(new File(filePath));
+            if (user instanceof NormalUser) {
+                NormalUser normalUser = (NormalUser) user;
+                normalUser.setUserImageUrl(filePath);
+                normalUserRepository.save(normalUser);
+            } else if (user instanceof BrandUser) {
+                BrandUser brandUser = (BrandUser) user;
+                brandUser.setUserImageUrl(filePath);
+                brandUserRepository.save(brandUser);
+            } else if (user instanceof SuperUser) {
+                SuperUser superUser = (SuperUser) user;
+                superUser.setUserImageUrl(filePath);
+                superUserRepository.save(superUser);
+            }
+            return filePath;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+ */
+    private String saveUserImage(Object user, MultipartFile file) {
+        if (file.isEmpty()) {
+            return null;
+        }
+
+        String filePath = null;
+        try {
+            if (user instanceof NormalUser) {
+                NormalUser normalUser = (NormalUser) user;
+                String fileName = normalUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                filePath = uploadDir + fileName;
+                file.transferTo(new File(filePath));
+                normalUser.setUserImageUrl(filePath);
+                normalUserRepository.save(normalUser);
+            } else if (user instanceof BrandUser) {
+                BrandUser brandUser = (BrandUser) user;
+                String fileName = brandUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                filePath = uploadDir + fileName;
+                file.transferTo(new File(filePath));
+                brandUser.setUserImageUrl(filePath);
+                brandUserRepository.save(brandUser);
+            } else if (user instanceof SuperUser) {
+                SuperUser superUser = (SuperUser) user;
+                String fileName = superUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+                filePath = uploadDir + fileName;
+                file.transferTo(new File(filePath));
+                superUser.setUserImageUrl(filePath);
+                superUserRepository.save(superUser);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+        return filePath; // 파일의 경로를 반환
+    }
+
+
 
 }

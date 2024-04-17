@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 //user 통합 로그인
@@ -76,4 +77,23 @@ public class UserStateController {
             return new ResponseEntity<>("로그아웃 실패", HttpStatus.BAD_REQUEST);
         }
     }
+
+    //사용자가 이미지 업로드 시 저장 후 image url 프론트에게 반환
+    //아니면 백엔드에서 이미지 전송을 AI에게 바로 줌
+    @PostMapping("/uploadImage")
+    public ResponseEntity<String> uploadImage(@RequestParam("userId") String userId,
+                                              @RequestParam("file") MultipartFile file) {
+        String imageUrl = userStateService.uploadImage(userId, file);
+        if (imageUrl != null) {
+            return ResponseEntity.ok().body(imageUrl);
+        } else {
+            return ResponseEntity.badRequest().body("이미지 업로드에 실패하였습니다.");
+        }
+    }
+
+    //사용자의 기존에 등록된 이미지 불러오기
+
+
+
+    //새로운 이미지 삽입시 이미지 url 교체 작업은 이루어지나?
 }
