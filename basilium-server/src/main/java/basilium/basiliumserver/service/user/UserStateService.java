@@ -9,18 +9,26 @@ import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
 import basilium.basiliumserver.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.FileNotFoundException;
+import java.nio.file.Files;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
+
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Optional;
 
 
 //user 통합 로그인 로그아웃 이미지 업로드
+@Slf4j
+@Transactional
 @Service
 public class UserStateService {
 
@@ -136,37 +144,7 @@ public class UserStateService {
         }
         return null;
     }
-/*
-    private String saveUserImage(Object user, MultipartFile file) {
-        if (file.isEmpty()) {
-            return null;
-        }
 
-        try {
-            String fileName = user.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String filePath = uploadDir + fileName;
-            file.transferTo(new File(filePath));
-            if (user instanceof NormalUser) {
-                NormalUser normalUser = (NormalUser) user;
-                normalUser.setUserImageUrl(filePath);
-                normalUserRepository.save(normalUser);
-            } else if (user instanceof BrandUser) {
-                BrandUser brandUser = (BrandUser) user;
-                brandUser.setUserImageUrl(filePath);
-                brandUserRepository.save(brandUser);
-            } else if (user instanceof SuperUser) {
-                SuperUser superUser = (SuperUser) user;
-                superUser.setUserImageUrl(filePath);
-                superUserRepository.save(superUser);
-            }
-            return filePath;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
- */
     private String saveUserImage(Object user, MultipartFile file) {
         if (file.isEmpty()) {
             return null;
@@ -178,7 +156,7 @@ public class UserStateService {
                 NormalUser normalUser = (NormalUser) user;
                 String fileName = normalUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
                 filePath = uploadDir + fileName;
-                file.transferTo(new File(filePath));
+                file.transferTo(new File(filePath)); //업로드 된 파일을 지정된 경로에 저장
                 normalUser.setUserImageUrl(filePath);
                 normalUserRepository.save(normalUser);
             } else if (user instanceof BrandUser) {
@@ -203,6 +181,41 @@ public class UserStateService {
         return filePath; // 파일의 경로를 반환
     }
 
+
+    // 사용자의 기존 이미지 URL을 가져오는 메서드
+    public String getUserImageUrl(String userId) {
+        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
+        Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
+        Optional<SuperUser> superUser = superUserRepository.findById(userId);
+
+        if (normalUser.isPresent()) {
+            return normalUser.get().getUserImageUrl();
+        } else if (brandUser.isPresent()) {
+            return brandUser.get().getUserImageUrl();
+        } else if (superUser.isPresent()) {
+            return superUser.get().getUserImageUrl();
+        } else {
+            return null; // 사용자가 존재하지 않는 경우
+        }
+    }
+
+
+    // AI 서버에서 이미지 URL을 전달받아 해당 이미지 파일을 전송하는 메서드
+    public byte[] getImageFileByUrl(String imageUrl) throws IOException {
+        // 이미지 파일의 절대 경로를 확인합니다.
+        Path imagePath = Paths.get(imageUrl);
+        log.info(String.valueOf(imagePath));
+        // 이미지 파일이 존재하는지 확인합니다.
+        if (Files.exists(imagePath)) {
+            // 이미지 파일이 존재하면 파일의 내용을 byte 배열로 읽어옵니다.
+            log.info("[AI 서버에 이미지 전송]");
+            log.info(String.valueOf(imagePath));
+            return Files.readAllBytes(imagePath);
+        } else {
+            // 이미지 파일이 존재하지 않는 경우 FileNotFoundException을 던집니다.
+            throw new FileNotFoundException("이미지 파일이 존재하지 않습니다.");
+        }
+    }
 
 
 }
