@@ -1,6 +1,6 @@
 package basilium.basiliumserver.repository.user;
 
-import basilium.basiliumserver.domain.user.BrandUser;
+
 import basilium.basiliumserver.domain.user.SuperUser;
 
 import java.util.List;

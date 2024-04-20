@@ -36,6 +36,9 @@ public class Product {
     @Column(name="product_photo_url")
     String productPhotoUrl;
 
+    @Column(name="product_sub_photo_url")
+    String productSubPhotoUrl;
+
     @ManyToOne
     @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
     private BrandUser brandUser;
