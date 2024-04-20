@@ -1,15 +1,8 @@
 package basilium.basiliumserver.domain.product;
 
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.SequenceGenerator;
+import basilium.basiliumserver.domain.user.BrandUser;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -43,5 +36,20 @@ public class Product {
     @Column(name="product_photo_url")
     String productPhotoUrl;
 
-}
+    @ManyToOne
+    @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
+    private BrandUser brandUser;
 
+    //삭제하기
+    /*
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "firm_name")
+    private BrandUser productFirmName;
+
+    public Product(){
+
+    }
+    */
+
+
+}
