@@ -3,7 +3,6 @@ package basilium.basiliumserver.controller.product;
 import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.BrandUser;
 import basilium.basiliumserver.service.product.ProductService;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,11 +19,24 @@ public class ProductController {
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-
+/*
     @PostMapping("/create")
     public Product addProduct(@RequestBody Product product) {
         return productService.addProduct(product);
     }
+
+ */
+    @PostMapping("/create")
+    public ResponseEntity<?> addProduct(@RequestBody Product product) {
+        try {
+            Product createdProduct = productService.addProduct(product);
+            return ResponseEntity.ok(createdProduct);
+        } catch (Exception e) {
+            // 예외 처리 로직
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add product: " + e.getMessage());
+        }
+    }
+
 
     @GetMapping("/{productId}")
     public ResponseEntity<?> getProductById(@PathVariable Long productId) {
@@ -53,8 +65,8 @@ public class ProductController {
     }
 
 
-    @DeleteMapping("/{productId}")
-    public void deleteProduct(@PathVariable Long productId) {
+    @DeleteMapping("/deleteProduct")
+    public void deleteProduct(@RequestParam Long productId) {
         productService.deleteProduct(productId);
     }
 

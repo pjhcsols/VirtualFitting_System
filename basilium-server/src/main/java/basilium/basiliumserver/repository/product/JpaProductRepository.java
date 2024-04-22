@@ -75,7 +75,7 @@ public class JpaProductRepository implements ProductRepository {
             existingProduct.setProductDesc(product.getProductDesc());
             existingProduct.setProductPhotoUrl(product.getProductPhotoUrl());
             existingProduct.setProductSubPhotoUrl(product.getProductSubPhotoUrl());
-            existingProduct.setBrandUser(product.getBrandUser());
+            //existingProduct.setBrandUser(product.getBrandUser());
 
             em.merge(existingProduct); // 변경 내용 저장
         }
@@ -94,8 +94,8 @@ public class JpaProductRepository implements ProductRepository {
     //상품 이름 2글자이상 검색기능
     @Override
     public List<Product> findByNameContaining(String name) {
-        return em.createQuery("SELECT p FROM Product p WHERE p.productName LIKE %:name%", Product.class)
-                .setParameter("name", name)
+        return em.createQuery("SELECT p FROM Product p WHERE p.productName LIKE :name", Product.class)
+                .setParameter("name", "%" + name + "%")
                 .getResultList();
     }
 
