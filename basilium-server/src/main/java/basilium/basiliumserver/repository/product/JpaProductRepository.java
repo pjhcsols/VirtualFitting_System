@@ -81,7 +81,7 @@ public class JpaProductRepository implements ProductRepository {
         }
     }
 
-
+/*
     @Override
     public List<Product> findByName(String name) {
         return em.createQuery("select p from Product p where p.productName = :name", Product.class)
@@ -89,15 +89,28 @@ public class JpaProductRepository implements ProductRepository {
                 .getResultList();
     }
 
+ */
+
+    //상품 이름 2글자이상 검색기능
     @Override
-    public Optional<Product> findByBrandUser(BrandUser brandUser) {
+    public List<Product> findByNameContaining(String name) {
+        return em.createQuery("SELECT p FROM Product p WHERE p.productName LIKE %:name%", Product.class)
+                .setParameter("name", name)
+                .getResultList();
+    }
+
+
+    @Override
+    public Optional<BrandUser> findBrandUserByProductId(Long productId) {
         try {
-            Product product = em.createQuery("select p from Product p where p.brandUser = :brandUser", Product.class)
-                    .setParameter("brandUser", brandUser)
+            BrandUser brandUser = em.createQuery("SELECT p.brandUser FROM Product p WHERE p.productId = :productId", BrandUser.class)
+                    .setParameter("productId", productId)
                     .getSingleResult();
-            return Optional.ofNullable(product);
+            return Optional.ofNullable(brandUser);
         } catch (NoResultException e) {
             return Optional.empty();
         }
     }
+
+
 }

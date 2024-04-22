@@ -15,6 +15,7 @@ public interface ProductRepository {
     void deleteById(Long productId);
     void deleteAll();
     void modify(Product product);
-    List<Product> findByName(String name);
-    Optional<Product> findByBrandUser(BrandUser brandUser);
+    //List<Product> findByName(String name);
+    List<Product> findByNameContaining(String name);
+    Optional<BrandUser> findBrandUserByProductId(Long productId);
 }

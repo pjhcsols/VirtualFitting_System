@@ -1,6 +1,7 @@
 package basilium.basiliumserver.service.product;
 
 import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.domain.user.BrandUser;
 import basilium.basiliumserver.repository.product.ProductRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,6 +59,15 @@ public class ProductService {
     //@Transactional(readOnly = true)
     public long countProducts() {
         return productRepository.count();
+    }
+
+    public List<Product> getProductsByName(String name) {
+        return productRepository.findByNameContaining(name);
+    }
+
+
+    public Optional<BrandUser> findBrandUserByProductId(Long productId) {
+        return productRepository.findBrandUserByProductId(productId);
     }
 
 
