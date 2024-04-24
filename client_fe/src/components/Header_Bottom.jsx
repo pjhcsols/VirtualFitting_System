@@ -18,7 +18,7 @@ const Header_Bottom = () => {
         const handleClick = (path) => {
             console.log('클릭됨');
             navigate(path);
-        }
+        };
 
         const togglePopup = () => {
             setPopupOpen(!popupOpen);
@@ -30,7 +30,7 @@ const Header_Bottom = () => {
             } else {
                 navigate('/login');
             }
-        }
+        };
 
         // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
         const [showSearchBar, setShowSearchBar] = useState(false);
@@ -72,7 +72,7 @@ const Header_Bottom = () => {
                     </div>
                 </div>
                 <div className='iconContainer'>
-                    <img className='cartIcon' src={cartIcon} alt='cartIcon' onClick={() => handleClick('/MyPage')} style={{cursor:'pointer'}}/>
+                    <img className='cartIcon' src={cartIcon} alt='cartIcon' style={{cursor:'pointer'}}/>
                     <img className='MyIcon' src={MYIcon} alt='MYIcon' onClick={handleUserImgClick} style={{cursor:'pointer'}}/>
                     {popupOpen && <PopUpBottom logout={togglePopup} />}
                 </div>

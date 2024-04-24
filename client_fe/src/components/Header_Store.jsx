@@ -30,7 +30,7 @@ const Header_Store = () => {
         } else {
             navigate('/login');
         }
-    }
+    };
 
      // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
      const [showSearchBar, setShowSearchBar] = useState(false);

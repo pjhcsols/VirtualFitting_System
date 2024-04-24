@@ -46,7 +46,7 @@
         button {
             background-color: #000; 
             color: #fff; 
-            width: 320px;
+            width: 350px;
             height: 40px;
             padding: 10px;
             cursor: pointer;
@@ -57,6 +57,29 @@
             padding-top: 6px;   
         }
     `;
+
+    const SingUpFormStyle = styled.form`
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        
+
+        button {
+            background-color: #5F5F5F; 
+            color: #fff; 
+            width: 350px;
+            height: 60px;
+            padding: 10px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            margin-top: 70px;
+            font-size: 20px;
+            padding-top: 6px;   
+        }
+    
+    
+    `
 
     const LoginPage = () => {
         const navigate = useNavigate();
@@ -110,7 +133,7 @@
 
     const LoginForm = () => {
         const navigate = useNavigate();
-        const [email, setEmail] = useState('');
+        const [id, setId] = useState('');
         const [password, setPassword] = useState('');
         const {user, logout, loading} = useAuth();
         const {login} = useAuth();
@@ -137,8 +160,8 @@
         //     checkLoginStatus();
         //   }, [checkLoginStatus]);
 
-        const handleEmailChange = (e) => {
-            setEmail(e.target.value);
+        const handleIdChange = (e) => {
+            setId(e.target.value);
         };
 
         const handlePasswordChange = (e) => {
@@ -149,7 +172,7 @@
             e.preventDefault();
             
             const data = {
-                userId: email,
+                userId: id,
                 userPassword: password,
             };
 
@@ -160,7 +183,7 @@
                     console.log(response.data);
                     localStorage.clear()
                     localStorage.setItem('login-token', response.data)
-                    
+                    localStorage.setItem('user_id', data.userId)
                     //checkLoginStatus();
                     
                     navigate('/');
@@ -173,15 +196,15 @@
 
         return (
             <LoginFormStyle onSubmit={handleSubmit}>
-                <label htmlFor="email" style={{marginTop: '20px', marginBottom: '2px', marginLeft: '-310px', fontSize: '12px', fontWeight: 'bold'}}>이메일</label>
+                <label htmlFor="id" style={{marginTop: '20px', marginBottom: '2px', marginLeft: '-310px', fontSize: '12px', fontWeight: 'bold'}}>아이디</label>
                 <div className="inputGroup">
                     <img src={emailImg} alt="Email" className="inputIcon" />
                     <input 
-                        id="email"
+                        id="id"
                         type="text" 
-                        placeholder="이메일을 입력해주세요" 
-                        value={email} 
-                        onChange={handleEmailChange} 
+                        placeholder="아이디를 입력해주세요" 
+                        value={id} 
+                        onChange={handleIdChange} 
                     />
                 </div>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '340px', marginLeft: '10px', marginTop: '-28px' }}>
@@ -206,9 +229,10 @@
 
     const SignUpForm = () => {
         return (
-            <form>
-                {/* 회원가입 폼 내용 */}
-            </form>
+            <SingUpFormStyle>
+                <button>일반회원 가입하기</button>
+                <button>사업자 회원 가입하기</button>
+            </SingUpFormStyle>  
         );
     };
 
