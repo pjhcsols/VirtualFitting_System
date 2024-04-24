@@ -40,3 +40,28 @@
     margin-right: 10px; 
     cursor: pointer; 
 }
+
+.userId-bottom{
+    color: black;
+    font-weight: bold;
+    padding-left: 25px;
+}
+
+.user-bottom-container {
+    display: flex;
+    align-items: center;
+    margin-right: 30px; 
+}
+
+.userId-store{
+    color: black;
+    font-weight: bold;
+    position: relative; /* 상대 위치 설정 */
+    left: -15px;
+}
+
+.user-store-container {
+    display: flex;
+    align-items: center;
+    margin-right: 20px; 
+}
