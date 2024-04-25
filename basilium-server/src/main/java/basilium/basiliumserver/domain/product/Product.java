@@ -18,6 +18,7 @@ public class Product {
     @Column(name = "product_id", nullable = false, columnDefinition = "int")
     Long productId;
 
+
     @ManyToOne(cascade = CascadeType.REMOVE)
     @JoinColumn(name = "category_id")
     basilium.basiliumserver.domain.product.Category productCategory;
