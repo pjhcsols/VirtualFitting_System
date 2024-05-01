@@ -19,7 +19,6 @@ public class BasiliumServerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(BasiliumServerApplication.class, args);
 
-
 	}
 
 	@Bean

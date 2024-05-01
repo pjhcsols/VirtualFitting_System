@@ -8,6 +8,7 @@ import basilium.basiliumserver.repository.user.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class BrandUserService {
         return brandUserRepository.findById(userId).orElse(null);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public JoinStatus join(BrandUser brandUser) {
         try {
             validateDuplicateMember(brandUser);

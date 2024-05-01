@@ -46,14 +46,15 @@ public class JwtUtil {
     }
 
     //로그인 할때마다 토큰 새로 발급 리프레쉬 토큰
-    public static String createJwt(String userName, String userType, String secretKey, Long expireMs) {
+    //id 값 위주
+    public static String createJwt(String userId, String userType, String secretKey, Long expireMs) {
         log.info("*********************************************");
-        log.info(userName);
+        log.info(userId);
         log.info(userType);
         log.info(secretKey);
         log.info(expireMs.toString());
         Claims claims = Jwts.claims();
-        claims.put("userEmail", userName);
+        claims.put("userId", userId);
         claims.put("userType", userType);
         log.info("*********************************************");
         return Jwts.builder()
@@ -64,6 +65,7 @@ public class JwtUtil {
                 .compact();
     }
 
+    //소셜 로그인 id값이 아닌 이메일 값이 필요
     public String createJwt(NormalUser user, Long expireMs) {
         Claims claims = Jwts.claims();
         claims.put("id", user.getId());
@@ -72,6 +74,7 @@ public class JwtUtil {
 
         return buildJwt(expireMs, claims);
     }
+
     public static boolean isTokenValid(String token, String secretKey) {
         try {
             Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(token);

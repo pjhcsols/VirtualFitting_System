@@ -87,6 +87,13 @@ public class UserStateController {
         }
     }
 
+
+
+    /*
+    @PostMapping("/uploadImage")
+    public ResponseEntity<String> uploadImage(@AuthUser String userId,
+                                              @RequestParam("file") MultipartFile file) {
+     */
     //사용자가 이미지 업로드 시 저장 후 image url 프론트에게 반환
     //아니면 백엔드에서 이미지 전송을 AI에게 바로 주는 로직 추가
     //새로운 이미지 삽입시 이미지 url 교체 작업됨
