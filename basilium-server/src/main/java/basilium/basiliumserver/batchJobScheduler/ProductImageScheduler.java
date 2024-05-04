@@ -6,14 +6,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Component
 @Slf4j
+@Component
 public class ProductImageScheduler {
     private final ProductService productService;
     private final S3StorageService s3StorageService;
@@ -25,11 +24,11 @@ public class ProductImageScheduler {
     }
 
 
-    //@Scheduled(cron = "0 0 0 * * ?") // 매일 자정마다 실행
+    //@Scheduled(initialDelay = 60000, fixedDelay = 120000) // 1분 후에 시작하고, 그 이후에는 매 2분마다 실행
     @Transactional
-    @Scheduled(initialDelay = 60000, fixedDelay = 120000) // 1분 후에 시작하고, 그 이후에는 매 2분마다 실행
+    @Scheduled(cron = "0 0 0 * * ?") // 매일 자정마다 실행
     public void deleteUnusedProductImages() {
-        log.info("product 스케줄링 시작");
+        log.info("[product 스케줄링 시작]");
         // 1. 데이터베이스와 S3 스토리지에서 상품 이미지 URL을 가져옵니다.
         List<String> databaseUrls = productService.getAllProductImageUrls();
         List<String> s3Urls = s3StorageService.getAllImageUrls();

@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -31,9 +32,21 @@ public class JpaSuperUserRepository implements SuperUserRepository {
     }
 
     @Override
+    public List<SuperUser> findByUserImageUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM SuperUser u WHERE u.userImageUrl IN :imageUrls", SuperUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
+    }
+
+    @Override
     public SuperUser save(SuperUser superUser) {
         em.persist(superUser);
         return superUser;
+    }
+
+    @Override
+    public List<String> getAllUserImageUrls() {
+        return em.createQuery("SELECT m.userImageUrl FROM SuperUser m", String.class).getResultList();
     }
 
     @Override

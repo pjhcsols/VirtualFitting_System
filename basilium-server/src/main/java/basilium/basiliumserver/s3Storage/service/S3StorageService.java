@@ -66,6 +66,7 @@ public class S3StorageService {
 
  */
 
+    //브랜드 유저 id가 없으면 실행안됨
     public String uploadProductPhoto(MultipartFile file, BrandUser brandUser) throws IOException {
         String fileName = brandUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
         byte[] fileBytes = file.getBytes();

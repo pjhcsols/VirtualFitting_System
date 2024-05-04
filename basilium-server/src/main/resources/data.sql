@@ -21,7 +21,13 @@ INSERT INTO basilium.category (category_id, category_name) VALUES (19, '액세�
 commit;
 
 INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, firm_name, firm_address, business_registration, firm_web_url)
-VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/brand01_1713958965868_mysql.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+commit;
+INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, firm_name, firm_address, business_registration, firm_web_url)
+VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+commit;
+INSERT INTO normal_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, name, birth_date, address)
+VALUES (1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png', '우정잉', '2000-12-20', '서울특별시 강남구');
 commit;
 
 INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)

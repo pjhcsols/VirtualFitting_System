@@ -4,6 +4,7 @@ import basilium.basiliumserver.domain.user.NormalUser;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface NormalUserRepository {
     long count();
@@ -18,4 +19,6 @@ public interface NormalUserRepository {
     List<NormalUser> findByName(String name);
     Optional<NormalUser> findByPhoneNumber(String phoneNumber);
     //List<NormalUser> findAll();
+    List<String> getAllUserImageUrls();
+    List<NormalUser> findByUserImageUrlsIn(Set<String> imageUrls);
 }
