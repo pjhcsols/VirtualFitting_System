@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter @Setter
 @NoArgsConstructor
@@ -34,11 +36,23 @@ public class Product {
     @Column(name="product_desc", nullable = false)
     String productDesc;
 
+    @ElementCollection
+    @CollectionTable(name = "product_photo_urls", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "product_photo_url")
+    List<String> productPhotoUrl;
+
+    @ElementCollection
+    @CollectionTable(name = "product_sub_photo_urls", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "product_sub_photo_url")
+    List<String> productSubPhotoUrl;
+
+    /*
     @Column(name="product_photo_url")
     String productPhotoUrl;
 
     @Column(name="product_sub_photo_url")
     String productSubPhotoUrl;
+     */
 
     @ManyToOne
     @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
