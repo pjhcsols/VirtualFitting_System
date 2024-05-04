@@ -10,7 +10,12 @@ import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
+import org.springframework.scheduling.annotation.EnableScheduling;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+@EnableScheduling
+@EnableTransactionManagement
+//위 스케줄링
 @EnableFeignClients
 @SpringBootApplication
 @ImportAutoConfiguration({FeignAutoConfiguration.class})

@@ -95,4 +95,11 @@ public class ProductController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brand user not found for product id: " + productId);
         }
     }
+
+    //스케줄러 확인 용
+    @GetMapping("/allImageUrls")
+    public ResponseEntity<List<String>> getAllProductImageUrls() {
+        List<String> imageUrls = productService.getAllProductImageUrls();
+        return ResponseEntity.ok(imageUrls);
+    }
 }

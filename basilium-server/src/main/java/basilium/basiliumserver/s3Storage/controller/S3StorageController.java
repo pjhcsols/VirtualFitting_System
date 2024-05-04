@@ -1,6 +1,8 @@
 package basilium.basiliumserver.s3Storage.controller;
 
+import basilium.basiliumserver.domain.user.BrandUser;
 import basilium.basiliumserver.s3Storage.service.S3StorageService;
+import basilium.basiliumserver.service.user.BrandUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -16,12 +18,14 @@ import java.util.List;
 public class S3StorageController {
 
     private final S3StorageService s3StorageService;
+    private final BrandUserService brandUserService; // BrandUserService를 필드로 추가합니다.
 
     @Autowired
-    public S3StorageController(S3StorageService s3StorageService) {
+    public S3StorageController(S3StorageService s3StorageService, BrandUserService brandUserService) {
         this.s3StorageService = s3StorageService;
+        this.brandUserService = brandUserService; // BrandUserService를 주입합니다.
     }
-
+/*
     @PostMapping("/upload-photo")
     public ResponseEntity<String> uploadProductPhoto(@RequestParam("file") MultipartFile file) {
         try {
@@ -32,6 +36,22 @@ public class S3StorageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+ */
+    @PostMapping("/upload-photo")
+    public ResponseEntity<String> uploadProductPhoto(@RequestParam("file") MultipartFile file, @RequestParam("brandUserId") String brandUserId) {
+        try {
+            BrandUser brandUser = brandUserService.findById(brandUserId).orElseThrow(() -> new RuntimeException("BrandUser not found with id: " + brandUserId));
+            String imageUrl = s3StorageService.uploadProductPhoto(file, brandUser);
+            return ResponseEntity.ok(imageUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload product photo: " + e.getMessage());
+        }
+    }
+
+
+
 
     @DeleteMapping("/delete-photos")
     public ResponseEntity<Void> deleteProductPhotos(@RequestBody List<String> urlsToDelete) {
@@ -49,5 +69,13 @@ public class S3StorageController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    //스케줄러 용
+    @GetMapping("/all/photourl")
+    public ResponseEntity<List<String>> getAllImageUrls() {
+        List<String> imageUrls = s3StorageService.getAllImageUrls();
+        return ResponseEntity.ok(imageUrls);
+    }
+
 }
 

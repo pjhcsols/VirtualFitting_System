@@ -20,6 +20,27 @@ INSERT INTO basilium.category (category_id, category_name) VALUES (18, '수영�
 INSERT INTO basilium.category (category_id, category_name) VALUES (19, '액세서리');
 commit;
 
+INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, firm_name, firm_address, business_registration, firm_web_url)
+VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+commit;
+
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (1, 5, '바실리움 로고 후드티', 53000, '후드티 모찌모찌함', 1);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827354089_ad.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827365449_ad.png');
+
+commit;
+
+
+/*
+INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, name, birth_date, address)
+VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj', '우정잉', null, '서울특별시 강남구');
+commit;
+ */
 
 
 /*
@@ -38,9 +59,6 @@ commit;
 
  */
 /*
-INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, name, birth_date, address)
-VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj', '우정잉', null, '서울특별시 강남구');
-commit;
 
 
 

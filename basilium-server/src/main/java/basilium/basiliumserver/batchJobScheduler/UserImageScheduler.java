@@ -10,6 +10,8 @@ import basilium.basiliumserver.domain.user.SuperUser;
 import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
+import org.springframework.transaction.annotation.Transactional;
+
 import java.io.File;
 
 
@@ -26,8 +28,10 @@ public class UserImageScheduler {
     @Value("${uploadDir}")
     private String uploadDir;
 
+    @Transactional
     @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // 24시간마다 실행
     public void deleteOldImagesAndUrls() {
+
         // 사용자 URL 전체 삭제
         Iterable<NormalUser> normalUsers = normalUserRepository.getAllNormalUsers();
         for (NormalUser user : normalUsers) {

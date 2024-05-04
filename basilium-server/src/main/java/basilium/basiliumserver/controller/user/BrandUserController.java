@@ -53,4 +53,13 @@ public class BrandUserController {
     }
 
     // 기타 브랜드 유저 상품 등록 삭제 수정 기능 로직 구현
+
+    //스케줄러 용
+    @GetMapping("/findById/{userId}")
+    public ResponseEntity<BrandUser> getUserById(@PathVariable("userId") String userId) {
+        // BrandUser를 id로 조회합니다.
+        return brandUserService.findById(userId)
+                .map(user -> ResponseEntity.ok().body(user)) // BrandUser가 존재하는 경우 200 OK와 함께 반환합니다.
+                .orElse(ResponseEntity.notFound().build()); // BrandUser가 존재하지 않는 경우 404 Not Found를 반환합니다.
+    }
 }

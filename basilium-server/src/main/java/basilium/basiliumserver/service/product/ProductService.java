@@ -7,6 +7,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,6 +69,20 @@ public class ProductService {
 
     public Optional<BrandUser> findBrandUserByProductId(Long productId) {
         return productRepository.findBrandUserByProductId(productId);
+    }
+
+    //스케줄러 용
+    //@Transactional
+    public List<String> getAllProductImageUrls() {
+        List<Product> products = productRepository.getAllProducts();
+        List<String> allImageUrls = new ArrayList<>();
+
+        for (Product product : products) {
+            allImageUrls.addAll(product.getProductPhotoUrl());
+            allImageUrls.addAll(product.getProductSubPhotoUrl());
+        }
+
+        return allImageUrls;
     }
 
 
