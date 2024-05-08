@@ -14,22 +14,17 @@ import lombok.Setter;
 @MappedSuperclass
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="userNumber")
     private Long userNumber;
-    //@Id
     private String id;
     private String password;
     private String emailAddress;
     private String phoneNumber;
     private Grade userGrade;
     private Provider loginType;
-    /*
-    @Column(length = 1000000000)
-    String user64Image;
-    */
-
     String userImageUrl;
+
     public User() {
 
     }

@@ -8,9 +8,11 @@ import basilium.basiliumserver.repository.user.NormalUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -40,6 +42,7 @@ public class BrandUserService {
         return brandUserRepository.findById(userId).orElse(null);
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public JoinStatus join(BrandUser brandUser) {
         try {
             validateDuplicateMember(brandUser);
@@ -83,5 +86,9 @@ public class BrandUserService {
         if (!(hasUpperCase && hasLowerCase && hasSpecialChar)) {
             throw new IllegalStateException("비밀번호는 영문 소문자, 대문자, 특수문자를 포함해야됩니다.");
         }
+    }
+    // S3스토리지에서 브랜드 유저 id와 이미지를 함께 넘겨주어 id로 유저있는지 확인 후 업로드 aws/products
+    public Optional<BrandUser> findById(String id) {
+        return brandUserRepository.findById(id);
     }
 }

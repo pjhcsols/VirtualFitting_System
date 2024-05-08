@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -34,6 +35,18 @@ public class JpaNormalUserRepository implements NormalUserRepository{
     public NormalUser save(NormalUser normalUser) {
         em.persist(normalUser);
         return normalUser;
+    }
+
+    @Override
+    public List<String> getAllUserImageUrls() {
+        return em.createQuery("SELECT m.userImageUrl FROM NormalUser m", String.class).getResultList();
+    }
+
+    @Override
+    public List<NormalUser> findByUserImageUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM NormalUser u WHERE u.userImageUrl IN :imageUrls", NormalUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
     }
 
 

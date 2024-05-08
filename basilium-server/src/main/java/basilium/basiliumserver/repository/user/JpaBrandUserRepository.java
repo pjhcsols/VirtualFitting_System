@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Slf4j
 @Repository
@@ -34,6 +35,18 @@ public class JpaBrandUserRepository implements BrandUserRepository {
     public BrandUser save(BrandUser brandUser) {
         em.persist(brandUser);
         return brandUser;
+    }
+
+    @Override
+    public List<String> getAllUserImageUrls() {
+        return em.createQuery("SELECT m.userImageUrl FROM BrandUser m", String.class).getResultList();
+    }
+
+    @Override
+    public List<BrandUser> findByUserImageUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM BrandUser u WHERE u.userImageUrl IN :imageUrls", BrandUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
     }
 
     @Override

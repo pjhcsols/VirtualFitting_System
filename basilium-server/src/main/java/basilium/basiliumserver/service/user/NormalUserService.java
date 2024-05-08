@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -22,7 +23,6 @@ import java.util.Optional;
 
 @Slf4j
 @Service
-@Transactional //같은 아이디로 로그인한 경우 나중에 처리
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
 
@@ -48,6 +48,8 @@ public class NormalUserService {
         return normalUserRepository.findById(userId).get();
     }
 //회원가입
+    //동시성 락걸음
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public JoinStatus join(NormalUser normalUser){
         try{
             validateDuplicateMember(normalUser);
