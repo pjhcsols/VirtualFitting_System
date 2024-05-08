@@ -14,3 +14,7 @@ einops==0.7.0
 onnxruntime==1.16.2
 
 #for down_resolution
+
+#for FASTAPI
+#fastapi==0.74.1
+#"uvicorn[standard]"
