@@ -14,7 +14,7 @@ import lombok.Setter;
 @MappedSuperclass
 public class User {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="userNumber")
     private Long userNumber;
     private String id;

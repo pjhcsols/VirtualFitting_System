@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.Optional;
 
+//브랜드 유저 id로 자신이 관리할수있는 상품 보기->필터로 brand 권한 확인
 @RestController
 @RequestMapping("/products")
 public class ProductController {

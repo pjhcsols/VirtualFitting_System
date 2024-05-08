@@ -86,9 +86,12 @@ public class S3StorageService {
         return getFullImageUrl(fileName);
     }
 
+    //예외처리하기
     public void deleteProductPhotos(List<String> urlsToDelete) {
+        System.out.println("list size : " + urlsToDelete.size());
         for (String url : urlsToDelete) {
             String key = extractKeyFromUrl(url);
+            System.out.println("Deleting photo " + key);
             try {
                 s3Client.deleteObject(DeleteObjectRequest.builder()
                         .bucket(bucketName)
