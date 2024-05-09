@@ -11,6 +11,7 @@ from preprocess.humanparsing.run_parsing import Parsing
 from ootd.inference_ootd_hd import OOTDiffusionHD
 from ootd.inference_ootd_dc import OOTDiffusionDC
 
+import os
 
 import argparse
 parser = argparse.ArgumentParser(description='run ootd')
@@ -58,6 +59,7 @@ if __name__ == '__main__':
 
     cloth_img = Image.open(cloth_path).resize((768, 1024))
     model_img = Image.open(model_path).resize((768, 1024))
+   
     keypoints = openpose_model(model_img.resize((384, 512)))
     model_parse, _ = parsing_model(model_img.resize((384, 512)))
 
@@ -81,7 +83,11 @@ if __name__ == '__main__':
         seed=seed,
     )
 
-    image_idx = 0
+    # image_idx = 0
+    # for image in images:
+    #     image.save('./images_output/out_' + model_type + '_' + str(image_idx) + '.png')
+    #     image_idx += 1
+
+
     for image in images:
-        image.save('./images_output/out_' + model_type + '_' + str(image_idx) + '.png')
-        image_idx += 1
+        image.save('./images_output/out_' + model_type + '.png')
