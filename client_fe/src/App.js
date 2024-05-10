@@ -25,7 +25,7 @@ function App() {
           <Route path='/Signup_User' element={<SignUpPageUser />} />
           <Route path='/Signup_Brand' element={<SignUpPageBrand />}  />
           <Route path="/MyPage" element={<MyPage />} />
-	        <Route path="/storeDetail" element={<StoreDetailPage />} />
+	        <Route path="/storeDetail/:productId" element={<StoreDetailPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
