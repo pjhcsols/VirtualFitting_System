@@ -3,9 +3,10 @@ import Header_Store from "../components/Header_Store";
 import './StoreDetailPage.css';
 import heartIcon from '../assets/img/white_heart.png';
 import shareIcon from '../assets/img/share.png';
+import { useParams } from 'react-router-dom';
 
 const StoreDetailPage =() => {
-
+    const { productId } = useParams();
     const [product, setProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -90,7 +91,7 @@ const StoreDetailPage =() => {
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch('http://218.233.221.41:8080/products/1');
+            const response = await fetch(`http://218.233.221.41:8080/products/${productId}`);
             if (!response.ok) {
               throw new Error('데이터를 불러올 수 없습니다.');
             }
@@ -105,7 +106,7 @@ const StoreDetailPage =() => {
         };
     
         fetchData();
-      }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행되도록 함
+      }, [productId]);
     
       if (isLoading) return <div>로딩 중...</div>;
       if (error) return <div>에러: {error}</div>;
