@@ -9,6 +9,8 @@ import AboutPage from './pages/AboutPage';
 import BrandPage from './pages/BrandPage';
 import StoreDetailPage from './pages/StoreDetailPage';
 import { AuthProvider } from './context/AuthContext';
+import SignUpPageUser from './pages/SignUpPage_User';
+import SignUpPageBrand from './pages/SignUpPage_Brand';
 
 function App() {
   return (
@@ -20,6 +22,8 @@ function App() {
           <Route path="/brand" element={<BrandPage />} />
           <Route path="/store" element={<StorePage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path='/Signup_User' element={<SignUpPageUser />} />
+          <Route path='/Signup_Brand' element={<SignUpPageBrand />}  />
           <Route path="/MyPage" element={<MyPage />} />
 	        <Route path="/storeDetail" element={<StoreDetailPage />} />
         </Routes>
