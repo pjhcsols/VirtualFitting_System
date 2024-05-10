@@ -6,6 +6,10 @@ import shareIcon from '../assets/img/share.png';
 
 const StoreDetailPage =() => {
 
+    const [product, setProduct] = useState(null);
+    const [isLoading, setIsLoading] = useState(true);
+    const [error, setError] = useState(null);
+
     const [selectedColor, setSelectedColor] = useState('');
     const [selectedSize, setSelectedSize] = useState('');
     const [quantity, setQuantity] = useState(1);
@@ -13,9 +17,10 @@ const StoreDetailPage =() => {
     const [showColorOption, setShowColorOption] = useState(false);
     const [showSizeOption, setShowSizeOption] = useState(false);
 
+    const [pricePerItem, setPricePerItem] = useState(0);
     const colors = ['Black', 'White', 'Blue'];
     const sizes = ['S', 'M', 'L'];
-    const pricePerItem = 45000;
+
   
     const totalPrice = selectedOptions.reduce(
         (total, option) => total + option.quantity * pricePerItem,
@@ -81,16 +86,40 @@ const StoreDetailPage =() => {
         const newOptions = selectedOptions.filter((_, idx) => idx !== index);
         setSelectedOptions(newOptions);
       };
+
+      useEffect(() => {
+        const fetchData = async () => {
+          try {
+            const response = await fetch('http://218.233.221.41:8080/products/1');
+            if (!response.ok) {
+              throw new Error('데이터를 불러올 수 없습니다.');
+            }
+            const data = await response.json();
+            setProduct(data);
+            setPricePerItem(data.productPrice);
+          } catch (error) {
+            setError(error.message);
+          } finally {
+            setIsLoading(false);
+          }
+        };
+    
+        fetchData();
+      }, []); // 빈 배열을 전달하여 컴포넌트가 마운트될 때만 실행되도록 함
+    
+      if (isLoading) return <div>로딩 중...</div>;
+      if (error) return <div>에러: {error}</div>;
+      if (!product) return <div>상품 정보가 없습니다.</div>;
     
 
     return (
         <div className="storeDetailPage">
             <Header_Store />
             <div className="purchaseFrame">
-                <div className="productImg"></div>
+                <img className="productImg" src={product.productPhotoUrl[0]} alt="제품 사진" />
                 <div className="productDetail_container">
                     <div className="productDetail_titleContainer">
-                        <div className="productDetail_title">클래식 B 주르핏 티셔츠</div>
+                        <div className="productDetail_title">{product.productName}</div>
                         <div className="productDetail_price">{pricePerItem}원</div>
                     </div>
                     <div className="productDetail_detailContainer">
