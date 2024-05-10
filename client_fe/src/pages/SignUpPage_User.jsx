@@ -15,7 +15,8 @@
     import 'react-datepicker/dist/react-datepicker.css';
     import calendarImg from '../assets/img/calendar.png';
     import ko from "date-fns/locale/ko";
-   
+    import DaumPostCode from "react-daum-postcode";
+    import Modal from "react-modal";
 
     const SignUpPageUser = () => {
         const navigate = useNavigate();
@@ -80,6 +81,34 @@
             roadAddress: "",
             detailAddress: ""
         });
+
+        const toggleModal = () => {
+            setIsOpen(!isOpen);
+        };
+
+        const completeHandler = (data) => {
+            setInputValue({
+                zipCode: data.zonecode,
+                roadAddress: data.roadAddress
+            });
+            setIsOpen(false);
+            console.log(data);
+        };
+
+        const customStyles = {
+            overlay: {
+                backgroundColor: "rgba(0,0,0,0.5)",
+                zIndex: 100,
+            },
+            content: {
+                left: "0",
+                margin: "auto",
+                width: "500px",
+                height: "600px",
+                padding: "0",
+                overflow: "hidden",
+            },
+        };
 
         const inputChangeHandler = (e, name) => {
             const {value} = e.target;
@@ -220,6 +249,38 @@
                         onChange={(date) => setSelectDate(date)}
                         showYearDropdown
                         showMonthDropdown
+                    />
+                </div>
+                <label htmlFor="password" style={{marginRight: '308px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>배송지</label>
+                <div>
+                    <input style={{width: '60px', marginRight: '5px', marginLeft: '35px', paddingLeft: '10px', marginBottom: '5px'}}
+                        name="zipCode"
+                        type="text"
+                        readOnly
+                        placeholder="우편번호"
+                        value={inputValue.zipCode}
+                        onChange={(e) => setInputValue({ ...inputValue, zipCode: e.target.value })}
+                    />
+                    <button className="AddressButton" onClick={toggleModal}>우편번호 찾기</button> 
+                    <input
+                        style={{paddingLeft: '10px', width: '330px', marginLeft: '35px', marginBottom: '5px'}}
+                        name="roadAddress"
+                        type="text"
+                        readOnly
+                        placeholder="도로명 주소"
+                        value={inputValue.roadAddress}
+                        onChange={(e) => setInputValue({ ...inputValue, roadAddress: e.target.value })}
+                    />
+                    <Modal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
+                        <DaumPostCode onComplete={completeHandler} height="100%" />
+                    </Modal>
+                    <input
+                        style={{paddingLeft: '10px', marginLeft: '35px', width: '330px'}}
+                        name="address"
+                        type="text"
+                        placeholder="상세 주소"
+                        value={inputValue.detailAddress}
+                        onChange={(e) => inputChangeHandler(e, 'detailAddress')}
                     />
                 </div>
                 <button className="StyledButton" type="submit">회원가입</button>
