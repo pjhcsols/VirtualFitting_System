@@ -142,7 +142,6 @@ public class UserStateController {
         }
     }
 
-
     private String getImageFileName(String imageUrl) {
         return imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
     }

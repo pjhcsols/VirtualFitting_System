@@ -2,7 +2,6 @@ package basilium.basiliumserver.repository.like;
 
 
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

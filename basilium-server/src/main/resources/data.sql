@@ -64,30 +64,24 @@ VALUES (4, '이브컴퍼니 4장묶음 (1+3) 남녀공용 오버핏 라운드 �
 commit;
 
  */
-/*
+
 
 
 
 INSERT INTO shopping_cart (user_number, product_id, amount)
 values (1, 1, 1);
 
-INSERT INTO shopping_cart (user_number, product_id, amount)
-values (1, 2, 2);
-
 commit;
 
 INSERT INTO like_history (user_number, product_id)
 values (1, 1);
 
-INSERT INTO like_history (user_number, product_id)
-values (1, 2);
-
-INSERT INTO like_history (user_number, product_id)
-values (1, 3);
-
-
-INSERT INTO like_history (user_number, product_id)
-values (1, 4);
 commit;
 
- */
+
+INSERT INTO purchase_transaction(transaction_id, user_number, product_id, total_cnt, payment_type, transaction_creation_time)
+VALUES (1, 1, 1, 1, 0, CURRENT_TIMESTAMP);
+
+
+
+commit;

@@ -1,16 +1,16 @@
 package basilium.basiliumserver.domain.purchaseTransaction;
 
+
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderListDTO {
+public class OrderListDAO {
 
     Long productId;
     LocalDateTime creationTime;
@@ -20,7 +20,5 @@ public class OrderListDTO {
     Long totalCnt;
 
     String productName;
-
-    String photoUrl;
 
 }

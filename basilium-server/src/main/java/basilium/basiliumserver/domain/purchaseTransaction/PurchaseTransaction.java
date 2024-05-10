@@ -11,6 +11,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
+import java.time.LocalDateTime;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +25,7 @@ public class PurchaseTransaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "transaction_sequence", sequenceName = "TRANSACTION_SEQUENCE", allocationSize = 1)
-    @Column(name = "trasaction_id", nullable = false, columnDefinition = "int")
+    @Column(name = "transaction_id", nullable = false, columnDefinition = "int")
     Long transactionId;
 
     @ManyToOne
@@ -43,6 +44,6 @@ public class PurchaseTransaction {
 
     @CreationTimestamp
     @Column(name = "transaction_creation_time")
-    String creationTime;
+    LocalDateTime creationTime;
 
 }
