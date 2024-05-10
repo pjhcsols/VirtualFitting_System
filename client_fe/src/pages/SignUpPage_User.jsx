@@ -1,5 +1,4 @@
     import React, { useState, useEffect, useCallback } from "react";
-    import backgroundImage from '../assets/img/loginBackground.png';
     import ServerAPI from "../API/ServerAPI.js";
     import { useAuth } from '../context/AuthContext.jsx';
     import SignUplogoImg from '../assets/img/SignUpLogo.png';
@@ -205,7 +204,7 @@
                         onChange={(e) => inputChangeHandler(e, 'passwordCheck')}
                     />
                 </div>
-                <label htmlFor="password" style={{marginRight: '310px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>이메일</label>
+                <label htmlFor="emailAddress" style={{marginRight: '310px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>이메일</label>
                 <div className="inputGroup">
                     <img src={emailImg} alt="email" className="inputIcon" />
                     <input 
@@ -216,7 +215,7 @@
                         onChange={(e) => inputChangeHandler(e, 'emailAddress')}
                     />
                 </div>
-                <label htmlFor="password" style={{marginRight: '322px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>이름</label>
+                <label htmlFor="name" style={{marginRight: '322px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>이름</label>
                 <div className="inputGroup">
                     <img src={userIdImg} alt="username" className="inputIcon" style={{width: '17px', height: '17px'}}/>
                     <input 
@@ -227,7 +226,7 @@
                         onChange={(e) => inputChangeHandler(e, 'name')}
                     />
                 </div>
-                <label htmlFor="password" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>전화번호</label>
+                <label htmlFor="phoneNumber" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>전화번호</label>
                 <div className="inputGroup">
                     <img src={phoneNumImg} alt="phoneNumber" className="inputIcon" style={{width: '17px', height: '17px'}}/>
                     <input 
@@ -238,7 +237,7 @@
                         onChange={(e) => inputChangeHandler(e, 'phoneNumber')}
                     />
                 </div>
-                <label htmlFor="password" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>생년월일</label>
+                <label htmlFor="birthDate" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>생년월일</label>
                 <div className="inputGroup">
                     <img src={calendarImg} alt="calendar" className="inputIcon" style={{width: '17px', height: '17px'}} />
                     <DatePicker
@@ -251,7 +250,7 @@
                         showMonthDropdown
                     />
                 </div>
-                <label htmlFor="password" style={{marginRight: '308px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>배송지</label>
+                <label htmlFor="address" style={{marginRight: '308px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>주소</label>
                 <div>
                     <input style={{width: '60px', marginRight: '5px', marginLeft: '35px', paddingLeft: '10px', marginBottom: '5px'}}
                         name="zipCode"
