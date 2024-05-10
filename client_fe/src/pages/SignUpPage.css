@@ -1,13 +1,14 @@
-.form_container {
+.form_signup_container {
     position: absolute;
-    top: 200px;
-    right: 205px;
+    top: 140px;
+    left: 335px;
     width: 420px;
-    height: 440px;
+    height: 750px;
     background-color: white;
     border-radius: 30px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    position: relative;
 }
 
 .header {
@@ -42,24 +43,36 @@
 
 .loginHeader.active,
 .signUpHeader.active {
-    background-color: white; /* 선택된 탭의 배경색 */
+    background-color: white; 
 }
 
-.inputGroup {
+.marginBackground {
+    background-color: black;
+    height: calc(100vh - 750px);
+}
+
+.SignUpFormStyle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.SignUpFormStyle .inputGroup {
     display: flex;
     position: relative;
 }
 
-.inputIcon {
+.SignUpFormStyle .inputIcon {
     position: absolute;
     left: 10px;
     top: 18px;
     transform: translateY(-50%);
     width: 20px;
     height: 20px;
+    z-index: 2;
 }
 
-input {
+.SignUpFormStyle input {
     margin-bottom: 40px;
     padding: 8px;
     width: 300px;
@@ -70,60 +83,64 @@ input {
     padding-left: 40px;
 }
 
-input::placeholder {
+.SignUpFormStyle input::placeholder {
     font-size: 10px;
 }
 
-.loginButton {
-    background-color: #000; 
-    color: #fff; 
-    width: 350px;
-    height: 40px;
-    padding: 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    margin-top: -13px;
-    font-size: 20px;
-    padding-top: 6px;   
-}
-
-.signupButton {
+.StyledButton {
     background-color: #5F5F5F; 
     color: #fff; 
     width: 350px;
-    height: 60px;
+    height: 40px;
     padding: 10px;
     cursor: pointer;
     border: none;
     border-radius: 5px;
-    margin-top: 70px;
+    margin-top: -10px;
+    margin-bottom: 18px;
     font-size: 20px;
     padding-top: 6px;   
 }
 
-.logoContainer {
-    color: black;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between; 
-    align-items: center;
-    padding: 13px;
-}
-
-.logo {
-    height: 40px;
-    width: 40px;
-    margin-right: 45px;
-}
-
-.logo:first-child {
-    margin-left: 40px;
-}
-
-.logoName {
-    text-align: center;
+.AddressButton {
+    background-color: #5F5F5F;
+    color: #fff;
+    width: 83px;
+    height: 33px;
+    padding: 10px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
     font-size: 10px;
-    font-weight: 500;
-    margin-right: 4px;
+}
+
+.signUpLogo {
+    position: absolute;
+    top: 2px;
+    right: 64%; 
+    transform: translateX(100%);
+    cursor: pointer;
+    width: 900px;
+}
+
+.parent-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 110vh;
+    position: relative;
+    background: linear-gradient(to right, rgba(0, 0, 0, 0) 50%, black 50%), url('../assets/img/loginBackground.png');
+    background-size: 100% 100%, contain;
+    background-position-x: left;
+    background-repeat: no-repeat;
+}
+
+.child-container {
+    width: 100%; 
+    height: 150px; 
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }

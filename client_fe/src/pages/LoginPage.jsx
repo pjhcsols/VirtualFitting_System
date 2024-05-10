@@ -6,80 +6,12 @@
     import './LoginPage.css';
     import styled from "styled-components";
     import { useNavigate } from "react-router-dom";
-    import emailImg from '../assets/img/email.png';
+    import userIdImg from '../assets/img/userId.png';
     import pwdImg from '../assets/img/password.png';
+    import KakaoImg from '../assets/img/kakao.png';
+    import NaverImg from '../assets/img/naver.png';
+    import GoggleImg from '../assets/img/goggle.png';
 
-    const LoginFormStyle = styled.form`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-
-        .inputGroup {
-            display: flex;
-            position: relative;
-        }
-        
-        .inputIcon {
-            position: absolute;
-            left: 10px;
-            top: 18px;
-            transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-        }
-        
-        input {
-            margin-bottom: 40px;
-            padding: 8px;
-            width: 300px;
-            height: 20px;
-            border-radius: 5px;
-            background-color: #dee2e6;
-            border: none;
-            padding-left: 40px;
-        }
-
-        input::placeholder {
-            font-size: 10px;
-        }
-
-        button {
-            background-color: #000; 
-            color: #fff; 
-            width: 350px;
-            height: 40px;
-            padding: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            margin-top: -13px;
-            font-size: 20px;
-            padding-top: 6px;   
-        }
-    `;
-
-    const SingUpFormStyle = styled.form`
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        
-
-        button {
-            background-color: #5F5F5F; 
-            color: #fff; 
-            width: 350px;
-            height: 60px;
-            padding: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            margin-top: 70px;
-            font-size: 20px;
-            padding-top: 6px;   
-        }
-    
-    
-    `
 
     const LoginPage = () => {
         const navigate = useNavigate();
@@ -93,6 +25,7 @@
             console.log('클릭됨');
             navigate(path);
         }
+        
 
         return (
             <div style={{
@@ -100,7 +33,7 @@
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                height: `100vh`,
+                height: `110vh`,
                 position: 'relative',
                 background: `linear-gradient(to right, rgba(0, 0, 0, 0) 50%, black 50%), url(${backgroundImage})`,
                 backgroundSize: `100% 100%, contain`,
@@ -110,7 +43,7 @@
                 <img src={logoImg} alt='Logo' style={{
                     position: 'absolute',
                     top: '40px',
-                    right: '40%', 
+                    right: '40.5%', 
                     transform: 'translateX(100%)',
                     cursor: "pointer"
                 }} onClick={()=>handleClick('/')}/>
@@ -138,28 +71,6 @@
         const {user, logout, loading} = useAuth();
         const {login} = useAuth();
 
-        // const checkLoginStatus = useCallback(async () => {
-        //     const token = localStorage.getItem('login-token');
-        
-        //     if (token) {
-        //         try {
-        //             const response = await ServerAPI.post('/User/login', {
-        //                 headers: {
-        //                     Authorization: `Bearer ${token}`
-        //                 }
-        //             });
-        
-        //             login({ username: response.data.userData });
-        //         } catch (error) {
-        //             console.error('오류발생');
-        //         }
-        //     }
-        // }, [login]);
-
-        // useEffect( () => {
-        //     checkLoginStatus();
-        //   }, [checkLoginStatus]);
-
         const handleIdChange = (e) => {
             setId(e.target.value);
         };
@@ -184,7 +95,6 @@
                     localStorage.clear()
                     localStorage.setItem('login-token', response.data)
                     localStorage.setItem('user_id', data.userId)
-                    //checkLoginStatus();
                     
                     navigate('/');
                   }
@@ -195,10 +105,10 @@
         };
 
         return (
-            <LoginFormStyle onSubmit={handleSubmit}>
+            <div style={{display: 'flex', flexDirection: "column", alignItems: 'center'} } onSubmit={handleSubmit}>
                 <label htmlFor="id" style={{marginTop: '20px', marginBottom: '2px', marginLeft: '-310px', fontSize: '12px', fontWeight: 'bold'}}>아이디</label>
                 <div className="inputGroup">
-                    <img src={emailImg} alt="Email" className="inputIcon" />
+                    <img src={userIdImg} alt="id" className="inputIcon" style={{width: '17px', height: '17px'}}/>
                     <input 
                         id="id"
                         type="text" 
@@ -221,18 +131,39 @@
                         onChange={handlePasswordChange} 
                     />
                 </div>
-                <button type="submit">로그인</button>
-                <p style={{ marginTop: '40px', fontSize:'13px', fontWeight:'bold'}}>다른 계정으로 로그인하기</p>
-            </LoginFormStyle>
+                <button className="loginButton" type="submit">로그인</button>
+                <p style={{ marginTop: '36px', marginBottom: '7px', fontSize:'13px', fontWeight:'bold'}}>다른 계정으로 로그인하기</p>
+                <div className="logoContainer">
+                    <div>
+                        <img src={KakaoImg} alt='kakao' className="logo" style={{width: '44px', height: '44px', marginBottom: '-3px'}}/>
+                        <div className="logoName">Kakao</div>
+                    </div>
+                    <div>
+                        <img src={NaverImg} alt='naver' className="logo" />
+                        <div className="logoName">Naver</div>
+                    </div>
+                    <div>
+                        <img src={GoggleImg} alt='goggle' className="logo" />
+                        <div className="logoName">Goggle</div>
+                    </div>
+                </div>
+            </div>
         );
     };
 
     const SignUpForm = () => {
+        const navigate = useNavigate();
+
+        const handleClick = (path) => {
+            console.log('클릭됨');
+            navigate(path);
+        }
+
         return (
-            <SingUpFormStyle>
-                <button>일반회원 가입하기</button>
-                <button>사업자 회원 가입하기</button>
-            </SingUpFormStyle>  
+            <div style={{display: 'flex', flexDirection: "column", alignItems: 'center'}}>
+                <button className="signupButton" onClick={()=>handleClick('/Signup_User')}>일반회원 가입하기</button>
+                <button className="signupButton" onClick={()=>handleClick('/Signup_Brand')}>사업자 회원 가입하기</button>
+            </div>  
         );
     };
 
