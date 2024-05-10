@@ -154,7 +154,7 @@ public class JwtUtil {
 
     public String getUserEmail(String token) {
         return getClaims(token)
-                .get("userEmail", String.class);
+                .get("userId", String.class);
     }
 
     public String getUserTag(String token) {

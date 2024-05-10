@@ -90,6 +90,8 @@ public class NormalUserController {
 
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
+
+        System.out.println(userId);
         NormalUser ret = normalUserService.userInfoById(userId);
         return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
     }
