@@ -1,8 +1,16 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import './Profile_Header.css'
 import userImg from '../assets/img/userImg.svg';
 
 const Profile_Header = (props) => {
+
+    const navigate = useNavigate();
+
+    const handleEditProfile = () => {
+        // 프로필 편집 페이지로 이동
+        navigate('/ProfilePage');
+    };
 
 
     return (
@@ -21,7 +29,7 @@ const Profile_Header = (props) => {
             </div>
             
             <div className="profile_edit">
-                <button>프로필 편집</button>
+                <button onClick={handleEditProfile}>프로필 편집</button>
             </div>
         </div>
     );

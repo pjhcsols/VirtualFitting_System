@@ -1,0 +1,27 @@
+.shopping_list_container {
+    margin: auto;
+    width: 70%;
+    margin-top: 10%;
+    border-bottom: solid 1px black;
+}
+
+.shopping_list_title {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.shopping_list_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.shopping_list_thead {
+    width: 100%;
+    border-bottom: solid 1px black;
+}
+
+.shopping_list_table tbody tr td {
+    border-bottom: 1px solid black;
+    text-align: left;
+    font-weight: bold;
+}

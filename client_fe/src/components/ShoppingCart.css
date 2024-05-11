@@ -69,22 +69,33 @@
     height: 100%;
 }
 
-.shopping_list_thead th:nth-child(2),
-.shopping_list_table td:nth-child(2) {
+.shopping_list_thead th:nth-child(2){
     width: 20%;
 }
+.shopping_list_table td:nth-child(2) {
+    width: 20%;
+    padding-left: 7%;
+}
 
-.shopping_list_thead th:nth-child(3),
+.shopping_list_thead th:nth-child(3){
+    width: 15%;
+}
 .shopping_list_table td:nth-child(3) {
     width: 15%;
+    padding-left: 7%;
 }
 
-.shopping_list_thead th:nth-child(4),
+.shopping_list_thead th:nth-child(4){
+    width: 15%;
+}
 .shopping_list_table td:nth-child(4) {
+    padding-left: 5%;
     width: 15%;
 }
 
-.shopping_list_thead th:nth-child(5),
+.shopping_list_thead th:nth-child(5){
+    width: 20%; /* 네 번째 열의 너비를 20%로 지정 */
+}
 .shopping_list_table td:nth-child(5) {
     width: 20%; /* 네 번째 열의 너비를 20%로 지정 */
 }
