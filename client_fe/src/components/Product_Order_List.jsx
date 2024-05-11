@@ -1,16 +1,24 @@
 import {React, useState} from "react";
 import "./Product_Order_List.css";
+import { useNavigate } from "react-router-dom";
 import product from '../assets/img/product.svg';
 
 const Product_Order_List = (props) => {
-    const productList = props.orderData;
 
+    const navigate = useNavigate();
+    const handleOrderListPage = () => {
+        // 주문 내역 페이지로 이동
+        navigate('/OrderListPage');
+    };
+
+    const productList = props.orderData;
+    const isOrderListPage = props.isOrderListPage;
     const isEmpty = productList.length === 0;
 
     return (
         <div className="order_list_container">
             <div className="header_div">
-                <h2 className="order_list_title">주문 내역 조회</h2>
+                <h2 className="order_list_title" onClick={handleOrderListPage}>주문 내역 조회</h2>
             </div>
             {isEmpty ? (
                 <p>구매한 물품이 없습니다.</p>
@@ -24,7 +32,7 @@ const Product_Order_List = (props) => {
                         <th>주문 상태</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody style={isOrderListPage ? { borderBottom: '2px solid black' } : null}>
                     {productList.map((product, index) => (
                         <tr key={index}>
                             <td>
@@ -37,7 +45,16 @@ const Product_Order_List = (props) => {
                             </td>
                             <td>{product.creationTime}</td>
                             <td>{product.price * product.totalCnt}원</td>
-                            <td>배송중</td>
+                            
+                            {isOrderListPage ? (
+                                <td>
+                                    <div>배송중</div>
+                                    <button className="optional_button">배송조회</button>
+                                </td>
+                            ) : (
+                                <td>배송중</td>
+                            )}
+                            
                         </tr>
                     ))}
                 </tbody>
