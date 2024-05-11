@@ -15,7 +15,7 @@ const MyPage = () => {
     const [likeData, setLikeData] = useState([])
 
     useEffect(() =>{
-        const jwtToken = "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyRW1haWwiOiJ0ZXN0IiwidXNlclR5cGUiOiJub3JtYWwiLCJpYXQiOjE3MTMwODk0OTYsImV4cCI6MTcxMzA5MzA5Nn0.t40lW5NsE8ROxb5Aeb45snuyrKgwZl0qmyea-4ys4tM"
+        const jwtToken = localStorage.getItem("login-token");
 
         const config = {
             headers: {

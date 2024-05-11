@@ -11,6 +11,7 @@ import StoreDetailPage from './pages/StoreDetailPage';
 import { AuthProvider } from './context/AuthContext';
 import SignUpPageUser from './pages/SignUpPage_User';
 import SignUpPageBrand from './pages/SignUpPage_Brand';
+import ProfilePage from './pages/ProfilePage';
 
 function App() {
   return (
@@ -26,6 +27,7 @@ function App() {
           <Route path='/Signup_Brand' element={<SignUpPageBrand />}  />
           <Route path="/MyPage" element={<MyPage />} />
 	        <Route path="/storeDetail/:productId" element={<StoreDetailPage />} />
+          <Route path="/ProfilePage" element={<ProfilePage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
