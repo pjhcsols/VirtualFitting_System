@@ -26,7 +26,7 @@ public class PurchaseTransactionService {
             temp.setPhotoUrl(jpaPurchaseTransactionRepo.productPhotoUrl(item.getProductId()));
             temp.setCreationTime(item.getCreationTime());
             temp.setProductName(item.getProductName());
-            temp.setPrice(item.getTotalCnt());
+            temp.setPrice(item.getPrice());
             temp.setProductId(item.getProductId());
             temp.setTotalCnt(item.getTotalCnt());
             newList.add(temp);

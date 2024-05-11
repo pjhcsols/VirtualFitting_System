@@ -88,6 +88,15 @@ public class NormalUserController {
         return ResponseEntity.ok(ret);
     }
 
+    @GetMapping("/user/detail")
+    public ResponseEntity<NormalUserInfoDTO> userDetailInfo(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+        System.out.println(ret.getUserNumber());
+        DeliveryInfo info = normalUserService.deliveryInfoByUserNumber(ret.getUserNumber());
+
+        return ResponseEntity.ok(new NormalUserInfoDTO(ret, info));
+    }
+
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
 

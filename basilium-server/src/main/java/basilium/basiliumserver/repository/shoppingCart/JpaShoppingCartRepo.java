@@ -13,7 +13,7 @@ public class JpaShoppingCartRepo {
     private final EntityManager em;
 
     public List<OrderListDAO> getUserShoppingCartInfo(Long userId){
-        return em.createQuery("select P.productId, cast(null as localdatetime ), P.productPrice, S.amount as totalCnt, P.productName FROM Product P, ShoppingCart S where S.normalUser.userNumber = :userId and P.productId = S.product.productId", OrderListDAO.class)
+        return em.createQuery("select P.productId, cast(null as localdatetime ), P.productPrice as price, S.amount as totalCnt, P.productName FROM Product P, ShoppingCart S where S.normalUser.userNumber = :userId and P.productId = S.product.productId", OrderListDAO.class)
                 .setParameter("userId", userId).getResultList();
     }
 

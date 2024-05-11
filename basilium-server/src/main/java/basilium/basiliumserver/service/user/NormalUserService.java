@@ -1,8 +1,10 @@
 package basilium.basiliumserver.service.user;
 
+import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
+import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 
 import basilium.basiliumserver.util.JwtUtil;
@@ -18,18 +20,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 @Slf4j
 @Service
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
+    private final JpaNormalUserRepository jpaNormalUserRepository;
 
     //bean
     @Autowired
-    public NormalUserService(NormalUserRepository normalUserRepository) {
+    public NormalUserService(NormalUserRepository normalUserRepository, JpaNormalUserRepository jpaNormalUserRepository) {
         this.normalUserRepository = normalUserRepository;
+        this.jpaNormalUserRepository = jpaNormalUserRepository;
     }
 
     @Value("${jwt.secret}")
@@ -46,6 +50,10 @@ public class NormalUserService {
     }
     public NormalUser userInfoById(String userId){
         return normalUserRepository.findById(userId).get();
+    }
+
+    public DeliveryInfo deliveryInfoByUserNumber(Long userNumber){
+        return jpaNormalUserRepository.findDeliveryInfoByUserNumber(userNumber);
     }
 //회원가입
     //동시성 락걸음

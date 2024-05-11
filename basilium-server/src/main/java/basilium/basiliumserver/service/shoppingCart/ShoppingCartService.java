@@ -15,7 +15,6 @@ public class ShoppingCartService {
 
     public List<OrderListDTO> userShoppingCartHistory(Long userId){
         List<OrderListDAO> list = shoppingCartRepo.getUserShoppingCartInfo(userId);
-
         List<OrderListDTO> newList = new ArrayList<>();
         for (OrderListDAO item : list){
             OrderListDTO temp = new OrderListDTO();
@@ -23,7 +22,7 @@ public class ShoppingCartService {
             temp.setPhotoUrl(shoppingCartRepo.productPhotoUrl(item.getProductId()));
             temp.setCreationTime(item.getCreationTime());
             temp.setProductName(item.getProductName());
-            temp.setPrice(item.getTotalCnt());
+            temp.setPrice(item.getPrice());
             temp.setProductId(item.getProductId());
             temp.setTotalCnt(item.getTotalCnt());
             newList.add(temp);
