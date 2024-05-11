@@ -73,3 +73,12 @@
 }
 
 
+.optional_button{
+    margin-top: 15px;
+    border-radius: 15px;
+    background-color: #D9D9D9;
+    color: black;
+    border: none;
+    height: 25px;
+    font-weight: bold;
+}

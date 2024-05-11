@@ -12,6 +12,8 @@ import { AuthProvider } from './context/AuthContext';
 import SignUpPageUser from './pages/SignUpPage_User';
 import SignUpPageBrand from './pages/SignUpPage_Brand';
 import ProfilePage from './pages/ProfilePage';
+import OrderListPage from './pages/OrderListPage';
+import ShoppingCartPage from './pages/ShoppingCartPage';
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/MyPage" element={<MyPage />} />
 	        <Route path="/storeDetail/:productId" element={<StoreDetailPage />} />
           <Route path="/ProfilePage" element={<ProfilePage />} />
+          <Route path="/OrderListPage" element={<OrderListPage />} />
+          <Route path="/ShoppingCartPage" element={<ShoppingCartPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
