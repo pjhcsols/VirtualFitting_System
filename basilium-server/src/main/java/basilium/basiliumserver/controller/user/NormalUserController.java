@@ -67,14 +67,21 @@ public class NormalUserController {
         return normalUserService.getAllNormalUsers();
     }
 
-    @PostMapping("/modify")
-    public ResponseEntity<String> modifyUser(@RequestBody NormalUser normalUser) {
-        try {
-            normalUserService.modify(normalUser);
-            return ResponseEntity.ok("사용자 정보 수정 성공");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("사용자 정보 수정 실패: " + e.getMessage());
-        }
+    @PatchMapping("/modify")
+    public ResponseEntity<String> modifyUser(@AuthUser String userId, @RequestBody UserModifiedInfo info) {
+        NormalUser ret = normalUserService.userInfoById(userId);
+        ret.setName(info.getName());
+        ret.setEmailAddress(info.getEmailAddress());
+        ret.setPhoneNumber(info.getPhoneNumber());
+        ret.setPassword(info.getPassword());
+
+        System.out.println(info.getName());
+        System.out.println(info.getPhoneNumber());
+        System.out.println(info.getEmailAddress());
+        System.out.println(info.getPassword());
+        normalUserService.modify(ret);
+
+        return ResponseEntity.ok("성공적으로 변경되었습니다.");
     }
 
     @PostMapping("/review")

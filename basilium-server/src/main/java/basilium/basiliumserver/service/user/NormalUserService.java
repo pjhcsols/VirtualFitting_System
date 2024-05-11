@@ -4,6 +4,7 @@ import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
+import basilium.basiliumserver.domain.user.UserModifiedInfo;
 import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 
@@ -46,7 +47,7 @@ public class NormalUserService {
         return normalUserRepository.getAllNormalUsers();
     }
     public void modify(NormalUser normalUser) {
-        normalUserRepository.modify(normalUser);
+        jpaNormalUserRepository.modify(normalUser);
     }
     public NormalUser userInfoById(String userId){
         return normalUserRepository.findById(userId).get();
