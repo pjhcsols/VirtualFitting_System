@@ -2,6 +2,7 @@ package basilium.basiliumserver.controller.user;
 
 import basilium.basiliumserver.domain.user.LoginRequest;
 import basilium.basiliumserver.domain.user.LoginStatus;
+import basilium.basiliumserver.domain.user.User;
 import basilium.basiliumserver.service.user.UserStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -111,7 +112,7 @@ public class UserStateController {
 
     //2.사용자의 기존에 등록된 이미지 불러오기 버튼
     @PostMapping("/getImageUrl")
-    public ResponseEntity<String> getUserImageUrl(@RequestBody String userId) {
+    public ResponseEntity<String> getUserImageUrl(@RequestParam("userId") String userId) {
         log.info("-----------------------------------------------------------");
         log.info(userId);
         String imageUrl = userStateService.getUserImageUrl(userId);
