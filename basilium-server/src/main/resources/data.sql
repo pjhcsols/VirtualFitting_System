@@ -33,6 +33,7 @@ INSERT INTO normal_user (user_number, id, password, email_address, phone_number,
 VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png', '우정잉', '2000-12-20', '서울특별시 강남구');
 commit;
 
+/*1*/
 INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
 VALUES (1, 5, '바실리움 로고 후드티', 53000, '후드티 모찌모찌함', 1);
 
@@ -44,9 +45,30 @@ VALUES (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/bran
 
 commit;
 
+/*2*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (2, 5, '바실리움 로고 후드티', 107000, '후드티 모찌모찌함', 1);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827354089_ad.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827365449_ad.png');
+
+commit;
+
 INSERT INTO delivery_info(delivery_info_id, user_number, default_delivery_address, first_delivery_address, second_delivery_address)
 VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 1202호", "대구광역시 동구 아양로 애일린의 뜰", "대구광역시 동구 신암동 신암뜨란채 104동 1906호");
 
+/*주문목록*/
+-- 주문 테이블에 데이터 삽입
+INSERT INTO orders (price, order_uid, user_number)
+VALUES (160000, '20240515091315', 1);
+
+-- 상품-주문 연결 테이블에 데이터 삽입
+INSERT INTO orders_products (order_id, products_product_id)
+VALUES (1, 1),
+       (1, 2);
 
 
 /*

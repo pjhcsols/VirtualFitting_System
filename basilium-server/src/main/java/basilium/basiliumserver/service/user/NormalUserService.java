@@ -50,8 +50,15 @@ public class NormalUserService {
         jpaNormalUserRepository.modify(normalUser);
     }
     public NormalUser userInfoById(String userId){
-        return normalUserRepository.findById(userId).get();
+        Optional<NormalUser> optionalUser = normalUserRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            // 사용자가 존재하지 않는 경우 예외 처리 또는 다른 방법으로 처리
+            return null; // 또는 예외를 던지거나 기본값을 반환할 수 있음
+        }
     }
+
 
     public DeliveryInfo deliveryInfoByUserNumber(Long userNumber){
         return jpaNormalUserRepository.findDeliveryInfoByUserNumber(userNumber);
