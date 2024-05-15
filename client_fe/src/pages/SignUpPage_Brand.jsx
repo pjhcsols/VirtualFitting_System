@@ -13,6 +13,7 @@ import phoneNumImg from '../assets/img/telephone.png';
 import 'react-datepicker/dist/react-datepicker.css';
 import DaumPostCode from "react-daum-postcode";
 import Modal from "react-modal";
+import { handleCheckBusinessRegistration } from "../API/BusinessCheck.jsx";
 
 const SignUpPageUser = () => {
     const navigate = useNavigate();
@@ -61,7 +62,7 @@ const SignUp = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [passwordCondition, setPasswordCondition] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
-    const [selectDate, setSelectDate] = useState(new Date());
+    const [registrationCheckMessage, setRegistrationCheckMessage] = useState('');
     const [inputValue, setInputValue] = useState({
         userNumber: "",
         id: "",
@@ -132,6 +133,25 @@ const SignUp = () => {
     
         return passwordRegex.test(password);
     };
+
+    const handleCheckRegistraitonNumber = useCallback(async () => {
+        try {
+            const data = await handleCheckBusinessRegistration(inputValue.businessRegistration);
+            console.log(data);
+            if (data === "01") {
+                setRegistrationCheckMessage("영업중인 사업자입니다.");
+                setInputValue((prevInputValue) => ({
+                    ...prevInputValue,
+                    businessRegistration: prevInputValue.businessRegistration
+                }));
+            }
+            else {
+                setRegistrationCheckMessage("휴업 또는 폐업한 사업자입니다.");
+            }   
+        } catch (error) {
+            console.log("오류 발생", error);
+        }
+    }, [inputValue.businessRegistration]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -225,18 +245,18 @@ const SignUp = () => {
                 />
             </div>
             <label htmlFor="phoneNumber" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>전화번호</label>
-            <div className="inputGroup">
-                <img src={phoneNumImg} alt="phoneNumber" className="inputIcon" style={{width: '17px', height: '17px'}}/>
-                <input 
-                    name="phoneNumber"
-                    tpye="number"
-                    placeholder="전화번호를 입력해주세요"
-                    value={inputValue.phoneNumber}
-                    onChange={(e) => inputChangeHandler(e, 'phoneNumber')}
-                />
-            </div>
+                <div>
+                    <img src={phoneNumImg} alt="phoneNumber" className="inputIcon" style={{marginTop: '415px', marginLeft: '35px', width: '17px', height: '17px'}}/>
+                    <input 
+                        name="phoneNumber"
+                        tpye="number"
+                        placeholder="전화번호를 입력해주세요"
+                        value={inputValue.phoneNumber}
+                        onChange={(e) => inputChangeHandler(e, 'phoneNumber')}
+                    />
+                </div>
             <label htmlFor="businessRegistration" style={{marginRight: '258px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>사업자 등록번호</label>
-            <div className="inputGroup">
+            <div>
                 <input style={{width: '100px', paddingLeft: '10px', marginRight: '5px'}}
                     name="businessRegistration"
                     tpye="text"
@@ -244,8 +264,13 @@ const SignUp = () => {
                     value={inputValue.businessRegistration}
                     onChange={(e) => inputChangeHandler(e, 'businessRegistration')}
                 />
-                <button className="businessNumCheckButton">조회</button>
+                <button className="businessNumCheckButton" onClick={handleCheckRegistraitonNumber}>조회</button>
             </div>
+            {registrationCheckMessage && (
+                <div style={{ color: registrationCheckMessage === "영업중인 사업자입니다." ? 'blue' : 'red', marginTop: '5px', marginLeft: '35px', fontSize: '12px', fontWeight: 'bold' }}>
+                    {registrationCheckMessage}
+                </div>
+            )}
             <label htmlFor="password" style={{marginRight: '323px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>주소</label>
             <div>
                 <input style={{width: '60px', marginRight: '5px', marginLeft: '35px', paddingLeft: '10px', marginBottom: '5px'}}

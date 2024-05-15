@@ -107,7 +107,6 @@ const LoginForm = () => {
     };
 
     return (
-        // <div style={{display: 'flex', flexDirection: "column", alignItems: 'center'} } onSubmit={handleSubmit}>
         <div style={{display: 'flex', flexDirection: "column", alignItems: 'center'} }>
             <label htmlFor="id" style={{marginTop: '20px', marginBottom: '2px', marginLeft: '-310px', fontSize: '12px', fontWeight: 'bold'}}>아이디</label>
             <div className="inputGroup">
