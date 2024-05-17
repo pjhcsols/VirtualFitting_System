@@ -24,6 +24,7 @@ function StorePage() {
   const [products, setProducts] = useState([]);
   const navigate = useNavigate();
 
+
   useEffect(() => {
     const fetchProducts = async () => {
       try {
