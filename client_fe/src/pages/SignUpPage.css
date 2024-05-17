@@ -158,14 +158,6 @@
     align-items: center;
 }
 
-.errorMessage {
-    position: absolute; /* 절대 위치 설정 */
-    bottom: -10px; /* 하단 여백 조절 */
-    left: 0; /* 왼쪽 정렬 */
-    color: red; /* 글씨 색상 설정 */
-    font-size: 12px; /* 글씨 크기 설정 */
-  }
-
 .password-condition {
     color: red;
     font-size: 12px;
@@ -179,4 +171,14 @@
     margin-top: 3px;
     font-size: 12px;
     font-weight: bold;
+}
+
+.checkMessage {
+    margin-top: -40px;
+    margin-left: 35px;
+    font-size: 12px;
+    font-weight: bold;
+    padding-right: 182px;
+    padding-bottom: 38px;
+    width: 200px;
 }
