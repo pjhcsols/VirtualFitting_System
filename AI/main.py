@@ -3,6 +3,8 @@ from fastapi.responses import JSONResponse
 from typing import List
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import HTTPException
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
@@ -23,48 +25,22 @@ class RequestData(BaseModel):
 @app.post("/receive_data/")
 async def receive_data(request_data: List[str]):
     try:
-        # 배열 형태의 데이터를 각각의 필드에 맞게 파싱
-        data = {
-            "userId": request_data[0],
-            "userImg": request_data[1],
-            "closeimage": request_data[2]
-        }
-        request_model = RequestData(**data)
-        return request_model.dict()
+        # # 배열 형태의 데이터를 각각의 필드에 맞게 파싱
+        # data = {
+        #     "userId": request_data[0],
+        #     "userImg": request_data[1],
+        #     "closeimage": request_data[2]
+        # }
+        # request_model = RequestDa ta(**data)
+        # #return request_model.dict()
+        image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
+        return FileResponse(image_path)
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
 
+# uvicorn main:app --host 0.0.0.0 --port 9090 --reload  으로 실행
 
-# # Pydantic 모델 정의
-# class RequestData(BaseModel):
-#     userId: str
-#     responseBodyText: str
-#     productPhotoUrl: str
-    
-# @app.post("/")
-# async def process_data_root(data: RequestData):
-#     user_id = data.userId
-#     response_body_text = data.responseBodyText
-#     product_photo_url = data.productPhotoUrl
-    
-#     return {
-#         "userId": user_id,
-#         "responseBodyText": response_body_text,
-#         "productPhotoUrl": product_photo_url
-#     }
-
-# # # POST 요청을 처리하는 경로
-# # @app.post("/process_data/")
-# # async def process_data(data: RequestData):
-# #     user_id = data.userId
-# #     response_body_text = data.responseBodyText
-# #     product_photo_url = data.productPhotoUrl
-    
-# #     return {
-# #         "userId": user_id,
-# #         "responseBodyText": response_body_text,
-# #         "productPhotoUrl": product_photo_url
-# #     }
+# E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png
 
 @app.get("/")
 def root():
