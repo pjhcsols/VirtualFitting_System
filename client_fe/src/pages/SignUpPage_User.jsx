@@ -119,7 +119,6 @@
                 }));
                 
                 setIsOpen(false);
-                console.log(inputValue);
             };
 
             const customStyles = {
@@ -159,12 +158,10 @@
                 try {
                     console.log("서버응답*******************8");
                     const response = await ServerAPI.post('/normalUser/signup', data);
-                    console.log(response);
                     navigate("/login");
                 }
                 catch (error) {
                     console.error("서버와의 통신 중 오류 발생", error);
-                    console.log(data);
                 }
             };  
 

@@ -58,7 +58,6 @@ const SignUpPageUser = () => {
 const SignUp = () => {
     const navigate = useNavigate();
     const {user, logout, loading} = useAuth();
-    const {login} = useAuth();
     const [isOpen, setIsOpen] = useState(false);
     const [passwordCondition, setPasswordCondition] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
@@ -67,6 +66,7 @@ const SignUp = () => {
         userNumber: "",
         id: "",
         password: "",
+        passwordCheck: "",
         emailAddress: "",
         phoneNumber: "",
         userGrade: "",
@@ -80,17 +80,47 @@ const SignUp = () => {
         firmWebUrl: ""
     });
 
+    const inputChangeHandler = (e, name) => {
+        const {value} = e.target;
+
+        if (name === 'password') {
+            const isPasswordValid = checkPasswordConditions(value);
+            setPasswordCondition(isPasswordValid ? '' : '영어 소문자, 대문자, 특수문자 1개 이상 포함, 8자 이상이어야 합니다.');
+        }
+    
+        setInputValue((prevInputValue) => ({
+            ...prevInputValue,
+            [name]: value,
+        }));
+    
+        if (name === 'passwordCheck') {
+            setPasswordMatch(value === inputValue.password);
+        }
+
+        if (name === "businessRegistration") {
+            setRegistrationCheckMessage('');
+        }
+    };
+
+    const checkPasswordConditions = (password) => {
+        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?])[A-Za-z\d!@#$%^&*()_+{}|:"<>?]{8,}$/;
+    
+        return passwordRegex.test(password);
+    };
+
     const toggleModal = () => {
         setIsOpen(!isOpen);
     };
 
     const completeHandler = (data) => {
-        setInputValue({
+        console.log("실행");
+        setInputValue((prevInputValue) => ({
+            ...prevInputValue,
             zipCode: data.zonecode,
-            roadAddress: data.roadAddress
-        });
+            roadAddress : data.roadAddress
+        }));
+        
         setIsOpen(false);
-        console.log(data);
     };
 
     const customStyles = {
@@ -108,45 +138,15 @@ const SignUp = () => {
         },
     };
 
-    const inputChangeHandler = (e, name) => {
-        const {value} = e.target;
-
-        // 비밀번호 조건 체크
-        if (name === 'password') {
-            const isPasswordValid = checkPasswordConditions(value);
-            setPasswordCondition(isPasswordValid ? '' : '비밀번호는 영어 소문자, 대문자, 특수문자 1개 이상 포함, 8자 이상이어야 합니다.');
-        }
-    
-        setInputValue((prevInputValue) => ({
-            ...prevInputValue,
-            [name]: value,
-        }));
-    
-        // 비밀번호 확인 체크
-        if (name === 'passwordCheck') {
-            setPasswordMatch(value === inputValue.password);
-        }
-    };
-
-    const checkPasswordConditions = (password) => {
-        const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+{}|:"<>?])[A-Za-z\d!@#$%^&*()_+{}|:"<>?]{8,}$/;
-    
-        return passwordRegex.test(password);
-    };
-
     const handleCheckRegistraitonNumber = useCallback(async () => {
         try {
             const data = await handleCheckBusinessRegistration(inputValue.businessRegistration);
-            console.log(data);
+
             if (data === "01") {
                 setRegistrationCheckMessage("영업중인 사업자입니다.");
-                setInputValue((prevInputValue) => ({
-                    ...prevInputValue,
-                    businessRegistration: prevInputValue.businessRegistration
-                }));
             }
             else {
-                setRegistrationCheckMessage("휴업 또는 폐업한 사업자입니다.");
+                setRegistrationCheckMessage("휴업 또는 폐업한 사업자입니다.");  
             }   
         } catch (error) {
             console.log("오류 발생", error);
@@ -155,7 +155,8 @@ const SignUp = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        
+        const address = inputValue.zipCode + "," + inputValue.roadAddress + "," + inputValue.detailAddress;
+
         const data = {
             userNumber: null,
             id: inputValue.id,
@@ -165,27 +166,23 @@ const SignUp = () => {
             userGrade: null,
             loginType: null,
             userImageUrl: null,
-            name: inputValue.name,
-            birthDate: inputValue.birthDate,
-            zipCode: inputValue.zipCode,
-            roadAddress: inputValue.roadAddress,
-            detailAddress: inputValue.detailAddress
+            firmName: inputValue.firmName,
+            businessRegistration: inputValue.businessRegistration,
+            address: address
         };
         
         try {
             console.log("서버응답*******************8");
             const response = await ServerAPI.post('/brandUser/signup', data);
-            console.log(data);
-
+            navigate("/login");
         }
         catch (error) {
             console.error("서버와의 통신 중 오류 발생", error);
-            console.log(data);
         }
     };
 
     return (
-        <div className="SignUpFormStyle" onSubmit={handleSubmit}>
+        <div className="SignUpFormStyle">
             <label htmlFor="id" style={{marginTop: '20px', marginBottom: '2px', marginLeft: '-310px', fontSize: '12px', fontWeight: 'bold'}}>아이디</label>
             <div className="inputGroup">
                 <img src={userIdImg} alt="userId" className="inputIcon" style={{width: '16px', height: '16px'}}/>
@@ -197,6 +194,7 @@ const SignUp = () => {
                     onChange={(e) => inputChangeHandler(e, 'id')} 
                 />
             </div>
+
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '340px', marginLeft: '10px', marginTop: '-35px' }}>
                 <label htmlFor="password" style={{marginLeft: '-8px',marginBottom: '2px', fontSize: '12px', fontWeight: 'bold' }}>비밀번호</label>
                 <span style={{ color: 'blue', fontSize: '12px', cursor: 'pointer'}}>비밀번호 재설정</span>
@@ -211,17 +209,22 @@ const SignUp = () => {
                     onChange={(e) => inputChangeHandler(e, 'password')} 
                 />
             </div>
-            <label htmlFor="password" style={{marginRight: '270px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>비밀번호 확인</label>
-            <div className="inputGroup">
-                <img src={pwdCheckImg} alt="PasswordCheck" className="inputIcon" />
-                <input 
-                    name="passwordCheck"
-                    tpye="password"
-                    placeholder="비밀번호를 확인해주세요"
-                    value={inputValue.passwordCheck}
-                    onChange={(e) => inputChangeHandler(e, 'passwordCheck')}
-                />
-            </div>
+            {passwordCondition && inputValue.password && (<div className="password-condition" style={{paddingLeft: '15px'}}>{passwordCondition}</div>)}
+
+
+            <label htmlFor="passwordCheck" style={{marginRight: '270px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>비밀번호 확인</label>
+                <div className="inputGroup" style={{display: "flex", position:"relative"}}>
+                    <img src={pwdCheckImg} alt="PasswordCheck" className="inputIcon" style={{marginRight: '15px'}}/>
+                    <input 
+                        name="passwordCheck"
+                        type="password"
+                        placeholder="비밀번호를 확인해주세요"
+                        value={inputValue.passwordCheck}
+                        onChange={(e) => inputChangeHandler(e, 'passwordCheck')}
+                    />
+                </div>
+            {!passwordMatch && inputValue.passwordCheck && (<div className="password-condition" style={{paddingRight: '180px'}}>비밀번호가 일치하지 않습니다.</div>)}
+
             <label htmlFor="emailAddress" style={{marginRight: '310px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>이메일</label>
             <div className="inputGroup">
                 <img src={emailImg} alt="email" className="inputIcon" />
@@ -241,70 +244,74 @@ const SignUp = () => {
                     tpye="text"
                     placeholder="회사명을 입력해주세요"
                     value={inputValue.name} 
-                    onChange={(e) => inputChangeHandler(e, 'firName')}
+                    onChange={(e) => inputChangeHandler(e, 'firmName')}
                 />
             </div>
+
             <label htmlFor="phoneNumber" style={{marginRight: '298px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>전화번호</label>
-                <div>
-                    <img src={phoneNumImg} alt="phoneNumber" className="inputIcon" style={{marginTop: '415px', marginLeft: '35px', width: '17px', height: '17px'}}/>
+                <div className="inputGroup" style={{paddingBottom: 0}}>
+                    <img src={phoneNumImg} alt="phoneNumber" className="inputIcon" style={{width: '17px', height: '17px'}}/>
                     <input 
                         name="phoneNumber"
                         tpye="number"
                         placeholder="전화번호를 입력해주세요"
                         value={inputValue.phoneNumber}
                         onChange={(e) => inputChangeHandler(e, 'phoneNumber')}
+                        style={{marginBottom: '5px'}}
                     />
                 </div>
-            <label htmlFor="businessRegistration" style={{marginRight: '258px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>사업자 등록번호</label>
+
+            <label htmlFor="businessRegistration" style={{marginRight: '258px', marginBottom: '2px', marginTop: '3px', fontSize: '12px', fontWeight: 'bold' }}>사업자 등록번호</label>
             <div>
-                <input style={{width: '100px', paddingLeft: '10px', marginRight: '5px'}}
+                <input style={{width: '120px', paddingLeft: '11px', marginRight: '5px', marginLeft: '19px'}}
                     name="businessRegistration"
-                    tpye="text"
-                    placeholder="사업자 번호"
+                    tpye="number"
+                    placeholder="10자리를 입력해주세요"
                     value={inputValue.businessRegistration}
                     onChange={(e) => inputChangeHandler(e, 'businessRegistration')}
                 />
                 <button className="businessNumCheckButton" onClick={handleCheckRegistraitonNumber}>조회</button>
             </div>
-            {registrationCheckMessage && (
-                <div style={{ color: registrationCheckMessage === "영업중인 사업자입니다." ? 'blue' : 'red', marginTop: '5px', marginLeft: '35px', fontSize: '12px', fontWeight: 'bold' }}>
+            {inputValue.businessRegistration && (
+                <div className="checkMessage" style={{ color: registrationCheckMessage === "영업중인 사업자입니다." ? 'blue' : 'red'}}>
                     {registrationCheckMessage}
                 </div>
             )}
-            <label htmlFor="password" style={{marginRight: '323px', marginBottom: '2px', marginTop: '-32px', fontSize: '12px', fontWeight: 'bold' }}>주소</label>
-            <div>
-                <input style={{width: '60px', marginRight: '5px', marginLeft: '35px', paddingLeft: '10px', marginBottom: '5px'}}
-                    name="zipCode"
-                    type="text"
-                    readOnly
-                    placeholder="우편번호"
-                    value={inputValue.zipCode}
-                    onChange={(e) => setInputValue({ ...inputValue, zipCode: e.target.value })}
-                />
-                <button className="AddressButton" onClick={toggleModal}>우편번호 찾기</button> 
-                <input
-                    style={{paddingLeft: '10px', width: '330px', marginLeft: '35px', marginBottom: '5px'}}
-                    name="roadAddress"
-                    type="text"
-                    readOnly
-                    placeholder="도로명 주소"
-                    value={inputValue.roadAddress}
-                    onChange={(e) => setInputValue({ ...inputValue, roadAddress: e.target.value })}
-                />
-                <Modal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
-                    <DaumPostCode onComplete={completeHandler} height="100%" />
-                </Modal>
-                <input
-                    style={{paddingLeft: '10px', marginLeft: '35px', width: '330px'}}
-                    name="address"
-                    type="text"
-                    placeholder="상세 주소"
-                    value={inputValue.detailAddress}
-                    onChange={(e) => inputChangeHandler(e, 'detailAddress')}
-                />
+
+            <label htmlFor="address" className="inputLabel" style={{marginTop: '-33px'}}>주소</label>
+                <div>
+                    <input style={{width: '60px', marginRight: '5px', marginLeft: '35px', paddingLeft: '10px', marginBottom: '5px'}}
+                        name="zipCode"
+                        type="text"
+                        readOnly
+                        placeholder="우편번호"
+                        value={inputValue.zipCode}
+                        // onChange={(e) => inputChangeHandler(e, 'zipCode')}
+                    />
+                    <button className="AddressButton" onClick={toggleModal}>우편번호 찾기</button> 
+                    <input
+                        style={{paddingLeft: '10px', width: '330px', marginLeft: '35px', marginBottom: '5px'}}
+                        name="roadAddress"
+                        type="text"
+                        readOnly
+                        placeholder="도로명 주소"
+                        value={inputValue.roadAddress}
+                        // onChange={(e) => inputChangeHandler(e, 'roadAddress')}
+                    />
+                    <Modal isOpen={isOpen} ariaHideApp={false} style={customStyles}>
+                        <DaumPostCode onComplete={completeHandler} height="100%" />
+                    </Modal>
+                    <input
+                        style={{paddingLeft: '10px', marginLeft: '35px', width: '330px'}}
+                        name="detailAddress"
+                        type="text"
+                        placeholder="상세 주소"
+                        value={inputValue.detailAddress}
+                        onChange={(e) => inputChangeHandler(e, 'detailAddress')}
+                    />
+                </div>
+                <button className="StyledButton" type="submit" onClick={handleSubmit}>회원가입</button>
             </div>
-            <button className="StyledButton" type="submit">회원가입</button>
-        </div>
     );
 };
 
