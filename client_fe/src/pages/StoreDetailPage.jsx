@@ -17,12 +17,19 @@ const StoreDetailPage =() => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [showColorOption, setShowColorOption] = useState(false);
     const [showSizeOption, setShowSizeOption] = useState(false);
+    const [imageSrc, setImageSrc] = useState(null);
+    const [currentImageSrc, setCurrentImageSrc] = useState(null);
 
+    useEffect(() => {
+      if (product && product.productPhotoUrl.length > 0) {
+        setCurrentImageSrc(product.productPhotoUrl[0]);
+      }
+    }, [product]);
+    
     const [pricePerItem, setPricePerItem] = useState(0);
     const colors = ['Black', 'White', 'Blue'];
     const sizes = ['S', 'M', 'L'];
 
-  
     const totalPrice = selectedOptions.reduce(
         (total, option) => total + option.quantity * pricePerItem,
         0
@@ -112,12 +119,87 @@ const StoreDetailPage =() => {
       if (error) return <div>에러: {error}</div>;
       if (!product) return <div>상품 정보가 없습니다.</div>;
     
+      const handleVirtualTryOn = async () => {
+        try {
+          // localStorage에서 사용자 ID를 검색
+          const userId = localStorage.getItem('user_id');
+          console.log(userId);
+          if (!userId) {
+            throw new Error('localStorage에서 사용자 ID를 찾을 수 없습니다.');
+          }
+            
+          const formData = new URLSearchParams();
+          formData.append('userId', userId);
+      
+          // 서버로 요청을 보냄
+          const userPhotoResponse = await fetch('http://218.233.221.41:8080/User/getImageUrl', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/x-www-form-urlencoded', // 헤더에 Content-Type을 application/x-www-form-urlencoded로 설정
+            },
+            body: formData // FormData 객체를 요청 본문으로 사용
+          });
+          if (!userPhotoResponse.ok) {
+            throw new Error('사용자 사진 URL을 가져오는 데 실패했습니다.');
+          }
+
+          const userimageUrl = await userPhotoResponse.text();
+
+          const photosToSend = [ userimageUrl, product.productPhotoUrl[0]];
+          console.log(photosToSend);
+
+/*
+        const userPhotoResponse = await fetch('http://218.233.221.41:8080/User/getImageUrl', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: userId })
+        });
+        if (!userPhotoResponse.ok) {
+          throw new Error('사용자 사진 URL을 가져오는 데 실패했습니다.');
+        }
+
+        const userimageUrl = await userPhotoResponse.text();
+        console.log(userimageUrl)
+          
+
+          // 결과 처리 (예: 사진 URL을 콘솔에 출력)
+          const photosToSend = [userId, userimageUrl, product.productPhotoUrl[0]];
+          console.log(photosToSend);*/
+          
+          // AI 서버로 전송
+          const aiServerResponse = await fetch('http://172.30.1.13:9090/receive_data', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(photosToSend)
+          });
+  
+          if (!aiServerResponse.ok) {
+            throw new Error('AI 서버로 데이터를 전송하는 데 실패했습니다.');
+          }
+  
+          // AI 서버로부터 응답 받음
+          const blob = await aiServerResponse.blob();
+          const aiImageUrl = URL.createObjectURL(blob);
+          setImageSrc(aiImageUrl);
+
+          setCurrentImageSrc(aiImageUrl);
+      
+          console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
+        } catch (error) {
+          console.error(error);
+        }
+      
+      };
 
     return (
         <div className="storeDetailPage">
             <Header_Store />
             <div className="purchaseFrame">
-                <img className="productImg" src={product.productPhotoUrl[0]} alt="제품 사진" />
+                <img className="productImg" src={currentImageSrc} alt="제품 사진" />
                 <div className="productDetail_container">
                     <div className="productDetail_titleContainer">
                         <div className="productDetail_title">{product.productName}</div>
@@ -208,7 +290,7 @@ const StoreDetailPage =() => {
                             <button>BUY IT NOW</button>
                             <button>ADD TO CART</button>
                         </div>
-                        <button>AI 가상 실착하기</button>
+                        <button onClick={handleVirtualTryOn}>AI 가상 실착하기</button>
                     </div>
                 </div>
             </div>
