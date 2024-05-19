@@ -4,6 +4,7 @@ import './StoreDetailPage.css';
 import heartIcon from '../assets/img/white_heart.png';
 import shareIcon from '../assets/img/share.png';
 import { useParams } from 'react-router-dom';
+import UploadImgModal from '../components/UploadImgModal';
 
 const StoreDetailPage =() => {
     const { productId } = useParams();
@@ -19,6 +20,49 @@ const StoreDetailPage =() => {
     const [showSizeOption, setShowSizeOption] = useState(false);
     const [imageSrc, setImageSrc] = useState(null);
     const [currentImageSrc, setCurrentImageSrc] = useState(null);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+
+    const showUploadModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeUploadModal = () => {
+      setIsModalOpen(false);
+    };
+
+    const handleImageUpload = async (userId, imageUrl) => {
+      // AI 서버로 전송
+      const photosToSend = {
+        userId : userId, userImg: imageUrl,
+        clothImg: product.productPhotoUrl[0],
+      };
+  
+      try {
+        const aiServerResponse = await fetch('http://172.30.1.59:9090/receive_data', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(photosToSend),
+        });
+  
+        if (!aiServerResponse.ok) {
+          throw new Error('AI 서버로 데이터를 전송하는 데 실패했습니다.');
+        }
+  
+        // AI 서버로부터 응답 받음
+        const blob = await aiServerResponse.blob();
+        const aiImageUrl = URL.createObjectURL(blob);
+        setImageSrc(aiImageUrl);
+  
+        setCurrentImageSrc(aiImageUrl);
+  
+        console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
     useEffect(() => {
       if (product && product.productPhotoUrl.length > 0) {
@@ -145,31 +189,27 @@ const StoreDetailPage =() => {
 
           const userimageUrl = await userPhotoResponse.text();
 
-          const photosToSend = [ userimageUrl, product.productPhotoUrl[0]];
+          if (userimageUrl) {
+            const useExistingImage = window.confirm('기존의 이미지를 사용하시겠습니까?');
+            if (!useExistingImage) {
+              showUploadModal(); // 사용자 사진을 업로드할 수 있는 모달창을 띄우는 함수
+              return; // 함수를 여기서 종료시킴
+            }
+            // 사용자가 '예'를 선택한 경우, 아래 로직을 계속 진행
+          } else {
+              showUploadModal(); // 사용자 사진을 업로드할 수 있는 모달창을 띄우는 함수
+              return; // 함수를 여기서 종료시킴
+          }
+
+          const photosToSend = { userId : userId,
+                                 userImg : userimageUrl, 
+                                 clothImg : product.productPhotoUrl[0]} ;
           console.log(photosToSend);
 
-/*
-        const userPhotoResponse = await fetch('http://218.233.221.41:8080/User/getImageUrl', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId: userId })
-        });
-        if (!userPhotoResponse.ok) {
-          throw new Error('사용자 사진 URL을 가져오는 데 실패했습니다.');
-        }
 
-        const userimageUrl = await userPhotoResponse.text();
-        console.log(userimageUrl)
-          
-
-          // 결과 처리 (예: 사진 URL을 콘솔에 출력)
-          const photosToSend = [userId, userimageUrl, product.productPhotoUrl[0]];
-          console.log(photosToSend);*/
           
           // AI 서버로 전송
-          const aiServerResponse = await fetch('http://172.30.1.13:9090/receive_data', {
+          const aiServerResponse = await fetch('http://172.30.1.59:9090/receive_data', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -189,6 +229,22 @@ const StoreDetailPage =() => {
           setCurrentImageSrc(aiImageUrl);
       
           console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
+
+          //AI서버에서 사진전송완료 이후 삭제 요청을 위한 응답메세지 전송
+          const acknowledgeResponse = await fetch('http://172.30.1.59:9090/acknowledge_receipt', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ userId: userId })
+        });
+
+        if (!acknowledgeResponse.ok) {
+            throw new Error('이미지 삭제 요청이 실패했습니다.');
+        }
+
+        console.log('이미지 삭제 요청이 성공했습니다.');
+
         } catch (error) {
           console.error(error);
         }
@@ -291,6 +347,7 @@ const StoreDetailPage =() => {
                             <button>ADD TO CART</button>
                         </div>
                         <button onClick={handleVirtualTryOn}>AI 가상 실착하기</button>
+                        <UploadImgModal isOpen={isModalOpen} onClose={closeUploadModal} onUpload={handleImageUpload}/>
                     </div>
                 </div>
             </div>
@@ -299,3 +356,24 @@ const StoreDetailPage =() => {
 };
 
 export default StoreDetailPage;
+
+
+/*
+        const userPhotoResponse = await fetch('http://218.233.221.41:8080/User/getImageUrl', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: userId })
+        });
+        if (!userPhotoResponse.ok) {
+          throw new Error('사용자 사진 URL을 가져오는 데 실패했습니다.');
+        }
+
+        const userimageUrl = await userPhotoResponse.text();
+        console.log(userimageUrl)
+          
+
+          // 결과 처리 (예: 사진 URL을 콘솔에 출력)
+          const photosToSend = [userId, userimageUrl, product.productPhotoUrl[0]];
+          console.log(photosToSend);*/
