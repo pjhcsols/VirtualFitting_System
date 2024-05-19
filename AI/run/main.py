@@ -13,6 +13,8 @@ import os
 import shutil
 import subprocess
 import aiofiles
+import cv2
+import sys
 
 app = FastAPI()
 
@@ -30,12 +32,10 @@ app.add_middleware(
     allow_headers=["*"],  # 모든 헤더 허용
 )
 
-
 class RequestData(BaseModel):
+    userId: str
     userImg: str
     clothImg: str
-    
-#IMAGE_DIR = "./"
     
 async def download_image(url: str, save_path: str):
     async with aiohttp.ClientSession() as session:
@@ -55,20 +55,40 @@ async def download_image_from_server(server_url: str, image_url: str, save_path:
             else:
                 detail = await response.text()
                 raise HTTPException(status_code=response.status, detail=f"Failed to download image from server: {detail}")
+            
+# def run_ootd(model_path, cloth_path):
+#     command = f"python run_ootd.py --model_path {model_path} --cloth_path {cloth_path}"
+#     subprocess.run(command, shell=True)
+
+    #shell=True를 설정하면 쉘에서 명령을 실행하므로, 명령어 문자열이 쉘에서 파싱되어 실행됩니다. 
+    # 따라서 주의하여야 합니다. 만약 보안상의 이유로 shell=True를 사용하지 않고 실행하려면, 
+    # 명령어를 리스트로 분할하여 subprocess.run()을 호출해야 합니다.
+# def run_ootd(model_path, cloth_path):
+#     command = ["python", "run_ootd.py", "--model_path", model_path, "--cloth_path", cloth_path]
+#     subprocess.run(command)
+
+# def down_resolution(user_img_path, user_img_path):
+#     command = ["python", "down_resolution.py", user_img_path, user_img_path]
+#     subprocess.run(command)
+
+
+# def test_py(str1, str2):
+#     command = ["python", "test.py", "-i",str1, "-o", str2]
+#     subprocess.run(command)
     
 @app.post("/receive_data")
 async def receive_data(request_data: RequestData):
     try:
-       
+        userId=request_data.userId
         user_img_url = request_data.userImg
         cloth_img_url = request_data.clothImg
         
+        print(f"userId: {userId}")
         print(f"userImgUrl: {user_img_url}")
         print(f"clothImgUrl: {cloth_img_url}")
         
-        #save_img_path = os.path.join(IMAGE_DIR, "save_test.png")
-        cloth_img_path = "./cloth.png"
-        user_img_path="./user.png"
+        cloth_img_path = "./"+userId+"_cloth.png"
+        user_img_path="./"+userId+"_user.png"
     
         #download cloth image
         await download_image(cloth_img_url,cloth_img_path)
@@ -76,88 +96,46 @@ async def receive_data(request_data: RequestData):
         # Download the user image from the specified server
         server_url = "http://218.233.221.41:8080/User/sentUserImageFile"
         await download_image_from_server(server_url, user_img_url, user_img_path)
+        
+        output_file = user_img_path
+        input_image = cv2.imread(user_img_path)
     
-        #return request_model.dict()
-        #image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
+        if input_image is None:
+            print("이미지를 읽을 수 없습니다. 파일 경로를 확인하세요.")
+            sys.exit()
+    
+        new_width=1500
+        new_height=2000
+        resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
+
+        cv2.imwrite(output_file, resized_image)
+        
+        #test_py(cloth_img_url,user_img_url)
+        #run_ootd(user_img_path, cloth_img_path)
+    
         return FileResponse(user_img_path)
-        #return save_img_path
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
-
-# Define the directory to store images
-
-# IMAGE_DIR = "./images"
-# os.makedirs(IMAGE_DIR, exist_ok=True)
-
-# async def download_image(url: str, save_path: str):
-#     async with aiohttp.ClientSession() as session:
-#         async with session.get(url) as response:
-#             if response.status == 200:
-#                 with open(save_path, 'wb') as f:
-#                     f.write(await response.read())
-#             else:
-#                 raise HTTPException(status_code=response.status, detail=f"Failed to download image from {url}")
-
-# @app.post("/receive_data/")
-# async def receive_data(request_data: RequestData):
     
-#     try:
+    
+class AcknowledgeData(BaseModel):
+    userId: str
+    
+@app.post("/acknowledge_receipt")
+async def acknowledge_receipt(ack_data: AcknowledgeData):
+    try:
         
-#         print(f"userImgUrl: {request_data.userImgUrl}")
-#         print(f"productImgUrl: {request_data.productImgUrl}")
-#         # user_img_path = os.path.join(IMAGE_DIR, "user_image.png")
-#         # #user_img_path="C:/Users/LG/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png"
-#         # product_img_path = os.path.join(IMAGE_DIR, "product_image.png")
-#         # #product_img_path = "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827354089_ad.png"
-
-#         # # Download images
-#         # await asyncio.gather(
-#         #     download_image(request_data.userImgUrl, user_img_path),
-#         #     download_image(request_data.productImgUrl, product_img_path)
-#         # )
-
-#         # # Run the virtual fitting script (replace 'run_ootd.py' with your actual script)
-#         # result_img_path = os.path.join(IMAGE_DIR, "result_image.png")
-#         # #subprocess.run(["python", "run_ootd.py", user_img_path, product_img_path, result_img_path], check=True)
-
-#         # # Return the result image
-#         # return FileResponse(result_img_path)
-#         image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
-#         return FileResponse(image_path)
-    
-#     except Exception as e:
-#         return JSONResponse(status_code=400, content={"message": str(e)})
-
-
-#프론트에서 string 3개 받기, 내 컴퓨터에 저장된 이미지 프론트로 보내기 성공
-
-# class RequestData(BaseModel):
-#     userImg: str
-#     closeimage: str
-
-# @app.post("/receive_data/")
-# async def receive_data(request_data: RequestData):
-#     try:
-#         # 배열 형태의 데이터를 각각의 필드에 맞게 파싱
-#         data = {
-#             "userImg": request_data.userImg,
-#             "closeimage": request_data.closeimage
-#         }
-#         request_model = RequestData(**data)
-#         print(f"userImgUrl: {request_model.userImg}")
-#         print(f"productImgUrl: {request_model.closeimage}")
-#         print(request_model.dict())
-#         #return request_model.dict()
-#         image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
-#         return FileResponse(image_path)
-#     except Exception as e:
-#         return JSONResponse(status_code=400, content={"message": str(e)})
-
-
-
-@app.get("/")
-def root():
-    return {"message": "Hello World"}
-
-
-
+        userId = ack_data.userId
+        # 파일 경로 설정
+        cloth_img_path = f"./{userId}_cloth.png"
+        user_img_path = f"./{userId}_user.png"
+        
+        # 이미지 파일 삭제
+        if os.path.exists(cloth_img_path):
+            os.remove(cloth_img_path)
+        if os.path.exists(user_img_path):
+            os.remove(user_img_path)
+        
+        return JSONResponse(status_code=200, content={"message": "Images deleted successfully"})
+    except Exception as e:
+        return JSONResponse(status_code=500, content={"message": str(e)})
