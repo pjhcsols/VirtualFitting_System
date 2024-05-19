@@ -20,9 +20,9 @@ parser.add_argument('--model_path', type=str, default="", required=True)
 parser.add_argument('--cloth_path', type=str, default="", required=True)
 parser.add_argument('--model_type', type=str, default="hd", required=False)
 parser.add_argument('--category', '-c', type=int, default=0, required=False)
-parser.add_argument('--scale', type=float, default=2.0, required=False)
+parser.add_argument('--scale', type=float, default=2.5, required=False)
 parser.add_argument('--step', type=int, default=20, required=False)
-parser.add_argument('--sample', type=int, default=4, required=False)
+parser.add_argument('--sample', type=int, default=1, required=False)
 parser.add_argument('--seed', type=int, default=-1, required=False)
 args = parser.parse_args()
 
@@ -88,6 +88,5 @@ if __name__ == '__main__':
     #     image.save('./images_output/out_' + model_type + '_' + str(image_idx) + '.png')
     #     image_idx += 1
 
-
     for image in images:
-        image.save('./images_output/out_' + model_type + '.png')
+        image.save('./fittingImg.png')
