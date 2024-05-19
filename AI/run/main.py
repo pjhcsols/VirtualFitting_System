@@ -10,13 +10,16 @@ from fastapi import UploadFile, File, Form
 import aiohttp
 import asyncio
 import os
-#import shutil
-#import subprocess
+import shutil
+import subprocess
+import aiofiles
 
 app = FastAPI()
 
 # swagger 주소
 # http://218.233.221.41:8080/swagger-ui/index.html#/
+
+# uvicorn main:app --host 0.0.0.0 --port 9090 --reload  으로 실행
 
 # 모든 출처에서의 요청을 허용
 app.add_middleware(
@@ -30,9 +33,9 @@ app.add_middleware(
 
 class RequestData(BaseModel):
     userImg: str
-    clothimage: str
+    clothImg: str
     
-IMAGE_DIR = "./images/"
+#IMAGE_DIR = "./"
     
 async def download_image(url: str, save_path: str):
     async with aiohttp.ClientSession() as session:
@@ -42,40 +45,49 @@ async def download_image(url: str, save_path: str):
                     f.write(await response.read())
             else:
                 raise HTTPException(status_code=response.status, detail=f"Failed to download image from {url}")
+            
+async def download_image_from_server(server_url: str, image_url: str, save_path: str):
+    async with aiohttp.ClientSession() as session:
+        async with session.post(server_url, data=image_url) as response:
+            if response.status == 200:
+                async with aiofiles.open(save_path, 'wb') as f:
+                    await f.write(await response.read())
+            else:
+                detail = await response.text()
+                raise HTTPException(status_code=response.status, detail=f"Failed to download image from server: {detail}")
     
-@app.post("/receive_data/")
+@app.post("/receive_data")
 async def receive_data(request_data: RequestData):
     try:
-        # 배열 형태의 데이터를 각각의 필드에 맞게 파싱
-     
+       
         user_img_url = request_data.userImg
-        cloth_img_url = request_data.clothimage
+        cloth_img_url = request_data.clothImg
         
-        save_img_path = os.path.join(IMAGE_DIR, "save_test.png")
-    
         print(f"userImgUrl: {user_img_url}")
-        print(f"closeImgUrl: {cloth_img_url}")
-        await download_image(cloth_img_url,save_img_path)
+        print(f"clothImgUrl: {cloth_img_url}")
+        
+        #save_img_path = os.path.join(IMAGE_DIR, "save_test.png")
+        cloth_img_path = "./cloth.png"
+        user_img_path="./user.png"
+    
+        #download cloth image
+        await download_image(cloth_img_url,cloth_img_path)
+        
+        # Download the user image from the specified server
+        server_url = "http://218.233.221.41:8080/User/sentUserImageFile"
+        await download_image_from_server(server_url, user_img_url, user_img_path)
     
         #return request_model.dict()
-        # image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
-        # return FileResponse(image_path)
-        return save_img_path
+        #image_path = r"E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png"
+        return FileResponse(user_img_path)
+        #return save_img_path
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
-
-# uvicorn main:app --host 0.0.0.0 --port 9090 --reload  으로 실행
-
-# E:\VirtualFitting_System\AI\run\images_output\out_hd_0.png
 
 # Define the directory to store images
 
 # IMAGE_DIR = "./images"
 # os.makedirs(IMAGE_DIR, exist_ok=True)
-
-# class RequestData(BaseModel):
-#     userImgUrl: str
-#     productImgUrl: str
 
 # async def download_image(url: str, save_path: str):
 #     async with aiohttp.ClientSession() as session:
