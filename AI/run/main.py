@@ -63,9 +63,9 @@ async def download_image_from_server(server_url: str, image_url: str, save_path:
     #shell=True를 설정하면 쉘에서 명령을 실행하므로, 명령어 문자열이 쉘에서 파싱되어 실행됩니다. 
     # 따라서 주의하여야 합니다. 만약 보안상의 이유로 shell=True를 사용하지 않고 실행하려면, 
     # 명령어를 리스트로 분할하여 subprocess.run()을 호출해야 합니다.
-# def run_ootd(model_path, cloth_path):
-#     command = ["python", "run_ootd.py", "--model_path", model_path, "--cloth_path", cloth_path]
-#     subprocess.run(command)
+def run_ootd(model_path, cloth_path, userId):
+    command = ["python", "run_ootd.py", "--model_path", model_path, "--cloth_path", cloth_path, "--id",userId]
+    subprocess.run(command)
 
 # def down_resolution(user_img_path, user_img_path):
 #     command = ["python", "down_resolution.py", user_img_path, user_img_path]
@@ -111,9 +111,11 @@ async def receive_data(request_data: RequestData):
         cv2.imwrite(output_file, resized_image)
         
         #test_py(cloth_img_url,user_img_url)
-        #run_ootd(user_img_path, cloth_img_path)
+
+        run_ootd(user_img_path, cloth_img_path, userId)
+        fitting_img_path="./"+userId+"_fittingImg.png"
     
-        return FileResponse(user_img_path)
+        return FileResponse(fitting_img_path)
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
     
@@ -129,13 +131,16 @@ async def acknowledge_receipt(ack_data: AcknowledgeData):
         # 파일 경로 설정
         cloth_img_path = f"./{userId}_cloth.png"
         user_img_path = f"./{userId}_user.png"
+        fitting_img_path=f"./{userId}_fittingImg.png"
         
         # 이미지 파일 삭제
         if os.path.exists(cloth_img_path):
             os.remove(cloth_img_path)
         if os.path.exists(user_img_path):
             os.remove(user_img_path)
-        
+        if os.path.exists(fitting_img_path):
+            os.remove(fitting_img_path)
+
         return JSONResponse(status_code=200, content={"message": "Images deleted successfully"})
     except Exception as e:
         return JSONResponse(status_code=500, content={"message": str(e)})
