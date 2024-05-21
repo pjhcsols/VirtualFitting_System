@@ -51,7 +51,7 @@ const UploadImgModal = ({ isOpen, onClose, onUpload }) => {
     <div className="uploadImgModal" style={{ display: isOpen ? 'block' : 'none' }}>
       <div className="uploadImgModal-content">
         <span className="uploadImgModal-close" onClick={onClose}>&times;</span>
-        <h2>사진 업로드</h2>
+        <div className="uploadImgModal-title">사진 업로드</div>
         <input type="file" onChange={handleFileChange} />
         <button onClick={handleUpload}>확인</button>
       </div>
