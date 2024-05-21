@@ -351,6 +351,14 @@ const StoreDetailPage =() => {
                     </div>
                 </div>
             </div>
+            <div>
+              <div className="storeDetailPage_select">
+                  <div className="storeDetailPage_selectTitle">상세정보</div>
+              </div>
+              <div className="storeDetailPage_Imgcontainer">
+                <img className="storeDetailPage_detailImg" src={product.productSubPhotoUrl} alt="상세 정보"></img>
+              </div>
+            </div>
         </div>
     )
 };

@@ -208,3 +208,31 @@
 .productDetail_buttons button:last-child {
     margin-right: 0;
 }
+
+.storeDetailPage_select{
+    border-bottom: solid 1px white;
+    display: grid;
+    justify-content: center;
+    margin-left: 100px;
+    margin-right: 100px;
+    margin-bottom: 100px;
+}
+
+.storeDetailPage_selectTitle{
+    color: white;
+    font-size: 15px;
+    border-bottom: solid 1px white;
+    padding: 5px;
+    margin-top: 120px;
+    margin-bottom: 20px;
+    
+}
+
+.storeDetailPage_Imgcontainer{
+    display: grid;
+    justify-items: center;
+}
+
+.storeDetailPage_detailImg{
+    width: 60%
+}
