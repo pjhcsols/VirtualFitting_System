@@ -1,23 +1,50 @@
 .uploadImgModal {
-    display: none; /* 기본적으로 모달을 보이지 않게 설정 */
-    position: fixed; /* 페이지에 고정 */
-    z-index: 1000; /* 다른 요소들 위에 오도록 z-index 설정 */
+    display: none;
+    position: fixed;
+    z-index: 1000;
     left: 0;
     top: 0;
-    width: 100%; /* 전체 너비 */
-    height: 100%; /* 전체 높이 */
-    overflow: auto; /* 내용이 넘칠 경우 스크롤바 표시 */
+    width: 100%; 
+    height: 100%;
     background-color: rgba(0, 0, 0, 0.4); /* 어두운 배경 */
 }
 
 .uploadImgModal-content {
-    background-color: #55555538;
-    margin: 15% auto; /* 상하 15% 여백, 좌우는 자동으로 중앙 정렬 */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; /* 모달창 너비 */
+    color: #212529;
+    background-color: #F1F1F5;
+    margin: 15% auto;
+    padding: 20px 40px;
+    width: 35%; 
+    border-radius: 15px;
 }
 
+.uploadImgModal-title {
+    border-bottom: solid 1px #212529;
+    font-size: 20px;
+    font-weight: 600;
+    padding: 10px;
+    margin-bottom: 20px;
+}
+
+.uploadImgModal-content button {
+    color: black;
+    margin-left: 20px;
+    background-color: #dee2e6;
+    padding: 8px;
+    border-radius: 5px;
+    border: none;
+}
+
+.uploadImgModal-content input {
+    padding-left: 10px;
+    margin-bottom: 20px;
+}
+
+.uploadImgModal-content button:hover,
+.uploadImgModal-content button:focus {
+    background-color: #D9D9D9;
+    color: white;
+}
 .uploadImgModal-close {
     color: #aaa;
     float: right;
