@@ -1,6 +1,6 @@
 
 INSERT INTO basilium.category (category_id, category_name) VALUES (1, '티셔츠');
-INSERT INTO basilium.category (category_id, category_name) VALUES (2, '셔츠');
+INSERT INTO basilium.category (category_id, category_name) VALUES (2, '긴팔');
 INSERT INTO basilium.category (category_id, category_name) VALUES (3, '블라우스');
 INSERT INTO basilium.category (category_id, category_name) VALUES (4, '니트');
 INSERT INTO basilium.category (category_id, category_name) VALUES (5, '후드티');
@@ -35,30 +35,133 @@ commit;
 
 /*1*/
 INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
-VALUES (1, 5, '바실리움 로고 후드티', 53000, '후드티 모찌모찌함', 1);
+VALUES (1, 1, '바실리움 로고 반팔티(블랙)', 53000, '반팔 모찌모찌함', 1);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
-VALUES (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827354089_ad.png');
+VALUES
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_1.png'),
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
-VALUES (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827365449_ad.png');
+VALUES
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
 
 commit;
 
 /*2*/
 INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
-VALUES (2, 5, '바실리움 로고 후드티', 107000, '후드티 모찌모찌함', 1);
+VALUES (2, 1, '바실리움 로고 반팔티(화이트)', 53000, '반팔 모찌모찌함', 1);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
-VALUES (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827354089_ad.png');
+VALUES
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_2.jpg'),
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
-VALUES (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/brand01_1714827365449_ad.png');
+VALUES
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
 
 commit;
 
+/*3*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (3, 2, '바실리움 백로고 맨투맨(블랙)', 53000, '맨투맨 모찌모찌함', 1);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1.jpg'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_4_1.png'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_3_1.png'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+/*AI용1*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (4, 1, '프린팅 반팔', 35000, '여름 프린팅 반팔 모찌모찌함', 2);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/top01.png'),
+    (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+       (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+/*AI용2*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (5, 1, '줄무늬 반팔', 33000, '여름 얼룩말 반팔 모찌모찌함', 2);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/top02.png'),
+    (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+       (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+/*AI용3*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (6, 2, '줄무늬 모찌 긴팔', 68000, '여름 얼룩말 긴팔 모찌모찌함', 2);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/top03.png'),
+    (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+       (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+
+/*정렬용1*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (7, 8, '모찌 팬츠', 65000, '여름 팬츠 모찌모찌함', 2);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/pants01.png'),
+    (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+       (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+/*정렬용2*/
+INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
+VALUES (8, 9, '모찌 스커트 치마', 84000, '여름 치마 모찌모찌함', 2);
+
+INSERT INTO product_photo_urls (product_id, product_photo_url)
+VALUES
+    (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/skirt01.png'),
+    (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
+
+INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
+VALUES (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
+       (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+commit;
+
+
+
+
+
 INSERT INTO delivery_info(delivery_info_id, user_number, default_delivery_address, first_delivery_address, second_delivery_address)
 VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 1202호", "대구광역시 동구 아양로 애일린의 뜰", "대구광역시 동구 신암동 신암뜨란채 104동 1906호");
+
 
 /*주문목록*/
 -- 주문 테이블에 데이터 삽입
