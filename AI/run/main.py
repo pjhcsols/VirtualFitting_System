@@ -72,9 +72,9 @@ def run_ootd(model_path, cloth_path, userId):
 #     subprocess.run(command)
 
 
-# def test_py(str1, str2):
-#     command = ["python", "test.py", "-i",str1, "-o", str2]
-#     subprocess.run(command)
+def test_py(str1, str2):
+    command = ["python", "test.py", "-i",str1, "-o", str2]
+    subprocess.run(command)
     
 @app.post("/receive_data")
 async def receive_data(request_data: RequestData):
@@ -94,7 +94,7 @@ async def receive_data(request_data: RequestData):
         await download_image(cloth_img_url,cloth_img_path)
         
         # Download the user image from the specified server
-        server_url = "http://218.233.221.41:8080/User/sentUserImageFile"
+        server_url = "http://172.20.38.185:8080/User/sentUserImageFile"
         await download_image_from_server(server_url, user_img_url, user_img_path)
         
         output_file = user_img_path
@@ -116,6 +116,8 @@ async def receive_data(request_data: RequestData):
         fitting_img_path="./"+userId+"_fittingImg.png"
     
         return FileResponse(fitting_img_path)
+        #로컬 test용 코드
+        #return FileResponse(user_img_path)
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
     
