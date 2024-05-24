@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -33,6 +34,21 @@ public class Product {
     @Column(name="product_price", nullable = false)
     Long productPrice;
 
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_materials", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "product_material")
+    List<Material> productMaterial;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_sizes", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "product_size")
+    List<Size> productSize;
+
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
+    @Column(name = "product_color")
+    List<Color> productColor;
+
     @Column(name="product_desc", nullable = false)
     String productDesc;
 
@@ -46,6 +62,10 @@ public class Product {
     @Column(name = "product_sub_photo_url")
     List<String> productSubPhotoUrl;
 
+    @ManyToOne
+    @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
+    private BrandUser brandUser;
+
 
     /*
     @Column(name="product_photo_url")
@@ -54,11 +74,6 @@ public class Product {
     @Column(name="product_sub_photo_url")
     String productSubPhotoUrl;
      */
-
-    @ManyToOne
-    @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
-    private BrandUser brandUser;
-
     //삭제하기
     /*
     @OneToOne(cascade = CascadeType.ALL)

@@ -71,6 +71,10 @@ public class ProductService {
         return productRepository.findBrandUserByProductId(productId);
     }
 
+    public List<Product> findByCategoryId(Long categoryId) {
+        return productRepository.findByCategoryId(categoryId);
+    }
+
     //스케줄러 용
     //@Transactional
     public List<String> getAllProductImageUrls() {
@@ -84,6 +88,5 @@ public class ProductService {
 
         return allImageUrls;
     }
-
 
 }

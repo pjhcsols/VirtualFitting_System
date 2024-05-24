@@ -48,6 +48,23 @@ VALUES
     (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
     (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
 
+-- Product 색상 삽입
+INSERT INTO product_colors (product_id, product_color)
+VALUES
+    (1, 1);
+
+-- Product 재질 삽입
+INSERT INTO product_materials (product_id, product_material)
+VALUES
+    (1, 1),
+    (1, 2);
+
+-- Product 사이즈 삽입
+INSERT INTO product_sizes (product_id, product_size)
+VALUES
+    (1, 3),
+    (1, 4);
+
 commit;
 
 /*2*/

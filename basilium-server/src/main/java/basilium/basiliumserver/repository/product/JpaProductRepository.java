@@ -112,5 +112,12 @@ public class JpaProductRepository implements ProductRepository {
         }
     }
 
+    //카테고리id로 검색
+    @Override
+    public List<Product> findByCategoryId(Long categoryId) {
+        return em.createQuery("SELECT p FROM Product p WHERE p.productCategory.categoryId = :categoryId", Product.class)
+                .setParameter("categoryId", categoryId)
+                .getResultList();
+    }
 
 }
