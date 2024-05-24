@@ -9,8 +9,9 @@ import { useNavigate } from "react-router-dom";
 import userIdImg from '../assets/img/userId.png';
 import pwdImg from '../assets/img/password.png';
 import KakaoImg from '../assets/img/kakao.png';
-import NaverImg from '../assets/img/naver.png';
+import NaverImg from '../assets/img/naverIcon.png';
 import GoggleImg from '../assets/img/goggle.png';
+import NaverLogin from "../API/NaverLogin.js";
 
 
 const LoginPage = () => {
@@ -41,7 +42,7 @@ const LoginPage = () => {
             backgroundRepeat: `no-repeat`
         }}>
             <img src={logoImg} alt='Logo' style={{
-                position: 'absolute',
+                position: 'absolute',   
                 top: '40px',
                 right: '40.5%', 
                 transform: 'translateX(100%)',
@@ -141,7 +142,7 @@ const LoginForm = () => {
                     <div className="logoName">Kakao</div>
                 </div>
                 <div>
-                    <img src={NaverImg} alt='naver' className="logo" />
+                    <NaverLogin />
                     <div className="logoName">Naver</div>
                 </div>
                 <div>
