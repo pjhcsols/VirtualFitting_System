@@ -14,6 +14,7 @@ import SignUpPageBrand from './pages/SignUpPage_Brand';
 import ProfilePage from './pages/ProfilePage';
 import OrderListPage from './pages/OrderListPage';
 import ShoppingCartPage from './pages/ShoppingCartPage';
+import NaverLogin from './API/NaverLogin';
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/OrderListPage" element={<OrderListPage />} />
           <Route path="/ShoppingCartPage" element={<ShoppingCartPage />} />
+          <Route path="/naver" element={<NaverLogin />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

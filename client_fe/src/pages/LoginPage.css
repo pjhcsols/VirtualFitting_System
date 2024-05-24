@@ -108,7 +108,7 @@ input::placeholder {
     flex-direction: row;
     justify-content: space-between; 
     align-items: center;
-    padding: 13px;
+    padding: 15px;
 }
 
 .logo {
