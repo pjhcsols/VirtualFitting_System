@@ -140,9 +140,10 @@
 
 .loadMore {
     text-align: center;
-    margin-top: 10px;
+    margin-top: 20px;
     margin-bottom: 120px;
     font-size: 10px;
+    cursor: pointer;
 }
 
 .location {
