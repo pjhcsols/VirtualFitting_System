@@ -251,6 +251,18 @@ const StoreDetailPage =() => {
       
       };
 
+      const copyCurrentURL = async () => {
+        try {
+          // 현재 페이지의 URL을 클립보드에 복사
+          await navigator.clipboard.writeText(window.location.href);
+          alert("링크가 클립보드에 복사되었습니다.");
+        } catch (err) {
+          console.error("이 페이지의 링크를 복사하는데 실패했습니다.", err);
+          alert("링크 복사에 실패했습니다.");
+        }
+      };
+      
+
     return (
         <div className="storeDetailPage">
             <Header_Store />
@@ -264,8 +276,7 @@ const StoreDetailPage =() => {
                     <div className="productDetail_detailContainer">
                         <div className="productDetail_descriptionContainer">
                         <div className="productDetail_description">
-                            <div>클래식한 티셔츠</div>
-                            <div>넉넉한 오버핏으로 레이어드시 한겨울에도 착용하기 좋습니다</div>
+                            <div>{product.productDesc}</div>
                         </div>
                         <div className="productDetail_size">
                             <div>size</div>
@@ -278,7 +289,7 @@ const StoreDetailPage =() => {
                         </div>
                         <div className="productDetail_iconContainer">
                             <img className='storedetail_heart-icon' src={heartIcon} alt='heartIcon'/>
-                            <img className='storedetail_share-icon' src={shareIcon} alt='shareIcon'/>
+                            <img className='storedetail_share-icon' src={shareIcon} alt='shareIcon' onClick={copyCurrentURL}/>
                         </div>
                     </div>
                     <div className="productDetail_deliveryContainer">
