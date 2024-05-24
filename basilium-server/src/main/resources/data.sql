@@ -34,8 +34,8 @@ VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'
 commit;
 
 /*1*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)
-VALUES (1, 1, '바실리움 로고 반팔티(블랙)', 53000, '반팔 모찌모찌함', 1);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
+VALUES (1, 1, '바실리움 로고 반팔티(블랙)', 53000, 70, 52, 48, 21, '반팔 모찌모찌함', 1);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -51,21 +51,22 @@ VALUES
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
 VALUES
-    (1, 1);
+    (1, 0);
 
 -- Product 재질 삽입
 INSERT INTO product_materials (product_id, product_material)
 VALUES
-    (1, 1),
-    (1, 2);
+    (1, 0),
+    (1, 1);
 
 -- Product 사이즈 삽입
 INSERT INTO product_sizes (product_id, product_size)
 VALUES
-    (1, 3),
-    (1, 4);
+    (1, 2),
+    (1, 3);
 
 commit;
+
 
 /*2*/
 INSERT INTO product (product_id, category_id, product_name, product_price, product_desc, brand_user_number)

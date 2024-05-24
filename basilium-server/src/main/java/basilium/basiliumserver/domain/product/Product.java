@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter @Setter
@@ -43,6 +42,12 @@ public class Product {
     @CollectionTable(name = "product_sizes", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "product_size")
     List<Size> productSize;
+
+    Long productTotalLength; //총장
+    Long productChest; //가슴둘레
+    Long productShoulder;//어깨길이
+    Long productArm;//팔길이
+
 
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
