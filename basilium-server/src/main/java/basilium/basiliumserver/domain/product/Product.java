@@ -43,16 +43,15 @@ public class Product {
     @Column(name = "product_size")
     List<Size> productSize;
 
-    Long productTotalLength; //총장
-    Long productChest; //가슴둘레
-    Long productShoulder;//어깨길이
-    Long productArm;//팔길이
-
-
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "product_colors", joinColumns = @JoinColumn(name = "product_id"))
     @Column(name = "product_color")
     List<Color> productColor;
+
+    Long productTotalLength; //총장
+    Long productChest; //가슴둘레
+    Long productShoulder;//어깨길이
+    Long productArm;//팔길이
 
     @Column(name="product_desc", nullable = false)
     String productDesc;
