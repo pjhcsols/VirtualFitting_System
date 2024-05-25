@@ -47,7 +47,7 @@ INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES
     (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
     (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
-    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+    (1, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
@@ -75,14 +75,14 @@ VALUES (2, 1, '바실리움 로고 반팔티(화이트)', 53000, 70, 52, 48, 21,
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
-    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_2.jpg'),
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_2.png'),
     (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES
     (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
     (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
-    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+    (2, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
@@ -109,7 +109,7 @@ VALUES (3, 2, '바실리움 백로고 맨투맨(블랙)', 53000, 70, 52, 48, 21,
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
-    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1.jpg'),
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1.png'),
     (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_4_1.png'),
     (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png');
 
@@ -117,7 +117,7 @@ INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
     (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
     (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_3_1.png'),
-    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
@@ -149,7 +149,7 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-       (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+       (4, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
@@ -180,7 +180,7 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-       (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+       (5, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
 VALUES
@@ -210,7 +210,7 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-       (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+       (6, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
 VALUES
@@ -240,7 +240,7 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-       (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+       (7, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
 VALUES
@@ -270,7 +270,7 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-       (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub7.png');
+       (8, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
 VALUES
