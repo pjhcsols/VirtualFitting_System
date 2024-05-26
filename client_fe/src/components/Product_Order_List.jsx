@@ -39,9 +39,15 @@ const Product_Order_List = (props) => {
                                 <div className="image_div">
                                     <img className={product.photoUrl ? "image2" : "image1"} src={product.photoUrl ? product.photoUrl : product} alt="product"/>
                                 </div>
-                                <span style={{ wordWrap: 'break-word' }}>
-                                    {product.productName}
-                                </span>
+                                <div className="product_details">
+                                    <span className="product_name">
+                                        {product.productName}
+                                    </span>
+                                    <br />
+                                    <span className="product_specs">
+                                        {"(색상: " + product.color + ", 사이즈: " + product.size + ")"}
+                                    </span>
+                                </div>
                             </td>
                             <td>{product.creationTime}</td>
                             <td>{product.price * product.totalCnt}원</td>

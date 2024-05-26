@@ -12,7 +12,7 @@ const Product_Card = (props) => {
                 {isExist ? (
                     <img src={like} alt="No Image" />
                 ) : (
-                    <img src={cardData.productPhotoUrl} alt={cardData.productName} />
+                    <img src={cardData.productPhotoUrl[0]} alt={cardData.productName} />
                 )}
             </div>
             <div className="product-details">
