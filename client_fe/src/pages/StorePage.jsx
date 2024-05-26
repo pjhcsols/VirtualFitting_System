@@ -28,7 +28,7 @@ function StorePage() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch('http://218.233.221.41:8080/products/getAll');
+        const response = await fetch('http://localhost:8080/products/getAll');
         const data = await response.json();
         setProducts(data.sort((a, b) => a.productId - b.productId));
       } catch (error) {
