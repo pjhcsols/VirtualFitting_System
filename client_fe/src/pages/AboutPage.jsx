@@ -1,8 +1,9 @@
 import React from "react";
+import BlankContent from "../components/BlankContent";
 
 const AboutPage =() => {
     return (
-        <span>hi</span>
+        <BlankContent/>
     )
 };
 
