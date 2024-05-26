@@ -1,12 +1,21 @@
-import React from 'react';
+import React, { useState } from 'react';
 import HeaderBottom from '../components/Header_Bottom';
 import './MainPage.css';
 import rightImage from '../assets/img/right.png'
 import mainImg from '../assets/img/mainImg.jpg';
 import playbtn from '../assets/img/playBtn.png';
+import { useNavigate } from 'react-router-dom';
 
 
 function MainPage() {
+
+  const navigate = useNavigate();
+
+  const handleClick = (path) => {
+    console.log('클릭됨');
+    navigate(path);
+};
+
   return (
     <div>
         <HeaderBottom />
@@ -15,7 +24,7 @@ function MainPage() {
             <img src={mainImg} alt="mainImage" />
             <p className='imgText1'>BASILIUM</p>
             <p className='imgText2'>Basilium of the King and Queen casual & street brand</p>
-            <button className='imgBtn'>
+            <button className='imgBtn' onClick={() => handleClick('/store')}>
               <img src={playbtn} alt='playbtn'/>Store
             </button>
           </div>
@@ -44,7 +53,7 @@ function MainPage() {
                     <div className='image'></div>
                 </div>
                 <div className='loadMore'>
-                    <span>Load More</span>
+                    <span onClick={() => handleClick('/about')}>Load More</span>
                     <img style={{width: '12px', height: '12px', marginLeft: '2px', marginBottom: '-3px'}} src={rightImage} alt='right'/>
                 </div>
             </div>
@@ -65,7 +74,7 @@ function MainPage() {
                     </div>
                   </div>
                   <div className='loadMore'>
-                    <span>Load More</span>
+                    <span onClick={() => handleClick('/about')}>Load More</span>
                     <img style={{width: '12px', height: '12px', marginLeft: '2px', marginBottom: '-3px'}} src={rightImage} alt='right'/>
                   </div>
                 </div>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import SearchImage from '../assets/img/Search.png';
-import { useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import CrownImage from '../assets/img/Crown.png';
 import './Header_Bottom.css';
 import cartIcon from '../assets/img/Cart.png';

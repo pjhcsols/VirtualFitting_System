@@ -28,6 +28,7 @@ const PopUp = () => {
     const handleLogout = () => {
         logout();
         setIsOpen(false);
+        navigate('/')
     };
 
     const handleClick = (path) => {

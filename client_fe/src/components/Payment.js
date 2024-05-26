@@ -1,9 +1,9 @@
 import React from "react";
 import axios from "axios";
 
-const Payment = ({ userInfo, selectedProducts}) => {
+const Payment = ({ userInfo, selectedProducts, type}) => {
 
-    console.log("hahahahahah", selectedProducts);
+
     const handlePayment = async () => {
         if (!Array.isArray(selectedProducts)) {
             console.error("selectedProducts is not an array:", selectedProducts);
@@ -21,7 +21,7 @@ const Payment = ({ userInfo, selectedProducts}) => {
             // Fetch user details
             const response = await axios.get("http://localhost:8080/normalUser/user/detail", config);
             const user = response.data.user;
-
+            console.log("hello world", user)
             const currentTime = new Date();
             const tenMinutesLater = new Date(currentTime.getTime() + 10 * 60 * 1000);
 
@@ -55,8 +55,8 @@ const Payment = ({ userInfo, selectedProducts}) => {
                     buyer_email: user.emailAddress,
                     buyer_name: user.name,
                     buyer_tel: user.phoneNumber,
-                    buyer_addr: userInfo.deliveryInfo.defaultDeliveryAddress,
-                    buyer_postcode: userInfo.postcode,
+                    buyer_addr: userInfo ? userInfo.deliveryInfo.defaultDeliveryAddress : user.address,
+                    buyer_postcode: userInfo ? userInfo.postcode : "기본 우편번호",
                     escrow: true,
                     vbank_due: to,
                     bypass: {
@@ -76,7 +76,7 @@ const Payment = ({ userInfo, selectedProducts}) => {
                         try {
                             // Process payment confirmation and order handling
                             await axios.post(`http://localhost:8080/normalUser/order/payment/${rsp.imp_uid}`, {
-                                memberId: userInfo.userNumber,
+                                memberId: user.userId,
                                 orderId: orderId,
                                 price: rsp.paid_amount,
                                 inventoryList: selectedProducts.map(product => ({
@@ -86,7 +86,8 @@ const Payment = ({ userInfo, selectedProducts}) => {
                                     cnt: product.totalCnt
                                 })),
                             }, config);
-
+                            
+                            if(type != "single"){
                             await Promise.all(
                                 selectedProducts.map(product => 
                                     axios.delete(`http://localhost:8080/normalUser/shopping/list?shoppingListId=${product.shoppingCartId}`, {
@@ -97,7 +98,7 @@ const Payment = ({ userInfo, selectedProducts}) => {
                                 )
                             );
                             
-
+                        }
                             // Reload the page after successful payment and deletion
                             window.location.reload();
                         } catch (error) {
@@ -113,7 +114,11 @@ const Payment = ({ userInfo, selectedProducts}) => {
         }
     };
 
-    return <button className="shopping_list_button" onClick={handlePayment}>결제하기</button>;
+    return <button 
+        className={type === "single" ? "" : "shopping_list_button"} // "single"이 아닌 경우에만 "shopping_list_button" 클래스 적용
+        onClick={handlePayment}
+    >{type === "single" ? "BUY IT NOW" : "구매하기"}
+    </button>
 };
 
 export default Payment;

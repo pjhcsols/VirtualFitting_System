@@ -115,7 +115,7 @@
                 setInputValue((prevInputValue) => ({
                     ...prevInputValue,
                     zipCode: data.zonecode,
-                    roadAddress : data.roadAddress
+                    roadAddress: data.roadAddress
                 }));
                 
                 setIsOpen(false);

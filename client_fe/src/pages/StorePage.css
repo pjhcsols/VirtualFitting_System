@@ -35,7 +35,6 @@
     display: flex;
     width: 70%;
     flex-wrap: wrap;
-    justify-content: space-between;
     padding: 10px;
     margin: 0 auto;
 }
