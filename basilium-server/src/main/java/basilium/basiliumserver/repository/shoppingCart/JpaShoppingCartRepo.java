@@ -30,4 +30,8 @@ public class JpaShoppingCartRepo {
         }catch (Exception e){
         }
     }
+
+    public void save(ShoppingCart shoppingCart){
+        em.persist(shoppingCart);
+    }
 }

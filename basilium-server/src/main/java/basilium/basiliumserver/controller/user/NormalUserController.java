@@ -1,6 +1,7 @@
 package basilium.basiliumserver.controller.user;
 
 import basilium.basiliumserver.auth.support.AuthUser;
+import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
 import basilium.basiliumserver.domain.shoppingCart.ShoppingListDTO;
 import basilium.basiliumserver.domain.user.*;
@@ -140,6 +141,18 @@ public class NormalUserController {
         shoppingCartService.deleteSelectedProducts(shoppingListId);
         return ResponseEntity.ok("Selected products deleted successfully");
 
+    }
+
+    @PostMapping("like/{productId}")
+    public ResponseEntity<?> likeProduct(@AuthUser String userId, @PathVariable(name = "productId") Long productId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+        return ResponseEntity.ok(normalUserService.setLike(ret, productId));
+    }
+    @PostMapping("shopping/{productId}")
+    public ResponseEntity<?> addShoppingCart(@AuthUser String userId, @PathVariable(name = "productId") Long productId, @RequestParam String size, @RequestParam String color, @RequestParam Long amount){
+        NormalUser ret = normalUserService.userInfoById(userId);
+        shoppingCartService.addShoppingCart(ret, productId, size, color, amount);
+        return ResponseEntity.ok("장바구니 등록이 완료되었습니다.");
     }
 
     /*

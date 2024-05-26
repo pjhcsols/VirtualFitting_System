@@ -2,6 +2,9 @@ package basilium.basiliumserver.service.shoppingCart;
 
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
+import basilium.basiliumserver.domain.shoppingCart.ShoppingCart;
+import basilium.basiliumserver.domain.user.NormalUser;
+import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.shoppingCart.JpaShoppingCartRepo;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShoppingCartService {
 
     private final JpaShoppingCartRepo shoppingCartRepo;
+    private final JpaProductRepository productRepository;
 
     public List<OrderListDTO> userShoppingCartHistory(Long userId){
         List<OrderListDAO> list = shoppingCartRepo.getUserShoppingCartInfo(userId);
@@ -42,5 +46,15 @@ public class ShoppingCartService {
                 shoppingCartRepo.deleteById(shoppingListId);
 
 
+    }
+
+    public void addShoppingCart(NormalUser user, Long productId, String size, String color, Long amount){
+        ShoppingCart shoppingCart = new ShoppingCart();
+        shoppingCart.setNormalUser(user);
+        shoppingCart.setProduct(productRepository.findById(productId).get());
+        shoppingCart.setSize(size);
+        shoppingCart.setColor(color);
+        shoppingCart.setAmount(amount);
+        shoppingCartRepo.save(shoppingCart);
     }
 }

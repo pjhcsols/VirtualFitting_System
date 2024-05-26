@@ -1,10 +1,14 @@
 package basilium.basiliumserver.service.user;
 
+import basilium.basiliumserver.domain.like.Like;
+import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.domain.user.UserModifiedInfo;
+import basilium.basiliumserver.repository.like.JpaLikeRepo;
+import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 
@@ -30,11 +34,16 @@ public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
     private final JpaNormalUserRepository jpaNormalUserRepository;
 
+    private final JpaProductRepository productRepository;
+    private final JpaLikeRepo likeRepo;
+
     //bean
     @Autowired
-    public NormalUserService(NormalUserRepository normalUserRepository, JpaNormalUserRepository jpaNormalUserRepository) {
+    public NormalUserService(NormalUserRepository normalUserRepository, JpaNormalUserRepository jpaNormalUserRepository, JpaProductRepository productRepository,JpaLikeRepo likeRepo) {
         this.normalUserRepository = normalUserRepository;
         this.jpaNormalUserRepository = jpaNormalUserRepository;
+        this.productRepository = productRepository;
+        this.likeRepo = likeRepo;
     }
 
     @Value("${jwt.secret}")
@@ -153,7 +162,14 @@ public class NormalUserService {
         return null;
     }
 
-
+    @Transactional
+    public String setLike(NormalUser normalUser, Long productId){
+        Product product = productRepository.findById(productId).get();
+        Like like = new Like();
+        like.setNormalUser(normalUser);
+        like.setProduct(product);
+        return likeRepo.save(like);
+    }
 
     /*
     public LoginStatus login(String userId, String userPassword){
