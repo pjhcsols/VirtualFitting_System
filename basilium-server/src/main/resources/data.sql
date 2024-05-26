@@ -327,9 +327,10 @@ commit;
 
 
 
-INSERT INTO shopping_cart (user_number, product_id, amount)
-values (1, 1, 1);
-
+INSERT INTO shopping_cart (user_number, product_id, size, color, amount)
+values (1, 1, "L","black",1);
+INSERT INTO shopping_cart (user_number, product_id, size, color, amount)
+values (1, 2, "M","white",1);
 commit;
 
 INSERT INTO like_history (user_number, product_id)
@@ -338,8 +339,8 @@ values (1, 1);
 commit;
 
 
-INSERT INTO purchase_transaction(transaction_id, user_number, product_id, total_cnt, payment_type, transaction_creation_time)
-VALUES (1, 1, 1, 1, 0, CURRENT_TIMESTAMP);
+INSERT INTO purchase_transaction(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
+VALUES (1, 1, 1, "L","black",1, 0, CURRENT_TIMESTAMP);
 
 
 

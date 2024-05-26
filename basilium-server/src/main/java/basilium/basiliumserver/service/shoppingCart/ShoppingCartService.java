@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 @Service
 @RequiredArgsConstructor
 public class ShoppingCartService {
@@ -18,6 +20,9 @@ public class ShoppingCartService {
         List<OrderListDTO> newList = new ArrayList<>();
         for (OrderListDAO item : list){
             OrderListDTO temp = new OrderListDTO();
+            temp.setShoppingCartId(item.getShoppingCartId());
+            temp.setSize(item.getSize());
+            temp.setColor(item.getColor());
             temp.setPrice(item.getPrice());
             temp.setPhotoUrl(shoppingCartRepo.productPhotoUrl(item.getProductId()));
             temp.setCreationTime(item.getCreationTime());
@@ -29,5 +34,13 @@ public class ShoppingCartService {
         }
 
         return newList;
+    }
+
+    @Transactional
+    public void deleteSelectedProducts(Long shoppingListId) {
+
+                shoppingCartRepo.deleteById(shoppingListId);
+
+
     }
 }

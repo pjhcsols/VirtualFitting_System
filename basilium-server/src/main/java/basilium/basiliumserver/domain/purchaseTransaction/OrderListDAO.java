@@ -15,6 +15,7 @@ import lombok.ToString;
 public class OrderListDAO {
 
     Long productId;
+    Long shoppingCartId;
     LocalDateTime creationTime;
 
     Long price;
@@ -22,6 +23,9 @@ public class OrderListDAO {
     Long totalCnt;
 
     String productName;
+
+    String size;
+    String color;
 
 
 

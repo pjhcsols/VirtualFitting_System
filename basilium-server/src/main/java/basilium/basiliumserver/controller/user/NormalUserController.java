@@ -1,18 +1,16 @@
 package basilium.basiliumserver.controller.user;
 
 import basilium.basiliumserver.auth.support.AuthUser;
-import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
+import basilium.basiliumserver.domain.shoppingCart.ShoppingListDTO;
 import basilium.basiliumserver.domain.user.*;
-import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
 import basilium.basiliumserver.service.Like.LikeService;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import basilium.basiliumserver.service.shoppingCart.ShoppingCartService;
 import basilium.basiliumserver.service.user.NormalUserService;
 import io.micrometer.common.util.StringUtils;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -106,8 +104,12 @@ public class NormalUserController {
 
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
+        NormalUser ret = normalUserService.userInfoById(userId);
+        return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
+    }
 
-        System.out.println(userId);
+    @GetMapping("/order/payment")
+    public ResponseEntity<?> saveUserPayment(@AuthUser String userId){
         NormalUser ret = normalUserService.userInfoById(userId);
         return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
     }
@@ -120,10 +122,24 @@ public class NormalUserController {
     }
 
     @GetMapping("/like/list")
-    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId){
+    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId, RequestBody Purchase){
         NormalUser ret = normalUserService.userInfoById(userId);
 
         return ResponseEntity.ok(likeService.userLikeInfo(ret.getUserNumber()));
+    }
+
+    @PostMapping("order/payment/{impUid}")
+    public ResponseEntity<String> handlePayment(@AuthUser String userId, @PathVariable String impUid, @RequestBody OrderPaymentRequest request) {
+        purchaseTransactionService.processPayment(userId, impUid, request);
+        return ResponseEntity.ok("Payment processed successfully");
+    }
+
+    @DeleteMapping("/shopping/list")
+    public ResponseEntity<?> deleteShoppingList(@AuthUser String userId, @RequestParam Long shoppingListId){
+
+        shoppingCartService.deleteSelectedProducts(shoppingListId);
+        return ResponseEntity.ok("Selected products deleted successfully");
+
     }
 
     /*

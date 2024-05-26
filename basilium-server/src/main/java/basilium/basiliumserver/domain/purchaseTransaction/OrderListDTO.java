@@ -13,6 +13,7 @@ import lombok.Setter;
 public class OrderListDTO {
 
     Long productId;
+    Long shoppingCartId;
     LocalDateTime creationTime;
 
     Long price;
@@ -22,5 +23,8 @@ public class OrderListDTO {
     String productName;
 
     String photoUrl;
+
+    String size;
+    String color;
 
 }

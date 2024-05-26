@@ -31,11 +31,15 @@ public class ShoppingCart {
     @JoinColumn(name = "userNumber")
     NormalUser normalUser;
 
-
     @ManyToOne
     @JoinColumn(name = "product_id")
     Product product;
 
+    @Column(name = "color")
+    String color;
+
+    @Column(name = "size")
+    String size;
 
     @Column(name = "amount")
     Long amount;

@@ -1,8 +1,6 @@
 package basilium.basiliumserver.payment;
 
-import basilium.basiliumserver.order.Order;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -28,19 +26,17 @@ public class Payment {
     private String paymentUid; // 결제 고유 번호 아임포트에서 저장하기
 
 }
+
 /*
     @Builder
     public Payment(Long price, PaymentStatus status) {
         this.price = price;
         this.status = status;
     }
-
     public void changePaymentBySuccess(PaymentStatus status, String paymentUid) {
         this.status = status;
         this.paymentUid = paymentUid;
     }
-
-
 }
 
  */
