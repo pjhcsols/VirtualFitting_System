@@ -60,16 +60,19 @@
 .order_list_thead th:nth-child(2),
 .order_list_table td:nth-child(2) {
     width: 25%; /* 두 번째 열의 너비를 25%로 지정 */
+    font-weight: bold;
 }
 
 .order_list_thead th:nth-child(3),
 .order_list_table td:nth-child(3) {
     width: 20%; /* 세 번째 열의 너비를 20%로 지정 */
+    font-weight: bold;
 }
 
 .order_list_thead th:nth-child(4),
 .order_list_table td:nth-child(4) {
     width: 30%; /* 네 번째 열의 너비를 30%로 지정 */
+    font-weight: bold;
 }
 
 
@@ -82,3 +85,30 @@
     height: 25px;
     font-weight: bold;
 }
+
+
+.product_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image_div {
+    margin-bottom: 10px;
+}
+
+.product_details {
+    text-align: center;
+}
+
+.product_name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.product_specs {
+    color: gray;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+

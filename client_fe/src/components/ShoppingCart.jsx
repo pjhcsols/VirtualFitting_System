@@ -3,17 +3,39 @@ import "./ShoppingCart.css";
 import product from "../assets/img/product.svg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import Payment from "./Payment"; // Import the payment component
+
 const ShoppingCart = (props) => {
     const navigate = useNavigate();
     const [selectedItems, setSelectedItems] = useState([]);
     const [shoppingData, setShoppingData] = useState([]);
+    const [userInfo, setUserInfo] = useState(null);
 
     useEffect(() => {
         setShoppingData(props.shoppingData);
     }, [props.shoppingData]);
 
+    useEffect(() => {
+        const fetchUserInfo = async () => {
+            const jwtToken = localStorage.getItem("login-token");
+            const config = {
+                headers: {
+                    Authorization: `Bearer ${jwtToken}`
+                }
+            };
+
+            try {
+                const response = await axios.get("http://localhost:8080/normalUser/user/detail", config);
+                setUserInfo(response.data);
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+            }
+        };
+
+        fetchUserInfo();
+    }, []);
+
     const handleShoppingCartPage = () => {
-        // 주문 내역 페이지로 이동
         navigate("/ShoppingCartPage");
     };
 
@@ -28,18 +50,21 @@ const ShoppingCart = (props) => {
 
     const handleDeleteSelected = async () => {
         const jwtToken = localStorage.getItem("login-token");
-    
         const headers = {
             Authorization: `Bearer ${jwtToken}`
         };
-    
-        const selectedProductIds = selectedItems.map((index) => shoppingData[index].productId);
-    
+
         try {
-            await axios.delete("http://localhost:8080/normalUser/shopping/list", { 
-                headers: headers,
-                data: selectedProductIds 
-            });
+            // 배열에 있는 각 객체의 ID에 대해 개별적으로 요청을 보냄
+            await Promise.all(selectedItems.map(async (index) => {
+                const shoppingListId = shoppingData[index].shoppingCartId;
+                console.log("Deleting item with ID:", shoppingListId);
+                await axios.delete(`http://localhost:8080/normalUser/shopping/list?shoppingListId=${shoppingListId}`, {
+                    headers: headers
+                });
+            }));
+    
+            // 선택된 항목들 제거
             const updatedList = shoppingData.filter(
                 (_, index) => !selectedItems.includes(index)
             );
@@ -50,77 +75,8 @@ const ShoppingCart = (props) => {
         }
     };
 
-    const handleBuyButton = async () => {
-        const jwtToken = localStorage.getItem("login-token");
-    
-        const config = {
-            headers: {
-                Authorization: `Bearer ${jwtToken}`
-            }
-        };
-        
-        console.log(jwtToken);
-    
-        try {
-            const response = await axios.get("http://localhost:8080/normalUser/user/detail", config);
-            console.log("유저 정보");
-            console.log(response.data);
-            console.log("유저 정보");
-
-            handlePayment(null);
-        } catch (error) {
-            console.error("Error fetching user details:", error);
-        }
-    }
-
-    async function handlePayment(orderInfo) { 
-        window.IMP.init("imp14418114");
-        // index.html에 iamport CDN 불러와야 사용할 수 있음
-        window.IMP.request_pay({
-            pg: "html5_inicis.INIpayTest", //테스트 시 html5_inicis.INIpayTest 기재
-            pay_method: "card",
-            merchant_uid: "order_no_0001", //상점에서 생성한 고유 주문번호
-            name: "주문명:결제테스트",
-            amount: 1004,
-            buyer_email: "test@portone.io",
-            buyer_name: "구매자이름",
-            buyer_tel: "010-1234-5678", //필수 파라미터 입니다.
-            buyer_addr: "서울특별시 강남구 삼성동",
-            buyer_postcode: "123-456",
-            escrow: true, //에스크로 결제인 경우 설정
-            vbank_due: "YYYYMMDD",
-            bypass: {
-              acceptmethod: "noeasypay", // 간편결제 버튼을 통합결제창에서 제외(PC)
-              P_RESERVED: "noeasypay=Y", // 간편결제 버튼을 통합결제창에서 제외(모바일)
-              acceptmethod: "cardpoint", // 카드포인트 사용시 설정(PC)
-              P_RESERVED: "cp_yn=Y", // 카드포인트 사용시 설정(모바일)
-            },
-            period: {
-              from: "20200101", //YYYYMMDD
-              to: "20201231", //YYYYMMDD
-            },
-          }, (rsp) => {
-            console.log(rsp);
-            if (rsp.success) { // 프론트에서 결제가 완료되면
-                axios.post(`http://localhost:8080/api/v1/order/payment/${rsp.imp_uid}`, { 
-                    memberId: orderInfo.memberId ,
-                    orderId:orderInfo.orderId,
-                    price : orderInfo.totalPrice,
-                    inventoryIdList : orderInfo.productMgtIds
-                }) // 백엔드 결제 api 호출 orderInfo.member.id
-                    .then((res) => {
-                        // 결제완료 
-                    })
-                    .catch((error) => {
-                        // 에러발생시
-                    });
-            } else {
-                // 에러발생시
-            }
-        });
-    }
-    
-    
+    const selectedProducts = selectedItems.map(index => shoppingData[index]);
+    console.log("Selected Products:", selectedProducts);
 
     const isEmpty = shoppingData.length === 0;
 
@@ -128,13 +84,10 @@ const ShoppingCart = (props) => {
         <div>
             <div className="shopping_list_container">
                 <div className="header_div">
-                    <h2
-                        className="shopping_list_title"
-                        onClick={handleShoppingCartPage}
-                    >
+                    <h2 className="shopping_list_title" onClick={handleShoppingCartPage}>
                         장바구니
                     </h2>
-                    <button className="shopping_list_button" onClick={handleBuyButton}>결제하기</button>
+                    {userInfo && <Payment userInfo={userInfo} selectedProducts={selectedProducts} />}
                 </div>
                 {isEmpty ? (
                     <p>담은 물품이 없습니다.</p>
@@ -153,52 +106,37 @@ const ShoppingCart = (props) => {
                             {shoppingData.map((productObj, index) => (
                                 <tr key={index}>
                                     <td>
-                                        <div className="image_div">
-                                            <img
-                                                className={
-                                                    productObj.photoUrl
-                                                        ? "image2"
-                                                        : "image1"
-                                                }
-                                                src={
-                                                    productObj.photoUrl
-                                                        ? productObj.photoUrl
-                                                        : product
-                                                }
-                                                alt="product"
-                                            />
+                                        <div className="product_info">
+                                            <div className="image_div">
+                                                <img
+                                                    className={productObj.photoUrl ? "image2" : "image1"}
+                                                    src={productObj.photoUrl ? productObj.photoUrl : product}
+                                                    alt="product"
+                                                />
+                                            </div>
+                                            <div className="product_details">
+                                                <span className="product_name">
+                                                    {productObj.productName}
+                                                </span>
+                                                <br />
+                                                <span className="product_specs">
+                                                    {"(색상: " + productObj.color + ", 사이즈: " + productObj.size + ")"}
+                                                </span>
+                                            </div>
                                         </div>
-                                        <span
-                                            style={{
-                                                wordWrap: "break-word",
-                                                padding: "60px",
-                                            }}
-                                        >
-                                            {productObj.productName}
-                                        </span>
                                     </td>
                                     <td>{productObj.price}원</td>
                                     <td>{productObj.totalCnt}개</td>
-                                    <td>
-                                        {productObj.price *
-                                            productObj.totalCnt}
-                                        원
-                                    </td>
+                                    <td>{productObj.price * productObj.totalCnt}원</td>
                                     <td>
                                         <div className="check_wrap">
                                             <input
                                                 type="checkbox"
                                                 id={`check_btn_${index}`}
-                                                checked={selectedItems.includes(
-                                                    index
-                                                )}
-                                                onChange={() =>
-                                                    handleCheck(index)
-                                                }
+                                                checked={selectedItems.includes(index)}
+                                                onChange={() => handleCheck(index)}
                                             />
-                                            <label
-                                                htmlFor={`check_btn_${index}`}
-                                            ></label>
+                                            <label htmlFor={`check_btn_${index}`}></label>
                                         </div>
                                     </td>
                                 </tr>
@@ -207,7 +145,6 @@ const ShoppingCart = (props) => {
                     </table>
                 )}
             </div>
-
             <div className="choose_span">
                 <button onClick={handleDeleteSelected}>
                     선택 삭제
