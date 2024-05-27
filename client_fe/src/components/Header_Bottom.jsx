@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import SearchImage from '../assets/img/Search.png';
 import { useNavigate } from 'react-router-dom';
 import CrownImage from '../assets/img/Crown.png';
@@ -14,7 +14,13 @@ const Header_Bottom = () => {
         const [popupOpen, setPopupOpen] = useState(false);
         const {user, logout, login, loading} = useAuth();
         const storedUser = localStorage.getItem('login-token');
-        
+
+        useEffect(() => {
+            if (!storedUser) {
+                setPopupOpen(false)
+            }
+        }, [storedUser]);
+
         const handleClick = (path) => {
             console.log('클릭됨');
             navigate(path);
@@ -26,9 +32,12 @@ const Header_Bottom = () => {
 
         const handleUserImgClick = () => {
             if (storedUser) {
+                console.log(storedUser);
+                console.log("클릭");
                 togglePopup();
             } else {
                 navigate('/login');
+                console.log("클릭");
             }
         };
 

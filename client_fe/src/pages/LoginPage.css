@@ -106,24 +106,39 @@ input::placeholder {
     color: black;
     display: flex;
     flex-direction: row;
-    justify-content: space-between; 
+    justify-content: space-around; 
     align-items: center;
     padding: 15px;
+    width: 100%;
 }
 
 .logo {
     height: 40px;
     width: 40px;
-    margin-right: 45px;
+    margin: 0 20px;
 }
 
-.logo:first-child {
-    margin-left: 40px;
-}
-
-.logoName {
+.kakaoLogoName {
     text-align: center;
     font-size: 10px;
     font-weight: 500;
     margin-right: 4px;
+    padding-left: 3px;
+}
+
+.naverLogoName {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 4px;
+    padding-left: 3px;
+    padding-top: 2px;
+}
+
+.googleLogoName {
+    text-align: center;
+    font-size: 10px;
+    font-weight: 500;
+    margin-right: 4px;
+    padding-left: 2;
 }

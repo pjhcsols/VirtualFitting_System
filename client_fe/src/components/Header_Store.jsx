@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import UserImg from '../assets/img/user.png';
 import CartImg from '../assets/img/Cart.png';
 import CrownImg from '../assets/img/Crown.png';
@@ -10,9 +10,16 @@ import { useAuth } from "../context/AuthContext.jsx";
 
 const Header_Store = () => {
     const { user, logout } = useAuth(); 
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
     const navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
     const storedUser = localStorage.getItem('login-token');
+
+    useEffect(() => {
+        if (!storedUser) {
+            setPopupOpen(false)
+        }
+    }, [storedUser]);
 
     const togglePopup = () => {
         console.log('클릭');
