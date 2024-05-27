@@ -4,12 +4,18 @@ import userImg from '../assets/img/mypage_user.png';
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const PopUp = () => {
+const PopUpBottom = () => {
     const {logout} = useAuth();
     const [isOpen, setIsOpen] = useState(true);
     const popupRef = useRef(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem('user_id');
+    const storedToken = localStorage.getItem('login-token');
+
+    const handleClick = (path) => {
+        console.log('클릭됨');
+        navigate(path);
+    };
 
     useEffect(() => {
         const handleOutsideClick = (e) => {
@@ -26,14 +32,10 @@ const PopUp = () => {
     }, []);
 
     const handleLogout = () => {
+        console.log("클릭");
         logout();
         setIsOpen(false);
         navigate('/')
-    };
-
-    const handleClick = (path) => {
-        console.log('클릭됨');
-        navigate(path);
     };
 
     return (
@@ -51,4 +53,4 @@ const PopUp = () => {
     );
 };
 
-export default PopUp;
+export default PopUpBottom;

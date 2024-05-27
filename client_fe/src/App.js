@@ -15,11 +15,15 @@ import ProfilePage from './pages/ProfilePage';
 import OrderListPage from './pages/OrderListPage';
 import ShoppingCartPage from './pages/ShoppingCartPage';
 import NaverLogin from './API/NaverLogin';
+import KaKaoLogin from './API/KakaoLogin';
+import GoogleLogin from './API/GoogleLogin';
+import SearchResultPage from './pages/SearchResultPage';
+import ProductRegisterationPage from './pages/ProductRegisterationPage';
 
 function App() {
   return (
     <AuthProvider>
-      <BrowserRouter>
+      <BrowserRouter> 
         <Routes>
           <Route path="/" element={<MainPage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -33,7 +37,11 @@ function App() {
           <Route path="/ProfilePage" element={<ProfilePage />} />
           <Route path="/OrderListPage" element={<OrderListPage />} />
           <Route path="/ShoppingCartPage" element={<ShoppingCartPage />} />
-          <Route path="/naver" element={<NaverLogin />} />
+          <Route path="/kakaoLogin" element={<KaKaoLogin />} />
+          <Route path="/naverLogin" element={<NaverLogin />} />
+          <Route path="/googleLogin" element={<GoogleLogin />} />
+          <Route path="/searchResult" element={<SearchResultPage />} />
+          <Route path="/productRegisteration" element={<ProductRegisterationPage />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

@@ -8,10 +8,9 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import userIdImg from '../assets/img/userId.png';
 import pwdImg from '../assets/img/password.png';
-import KakaoImg from '../assets/img/kakao.png';
-import NaverImg from '../assets/img/naverIcon.png';
-import GoggleImg from '../assets/img/goggle.png';
-import NaverLogin from "../API/NaverLogin.js";
+import NaverLogin from "../API/NaverLogin.js";  
+import KaKaoLogin from "../API/KakaoLogin.js";
+import GoogleLogin from "../API/GoogleLogin.js";
 
 
 const LoginPage = () => {
@@ -91,10 +90,8 @@ const LoginForm = () => {
         try {
             const response = await ServerAPI.post('/User/login', data);
 
-            console.log(response)
-            console.log(ServerAPI)
             if (response.status === 200) {
-                console.log(response.data);
+                // console.log(response.data);
                 localStorage.clear()
                 localStorage.setItem('login-token', response.data)
                 localStorage.setItem('user_id', data.userId)
@@ -138,16 +135,16 @@ const LoginForm = () => {
             <p style={{ marginTop: '36px', marginBottom: '7px', fontSize:'13px', fontWeight:'bold'}}>다른 계정으로 로그인하기</p>
             <div className="logoContainer">
                 <div>
-                    <img src={KakaoImg} alt='kakao' className="logo" style={{width: '44px', height: '44px', marginBottom: '-3px'}}/>
-                    <div className="logoName">Kakao</div>
+                    <KaKaoLogin />
+                    <div className="kakaoLogoName">Kakao</div>
+                </div>
+                <div>   
+                    <NaverLogin />  
+                    <div className="naverLogoName">Naver</div>
                 </div>
                 <div>
-                    <NaverLogin />
-                    <div className="logoName">Naver</div>
-                </div>
-                <div>
-                    <img src={GoggleImg} alt='goggle' className="logo" />
-                    <div className="logoName">Goggle</div>
+                    <GoogleLogin />
+                    <div className="googleLogoName">Goggle</div>
                 </div>
             </div>
         </div>

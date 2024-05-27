@@ -1,31 +1,21 @@
-import { useEffect} from "react";
-import './NaverLogin.css';   
-import { useLocation } from "react-router-dom";
-import axios from "axios";
+import React from "react";
+import NaverLogo from "../assets/img/naverIcon.png";
 
 const NaverLogin = () => {
-    const {naver} = window
+    const clientID = process.env.REACT_APP_NAVER_CLIENT_ID;
+    const stateString = process.env.REACT_APP_NAVER_STATE_STRING;
+    const callbackUrl = process.env.REACT_APP_NAVER_CALLBACK_URL;
+    const naverAuthUrl = `https://nid.naver.com/oauth2.0/authorize?client_id=${clientID}&response_type=code&redirect_uri=${callbackUrl}&state=${stateString}`;
 
-    const initNaverLogin = () => {
-        const naverLogin = new naver.LoginWithNaverId ({
-            clientId: process.env.REACT_APP_NAVER_CLIENT_ID,
-            callbackUrl: process.env.REACT_APP_NAVER_CALLBACK_URL,
-            isPopup: true,
-            loginButton: {color: 'green', type: 1, height: 38, width: 38}
-        });
-        naverLogin.init(); 
-    }
-
-    useEffect(() => {
-        initNaverLogin();
-        console.log("init!");
-    }, []); 
+    const loginHandler = () => {
+        window.location.href = naverAuthUrl;
+    };
 
     return (
         <>
-            <div id="naverIdLogin"></div>
+            <img src={NaverLogo} alt="naver" style={{width: '39px', height: '39px'}} onClick={loginHandler}/>
         </>
     )
 }
 
-export default NaverLogin;
+export default NaverLogin;  

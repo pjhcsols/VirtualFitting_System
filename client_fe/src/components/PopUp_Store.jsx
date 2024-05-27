@@ -4,8 +4,8 @@
     import { useAuth } from "../context/AuthContext";
     import { useNavigate } from "react-router-dom";
 
-    const PopUp = () => {
-        const {logout} = useAuth();
+    const PopUpStore = () => {
+        const {logout, isLoggedOut} = useAuth();
         const [isOpen, setIsOpen] = useState(true);
         const popupRef = useRef(null);
         const navigate = useNavigate();
@@ -25,7 +25,7 @@
             };
         }, []);
 
-        const handleLogout = () => {
+        const handleLogout = () => {    
             logout();
             setIsOpen(false);
             navigate('/')
@@ -51,4 +51,4 @@
         );
     };
 
-    export default PopUp;
+    export default PopUpStore;
