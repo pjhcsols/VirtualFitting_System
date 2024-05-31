@@ -49,7 +49,7 @@ const Product_Order_List = (props) => {
                                     </span>
                                 </div>
                             </td>
-                            <td>{product.creationTime}</td>
+                            <td>{new Date(product.creationTime).toISOString().slice(0, 16).replace('T', ' ')}</td>
                             <td>{product.price * product.totalCnt}원</td>
                             
                             {isOrderListPage ? (

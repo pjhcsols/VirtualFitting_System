@@ -1,5 +1,6 @@
 import React from "react";
 import axios from "axios";
+import Swal from 'sweetalert2';
 
 const Payment = ({ userInfo, selectedProducts, type}) => {
 
@@ -99,13 +100,27 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                             );
                             
                         }
-                            // Reload the page after successful payment and deletion
+                        Swal.fire({
+                            position: "top-end",
+                            icon: "success",
+                            title: user.name + "님! 결제가 성공했습니다 :)",
+                            showConfirmButton: false,
+                            timer: 3000
+                            }).then(() => {
+                                // 페이지 새로고침
+                                window.location.reload();
+                            });
                             window.location.reload();
                         } catch (error) {
                             console.error("Error completing payment or deleting products:", error);
                         }
                     } else {
                         console.error("Payment failed:", rsp.error_msg);
+                        Swal.fire({
+                            icon: "error",
+                            title: "결제 실패",
+                            text: user.name + "님 결제를 실패하셨어요 ㅠㅠ!",
+                          });
                     }
                 }
             );
