@@ -20,7 +20,7 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
 
         try {
             // Fetch user details
-            const response = await axios.get("http://localhost:8080/normalUser/user/detail", config);
+            const response = await axios.get("http://218.233.221.147:8080/normalUser/user/detail", config);
             const user = response.data.user;
             console.log("hello world", user)
             const currentTime = new Date();
@@ -76,7 +76,7 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                     if (rsp.success) {
                         try {
                             // Process payment confirmation and order handling
-                            await axios.post(`http://localhost:8080/normalUser/order/payment/${rsp.imp_uid}`, {
+                            await axios.post(`http://218.233.221.147:8080/normalUser/order/payment/${rsp.imp_uid}`, {
                                 memberId: user.userId,
                                 orderId: orderId,
                                 price: rsp.paid_amount,
@@ -91,7 +91,7 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                             if(type != "single"){
                             await Promise.all(
                                 selectedProducts.map(product => 
-                                    axios.delete(`http://localhost:8080/normalUser/shopping/list?shoppingListId=${product.shoppingCartId}`, {
+                                    axios.delete(`http://218.233.221.147:8080/normalUser/shopping/list?shoppingListId=${product.shoppingCartId}`, {
                                         headers: {
                                             Authorization: `Bearer ${jwtToken}`
                                         }

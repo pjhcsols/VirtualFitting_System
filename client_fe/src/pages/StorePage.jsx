@@ -51,20 +51,55 @@ function StorePage() {
     const location = useLocation();
     const category = location.state?.category || "New Arrival";
 
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/products/getAll');
-        const data = await response.json();
-        setProducts(data.sort((a, b) => a.productId - b.productId));
-      } catch (error) {
-        console.error("Fetching products failed:", error);
-      }
-    };
-
-    fetchProducts();
-  }, []);
+   
+    useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                let url = 'http://218.233.221.147:8080/products/getAll';
+                let data = [];
+    
+                // "New Arrival" 선택 시 모든 상품을 기본 순으로 가져온 후 역순으로 정렬
+                if (category === "New Arrival") {
+                    const response = await fetch(url);
+                    data = await response.json();
+                    data = data.sort((a, b) => b.productId - a.productId);
+                } 
+                // "Top", "Outer", "Bottom", "Bag & Acc" 선택 시 특정 categoryId에 따라 상품을 가져오고 역순으로 정렬
+                else {
+                    const categories = {
+                        "Top": [1, 2, 3, 4, 5, 11, 13],
+                        "Outer": [10, 11, 12],
+                        "Bottom": [6, 7, 8, 9],
+                        "Bag & Acc": [19]
+                    };
+    
+                    // 선택된 category에 따른 categoryId 목록을 가져옴
+                    const categoryIds = categories[category];
+    
+                    // 모든 categoryId에 대해 상품을 병렬로 가져옵니다.
+                    const responses = await Promise.all(categoryIds.map(categoryId =>
+                        fetch(`http://218.233.221.147:8080/products/category/${categoryId}`)
+                    ));
+    
+                    // 모든 응답에서 JSON 데이터를 병렬로 추출
+                    const jsonResponses = await Promise.all(responses.map(response => response.json()));
+    
+                    // 모든 카테고리의 상품들을 하나의 배열로 합침
+                    data = jsonResponses.flat();
+    
+                    // productId 기준으로 역순 정렬
+                    data.sort((a, b) => b.productId - a.productId);
+                }
+    
+                setProducts(data);
+            } catch (error) {
+                console.error("Fetching products failed:", error);
+            }
+        };
+    
+        fetchProducts();
+    }, [category]);
+    
 
 
     const handleClick = (productId) => {
