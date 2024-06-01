@@ -1,12 +1,15 @@
 import React, { useState } from "react";
 import './CustomSelect.css';
 
-const CustomSelect = ({ optionData }) => {
+const CustomSelect = ({ optionData, onChange }) => {
   const [currentValue, setCurrentValue] = useState(optionData[0].value);
   const [showOptions, setShowOptions] = useState(false);
 
   const handleOnChangeSelectValue = (e) => {
-    setCurrentValue(e.target.getAttribute("value"));
+    const value = e.target.getAttribute("value");
+    const key = parseInt(e.target.getAttribute("data-key"), 10); 
+    setCurrentValue(value);
+    onChange({ key, value });
   };
 
   return (
@@ -16,6 +19,7 @@ const CustomSelect = ({ optionData }) => {
         {optionData.map((data) => (
           <li
             key={data.key}
+            data-key={data.key}
             value={data.value}
             className="option"
             onClick={handleOnChangeSelectValue}
