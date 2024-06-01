@@ -1,69 +1,101 @@
-.product-registration-page {
-    text-align: center;
-    margin-top: 20px;
-}
+    .product-registration-page {
+        text-align: center;
+        margin-top: 20px;
+    }
 
-.title {
-    margin-bottom: 20px;
-}
+    .title {
+        margin-bottom: 20px;
+    }
 
-.divider {
-    width: 500px;
-    height: 5px;
-    background-color: black;
-    margin: 0 auto;
-    margin-bottom: 30px;
-}
+    .divider {
+        width: 500px;
+        height: 5px;
+        background-color: black;
+        margin: 0 auto;
+        margin-bottom: 30px;
+    }
 
-.registration-form {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start; 
-    margin: 0 auto; 
-    width: 500px; 
-}
+    .registration-form {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start; 
+        margin: 0 auto; 
+        width: 500px; 
+    }
 
-.registration-form .form-group {
-    display: flex;
-    align-items: center; 
-    margin-bottom: 20px;
-}
+    .registration-form .form-group {
+        display: flex;
+        align-items: center; 
+        margin-bottom: 20px;
+    }
 
-.registration-form input {
-    padding: 8px;
-    width: 120px; 
-    border-radius: 5px;
-    background-color: #dee2e6;
-    border: none;
-}
+    .registration-form input {
+        padding: 8px;
+        width: 120px; 
+        border-radius: 5px;
+        background-color: #dee2e6;
+        border: none;
+    }
 
-.label-form {
-    font-weight: bold;
-    margin-right: 20px;
-}
+    .registration-form input.file-input {
+        padding: 5px 0 10px;  
+        width: auto;
+        background-color: transparent; 
+        border: none;
+        margin-right: 0;
+    }
 
-.image-button {
-    margin-left: 10px;
-    background-color: black;
-    color: #fff;
-    width: 80px;
-    height: 30px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-}
+    .label-form {
+        font-weight: bold;
+        margin-right: 20px;
+    }
 
-.registerButton {
-    align-self: center;
-    background-color: #000; 
-    color: #fff; 
-    width: 350px;
-    height: 40px;
-    padding: 10px;
-    cursor: pointer;
-    border: none;
-    border-radius: 5px;
-    margin-top: 5px;
-    font-size: 20px;
-    padding-top: 6px;   
-}
+    .image-button {
+        margin-left: 10px;
+        background-color: black;
+        color: #fff;
+        width: 80px;
+        height: 30px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+    }
+
+    .registerButton {
+        align-self: center;
+        background-color: #000; 
+        color: #fff; 
+        width: 350px;
+        height: 40px;
+        padding: 10px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        margin-top: 5px;
+        font-size: 20px;
+        padding-top: 6px;   
+    }
+
+    .closeImg {
+        width: 16px;
+        height: 16px;
+    }
+
+    .file-input-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+        width: 100%;
+    }
+    
+    .file-input-container .file-input {
+        flex-grow: 1;
+        padding-right: 10px;
+    }
+    
+    .file-input-container .closeImg {
+        margin-left: 10px;
+        margin-bottom: 37px;
+        cursor: pointer;
+    }
+    

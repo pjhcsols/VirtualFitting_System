@@ -29,7 +29,7 @@
     top: 18px;
     left: 0;
     width: 100%;
-    overflow: hidden;
+    overflow: auto;
     max-height: 0;
     padding: 0;
     border-radius: 8px;
@@ -40,7 +40,7 @@
   }
   
   .select-options.show {
-    max-height: 180px;
+    max-height: 250px;
   }
   
   .option {
