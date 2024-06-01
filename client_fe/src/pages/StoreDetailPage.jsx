@@ -145,7 +145,7 @@ const StoreDetailPage =() => {
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch(`http://localhost:8080/products/${productId}`);
+            const response = await fetch(`http://218.233.221.147:8080/products/${productId}`);
             if (!response.ok) {
               throw new Error('데이터를 불러올 수 없습니다.');
             }
@@ -195,7 +195,7 @@ const StoreDetailPage =() => {
           formData.append('userId', userId);
       
           // 서버로 요청을 보냄
-          const userPhotoResponse = await fetch('http://localhost:8080/User/getImageUrl', {
+          const userPhotoResponse = await fetch('http://218.233.221.147:8080/User/getImageUrl', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded', // 헤더에 Content-Type을 application/x-www-form-urlencoded로 설정
@@ -308,7 +308,7 @@ const StoreDetailPage =() => {
                             <div>어깨  {product.productShoulder} / 팔  {product.productArm} / 가슴  {product.productChest} / 총장  {product.productTotalLength}</div>
                         </div>
                         <div className="productDetail_material">
-                            <p>{product.productMaterial}</p>
+                            <p>{product.productMaterial.join(', ')}</p>
                         </div>
                         </div>
                         <div className="productDetail_iconContainer">
@@ -391,7 +391,9 @@ const StoreDetailPage =() => {
                   <div className="storeDetailPage_selectTitle">상세정보</div>
               </div>
               <div className="storeDetailPage_Imgcontainer">
-                <img className="storeDetailPage_detailImg" src={product.productSubPhotoUrl} alt="상세 정보"></img>
+                {product.productSubPhotoUrl.map((url, index) => (
+                <img key={index} className="storeDetailPage_detailImg" src={url} alt={`상세 정보 ${index + 1}`}/>
+                ))}
               </div>
             </div>
         </div>
