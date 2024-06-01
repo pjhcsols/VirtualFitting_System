@@ -25,6 +25,7 @@ const StoreDetailPage =() => {
 
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [imageList, setImageList] = useState([]);
+    const [aiImage, setAiImage] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
   
@@ -58,12 +59,16 @@ const StoreDetailPage =() => {
   
         // AI 서버로부터 응답 받음
         const blob = await aiServerResponse.blob();
-        const aiImageUrl = URL.createObjectURL(blob);
-        // 이미지 리스트 업데이트
-        setImageList(prev => [aiImageUrl, ...prev]);
+        const newAiImageUrl = URL.createObjectURL(blob);
+
+        // 이전 AI 이미지가 있으면 리스트에서 제거
+        setImageList(prev => prev.filter(url => url !== aiImage));
+        
+        setImageList(prev => [newAiImageUrl, ...prev]);
+        setAiImage(newAiImageUrl);
         setCurrentImageIndex(0); // 첫 번째 이미지로 인덱스 설정
   
-        console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
+        console.log('AI 서버 응답으로 받은 이미지 URL:', newAiImageUrl);
       } catch (error) {
         console.error(error);
       }
@@ -422,3 +427,17 @@ export default StoreDetailPage;
           // 결과 처리 (예: 사진 URL을 콘솔에 출력)
           const photosToSend = [userId, userimageUrl, product.productPhotoUrl[0]];
           console.log(photosToSend);*/
+
+
+
+
+          /* // AI 서버로부터 응답 받음
+          const blob = await aiServerResponse.blob();
+          const aiImageUrl = URL.createObjectURL(blob);
+          
+          // 이미지 리스트 업데이트
+          setImageList(prev => [aiImageUrl, ...prev]);
+          setCurrentImageIndex(0); // 첫 번째 이미지로 인덱스 설정
+      
+          console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
+          */
