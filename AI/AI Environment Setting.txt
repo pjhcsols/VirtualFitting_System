@@ -7,10 +7,8 @@ pip install aiohttp
 
 이후 run 폴더에서 코드 실행
 1. 상의
- python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --scale 2.0 --sample 1
-
+ python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id"
 2. 하의:
-python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --model_type dc --category 1 --scale 2.0 --sample 1
-
+python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id" --model_type dc --category 1 
 3. 드레스
-python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --model_type dc --category 2 --scale 2.0 --sample 1
+python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id" --model_type dc --category 2 
