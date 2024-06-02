@@ -103,3 +103,54 @@
     font-size: 12px;
     color: #CCCCCC;
 }
+
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* 반투명 검정 배경 */
+  }
+  
+  .modalContent {
+    width: 20%;
+    height: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: #F1F1F5;
+    padding: 20px 40px;
+    border-radius: 15px;
+  }
+
+  .productModal {
+    display: grid;
+    margin-left: 20px;
+    grid-template-columns: auto auto; /* 두 개의 열 생성 */
+    grid-template-rows: auto auto auto; /* 세 개의 행 생성 */
+    gap: 10px; /* 그리드 항목 사이의 간격 설정 */
+}
+
+.productModal > div {
+    display: contents;
+}
+
+.productModal select { width: 50%; }
+
+.productModal input { 
+    width: 30%; 
+    margin-bottom: 20px;
+}
+
+.modalContent button {
+    position: absolute; 
+    right: 40px; 
+    bottom: 30px; 
+}
