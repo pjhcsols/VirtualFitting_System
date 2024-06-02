@@ -4,10 +4,11 @@
     height: 100vh;
 }
 
-.horizontal-line {
+.search-horizontal-line {
     height: 2px;
     background-color: #E0D5D5; 
     width: 100%;
+    margin-bottom: 75px;
 }
 
 .underline {
@@ -94,7 +95,7 @@
     margin-top: 80px;
     color: #FFFFFF;
     margin-bottom: 20px;
-    margin-left: 30px;
+    margin-left: 35px;
 }
 
 .search-text-highlight {
@@ -121,6 +122,30 @@
     width: 80px;
     height: 80px;
 }
+
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  
+.loading-spinner {
+    border: 8px solid rgba(255, 255, 255, 0.1);
+    border-left-color: #7986cb;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+  }
+  
+@keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  
 
 
 

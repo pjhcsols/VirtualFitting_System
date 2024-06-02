@@ -164,7 +164,7 @@ const SignUp = () => {
             emailAddress: inputValue.emailAddress,
             phoneNumber: inputValue.phoneNumber,
             userGrade: null,
-            loginType: null,
+            loginType: 'BRAND',
             userImageUrl: null,
             firmName: inputValue.firmName,
             businessRegistration: inputValue.businessRegistration,

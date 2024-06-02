@@ -53,8 +53,9 @@ const Header_Bottom = () => {
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') { // 엔터키를 누를 경우
-            console.log(searchText); // 현재 검색어 출력 또는 처리
             navigate('/searchResult', {state: {searchText}});
+            setShowSearchBar(false);
+            setSearchText('');
         }
     };
 

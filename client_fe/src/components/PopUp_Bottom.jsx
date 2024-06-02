@@ -43,7 +43,7 @@ const PopUpBottom = ({ logout }) => {
                 <div className="popup-container-bottom" ref={popupRef}>
                     <div className="user-bottom-container">
                         <img style={{ width: '70px', height: '70px', cursor: 'pointer', marginTop: '25px' }} src={userImg} alt="user" onClick={() => handleClick('/MyPage')} />
-                        <span className="userId-bottom">{userId}</span>
+                        <span className="userId-bottom">{userId}님</span>
                     </div>
                     <button className="logoutButton" onClick={handleLogout}>logout</button>
                 </div>

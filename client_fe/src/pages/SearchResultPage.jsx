@@ -25,6 +25,7 @@ const Product = ({ product, onClick }) => {
 
 function SearchResultPage() {
     const [products, setProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
     const location = useLocation();
     const category = location.state?.category || "New Arrival";
@@ -46,8 +47,10 @@ function SearchResultPage() {
                 }
     
                 setProducts(data);
+                setLoading(false);
             } catch (error) {
                 console.error("Fetching products failed:", error);
+                setLoading(false);
             }
         };
     
@@ -63,19 +66,17 @@ function SearchResultPage() {
     return (
         <div className="searchResultPage">
             <HeaderStore />
-            {products.length === 0 && (
-                 <div className="no-search-result">
-                    <img src={warningImg} alt="warning" className="warning-img"/>
-                    검색 결과가 없습니다.<br/>
-                    다른 검색어로 검색해주세요.
+            {loading && (
+                <div className="loading-container">
+                    <div className="loading-spinner"></div>
                 </div>
-            )}  
-            {products.length > 0 && (
+            )}
+            {!loading && products.length > 0 && (
                 <div>
                     <div className="searchResult-text">
                         '<span className="search-text-highlight">{searchText}</span>'에 대한 검색결과({products.length}개)
                     </div>
-                    <div className="horizontal-line" style={{marginBottom: '60px'}}></div> 
+                    <div className="search-horizontal-line"></div> 
                     <div className="products-container">
                         {products.map(product => (
                             <Product onClick={() => handleClick(product.productId)} key={product.productId} product={product} />
@@ -83,6 +84,13 @@ function SearchResultPage() {
                     </div>
                 </div>
             )}
+            {!loading && products.length === 0 && (
+                <div className="no-search-result">
+                    <img src={warningImg} alt="warning" className="warning-img"/>
+                    검색 결과가 없습니다.<br/>
+                    다른 검색어로 검색해주세요.
+                </div>
+            )}  
         </div>
     )
 }
