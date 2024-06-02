@@ -165,7 +165,7 @@
             try {
                 console.log("서버응답*******************8");
                 const response = await ServerAPI.post('/products/create', data);
-
+                console.log(data);
                 Swal.fire({
                     title: '상품등록 성공!',
                     icon: 'success',

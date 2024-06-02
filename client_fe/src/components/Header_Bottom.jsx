@@ -54,7 +54,7 @@ const Header_Bottom = () => {
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') { // 엔터키를 누를 경우
             console.log(searchText); // 현재 검색어 출력 또는 처리
-            // 검색 처리 로직 추가 위치
+            navigate('/searchResult', {state: {searchText}});
         }
     };
 

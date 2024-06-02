@@ -29,7 +29,7 @@ const LoginPage = () => {
 
     return (
         <div style={{
-            display: 'flex',
+            display: 'flex',    
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
