@@ -6,6 +6,7 @@
     import CloseImg from "../assets/img/close.png";
     import { useNavigate } from "react-router-dom";
     import ServerAPI from "../API/ServerAPI.js";
+    import Swal from "sweetalert2";
 
     const ProductRegisterationPage = () => {
         const navigate = useNavigate();
@@ -164,10 +165,29 @@
             try {
                 console.log("서버응답*******************8");
                 const response = await ServerAPI.post('/normalUser', data);
-                navigate("/");
-                console.log(data);
+
+                Swal.fire({
+                    title: '상품등록 성공!',
+                    icon: 'success',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate("/");
+                    }
+                });
             }
             catch (error) {
+                Swal.fire({
+                    title: '등록 실패!',
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/productRegisteration');
+                    }
+                });
                 console.error("서버와의 통신 중 오류 발생", error);
                 console.log(data);
             }
