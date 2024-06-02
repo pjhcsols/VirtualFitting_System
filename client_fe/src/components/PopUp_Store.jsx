@@ -4,12 +4,11 @@
     import { useAuth } from "../context/AuthContext";
     import { useNavigate } from "react-router-dom";
 
-    const PopUpStore = () => {
-        const {logout, isLoggedOut} = useAuth();
+    const PopUpStore = ({logout}) => {
         const [isOpen, setIsOpen] = useState(true);
         const popupRef = useRef(null);
         const navigate = useNavigate();
-        const userId = localStorage.getItem('user_id');         
+        const userId = localStorage.getItem('user_id'); 
 
         useEffect(() => {
             const handleOutsideClick = (e) => {
@@ -26,9 +25,11 @@
         }, []);
 
         const handleLogout = () => {    
+            console.log("클릭");
             logout();
             setIsOpen(false);
-            navigate('/')
+            localStorage.removeItem('login-token');
+            navigate('/');
         };
 
         const handleClick = (path) => {
