@@ -95,6 +95,7 @@ const LoginForm = () => {
                 localStorage.clear()
                 localStorage.setItem('login-token', response.data)
                 localStorage.setItem('user_id', data.userId)
+                console.log(response);
                 
                 navigate('/');
               }
