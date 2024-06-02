@@ -4,13 +4,11 @@ import userImg from '../assets/img/mypage_user.png';
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
-const PopUpBottom = () => {
-    const {logout} = useAuth();
+const PopUpBottom = ({ logout }) => {
     const [isOpen, setIsOpen] = useState(true);
     const popupRef = useRef(null);
     const navigate = useNavigate();
     const userId = localStorage.getItem('user_id');
-    const storedToken = localStorage.getItem('login-token');
 
     const handleClick = (path) => {
         console.log('클릭됨');
@@ -35,7 +33,8 @@ const PopUpBottom = () => {
         console.log("클릭");
         logout();
         setIsOpen(false);
-        navigate('/')
+        localStorage.removeItem('login-token');
+        navigate('/');
     };
 
     return (
@@ -43,7 +42,7 @@ const PopUpBottom = () => {
             {isOpen && (
                 <div className="popup-container-bottom" ref={popupRef}>
                     <div className="user-bottom-container">
-                        <img style={{ width: '70px', height: '70px', cursor:'pointer', marginTop:'25px'}} src={userImg} alt="user" onClick={() => handleClick('/MyPage')}/>
+                        <img style={{ width: '70px', height: '70px', cursor: 'pointer', marginTop: '25px' }} src={userImg} alt="user" onClick={() => handleClick('/MyPage')} />
                         <span className="userId-bottom">{userId}</span>
                     </div>
                     <button className="logoutButton" onClick={handleLogout}>logout</button>

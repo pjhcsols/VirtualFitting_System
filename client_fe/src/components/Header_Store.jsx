@@ -32,7 +32,7 @@ const Header_Store = () => {
     };
 
     const handleUserImgClick = () => {
-        if (storedUser) {
+        if (localStorage.getItem('login-token')) {
             togglePopup();
         } else {
             navigate('/login');
