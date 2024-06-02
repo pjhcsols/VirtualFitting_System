@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Header_Store from "../components/Header_Store";
 import './StoreDetailPage.css';
-import heartIcon from '../assets/img/white_heart.png';
+import FullheartIcon from '../assets/img/Heart.png';
+import EmptyheartIcon from '../assets/img/white_heart.png';
 import shareIcon from '../assets/img/share.png';
 import { useParams } from 'react-router-dom';
 import UploadImgModal from '../components/UploadImgModal';
@@ -22,7 +23,8 @@ const StoreDetailPage =() => {
     const [selectedOptions, setSelectedOptions] = useState([]);
     const [showColorOption, setShowColorOption] = useState(false);
     const [showSizeOption, setShowSizeOption] = useState(false);
-
+    const [isLiked, setIsLiked] = useState(false);
+    const jwtToken = localStorage.getItem("login-token");
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [imageList, setImageList] = useState([]);
     const [aiImage, setAiImage] = useState(null);
@@ -276,6 +278,66 @@ const StoreDetailPage =() => {
       
       };
 
+      const handleCartClick = async (event, selectedOptions) => {
+
+        if (!selectedOptions[0] || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
+          alert('옵션을 선택해주십시오.');
+          return;
+      }
+        event.stopPropagation();
+        // URLSearchParams를 사용하여 selectedOptions 객체를 URL-encoded form 데이터로 변환
+
+        const formData = new URLSearchParams();
+        formData.append('size', selectedOptions[0].size);
+        formData.append('color', selectedOptions[0].color);
+        formData.append('amount', selectedOptions[0].quantity);
+        console.log(formData.toString());
+    
+        try {
+            const response = await fetch(`http://155.230.43.12:8090/normalUser/shopping/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+                body: formData.toString(), // URLSearchParams 객체를 문자열로 변환하여 body에 설정
+            });
+    
+            if (response.ok) {
+                alert('상품이 장바구니에 추가되었습니다');
+            } else {
+                console.error('Failed to add product to cart');
+            }
+        } catch (error) {
+            console.error('Error adding product to cart:', error);
+        }
+    };
+    
+
+      const handleHeartClick = async (event) => {
+        event.stopPropagation(); // 이벤트 버블링 방지
+        console.log(jwtToken);
+        try {
+            const response = await fetch(`http://218.233.221.147:8080/normalUser/like/${productId}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`
+                },
+            });
+
+            if (response.ok) {
+                console.log('Product liked successfully');
+                setIsLiked(!isLiked);
+            } else {
+                console.error('Failed to like product');
+            }
+        } catch (error) {
+            console.error('Error liking product:', error);
+        }
+    };
+
+    const heartIcon = isLiked ? FullheartIcon : EmptyheartIcon ;
+
       const copyCurrentURL = async () => {
         try {
           // 현재 페이지의 URL을 클립보드에 복사
@@ -317,7 +379,7 @@ const StoreDetailPage =() => {
                         </div>
                         </div>
                         <div className="productDetail_iconContainer">
-                            <img className='storedetail_heart-icon' src={heartIcon} alt='heartIcon'/>
+                            <img className='storedetail_heart-icon' src={heartIcon} alt='heartIcon' onClick={(event) => handleHeartClick(event)}/>
                             <img className='storedetail_share-icon' src={shareIcon} alt='shareIcon' onClick={copyCurrentURL}/>
                         </div>
                     </div>
@@ -384,7 +446,7 @@ const StoreDetailPage =() => {
                     <div className="productDetail_buttonContainer">
                         <div className="productDetail_buttons">
                             <Payment selectedProducts = {products} type={"single"}>BUY IT NOW</Payment>
-                            <button>ADD TO CART</button>
+                            <button onClick={(event) => handleCartClick(event, selectedOptions)}>ADD TO CART</button>
                         </div>
                         <button onClick={handleVirtualTryOn}>AI 가상 실착하기</button>
                         <UploadImgModal isOpen={isModalOpen} onClose={closeUploadModal} onUpload={handleImageUpload}/>
