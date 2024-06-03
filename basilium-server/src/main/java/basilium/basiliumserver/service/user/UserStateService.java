@@ -189,10 +189,13 @@ public class UserStateService {
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
 
         if (normalUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + normalUser.get().getUserImageUrl());
             return normalUser.get().getUserImageUrl();
         } else if (brandUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + brandUser.get().getUserImageUrl());
             return brandUser.get().getUserImageUrl();
         } else if (superUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + superUser.get().getUserImageUrl());
             return superUser.get().getUserImageUrl();
         } else {
             return null; // 사용자가 존재하지 않는 경우

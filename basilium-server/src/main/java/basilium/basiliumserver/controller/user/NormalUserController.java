@@ -123,7 +123,8 @@ public class NormalUserController {
     }
 
     @GetMapping("/like/list")
-    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId, RequestBody Purchase){
+    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId){
+        System.out.println("여ㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕ");
         NormalUser ret = normalUserService.userInfoById(userId);
 
         return ResponseEntity.ok(likeService.userLikeInfo(ret.getUserNumber()));

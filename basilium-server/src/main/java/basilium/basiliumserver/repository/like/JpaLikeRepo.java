@@ -19,10 +19,12 @@ public class JpaLikeRepo {
 
         if(temp.size() == 0){
             em.persist(like);
+            System.out.println("좋아요가 등록되었습니다.");
             return "좋아요가 등록되었습니다.";
         }
         else{
             em.remove(temp.get(0));
+            System.out.println("좋아요가 안등록되었습니다.");
             return "좋아요가 취소되었습니다.";
         }
     }

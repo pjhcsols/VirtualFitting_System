@@ -47,7 +47,7 @@ public class ShoppingCartService {
 
 
     }
-
+    @Transactional
     public void addShoppingCart(NormalUser user, Long productId, String size, String color, Long amount){
         ShoppingCart shoppingCart = new ShoppingCart();
         shoppingCart.setNormalUser(user);
