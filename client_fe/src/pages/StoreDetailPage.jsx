@@ -160,7 +160,7 @@ const StoreDetailPage =() => {
       useEffect(() => {
         const fetchData = async () => {
           try {
-            const response = await fetch(`http://218.233.221.147:8080/products/${productId}`);
+            const response = await fetch(`http://155.230.43.12:8090/products/${productId}`);
             if (!response.ok) {
               throw new Error('데이터를 불러올 수 없습니다.');
             }
@@ -305,7 +305,7 @@ const StoreDetailPage =() => {
         console.log(formData.toString());
     
         try {
-            const response = await fetch(`http://218.233.221.147:8080/normalUser/shopping/${productId}`, {
+            const response = await fetch(`http://155.230.43.12:8090/normalUser/shopping/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -329,7 +329,7 @@ const StoreDetailPage =() => {
         event.stopPropagation(); // 이벤트 버블링 방지
         console.log(jwtToken);
         try {
-            const response = await fetch(`http://218.233.221.147:8080/normalUser/like/${productId}`, {
+            const response = await fetch(`http://155.230.43.12:8090/normalUser/like/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${jwtToken}`
@@ -353,12 +353,32 @@ const StoreDetailPage =() => {
         try {
           // 현재 페이지의 URL을 클립보드에 복사
           await navigator.clipboard.writeText(window.location.href);
+          console.log(products);
           alert("링크가 클립보드에 복사되었습니다.");
         } catch (err) {
           console.error("이 페이지의 링크를 복사하는데 실패했습니다.", err);
           alert("링크 복사에 실패했습니다.");
         }
       };
+
+      const handleBuyNowClick = () => {
+
+        if (!selectedOptions[0] || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
+          alert('옵션을 선택해주십시오.');
+          return;
+      }
+        // products 배열의 첫 번째 요소를 복사하여 수정
+        const updatedProduct = {
+            ...products[0],
+            productColor: selectedOptions[0].color,
+            productSize: selectedOptions[0].size,
+            productPrice: totalPrice.toLocaleString()
+        };
+    
+        // 수정된 product로 products 배열을 업데이트
+        setProducts([updatedProduct]);
+    
+    };
       
 
     return (
@@ -460,7 +480,9 @@ const StoreDetailPage =() => {
                     </div>
                     <div className="productDetail_buttonContainer">
                         <div className="productDetail_buttons">
-                            <Payment selectedProducts = {products} type={"single"}>BUY IT NOW</Payment>
+                          <div className="productDetail_buyButton" onClick={handleBuyNowClick}>
+                            <Payment selectedProducts={products} type={"single"}>BUY IT NOW</Payment>
+                          </div>
                             <button onClick={(event) => handleCartClick(event, selectedOptions)}>ADD TO CART</button>
                         </div>
                         <button onClick={handleVirtualTryOn}>AI 가상 실착하기</button>

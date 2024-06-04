@@ -25,7 +25,7 @@ const ShoppingCart = (props) => {
             };
 
             try {
-                const response = await axios.get("http://localhost:8080/normalUser/user/detail", config);
+                const response = await axios.get("http://155.230.43.12:8090/normalUser/user/detail", config);
                 setUserInfo(response.data);
             } catch (error) {
                 console.error("Error fetching user details:", error);
@@ -59,7 +59,7 @@ const ShoppingCart = (props) => {
             await Promise.all(selectedItems.map(async (index) => {
                 const shoppingListId = shoppingData[index].shoppingCartId;
                 console.log("Deleting item with ID:", shoppingListId);
-                await axios.delete(`http://localhost:8080/normalUser/shopping/list?shoppingListId=${shoppingListId}`, {
+                await axios.delete(`http://155.230.43.12:8090/normalUser/shopping/list?shoppingListId=${shoppingListId}`, {
                     headers: headers
                 });
             }));
