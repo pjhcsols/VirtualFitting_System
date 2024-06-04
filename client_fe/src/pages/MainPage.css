@@ -14,17 +14,28 @@
 .mainImg {
     display: flex;
     justify-content: center;
-    align-items: center; 
+    align-items: center;
     position: relative;
     text-align: center;
     margin-bottom: 100px;
+    overflow: hidden; /* 이 부분을 추가하여 mainImg 내부의 모든 내용이 해당 div를 벗어나지 않도록 합니다. */
 }
-  
-.mainImg img {
-    width: 40%;
-    height: 40%;
-    justify-content: center;
+
+.mainImg::after { /* 가상 요소를 이용하여 그라데이션 효과 추가 */
+    content: ''; /* 가상 요소에는 content 속성이 필수입니다. */
+    position: absolute;
+    bottom: 0; /* 이미지의 아래쪽에 위치 */
+    left: 0;
+    width: 100%;
+    height: 20%; /* 그라데이션 효과의 높이를 조절하고 싶다면 이 값을 조정하세요. */
+    background: linear-gradient(to bottom, rgba(30, 30, 30, 0), #1E1E1E); /* 상단은 투명, 하단은 배경색과 동일하게 */
 }
+
+.mainImage {
+    width: 100vw;
+    position: relative; /* 이미지가 가상 요소와 올바르게 겹치도록 설정 */
+}
+
 
 .imgText1 {
     position: absolute;
@@ -33,15 +44,19 @@
     transform: translate(-50%, -50%);
     color: white;
     font-size: 40px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .imgText2 {
     position: absolute;
-    top: 45%;
+    top: 36%;
     left: 50%;
     transform: translate(-50%, -50%);
     color: white;
     font-size: 15px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .imgBtn {
@@ -49,17 +64,20 @@
     align-items: center;
     position: absolute;
     gap: 5px;
-    top: 70%;
+    top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
     border: white;
     background-color: transparent;
     border-radius: 40px;
-    border: 2px solid white;
+    border: 3px solid white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
     color: white;
     padding: 15px 22px;
     padding-bottom: 20px;
     font-size: 20px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
     cursor: pointer;
 }
   
@@ -120,7 +138,7 @@
     color: white;
     text-align: center;
     white-space: pre-line;
-    margin-bottom: 20px;
+    margin-bottom: 50px;
 }
 
 .brandimageContainer {
@@ -132,17 +150,18 @@
 
 .image {
     display: flex;
-    width: 200px;
-    height: 300px;
+    width: 300px;
+    height: 400px;
     background-color: #ccc;
     margin: 0 30px;
+    margin-bottom: 30px;
 }
 
 .loadMore {
     text-align: center;
     margin-top: 20px;
     margin-bottom: 120px;
-    font-size: 10px;
+    font-size: 15px;
     cursor: pointer;
 }
 
@@ -179,9 +198,9 @@
 
 
 .imageNew {
-    width: 350px;
-    height: 200px;
+    width: 500px;
+    height: 350px;
     background-color: #ccc;
     margin: 50px 20px;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
 }
