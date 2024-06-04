@@ -162,7 +162,7 @@ function StorePage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                let url = 'http://218.233.221.147:8080/products/getAll';
+                let url = 'http://155.230.43.12:8090/products/getAll';
                 let data = [];
     
                 // "New Arrival" 선택 시 모든 상품을 기본 순으로 가져온 후 역순으로 정렬
@@ -174,10 +174,10 @@ function StorePage() {
                 // "Top", "Outer", "Bottom", "Bag & Acc" 선택 시 특정 categoryId에 따라 상품을 가져오고 역순으로 정렬
                 else {
                     const categories = {
-                        "Top": [1, 2, 3, 4, 5, 11, 13],
+                        "Top": [1, 2, 3, 4, 5, 13],
                         "Outer": [10, 11, 12],
                         "Bottom": [6, 7, 8, 9],
-                        "Bag & Acc": [19]
+                        "Bag & Acc": [19],
                     };
     
                     // 선택된 category에 따른 categoryId 목록을 가져옴
@@ -185,7 +185,7 @@ function StorePage() {
     
                     // 모든 categoryId에 대해 상품을 병렬로 가져옵니다.
                     const responses = await Promise.all(categoryIds.map(categoryId =>
-                        fetch(`http://218.233.221.147:8080/products/category/${categoryId}`)
+                        fetch(`http://155.230.43.12:8090/products/category/${categoryId}`)
                     ));
     
                     // 모든 응답에서 JSON 데이터를 병렬로 추출
@@ -216,8 +216,6 @@ function StorePage() {
     return (
         <div className="storePage">
             <HeaderStore />
-            <div className="store_mainImg"></div>
-            <div className="horizontal-line"></div> 
             <div className="new-arrival">
                 <span>{category}</span> 
                 <div className="underline"></div>

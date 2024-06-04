@@ -23,7 +23,7 @@ const MyPage = () => {
             }
         };
 
-        axios.get("http://localhost:8080/normalUser/userInfo", config)
+        axios.get("http://155.230.43.12:8090/normalUser/userInfo", config)
         .then(response =>{
             setUserData(response.data);
             console.log("1번--------------")
@@ -34,7 +34,7 @@ const MyPage = () => {
             console.log('Error fetching user data:', error);
         })
 
-        axios.get("http://localhost:8080/normalUser/order/history", config)
+        axios.get("http://155.230.43.12:8090/normalUser/order/history", config)
         .then(response =>{
             setOrderData(response.data);
             console.log("2번--------------")
@@ -45,7 +45,7 @@ const MyPage = () => {
             console.log('Error fetching order data:', error);
         })
 
-        axios.get("http://localhost:8080/normalUser/shopping/list", config)
+        axios.get("http://155.230.43.12:8090/normalUser/shopping/list", config)
         .then(response =>{
             setShoppingData(response.data);
             console.log("3번--------------")
@@ -56,7 +56,7 @@ const MyPage = () => {
             console.log('Error fetching order data:', error);
         })
 
-        axios.get("http://localhost:8080/normalUser/like/list", config)
+        axios.get("http://155.230.43.12:8090/normalUser/like/list", config)
         .then(response =>{
             setLikeData(response.data);
             console.log("4번--------------")

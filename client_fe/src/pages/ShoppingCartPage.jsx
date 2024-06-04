@@ -17,7 +17,7 @@ const ShoppingCartPage = () => {
       },
     };
     axios
-      .get("http://localhost:8080/normalUser/shopping/list", config)
+      .get("http://155.230.43.12:8090/normalUser/shopping/list", config)
       .then((response) => {
         setShoppingData(response.data);
         console.log("3번--------------");
@@ -30,7 +30,7 @@ const ShoppingCartPage = () => {
 
     // 좋아요 목록 또한 가져와야 함
     axios
-      .get("http://localhost:8080/normalUser/like/list", config) // 좋아요 목록을 가져오는 API 엔드포인트를 입력해야 함
+      .get("http://155.230.43.12:8090/normalUser/like/list", config) // 좋아요 목록을 가져오는 API 엔드포인트를 입력해야 함
       .then((response) => {
         console.log("좋아요 정보");
         console.log(response.data);

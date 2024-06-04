@@ -222,6 +222,11 @@
     margin-top: 10px;
 }
 
+.productDetail_buyButton{
+    width: 100%;
+    margin-right: 15px;
+}
+
 .productDetail_buttonContainer button {
     background-color: transparent;
     border: 1px solid white;
@@ -232,14 +237,10 @@
 }
 
 .productDetail_buttons button {
-    margin-right: 15px;
-    width: 50%;
+    width: 100%;
     margin-bottom: 10px;
 }
 
-.productDetail_buttons button:last-child {
-    margin-right: 0;
-}
 
 .storeDetailPage_select{
     border-bottom: solid 1px white;
