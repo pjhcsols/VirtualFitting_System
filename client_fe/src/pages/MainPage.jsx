@@ -5,6 +5,11 @@ import rightImage from '../assets/img/right.png'
 import mainImg from '../assets/img/mainImg.jpg';
 import playbtn from '../assets/img/playBtn.png';
 import { useNavigate } from 'react-router-dom';
+import brandImg1 from '../assets/img/brandImg1.jpg';
+import brandImg2 from '../assets/img/brandImg2.jpg';
+import brandImg3 from '../assets/img/brandImg3.jpg';
+import aiImg1 from '../assets/img/aiImg1.jpg';
+import aiImg2 from '../assets/img/aiImg2.jpg';
 
 
 function MainPage() {
@@ -21,7 +26,7 @@ function MainPage() {
         <HeaderBottom />
         <div className='main'>
         <div className='mainImg'>
-            <img src={mainImg} alt="mainImage" />
+            <img className="mainImage" src={mainImg} alt="mainImage" />
             <p className='imgText1'>BASILIUM</p>
             <p className='imgText2'>Basilium of the King and Queen casual & street brand</p>
             <button className='imgBtn' onClick={() => handleClick('/store')}>
@@ -48,9 +53,9 @@ function MainPage() {
                     </span>
                 </div>
                 <div className='brandimageContainer'>
-                    <div className='image'></div>
-                    <div className='image'></div>
-                    <div className='image'></div>
+                    <img className="image" src={brandImg1} alt="brandImage1" />
+                    <img className="image" src={brandImg2} alt="brandImage2" />
+                    <img className="image" src={brandImg3} alt="brandImage3" />
                 </div>
                 <div className='loadMore'>
                     <span onClick={() => handleClick('/about')}>Load More</span>
@@ -63,12 +68,12 @@ function MainPage() {
                 </div>
                 <div className='imageContainer'>
                   <div className='imageGroup'>
-                    <div className='imageNew'></div>
+                      <img className="imageNew" src={aiImg1} alt="aiImage1" />
                       <div>360 view of clothes</div>
                       <div>의류를 3D로 간접 체험 가능</div>
                     </div>
                   <div className='imageGroup'>
-                    <div className='imageNew'></div>
+                      <img className="imageNew" src={aiImg2} alt="aiImage2" />
                       <div>3D Modeling</div>
                       <div>자신을 3D모델로 의류 착용 가능</div>
                     </div>

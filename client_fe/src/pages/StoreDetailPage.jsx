@@ -7,6 +7,7 @@ import shareIcon from '../assets/img/share.png';
 import { useParams } from 'react-router-dom';
 import UploadImgModal from '../components/UploadImgModal';
 import Payment from "../components/Payment";
+import LoadingImg from "../assets/img/Loading.png";
 
 const StoreDetailPage =() => {
     const { productId } = useParams();
@@ -27,6 +28,7 @@ const StoreDetailPage =() => {
     const jwtToken = localStorage.getItem("login-token");
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [imageList, setImageList] = useState([]);
+    const [isimgLoading, setIsimgLoading] = useState(false);
     const [aiImage, setAiImage] = useState(null);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -47,7 +49,10 @@ const StoreDetailPage =() => {
       };
   
       try {
-        const aiServerResponse = await fetch('http://172.20.33.110:9090/receive_data', {
+
+        setIsimgLoading(true);
+
+        const aiServerResponse = await fetch('http://155.230.29.183:9090/receive_data', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -71,6 +76,9 @@ const StoreDetailPage =() => {
         setCurrentImageIndex(0); // 첫 번째 이미지로 인덱스 설정
   
         console.log('AI 서버 응답으로 받은 이미지 URL:', newAiImageUrl);
+
+        setIsimgLoading(false);
+
       } catch (error) {
         console.error(error);
       }
@@ -232,10 +240,10 @@ const StoreDetailPage =() => {
                                  clothImg : product.productPhotoUrl[0]} ;
           console.log(photosToSend);
 
-
+          setIsimgLoading(true);
           
           // AI 서버로 전송
-          const aiServerResponse = await fetch('http://172.20.33.110:9090/receive_data', {
+          const aiServerResponse = await fetch('http://155.230.29.183:9090/receive_data', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -257,8 +265,10 @@ const StoreDetailPage =() => {
       
           console.log('AI 서버 응답으로 받은 이미지 URL:', aiImageUrl);
 
+          setIsimgLoading(false);
+
           //AI서버에서 사진전송완료 이후 삭제 요청을 위한 응답메세지 전송
-          const acknowledgeResponse = await fetch('http://172.20.33.110:9090/acknowledge_receipt', {
+          const acknowledgeResponse = await fetch('http://155.230.29.183:9090/acknowledge_receipt', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -278,6 +288,7 @@ const StoreDetailPage =() => {
       
       };
 
+      
       const handleCartClick = async (event, selectedOptions) => {
 
         if (!selectedOptions[0] || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
@@ -294,7 +305,7 @@ const StoreDetailPage =() => {
         console.log(formData.toString());
     
         try {
-            const response = await fetch(`http://155.230.43.12:8090/normalUser/shopping/${productId}`, {
+            const response = await fetch(`http://218.233.221.147:8080/normalUser/shopping/${productId}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
@@ -355,7 +366,11 @@ const StoreDetailPage =() => {
             <Header_Store />
             <div className="purchaseFrame">
               <div className="image-slider">
-                <img className="productImg" src={imageList[currentImageIndex]} alt="제품 사진" />
+                {isimgLoading ? (
+                  <img className="productImg" src={LoadingImg} alt="로딩 화면" />
+                ) : (
+                  <img className="productImg" src={imageList[currentImageIndex]} alt="제품 사진" />
+                )}
                 <button className='prev' onClick={prevImage}>&#10094;</button>
                 <button className='next' onClick={nextImage}>&#10095;</button>
               </div>
