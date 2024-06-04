@@ -11,7 +11,7 @@ import pwdImg from '../assets/img/password.png';
 import NaverLogin from "../API/NaverLogin.js";  
 import KaKaoLogin from "../API/KakaoLogin.js";
 import GoogleLogin from "../API/GoogleLogin.js";
-
+import Swal from "sweetalert2";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -91,17 +91,32 @@ const LoginForm = () => {
             const response = await ServerAPI.post('/User/login', data);
 
             if (response.status === 200) {
-                // console.log(response.data);
-                localStorage.clear()
-                localStorage.setItem('login-token', response.data)
-                localStorage.setItem('user_id', data.userId)
-                console.log(response);
-                
+                localStorage.clear();
+                localStorage.setItem('login-token', response.data.token);
+                const userInfo = {
+                    userId: data.userId,
+                    loginType: response.data.type
+                };
+                localStorage.setItem('user_info', JSON.stringify(userInfo));
+
+                console.log(response.data);
+                console.log(data.userId);   
+              
                 navigate('/');
-              }
+            }
         }
         catch (error) {
-            navigate('/login');
+            Swal.fire({
+                title: '아이디 혹은 비밀번호가 일치하지않습니다!',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                confirmButtonText: '확인',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login');
+                    console.log("오류 발생", error);
+                }
+            });
         }
     };
 

@@ -30,7 +30,7 @@ export const AuthProvider = ({ children }) => {
   
         setUser(null);
         localStorage.removeItem('login-token');
-        localStorage.removeItem('user_id');
+        localStorage.removeItem('user_info');
       } catch (error) {
         console.error('로그아웃 중 에러 발생', error);
       }

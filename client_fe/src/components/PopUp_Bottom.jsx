@@ -8,7 +8,10 @@ const PopUpBottom = ({ logout }) => {
     const [isOpen, setIsOpen] = useState(true);
     const popupRef = useRef(null);
     const navigate = useNavigate();
-    const userId = localStorage.getItem('user_id');
+    const storedUserInfo = localStorage.getItem('user_info');
+    const userInfo = JSON.parse(storedUserInfo);
+    const loginType = userInfo.loginType;
+    const userId = userInfo.userId;
 
     const handleClick = (path) => {
         console.log('클릭됨');
@@ -43,7 +46,10 @@ const PopUpBottom = ({ logout }) => {
                 <div className="popup-container-bottom" ref={popupRef}>
                     <div className="user-bottom-container">
                         <img style={{ width: '70px', height: '70px', cursor: 'pointer', marginTop: '25px' }} src={userImg} alt="user" onClick={() => handleClick('/MyPage')} />
-                        <span className="userId-bottom">{userId}님</span>
+                        <span className="userId-bottom">
+                            {userId}님<br/>
+                            {loginType}
+                        </span>
                     </div>
                     <button className="logoutButton" onClick={handleLogout}>logout</button>
                 </div>

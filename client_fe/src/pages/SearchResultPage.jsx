@@ -34,7 +34,7 @@ function SearchResultPage() {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                let url = 'http://218.233.221.147:8080/products/getAll';
+                let url = 'http://155.230.43.12:8090/products/getAll';
                 let data = await fetch(url).then(response => response.json());
     
                 if (searchText) {

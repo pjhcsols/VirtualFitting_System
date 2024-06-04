@@ -6,15 +6,21 @@ import userImg from '../assets/img/userImg.svg';
 const Profile_Header = (props) => {
 
     const navigate = useNavigate();
+    const storedUserInfo = localStorage.getItem('user_info');
+    const userInfo = JSON.parse(storedUserInfo);
+    const loginType = userInfo.loginType;
+    const userId = userInfo.userId;
 
     const handleEditProfile = () => {
         // 프로필 편집 페이지로 이동
         navigate('/ProfilePage');
     };
 
+    const handleRegisterProduct = () => {
+        navigate('/productRegisteration');
+    };
 
     return (
-        
         <div className="profile_container">
             {props.userData.userImageUrl ? (
                 <img className="profile" src={props.userData.userImageUrl} alt="User Image" />
@@ -24,7 +30,8 @@ const Profile_Header = (props) => {
                 </div>
             )}
             <div className="profile_info">
-                <h2>{props.userData.id ?  props.userData.id : "unknown user"}</h2>
+                {/* <h2>{props.userData.id ? props.userData.id : "unknown user"}</h2> */}
+                <h2>{userId}</h2>
                 <h3>{props.userData.emailAddress ? props.userData.emailAddress : "unknownuser@gmail.com"}</h3>
             </div>
             
@@ -33,7 +40,6 @@ const Profile_Header = (props) => {
             </div>
         </div>
     );
-
 }
 
 export default Profile_Header;
