@@ -8,7 +8,10 @@
         const [isOpen, setIsOpen] = useState(true);
         const popupRef = useRef(null);
         const navigate = useNavigate();
-        const userId = localStorage.getItem('user_id'); 
+        const storedUserInfo = localStorage.getItem('user_info');
+        const userInfo = JSON.parse(storedUserInfo);
+        const loginType = userInfo.loginType;
+        const userId = userInfo.userId;
 
         useEffect(() => {
             const handleOutsideClick = (e) => {
@@ -43,7 +46,10 @@
                     <div className="popup-container-store" ref={popupRef}>
                         <div className="user-store-container">
                             <img style={{ width: '70px', height: '70px', marginRight: '40px', marginTop: '25px', cursor:'pointer'}} src={userImg} alt="user" onClick={() => handleClick('/MyPage')}/>
-                            <span className="userId-store">{userId}</span>
+                            <span className="userId-store">
+                                {userId}님<br/>
+                                {loginType}
+                            </span>
                         </div>
                         <button className="logoutButton" onClick={handleLogout}>logout</button>
                     </div>

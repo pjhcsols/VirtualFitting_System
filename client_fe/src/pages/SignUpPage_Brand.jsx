@@ -174,6 +174,7 @@ const SignUp = () => {
         try {
             console.log("서버응답*******************8");
             const response = await ServerAPI.post('/brandUser/signup', data);
+            
             navigate("/login");
         }
         catch (error) {
