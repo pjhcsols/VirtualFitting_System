@@ -1,6 +1,7 @@
 package basilium.basiliumserver.controller.user;
 
 import basilium.basiliumserver.domain.user.LoginRequest;
+import basilium.basiliumserver.domain.user.LoginResponse;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.User;
 import basilium.basiliumserver.service.user.UserStateService;
@@ -58,23 +59,16 @@ public class UserStateController {
 
  */
     @PostMapping("/login")
-    public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest) {
-        log.info("------------------------------------------------------------");
-        log.info("1. User 로그인 시도");
-        log.info("ID: " + loginRequest.getUserId() + " ");
-        log.info("Password: " + loginRequest.getUserPassword() + " ");
-        LoginStatus loginResult = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
-        if (loginResult != LoginStatus.SUCCESS) {
-            return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
+    public ResponseEntity<?> loginNormalUser(@RequestBody LoginRequest loginRequest) {
+        LoginResponse response = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
+        if (response.getType() == null) {
+
+            return new ResponseEntity<>("로그인 실패", HttpStatus.BAD_REQUEST);
         }
-        log.info("------------------------------------------------------------");
-        log.info("2. 로그인 성공");
-        // 로그인 성공 후 토큰 생성
-        //노말 유저에 아이디가 없으면 브랜드 유저, 브랜드유저에도 아이디가 없으면, 슈퍼유저에서 토큰을 생성
+
         String token = userStateService.createTokenByUserType(loginRequest.getUserId());
-        log.info("[User 토큰 정상 발급]");
-        log.info(token);
-        return ResponseEntity.ok().body(token);
+        response.setToken(token);
+        return ResponseEntity.ok().body(response);
     }
 
     @GetMapping("/logout")

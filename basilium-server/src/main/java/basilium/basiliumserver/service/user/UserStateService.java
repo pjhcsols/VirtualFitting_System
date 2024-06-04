@@ -1,6 +1,7 @@
 package basilium.basiliumserver.service.user;
 
 import basilium.basiliumserver.domain.user.BrandUser;
+import basilium.basiliumserver.domain.user.LoginResponse;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.domain.user.SuperUser;
@@ -54,19 +55,22 @@ public class UserStateService {
 
 
 
-    public LoginStatus login(String userId, String userPassword) {
+    public LoginResponse login(String userId, String userPassword) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
-
+        LoginResponse response = new LoginResponse();
         if (normalUser.isPresent() && normalUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("NORMAL");
+            return response;
         } else if (brandUser.isPresent() && brandUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("BRAND");
+            return response;
         } else if (superUser.isPresent() && superUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("ADMIN");
+            return response;
         } else {
-            return LoginStatus.FAIL;
+            return response;
         }
     }
 
