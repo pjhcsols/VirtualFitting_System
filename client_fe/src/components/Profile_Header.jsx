@@ -13,7 +13,7 @@ const Profile_Header = (props) => {
 
     const handleEditProfile = () => {
         // 프로필 편집 페이지로 이동
-        navigate('/ProfilePage');
+        navigate('/ProfilePage');   
     };
 
     const handleRegisterProduct = () => {
@@ -37,6 +37,9 @@ const Profile_Header = (props) => {
             
             <div className="profile_edit">
                 <button onClick={handleEditProfile}>프로필 편집</button>
+                {loginType === 'BRAND' && (
+                    <button onClick={handleRegisterProduct}>상품 등록</button>
+                )}
             </div>
         </div>
     );

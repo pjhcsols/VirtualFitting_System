@@ -40,8 +40,6 @@ export const AuthProvider = ({ children }) => {
     useEffect(() => {
       const fetchUserData = async () => {
         const token = localStorage.getItem('login-token');
-        const storedUserId = localStorage.getItem('user_id');
-        console.log('user:', storedUserId);
         // if (token && storedUserId) {
         //   try {
         //     setUser({
