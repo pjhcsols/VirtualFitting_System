@@ -29,7 +29,7 @@
 
 .profile_edit {
     margin-left: 14%;
-    margin-bottom : 5%
+    margin-bottom : 5%; 
 }
 
 .profile_edit button {
@@ -44,5 +44,5 @@
     height : 50px;
     font-size: 20px;
     font-weight: bold;
-
+    margin-right: 10px;
 }

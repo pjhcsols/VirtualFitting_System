@@ -98,9 +98,6 @@ const LoginForm = () => {
                     loginType: response.data.type
                 };
                 localStorage.setItem('user_info', JSON.stringify(userInfo));
-
-                console.log(response.data);
-                console.log(data.userId);   
               
                 navigate('/');
             }
