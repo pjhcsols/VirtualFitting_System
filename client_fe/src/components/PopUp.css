@@ -57,7 +57,7 @@
     color: black;
     font-weight: bold;
     position: relative; /* 상대 위치 설정 */
-    left: -20px;
+    
 }
 
 .user-store-container {

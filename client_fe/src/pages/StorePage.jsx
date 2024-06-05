@@ -175,10 +175,24 @@ function StorePage() {
                 // "Top", "Outer", "Bottom", "Bag & Acc" 선택 시 특정 categoryId에 따라 상품을 가져오고 역순으로 정렬
                 else {
                     const categories = {
-                        "Top": [1, 2, 3, 4, 5, 13],
+                        "Top": [1, 2, 3, 4, 5, 13], 
                         "Outer": [10, 11, 12],
                         "Bottom": [6, 7, 8, 9],
                         "Bag & Acc": [19],
+                        "T-shirts" : [1],
+                        "long sleeves" : [2], 
+                        "blouse" : [3], 
+                        "knitwear" : [4], 
+                        "hood" : [5], 
+                        "vest" : [13],
+                        "jacket" : [10], 
+                        "cardigan" : [11], 
+                        "padding" : [12],
+                        "jeans" : [6], 
+                        "slacks" : [7], 
+                        "shorts" : [8], 
+                        "skirt" : [9],
+                        "accessories" : [19]
                     };
     
                     // 선택된 category에 따른 categoryId 목록을 가져옴
@@ -210,7 +224,7 @@ function StorePage() {
     
 
 
-    const handleClick = (productId) => {
+    const handleClick = (productId) => {  
         navigate(`/storeDetail/${productId}`);
     }
 
@@ -218,7 +232,7 @@ function StorePage() {
         <div className="storePage">
             <HeaderStore />
             <div className="new-arrival">
-                <span>{category}</span> 
+                <span>{category}</span>     
                 <div className="underline"></div>
             </div>
             <div className="products-container">

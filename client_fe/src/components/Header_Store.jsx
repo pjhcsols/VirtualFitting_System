@@ -21,7 +21,7 @@ const Header_Store = () => {
         }
     }, [storedUser]);
 
-    const togglePopup = () => {
+    const togglePopup = () => {     
         console.log('클릭');
         setPopupOpen(!popupOpen);
     };
@@ -37,6 +37,20 @@ const Header_Store = () => {
         } else {
             navigate('/login');
         }
+    };
+
+    const [showDropdown, setShowDropdown] = useState({ top: false, outer: false, bottom: false, bagAcc: false });
+
+    const handleMouseEnter = (cate) => {
+        setShowDropdown({ ...showDropdown, [cate]: true });
+    };
+    
+    const handleParentMouseLeave = (catey) => {
+        setShowDropdown({ ...showDropdown, [catey]: false });
+    };
+
+    const handleSubCategoryClick = (cate) => {
+        handleParentMouseLeave(cate);
     };
 
     // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
@@ -55,7 +69,7 @@ const Header_Store = () => {
     const handleKeyDown = (e) => { 
         if (e.key === 'Enter') { // 엔터키를 누를 경우
             navigate('/searchResult', {state: {searchText}});
-            setShowSearchBar(false);
+            setShowSearchBar(false); 
             setSearchText('');
         }
     };
@@ -72,10 +86,55 @@ const Header_Store = () => {
                 <span className="menu-title" onClick={() => handleClick('/', 'Home')}>Basilium</span>
                 <span onClick={() => handleClick('/store', 'New Arrival')}>New Arrival</span>
                 <span onClick={() => handleClick('/store', 'Best 50')}>Best 50</span>
-                <span onClick={() => handleClick('/store', 'Top')}>Top</span>
-                <span onClick={() => handleClick('/store', 'Outer')}>Outer</span>
-                <span onClick={() => handleClick('/store', 'Bottom')}>Bottom</span>
-                <span onClick={() => handleClick('/store', 'Bag & Acc')}>Bag & Acc</span>
+                <span onMouseEnter={() => handleMouseEnter('top')} onMouseLeave={() => handleParentMouseLeave('top')}>
+                    Top
+                    {showDropdown.top && (
+                        <div className="dropdown-container">
+                            <div className="dropdown-content" onMouseEnter={() => handleMouseEnter('top')} onMouseLeave={() => handleParentMouseLeave('top')}>
+                                <div onClick={() => {handleClick('/store', 'T-shirts'); handleSubCategoryClick('top');}}>T-shirts</div>
+                                <div onClick={() => {handleClick('/store', 'long sleeves'); handleSubCategoryClick('top');}}>long sleeves</div>
+                                <div onClick={() => {handleClick('/store', 'blouse'); handleSubCategoryClick('top');}}>blouse</div>
+                                <div onClick={() => {handleClick('/store', 'knitwear'); handleSubCategoryClick('top');}}>knitwear</div>
+                                <div onClick={() => {handleClick('/store', 'hood'); handleSubCategoryClick('top');}}>hood</div>
+                                <div onClick={() => {handleClick('/store', 'vest'); handleSubCategoryClick('top');}}>vest</div>
+                            </div>
+                        </div>
+                    )}
+                </span>
+                <span onMouseEnter={() => handleMouseEnter('outer')} onMouseLeave={() => handleParentMouseLeave('outer')}>
+                    Outer
+                    {showDropdown.outer && (
+                        <div className="dropdown-container">
+                            <div className="dropdown-content" onMouseEnter={() => handleMouseEnter('outer')} onMouseLeave={() => handleParentMouseLeave('outer')}>
+                                <div onClick={() => {handleClick('/store', 'jacket'); handleSubCategoryClick('outer');}}>jacket</div>
+                                <div onClick={() => {handleClick('/store', 'cardigan'); handleSubCategoryClick('outer');}}>cardigan</div>
+                                <div onClick={() => {handleClick('/store', 'padding'); handleSubCategoryClick('outer');}}>padding</div>
+                            </div>
+                        </div>
+                    )}
+                </span>
+                <span onMouseEnter={() => handleMouseEnter('bottom')} onMouseLeave={() => handleParentMouseLeave('bottom')}>
+                    Bottom
+                    {showDropdown.bottom && (
+                        <div className="dropdown-container">
+                            <div className="dropdown-content" onMouseEnter={() => handleMouseEnter('bottom')} onMouseLeave={() => handleParentMouseLeave('bottom')}>
+                                <div onClick={() => {handleClick('/store', 'pants'); handleSubCategoryClick('bottom');}}>pants</div>
+                                <div onClick={() => {handleClick('/store', 'shorts'); handleSubCategoryClick('bottom');}}>shorts</div>
+                                <div onClick={() => {handleClick('/store', 'skirt'); handleSubCategoryClick('bottom');}}>skirt</div>
+                            </div>
+                        </div>
+                    )}
+                </span>
+                <span onMouseEnter={() => handleMouseEnter('bagAcc')} onMouseLeave={() => handleParentMouseLeave('bagAcc')}>
+                    Bag & Acc
+                    {showDropdown.bagAcc && (  
+                        <div className="dropdown-container">
+                            <div className="dropdown-content" onMouseEnter={() => handleMouseEnter('bagAcc')} onMouseLeave={() => handleParentMouseLeave('bagAcc')}>
+                                <div onClick={() => {handleClick('/store', 'accessory'); handleSubCategoryClick('bagAcc');}}>accessory</div>
+                            </div>
+                        </div> 
+                    )}
+                </span>
                 <div onClick={toggleSearchBar}>
                     <img style={{width: '12px', height:'12px', marginRight: '3px', marginLeft: '100px'}} src={SearchImg} alt="Search" />
                     <span>Search</span>   
