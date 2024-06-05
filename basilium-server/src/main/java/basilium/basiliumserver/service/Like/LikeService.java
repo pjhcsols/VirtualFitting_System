@@ -17,4 +17,7 @@ public class LikeService {
         return likeRepo.userLikeHistory(userId);
     }
 
+
+    public List<Product> topFive(){return likeRepo.getTopFiveProduct();}
+
 }

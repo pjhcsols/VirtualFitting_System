@@ -156,6 +156,12 @@ public class NormalUserController {
         return ResponseEntity.ok("장바구니 등록이 완료되었습니다.");
     }
 
+
+    @GetMapping("like/rank")
+    public ResponseEntity<?> getTopFiveProduct(){
+        return ResponseEntity.ok(likeService.topFive());
+    }
+
     /*
     @PostMapping("/login")
     public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest){
