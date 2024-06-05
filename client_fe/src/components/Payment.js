@@ -52,7 +52,7 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                     pay_method: "card",
                     merchant_uid: orderId,
                     name: `주문명: ${productNames}`,
-                    amount: 100,//selectedProducts.reduce((total, product) => total + (product.price * product.totalCnt), 0),
+                    amount: selectedProducts.reduce((total, product) => total + (product.price * product.totalCnt), 0),
                     buyer_email: user.emailAddress,
                     buyer_name: user.name,
                     buyer_tel: user.phoneNumber,
