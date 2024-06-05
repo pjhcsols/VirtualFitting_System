@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import HeaderBottom from '../components/Header_Bottom';
 import './MainPage.css';
 import rightImage from '../assets/img/right.png'
@@ -15,11 +15,44 @@ import aiImg2 from '../assets/img/aiImg2.jpg';
 function MainPage() {
 
   const navigate = useNavigate();
+  const [photoUrls, setPhotoUrls] = useState([]);
 
   const handleClick = (path) => {
     console.log('클릭됨');
     navigate(path);
 };
+
+async function fetchProductPhotoUrls() {
+  try {
+      // 서버로부터 데이터 가져오기
+      const response = await fetch('http://155.230.43.12:8090/normalUser/like/rank');
+      if (!response.ok) {
+          throw new Error('서버 응답에 실패했습니다.');
+      }
+      
+      const data = await response.json();
+
+      // productPhotoUrl[0] 값만 저장할 배열
+      const photoUrls = [];
+
+      // 데이터에서 productPhotoUrl[0] 값 추출
+      data.forEach(item => {
+          if (item.productPhotoUrl && item.productPhotoUrl.length > 0) {
+              photoUrls.push(item.productPhotoUrl[0]);
+          }
+      });
+      console.log(photoUrls);
+
+      setPhotoUrls(photoUrls);
+
+  } catch (error) {
+      console.error('오류 발생:', error);
+  }
+}
+
+useEffect(() => {
+  fetchProductPhotoUrls();
+}, []);
 
   return (
     <div>
@@ -36,11 +69,9 @@ function MainPage() {
           <div className='bestSeller'>
             <h2>Best Seller</h2>
             <div className='bestSellerImagesContainer'>
-              <div className='bestSellerImg'></div>
-              <div className='bestSellerImg'></div>
-              <div className='bestSellerImg'></div>
-              <div className='bestSellerImg'></div>
-              <div className='bestSellerImg'></div>
+            {photoUrls.slice(0, 5).map((url, index) => (
+                <img key={index} className='bestSellerImg' src={url} alt="제품 사진"/>
+              ))}
             </div>
           </div>
             <div className='mainBrand'>

@@ -55,6 +55,7 @@ const Product = ({ product, onClick }) => {
 
     const handleHeartClick = async (event, productId) => {
         event.stopPropagation(); // 이벤트 버블링 방지
+        console.log(jwtToken);
         try {
             const response = await fetch(`http://155.230.43.12:8090/normalUser/like/${productId}`, {
                 method: 'POST',

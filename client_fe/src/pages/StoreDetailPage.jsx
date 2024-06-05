@@ -166,7 +166,6 @@ const StoreDetailPage =() => {
             }
             const data = await response.json();
             setProduct(data);
-            setProducts([data]);
             setPricePerItem(data.productPrice);
             setImageList(data.productPhotoUrl);
             setColors(data.productColor);
@@ -362,20 +361,23 @@ const StoreDetailPage =() => {
       };
 
       const handleBuyNowClick = () => {
-
+        console.log(products);
         if (!selectedOptions[0] || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
           alert('옵션을 선택해주십시오.');
           return;
       }
-        // products 배열의 첫 번째 요소를 복사하여 수정
+
         const updatedProduct = {
-            ...products[0],
-            productColor: selectedOptions[0].color,
-            productSize: selectedOptions[0].size,
-            productPrice: totalPrice.toLocaleString()
+            color : selectedOptions[0].color,
+            creationTime : null,
+            photoUrl :  product.productPhotoUrl[0],
+            price : pricePerItem,
+            productName : product.productName,
+            shoppingCartId : null,
+            size: selectedOptions[0].size,
+            totalCnt: selectedOptions[0].quantity,
         };
     
-        // 수정된 product로 products 배열을 업데이트
         setProducts([updatedProduct]);
     
     };
