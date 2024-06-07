@@ -19,6 +19,7 @@ import KaKaoLogin from './API/KakaoLogin';
 import GoogleLogin from './API/GoogleLogin';
 import SearchResultPage from './pages/SearchResultPage';
 import ProductRegisterationPage from './pages/ProductRegisterationPage';
+import Redirection from './components/Redirection';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
           <Route path="/googleLogin" element={<GoogleLogin />} />
           <Route path="/searchResult" element={<SearchResultPage />} />
           <Route path="/productRegisteration" element={<ProductRegisterationPage />} />
+          <Route path="/redirection" element={<Redirection />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
