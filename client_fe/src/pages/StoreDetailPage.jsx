@@ -163,6 +163,30 @@ const StoreDetailPage =() => {
       };
 
       useEffect(() => {
+        console.log(selectedOptions);
+      }, [selectedOptions]);
+
+      useEffect(() => {
+        if (selectedOptions.length === 0 || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
+            return;
+        }
+    
+        const updatedProducts = selectedOptions.map(option => ({
+            color: option.color,
+            creationTime: null,
+            photoUrl: product.productPhotoUrl[0],
+            price: pricePerItem,
+            productName: product.productName,
+            shoppingCartId: null,
+            size: option.size,
+            totalCnt: option.quantity,
+        }));
+    
+        setProducts(updatedProducts);
+    }, [selectedOptions]);
+      
+
+      useEffect(() => {
         const fetchData = async () => {
           try {
             const response = await fetch(`http://155.230.43.12:8090/products/${productId}`);
@@ -371,25 +395,12 @@ const StoreDetailPage =() => {
 
       const handleBuyNowClick = () => {
         console.log(products);
-        if (!selectedOptions[0] || !selectedOptions[0].color || !selectedOptions[0].size || !selectedOptions[0].quantity) {
-          alert('옵션을 선택해주십시오.');
-          return;
-      }
-
-        const updatedProduct = {
-            color : selectedOptions[0].color,
-            creationTime : null,
-            photoUrl :  product.productPhotoUrl[0],
-            price : pricePerItem,
-            productName : product.productName,
-            shoppingCartId : null,
-            size: selectedOptions[0].size,
-            totalCnt: selectedOptions[0].quantity,
-        };
-    
-        setProducts([updatedProduct]);
-    
+        if (products.length === 0 || !products[0].color || !products[0].size || !products[0].totalCnt) {
+            alert('옵션을 선택해주십시오.');
+            return;
+        }
     };
+
       
 
     return (
