@@ -89,6 +89,11 @@ const StoreDetailPage =() => {
         setImageList(product.productPhotoUrl);
       }
     }, [product]);
+
+    useEffect(() => {
+      const likedProducts = JSON.parse(localStorage.getItem('likedProducts')) || {};
+      setIsLiked(likedProducts[productId] || false);
+    }, [productId]);
     
     const [pricePerItem, setPricePerItem] = useState(0);
 
@@ -323,7 +328,6 @@ const StoreDetailPage =() => {
         }
     };
     
-
       const handleHeartClick = async (event) => {
         event.stopPropagation(); // 이벤트 버블링 방지
         console.log(jwtToken);
@@ -337,6 +341,11 @@ const StoreDetailPage =() => {
 
             if (response.ok) {
                 console.log('Product liked successfully');
+
+                const likedProducts = JSON.parse(localStorage.getItem('likedProducts')) || {};
+                likedProducts[productId] = !isLiked;
+                localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+
                 setIsLiked(!isLiked);
             } else {
                 console.error('Failed to like product');

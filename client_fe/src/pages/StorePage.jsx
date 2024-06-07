@@ -18,6 +18,11 @@ const Product = ({ product, onClick }) => {
     
     const jwtToken = localStorage.getItem("login-token");
 
+    useEffect(() => {
+        const likedProducts = JSON.parse(localStorage.getItem('likedProducts')) || {};
+        setIsLiked(likedProducts[product.productId] || false);
+    }, [product.productId]);
+
     function openModal(event) {
         if (event) event.stopPropagation(); 
         setIsOpen(true);
@@ -38,6 +43,7 @@ const Product = ({ product, onClick }) => {
         };
         fetchProductOptions();
     }, [product.productId]);
+
 
     const handleCartClick = async (event) => {
         event.stopPropagation();
@@ -67,6 +73,11 @@ const Product = ({ product, onClick }) => {
             if (response.ok) {
                 console.log('Product liked successfully');
                 setIsLiked(!isLiked);
+
+                const likedProducts = JSON.parse(localStorage.getItem('likedProducts')) || {};
+                likedProducts[productId] = !isLiked;
+                localStorage.setItem('likedProducts', JSON.stringify(likedProducts));
+                
             } else {
                 console.error('Failed to like product');
             }
