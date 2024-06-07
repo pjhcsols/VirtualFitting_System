@@ -45,7 +45,7 @@
                 {isOpen && (
                     <div className="popup-container-store" ref={popupRef}>
                         <div className="user-store-container">
-                            <img style={{ width: '70px', height: '70px', marginRight: '30px', marginLeft: '30px', marginTop: '25px', cursor:'pointer'}} src={userImg} alt="user" onClick={() => handleClick('/MyPage')}/>
+                            <img style={{ width: '70px', height: '70px', marginRight: '30px', marginLeft: '15px', marginTop: '25px', cursor:'pointer'}} src={userImg} alt="user" onClick={() => handleClick('/MyPage')}/>
                             <span className="userId-store">
                                 {userId}님<br/>
                                 {loginType}

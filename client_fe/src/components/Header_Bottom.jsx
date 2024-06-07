@@ -3,7 +3,7 @@ import SearchImage from '../assets/img/Search.png';
 import { useNavigate } from 'react-router-dom';
 import CrownImage from '../assets/img/Crown.png';
 import './Header_Bottom.css';
-import cartIcon from '../assets/img/Cart.png';
+import cartIcon from '../assets/img/Cart.png';  
 import MYIcon from '../assets/img/MY.png';
 import PopUpBottom from './PopUp_Bottom.jsx';
 import { useAuth } from '../context/AuthContext.jsx';

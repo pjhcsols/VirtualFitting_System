@@ -1,24 +1,48 @@
-import {React, useEffect} from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios';
+import ServerAPI from "../API/ServerAPI";
 
 const Redirection = () => {
-    const code = window.location.search;
-    const navigate = useNavigate();
-  
-    useEffect(() => {
-      console.log(process.env.REACT_APP_URL);
-      axios.post(`${process.env.REACT_APP_URL}kakaoLogin${code}`).then((r) => {
-        console.log(r.data);
-  
-        // 토큰을 받아서 localStorage같은 곳에 저장하는 코드를 여기에 쓴다.
-        // localStorage.setItem('name', r.data); // 일단 이름만 저장했다.
+  const code = new URL(document.location.toString()).searchParams.get('code');
+  const navigate = useNavigate();
+  const isFirstRun = useRef(true);
 
-        navigate('/');
-      });
-    }, []);
+  useEffect(() => {
+    const fetchData = async() => {
+      const data = {
+        'code': code 
+      };
+
+      try {
+        const response = await ServerAPI.post('/oauth/kakao/login', data);
+
+        if (response.status === 201) {
+          localStorage.clear();
+          localStorage.setItem('login-token', response.data.accessToken);
+          const userInfo = {
+            userId: "user1",
+            loginType: "kakao"
+          };
+          localStorage.setItem('user_info', JSON.stringify(userInfo));
+          
+          navigate('/');
+        }
+      }
+      catch (error) {
+        console.log("오류 발생", error);
+        console.log(code);
+        navigate('/login');
+      }
+    };
+
+    if (isFirstRun.current) {
+      isFirstRun.current = false;
+      fetchData();
+    }
+  });
   
-    return <div>로그인 중입니다.</div>;
-  };
-  
-  export default Redirection;
+  return <div>로그인 중입니다.</div>;
+};
+
+export default Redirection;
