@@ -43,7 +43,7 @@ function App() {
           <Route path="/googleLogin" element={<GoogleLogin />} />
           <Route path="/searchResult" element={<SearchResultPage />} />
           <Route path="/productRegisteration" element={<ProductRegisterationPage />} />
-          <Route path="/redirection" element={<Redirection />} />
+          <Route path="/oauth/kakao/callback" element={<Redirection />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>
