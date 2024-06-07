@@ -12,6 +12,8 @@ import NaverLogin from "../API/NaverLogin.js";
 import KaKaoLogin from "../API/KakaoLogin.js";
 import GoogleLogin from "../API/GoogleLogin.js";
 import Swal from "sweetalert2";
+import normalImg from "../assets/img/normal.png";
+import firmImg from "../assets/img/firm.png";
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -173,10 +175,16 @@ const SignUpForm = () => {
     }
 
     return (
-        <div style={{display: 'flex', flexDirection: "column", alignItems: 'center'}}>
-            <button className="signupButton" onClick={()=>handleClick('/Signup_User')}>일반회원 가입하기</button>
-            <button className="signupButton" onClick={()=>handleClick('/Signup_Brand')}>사업자 회원 가입하기</button>
-        </div>  
+        <div style={{display: 'flex', justifyContent: 'center'}}>
+            <div className="vertical-group">
+                <img src={normalImg} alt="normal" className="normal-img"/>
+                <button className="signupButton" onClick={()=>handleClick('/Signup_User')}>일반회원</button>
+            </div>
+            <div className="vertical-group">
+                <img src={firmImg} alt="firm" className="normal-img"/>
+                <button className="signupButton" onClick={()=>handleClick('/Signup_Brand')}>사업자</button>
+            </div>
+        </div>
     );
 };
 
