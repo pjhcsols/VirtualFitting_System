@@ -139,18 +139,18 @@ if __name__ == '__main__':
     print("Cropped model image size:", cropped_model_image.size)
 
     # Display cropped images
-    plt.figure(figsize=(10, 5))
-    plt.subplot(1, 2, 1)
-    plt.imshow(cropped_cloth_image)
-    plt.axis('off')
-    plt.title('Cropped Cloth Image')
+    #plt.figure(figsize=(10, 5))
+    #plt.subplot(1, 2, 1)
+    #plt.imshow(cropped_cloth_image)
+    #plt.axis('off')
+    #plt.title('Cropped Cloth Image')
 
-    plt.subplot(1, 2, 2)
-    plt.imshow(cropped_model_image)
-    plt.axis('off')
-    plt.title('Cropped Model Image')
+    #plt.subplot(1, 2, 2)
+    #plt.imshow(cropped_model_image)
+    #plt.axis('off')
+    #plt.title('Cropped Model Image')
 
-    plt.show()
+    #plt.show()
 
     # Resize cropped images to match required input size
     cloth_img = cropped_cloth_image.resize((768, 1024))

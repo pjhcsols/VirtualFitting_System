@@ -63,18 +63,10 @@ async def download_image_from_server(server_url: str, image_url: str, save_path:
     #shell=True를 설정하면 쉘에서 명령을 실행하므로, 명령어 문자열이 쉘에서 파싱되어 실행됩니다. 
     # 따라서 주의하여야 합니다. 만약 보안상의 이유로 shell=True를 사용하지 않고 실행하려면, 
     # 명령어를 리스트로 분할하여 subprocess.run()을 호출해야 합니다.
-def run_ootd(model_path, cloth_path, userId):
-    command = ["python", "run_ootd.py", "--model_path", model_path, "--cloth_path", cloth_path, "--id",userId]
+def crop_ootd(model_path, cloth_path, userId):
+    command = ["python", "crop_ootd.py", "--model_path", model_path, "--cloth_path", cloth_path, "--id",userId]
     subprocess.run(command)
 
-# def down_resolution(user_img_path, user_img_path):
-#     command = ["python", "down_resolution.py", user_img_path, user_img_path]
-#     subprocess.run(command)
-
-
-def test_py(str1, str2):
-    command = ["python", "test.py", "-i",str1, "-o", str2]
-    subprocess.run(command)
     
 @app.post("/receive_data")
 async def receive_data(request_data: RequestData):
@@ -91,28 +83,18 @@ async def receive_data(request_data: RequestData):
         user_img_path="./"+userId+"_user.png"
     
         #download cloth image
-        await download_image(cloth_img_url,cloth_img_path)
         
         # Download the user image from the specified server
-        server_url = "http://218.233.221.147:8080/User/sentUserImageFile"
-        await download_image_from_server(server_url, user_img_url, user_img_path)
+        #218.233.221.147:8080
+        server_url = "http://155.230.43.12:8090/User/sentUserImageFile"
         
-        output_file = user_img_path
-        input_image = cv2.imread(user_img_path)
-    
-        if input_image is None:
-            print("이미지를 읽을 수 없습니다. 파일 경로를 확인하세요.")
-            sys.exit()
-    
-        new_width=1500
-        new_height=2000
-        resized_image = cv2.resize(input_image, (new_width, new_height), interpolation=cv2.INTER_LANCZOS4)
-
-        cv2.imwrite(output_file, resized_image)
+        await asyncio.gather(
+            download_image(cloth_img_url,cloth_img_path),
+            download_image_from_server(server_url, user_img_url, user_img_path)
+        )
         
-        #test_py(cloth_img_url,user_img_url)
 
-        run_ootd(user_img_path, cloth_img_path, userId)
+        crop_ootd(user_img_path, cloth_img_path, userId)
         fitting_img_path="./"+userId+"_fittingImg.png"
     
         return FileResponse(fitting_img_path)

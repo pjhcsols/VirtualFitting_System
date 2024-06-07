@@ -94,7 +94,8 @@ async def receive_data(request_data: RequestData):
         await download_image(cloth_img_url,cloth_img_path)
         
         # Download the user image from the specified server
-        server_url = "http://218.233.221.147:8080/User/sentUserImageFile"
+        #218.233.221.147:8080
+        server_url = "http://155.230.43.12:8090/User/sentUserImageFile"
         await download_image_from_server(server_url, user_img_url, user_img_path)
         
         # output_file = user_img_path
