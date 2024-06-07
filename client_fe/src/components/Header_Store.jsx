@@ -7,6 +7,7 @@ import './Header_Store.css';
 import { useNavigate } from "react-router-dom";
 import PopUpStore from "./PopUp_Store.jsx";
 import { useAuth } from "../context/AuthContext.jsx";
+import Swal from "sweetalert2";
 
 const Header_Store = () => {
     const { user, logout } = useAuth(); 
@@ -30,6 +31,25 @@ const Header_Store = () => {
         console.log('클릭됨');
         navigate(path, { state: { category: state } });
     };
+
+    const handleCartClick = (path) => {
+        console.log("클릭됨");
+        if (storedUser) {
+            navigate(path);
+        }
+        else {
+            Swal.fire({
+                title: '로그인 후 이용가능합니다!',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                confirmButtonText: '확인',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login');
+                }
+            });
+        }
+    }
 
     const handleUserImgClick = () => {
         if (localStorage.getItem('login-token')) {
@@ -77,7 +97,7 @@ const Header_Store = () => {
     return (
         <div className="header_store">
             <div className="right-icons">
-                <img style={{width: '20px', height: '20px', marginRight: '10px'}} src={CartImg} alt="cart"/>
+                <img style={{width: '20px', height: '20px', marginRight: '10px'}} src={CartImg} alt="cart" onClick={() => handleCartClick('/mypage?section=shoppingCart')}/>
                 <img style={{width: '20px', height: '20px'}} src={UserImg} alt="user" onClick={handleUserImgClick} />
             </div>
             {popupOpen && <PopUpStore logout={togglePopup} />}

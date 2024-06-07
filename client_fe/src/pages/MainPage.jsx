@@ -22,6 +22,7 @@ function MainPage() {
     navigate(path);
 };
 
+
 async function fetchProductPhotoUrls() {
   try {
       // 서버로부터 데이터 가져오기

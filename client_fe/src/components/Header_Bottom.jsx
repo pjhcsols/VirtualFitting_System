@@ -7,6 +7,7 @@ import cartIcon from '../assets/img/Cart.png';
 import MYIcon from '../assets/img/MY.png';
 import PopUpBottom from './PopUp_Bottom.jsx';
 import { useAuth } from '../context/AuthContext.jsx';
+import Swal from "sweetalert2";
 
 const Header_Bottom = () => {
     const navigate = useNavigate();
@@ -25,6 +26,25 @@ const Header_Bottom = () => {
         console.log('클릭됨');
         navigate(path);
     };
+
+    const handleCartClick = (path) => {
+        console.log("클릭됨");
+        if (storedUser) {
+            navigate(path);
+        }
+        else {
+            Swal.fire({
+                title: '로그인 후 이용가능합니다!',
+                icon: 'warning',
+                confirmButtonColor: '#000',
+                confirmButtonText: '확인',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    navigate('/login');
+                }
+            });
+        }
+    }
 
     const togglePopup = () => {
         setPopupOpen(!popupOpen);
@@ -79,7 +99,7 @@ const Header_Bottom = () => {
                 </div>
             </div>
             <div className='iconContainer'>
-                <img className='cartIcon' src={cartIcon} alt='cartIcon' style={{ cursor: 'pointer' }} />
+                <img className='cartIcon' src={cartIcon} alt='cartIcon' style={{ cursor: 'pointer' }} onClick={() => handleCartClick('/mypage?section=shoppingCart')}/>
                 <img className='MyIcon' src={MYIcon} alt='MYIcon' onClick={handleUserImgClick} style={{ cursor: 'pointer' }} />
                 {popupOpen && <PopUpBottom logout={logout} />}
             </div>
