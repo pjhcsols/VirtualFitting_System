@@ -45,9 +45,9 @@ const PopUpBottom = ({ logout }) => {
             {isOpen && (
                 <div className="popup-container-bottom" ref={popupRef}>
                     <div className="user-bottom-container">
-                        <img style={{ width: '70px', height: '70px', cursor: 'pointer', marginTop: '25px' }} src={userImg} alt="user" onClick={() => handleClick('/MyPage')} />
+                        <img src={userImg} alt="user" onClick={() => handleClick('/MyPage')} />
                         <span className="userId-bottom">
-                            {userId}님<br/>
+                            {userId}님<br />
                             {loginType}
                         </span>
                     </div>
