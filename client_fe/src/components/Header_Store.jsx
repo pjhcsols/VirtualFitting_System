@@ -30,6 +30,7 @@ const Header_Store = () => {
     const handleClick = (path, state) => {
         console.log('클릭됨');
         navigate(path, { state: { category: state } });
+        console.log(state);
     };
 
     const handleCartClick = (path) => {
@@ -72,6 +73,7 @@ const Header_Store = () => {
     const handleSubCategoryClick = (cate) => {
         handleParentMouseLeave(cate);
     };
+    
 
     // 검색바 표시 상태를 관리하는 상태 변수와 setter 함수
     const [showSearchBar, setShowSearchBar] = useState(false);
