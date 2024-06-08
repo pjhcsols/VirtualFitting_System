@@ -61,7 +61,7 @@ def crop_image(image, width_ratio, height_ratio, crop_box=None):
     return image.crop((left, top, right, bottom))
 
 # Load the image
-image_path = './run/examples/model/0003.jpg'
+image_path = 'C:/Users/KGA/Downloads/촬영용 이미지/testImg1.jpeg'
 image = cv2.imread(image_path)
 image_pil = Image.open(image_path)
 
