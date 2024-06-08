@@ -5,6 +5,7 @@
 
     .title {
         margin-bottom: 20px;
+        display: inline-block;  
     }
 
     .divider {
@@ -22,6 +23,7 @@
         margin: 0 auto; 
         width: 500px; 
     }
+
 
     .registration-form .form-group {
         display: flex;
@@ -65,8 +67,8 @@
         align-self: center;
         background-color: #000; 
         color: #fff; 
-        width: 350px;
-        height: 40px;
+        width: 190px;
+        height: 60px;
         padding: 10px;
         cursor: pointer;
         border: none;
@@ -74,6 +76,20 @@
         margin-top: 5px;
         font-size: 20px;
         padding-top: 6px;   
+    }
+
+    .deleteButton {
+        background-color: red;
+        margin-left: 963px;
+        margin-top: -30px;
+        color: #fff;
+        width: 45px;
+        height: 25px;
+        cursor: pointer;
+        border: none;
+        border-radius: 5px;
+        position: absolute;
+        font-size: 12px;
     }
 
     .closeImg {
@@ -97,5 +113,12 @@
         margin-left: 10px;
         margin-bottom: 37px;
         cursor: pointer;
+    }
+
+    .buttonContainer {
+        display: flex;       
+        justify-content: center;
+        width: 100%;
+        gap: 100px;           
     }
     

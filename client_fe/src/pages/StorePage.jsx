@@ -207,7 +207,7 @@ function StorePage() {
                     };
     
                     // 선택된 category에 따른 categoryId 목록을 가져옴
-                    const categoryIds = categories[category];
+                    const categoryIds = categories[category];   
     
                     // 모든 categoryId에 대해 상품을 병렬로 가져옵니다.
                     const responses = await Promise.all(categoryIds.map(categoryId =>
@@ -233,7 +233,6 @@ function StorePage() {
         fetchProducts();
     }, [category]);
     
-
 
     const handleClick = (productId) => {  
         navigate(`/storeDetail/${productId}`);

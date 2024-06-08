@@ -137,7 +137,129 @@
             }));
         };
 
-        const handleSubmit = async (e) => {
+        const handleDelete = async (e) => {
+            e.preventDefault();
+
+            try {
+                console.log("서버응답*******************8");
+                Swal.fire({
+                    title: '상품아이디를 입력하세요',
+                    input: 'text',
+                    inputAutoFocus: {
+                        autocapitalize: "off",
+                    },
+                    showCancelButton: true,
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (productId) => {
+                        return fetch('http://155.230.43.12:8090/products/deleteProduct', {  
+                            method: 'DELETE',  
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify({ productId: productId }),
+                        })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error(response.statusText);
+                            }
+                            return response.json();
+                        })
+                        .catch(error => {
+                            Swal.showValidationMessage(
+                                'Request failed'
+                            );
+                        });
+                    }
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        Swal.fire({
+                            title: '삭제 완료!',
+                            icon: 'success',
+                            confirmButtonColor: '#000',
+                            confirmButtonText: '확인',
+                        }).then(() => {
+                            navigate("/");
+                        });
+                    }
+                });
+            }
+            catch (error) {
+                Swal.fire({
+                    title: '삭제 실패!',
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/productRegisteration');
+                    }
+                });
+                console.error("서버와의 통신 중 오류 발생", error);
+            }
+
+        };
+
+        const handleCreate = async (e) => {
+            e.preventDefault();
+            
+            const data = {
+                productId: 33,
+                productCategory: {
+                    categoryId: inputValue.categoryId
+                },
+                productName: inputValue.productName,
+                productPrice: inputValue.productPrice,
+                productMaterial: inputValue.productMaterial,
+                productSize: inputValue.productSize,
+                productColor: inputValue.productColor,
+                productTotalLength: inputValue.productTotalLength,
+                productChest: inputValue.productChest,
+                productShoulder: inputValue.productShoulder,
+                productArm: inputValue.productArm,
+                productDesc: inputValue.productDesc,
+                productPhotoUrl: inputValue.productPhotoUrl,
+                productSubPhotoUrl: inputValue.productSubPhotoUrl,
+                brandUser: {
+                    userNumber: 1
+                }
+            };
+
+            try {
+                console.log("서버응답*******************8");
+                const response = await ServerAPI.post('/products/create', data);
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        title: '상품등록 성공!',
+                        icon: 'success',
+                        confirmButtonColor: '#000',
+                        confirmButtonText: '확인',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate("/");
+                        }
+                    });
+                }
+            }
+            catch (error) {
+                Swal.fire({
+                    title: '등록 실패!',
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/productRegisteration');
+                    }
+                });
+                console.error("서버와의 통신 중 오류 발생", error);
+                console.log(data);
+            }
+        };
+
+        const handleUpdate = async (e) => {
             e.preventDefault();
             
             const data = {
@@ -164,9 +286,9 @@
 
             try {
                 console.log("서버응답*******************8");
-                const response = await ServerAPI.post('/products/create', data);
+                const response = await ServerAPI.post('/products/update', data);
                 Swal.fire({
-                    title: '상품등록 성공!',
+                    title: '상품수정 성공!',
                     icon: 'success',
                     confirmButtonColor: '#000',
                     confirmButtonText: '확인',
@@ -178,7 +300,7 @@
             }
             catch (error) {
                 Swal.fire({
-                    title: '등록 실패!',
+                    title: '수정 실패!',
                     icon: 'error',
                     confirmButtonColor: '#000',
                     confirmButtonText: '확인',
@@ -221,8 +343,9 @@
             <div>
                 <HeaderBottom />
                 <div className="product-registration-page">
-                    <h1 className="title">상품 등록</h1>
+                    <h1 className="title">상품 관리</h1>
                 </div>
+                <button className="deleteButton" onClick={handleDelete}>삭제</button>
                 <div className="divider"></div>
                 <div className="registration-form">
                     <div>
@@ -334,7 +457,10 @@
                             )}
                         </div>
                     </div>
-                    <button className="registerButton" onClick={handleSubmit}>등록하기</button>
+                    <div className="buttonContainer">
+                        <button className="registerButton" onClick={handleCreate}>등록하기</button>
+                        <button className="registerButton" onClick={handleUpdate}>수정하기</button>
+                    </div>
                 </div>
                 <div className="divider" style={{ marginTop: '30px' }}></div>
             </div>
