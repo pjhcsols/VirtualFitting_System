@@ -48,7 +48,7 @@ public class PurchaseTransaction {
     String size;
 
     @Column(name = "total_cnt")
-    Long totalCnt;
+    Long totalCnt; //product 객체 totalQuantity 총수량 - totalcnt(purchase는 사이즈와 수량이 동일한 경우 같은 객체의 수량으로 취급)
 
     @Column(name = "payment_type")
     String paymentType;

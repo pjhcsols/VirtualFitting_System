@@ -35,8 +35,8 @@ commit;
 
 
 /*1*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (1, 1, '바실리움 로고 반팔티(블랙)', 53000, 70, 52, 48, 21, '반팔 모찌모찌함', 1);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (1, 1, '바실리움 로고 반팔티(블랙)', 53000, 70, 52, 48, 21, '반팔 모찌모찌함', 1, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -70,8 +70,8 @@ commit;
 
 
 /*2*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (2, 1, '바실리움 로고 반팔티(화이트)', 53000, 70, 52, 48, 21, '반팔 모찌모찌함', 1);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (2, 1, '바실리움 로고 반팔티(화이트)', 53000, 70, 52, 48, 21, '반팔 모찌모찌함', 1, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -104,8 +104,8 @@ VALUES
 commit;
 
 /*3*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (3, 2, '바실리움 백로고 맨투맨(블랙)', 53000, 70, 52, 48, 21, '맨투맨 모찌모찌함', 1);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (3, 2, '바실리움 백로고 맨투맨(블랙)', 53000, 70, 52, 48, 21, '맨투맨 모찌모찌함', 1, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -115,9 +115,9 @@ VALUES
 
 INSERT INTO product_sub_photo_urls (product_id, product_sub_photo_url)
 VALUES (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
-    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_3_1.png'),
-    (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
+       (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
+       (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_3_1.png'),
+       (3, 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
 
 -- Product 색상 삽입
 INSERT INTO product_colors (product_id, product_color)
@@ -139,8 +139,8 @@ VALUES
 commit;
 
 /*AI용1*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (4, 1, '프린팅 반팔', 35000, 70, 52, 48, 21, '여름 프린팅 반팔 모찌모찌함', 2);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (4, 1, '프린팅 반팔', 35000, 70, 52, 48, 21, '여름 프린팅 반팔 모찌모찌함', 2, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -170,8 +170,8 @@ VALUES
 commit;
 
 /*AI용2*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (5, 1, '줄무늬 반팔', 33000, 70, 52, 48, 21, '여름 얼룩말 반팔 모찌모찌함', 2);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (5, 1, '줄무늬 반팔', 33000, 70, 52, 48, 21, '여름 얼룩말 반팔 모찌모찌함', 2, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -200,8 +200,8 @@ VALUES
 commit;
 
 /*AI용3*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (6, 2, '줄무늬 모찌 긴팔', 68000, 70, 52, 48, 21, '여름 얼룩말 긴팔 모찌모찌함', 2);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (6, 2, '줄무늬 모찌 긴팔', 68000, 70, 52, 48, 21, '여름 얼룩말 긴팔 모찌모찌함', 2, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -230,8 +230,8 @@ VALUES
 commit;
 
 /*정렬용1*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (7, 8, '모찌 팬츠', 65000, 70, 52, 48, 21, '여름 팬츠 모찌모찌함', 2);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (7, 8, '모찌 팬츠', 65000, 70, 52, 48, 21, '여름 팬츠 모찌모찌함', 2, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
@@ -260,8 +260,8 @@ VALUES
 commit;
 
 /*정렬용2*/
-INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number)
-VALUES (8, 9, '모찌 스커트 치마', 84000, 70, 52, 48, 21, '여름 치마 모찌모찌함', 2);
+INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)
+VALUES (8, 9, '모찌 스커트 치마', 84000, 70, 52, 48, 21, '여름 치마 모찌모찌함', 2, 100);
 
 INSERT INTO product_photo_urls (product_id, product_photo_url)
 VALUES
