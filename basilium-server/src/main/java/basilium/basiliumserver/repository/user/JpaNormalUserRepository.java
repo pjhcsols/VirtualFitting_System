@@ -1,5 +1,6 @@
 package basilium.basiliumserver.repository.user;
 
+import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.NormalUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -121,6 +122,11 @@ public class JpaNormalUserRepository implements NormalUserRepository{
     public Optional<NormalUser> findByPhoneNumber(String phoneNumber) {
         NormalUser normalUser = em.createQuery("select m from NormalUser m where m.phoneNumber = :phoneNumber", NormalUser.class).setParameter("phoneNumber", phoneNumber).getSingleResult();
         return Optional.ofNullable(normalUser);
+    }
+
+    public DeliveryInfo findDeliveryInfoByUserNumber(Long userNumber){
+        System.out.println("유저 넘버 : " + userNumber.toString());
+        return em.createQuery("select d from DeliveryInfo d where d.normalUser.userNumber = :userNumber", DeliveryInfo.class).setParameter("userNumber", userNumber).getSingleResult();
     }
 
 }

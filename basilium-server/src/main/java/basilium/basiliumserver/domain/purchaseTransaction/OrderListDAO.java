@@ -1,16 +1,18 @@
 package basilium.basiliumserver.domain.purchaseTransaction;
 
+
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 
-@Getter
-@Setter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class OrderListDTO {
+@ToString
+public class OrderListDAO {
 
     Long productId;
     Long shoppingCartId;
@@ -22,9 +24,9 @@ public class OrderListDTO {
 
     String productName;
 
-    String photoUrl;
-
     String size;
     String color;
+
+
 
 }

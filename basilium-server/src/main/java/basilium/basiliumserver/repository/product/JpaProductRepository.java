@@ -72,7 +72,15 @@ public class JpaProductRepository implements ProductRepository {
             existingProduct.setProductCategory(product.getProductCategory());
             existingProduct.setProductName(product.getProductName());
             existingProduct.setProductPrice(product.getProductPrice());
+            existingProduct.setProductMaterial(product.getProductMaterial());
+            existingProduct.setProductSize(product.getProductSize());
+            existingProduct.setProductTotalLength(product.getProductTotalLength());
+            existingProduct.setProductChest(product.getProductChest());
+            existingProduct.setProductShoulder(product.getProductShoulder());
+            existingProduct.setProductArm(product.getProductArm());
+            existingProduct.setProductColor(product.getProductColor());
             existingProduct.setProductDesc(product.getProductDesc());
+
             existingProduct.setProductPhotoUrl(product.getProductPhotoUrl());
             existingProduct.setProductSubPhotoUrl(product.getProductSubPhotoUrl());
             //existingProduct.setBrandUser(product.getBrandUser());
@@ -112,5 +120,12 @@ public class JpaProductRepository implements ProductRepository {
         }
     }
 
+    //카테고리id로 검색
+    @Override
+    public List<Product> findByCategoryId(Long categoryId) {
+        return em.createQuery("SELECT p FROM Product p WHERE p.productCategory.categoryId = :categoryId", Product.class)
+                .setParameter("categoryId", categoryId)
+                .getResultList();
+    }
 
 }

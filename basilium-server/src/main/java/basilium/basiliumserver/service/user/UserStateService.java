@@ -1,6 +1,7 @@
 package basilium.basiliumserver.service.user;
 
 import basilium.basiliumserver.domain.user.BrandUser;
+import basilium.basiliumserver.domain.user.LoginResponse;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.domain.user.SuperUser;
@@ -54,19 +55,22 @@ public class UserStateService {
 
 
 
-    public LoginStatus login(String userId, String userPassword) {
+    public LoginResponse login(String userId, String userPassword) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
-
+        LoginResponse response = new LoginResponse();
         if (normalUser.isPresent() && normalUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("NORMAL");
+            return response;
         } else if (brandUser.isPresent() && brandUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("BRAND");
+            return response;
         } else if (superUser.isPresent() && superUser.get().getPassword().equals(userPassword)) {
-            return LoginStatus.SUCCESS;
+            response.setType("ADMIN");
+            return response;
         } else {
-            return LoginStatus.FAIL;
+            return response;
         }
     }
 
@@ -189,10 +193,13 @@ public class UserStateService {
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
 
         if (normalUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + normalUser.get().getUserImageUrl());
             return normalUser.get().getUserImageUrl();
         } else if (brandUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + brandUser.get().getUserImageUrl());
             return brandUser.get().getUserImageUrl();
         } else if (superUser.isPresent()) {
+            System.out.println("시발 박한솔 : " + superUser.get().getUserImageUrl());
             return superUser.get().getUserImageUrl();
         } else {
             return null; // 사용자가 존재하지 않는 경우

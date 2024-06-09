@@ -18,4 +18,11 @@ public interface ProductRepository {
     //List<Product> findByName(String name);
     List<Product> findByNameContaining(String name);
     Optional<BrandUser> findBrandUserByProductId(Long productId);
+    List<Product> findByCategoryId(Long categoryId);
 }
+/*
+@Repository
+public interface ProductRepository extends JpaRepository<Product, Long> {
+    List<Product> findByProductCategory_CategoryId(Long categoryId);
+}
+ */

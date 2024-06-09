@@ -97,6 +97,12 @@ public class ProductController {
         }
     }
 
+    //카테고리id로 검색
+    @GetMapping("/category/{categoryId}")
+    public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
+        return productService.findByCategoryId(categoryId);
+    }
+
     //스케줄러 확인 용
     @GetMapping("/allImageUrls")
     public ResponseEntity<List<String>> getAllProductImageUrls() {

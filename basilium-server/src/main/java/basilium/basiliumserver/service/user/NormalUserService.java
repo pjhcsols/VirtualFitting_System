@@ -1,8 +1,15 @@
 package basilium.basiliumserver.service.user;
 
+import basilium.basiliumserver.domain.like.Like;
+import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
+import basilium.basiliumserver.domain.user.UserModifiedInfo;
+import basilium.basiliumserver.repository.like.JpaLikeRepo;
+import basilium.basiliumserver.repository.product.JpaProductRepository;
+import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 
 import basilium.basiliumserver.util.JwtUtil;
@@ -18,18 +25,25 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 @Slf4j
 @Service
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
+    private final JpaNormalUserRepository jpaNormalUserRepository;
+
+    private final JpaProductRepository productRepository;
+    private final JpaLikeRepo likeRepo;
 
     //bean
     @Autowired
-    public NormalUserService(NormalUserRepository normalUserRepository) {
+    public NormalUserService(NormalUserRepository normalUserRepository, JpaNormalUserRepository jpaNormalUserRepository, JpaProductRepository productRepository,JpaLikeRepo likeRepo) {
         this.normalUserRepository = normalUserRepository;
+        this.jpaNormalUserRepository = jpaNormalUserRepository;
+        this.productRepository = productRepository;
+        this.likeRepo = likeRepo;
     }
 
     @Value("${jwt.secret}")
@@ -42,10 +56,21 @@ public class NormalUserService {
         return normalUserRepository.getAllNormalUsers();
     }
     public void modify(NormalUser normalUser) {
-        normalUserRepository.modify(normalUser);
+        jpaNormalUserRepository.modify(normalUser);
     }
     public NormalUser userInfoById(String userId){
-        return normalUserRepository.findById(userId).get();
+        Optional<NormalUser> optionalUser = normalUserRepository.findById(userId);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            // 사용자가 존재하지 않는 경우 예외 처리 또는 다른 방법으로 처리
+            return null; // 또는 예외를 던지거나 기본값을 반환할 수 있음
+        }
+    }
+
+
+    public DeliveryInfo deliveryInfoByUserNumber(Long userNumber){
+        return jpaNormalUserRepository.findDeliveryInfoByUserNumber(userNumber);
     }
 //회원가입
     //동시성 락걸음
@@ -137,7 +162,14 @@ public class NormalUserService {
         return null;
     }
 
-
+    @Transactional
+    public String setLike(NormalUser normalUser, Long productId){
+        Product product = productRepository.findById(productId).get();
+        Like like = new Like();
+        like.setNormalUser(normalUser);
+        like.setProduct(product);
+        return likeRepo.save(like);
+    }
 
     /*
     public LoginStatus login(String userId, String userPassword){
