@@ -39,25 +39,25 @@ public class UserStateController {
         this.userStateService = userStateService;
     }
 
-/*
-    @PostMapping("/login")
-    public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest) {
-        log.info("------------------------------------------------------------");
-        log.info("1. User 로그인 시도");
-        log.info("ID: " + loginRequest.getUserId() + " ");
-        log.info("Password: " + loginRequest.getUserPassword() + " ");
-        LoginStatus loginResult = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
-        if (loginResult != LoginStatus.SUCCESS)
-            return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
-        log.info("------------------------------------------------------------");
-        log.info("2. 로그인 성공");
-        String token = userStateService.afterSuccessLogin(loginRequest.getUserId());
-        log.info("[User 토큰 정상 발급]");
-        log.info(token);
-        return ResponseEntity.ok().body(token);
-    }
+    /*
+        @PostMapping("/login")
+        public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest) {
+            log.info("------------------------------------------------------------");
+            log.info("1. User 로그인 시도");
+            log.info("ID: " + loginRequest.getUserId() + " ");
+            log.info("Password: " + loginRequest.getUserPassword() + " ");
+            LoginStatus loginResult = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
+            if (loginResult != LoginStatus.SUCCESS)
+                return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
+            log.info("------------------------------------------------------------");
+            log.info("2. 로그인 성공");
+            String token = userStateService.afterSuccessLogin(loginRequest.getUserId());
+            log.info("[User 토큰 정상 발급]");
+            log.info(token);
+            return ResponseEntity.ok().body(token);
+        }
 
- */
+     */
     @PostMapping("/login")
     public ResponseEntity<?> loginNormalUser(@RequestBody LoginRequest loginRequest) {
         LoginResponse response = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
@@ -105,7 +105,7 @@ public class UserStateController {
     }
 
     //2.사용자의 기존에 등록된 이미지 불러오기 버튼
-    @PostMapping("/getImageUrl")
+    @GetMapping("/getImageUrl")
     public ResponseEntity<String> getUserImageUrl(@RequestParam("userId") String userId) {
         log.info("-----------------------------------------------------------");
         log.info(userId);

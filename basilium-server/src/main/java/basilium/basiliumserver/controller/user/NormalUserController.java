@@ -61,10 +61,11 @@ public class NormalUserController {
     }
 
 
-    @GetMapping("/allNomalUser")
+    @GetMapping("/allNormalUsers")
     public List<NormalUser> getAllNomalUsers() {
         return normalUserService.getAllNormalUsers();
     }
+
 
     @PatchMapping("/modify")
     public ResponseEntity<String> modifyUser(@AuthUser String userId, @RequestBody UserModifiedInfo info) {
@@ -124,7 +125,7 @@ public class NormalUserController {
 
     @GetMapping("/like/list")
     public ResponseEntity<List<?>> userLikeList(@AuthUser String userId){
-        System.out.println("여ㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕㅕ");
+        System.out.println("LikeList");
         NormalUser ret = normalUserService.userInfoById(userId);
 
         return ResponseEntity.ok(likeService.userLikeInfo(ret.getUserNumber()));

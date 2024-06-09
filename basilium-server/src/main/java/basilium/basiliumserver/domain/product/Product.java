@@ -70,6 +70,10 @@ public class Product {
     @JoinColumn(name = "brand_user_number") // BrandUser와의 관계를 나타내는 외래 키
     private BrandUser brandUser;
 
+    @Column(name = "total_quantity")
+    Long totalQuantity; //총량
+
+    //프로필 아이콘용 이미지 url 추가
 
     /*
     @Column(name="product_photo_url")

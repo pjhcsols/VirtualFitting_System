@@ -55,9 +55,11 @@ public class NormalUserService {
     public List<NormalUser> getAllNormalUsers() {
         return normalUserRepository.getAllNormalUsers();
     }
+
     public void modify(NormalUser normalUser) {
         jpaNormalUserRepository.modify(normalUser);
     }
+
     public NormalUser userInfoById(String userId){
         Optional<NormalUser> optionalUser = normalUserRepository.findById(userId);
         if (optionalUser.isPresent()) {
@@ -72,7 +74,7 @@ public class NormalUserService {
     public DeliveryInfo deliveryInfoByUserNumber(Long userNumber){
         return jpaNormalUserRepository.findDeliveryInfoByUserNumber(userNumber);
     }
-//회원가입
+    //회원가입
     //동시성 락걸음
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public JoinStatus join(NormalUser normalUser){
@@ -143,7 +145,7 @@ public class NormalUserService {
         return ret.orElse(null);
     }
 
-//리프레쉬
+    //리프레쉬
     public boolean validateRefreshToken(String refreshToken) {
         try {
             Jwts.parser().setSigningKey(secretKey.getBytes()).parseClaimsJws(refreshToken);

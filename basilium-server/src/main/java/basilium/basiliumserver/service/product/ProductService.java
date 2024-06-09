@@ -1,9 +1,14 @@
 package basilium.basiliumserver.service.product;
 
+import basilium.basiliumserver.controller.product.sse.SseController;
 import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.domain.product.ProductInfoDTO;
 import basilium.basiliumserver.domain.user.BrandUser;
+import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.product.ProductRepository;
+import basilium.basiliumserver.repository.user.BrandUserRepository;
 import jakarta.transaction.Transactional;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +24,12 @@ import java.util.Optional;
 전체 상품 수 조회(countProducts)
  */
 
+@Slf4j
 @Service
 public class ProductService {
 
     private final ProductRepository productRepository;
+
 
     @Autowired
     public ProductService(ProductRepository productRepository) {
@@ -88,5 +95,58 @@ public class ProductService {
 
         return allImageUrls;
     }
+
+    //kafka MQ
+    @Transactional
+    public void updateProductQuantity(Long productId, Long count) {
+        log.info("[결제 시도]");
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        product.setTotalQuantity(product.getTotalQuantity() - count);
+        productRepository.save(product);
+        log.info("[상품 총량 감소] : Updating product quantity for productId: {} count: - {}", productId, count);
+        SseController.updateInventory(productId); //sse를 통한 구독한 재고 변경 실시간 전송
+    }
+
+    @Transactional
+    public void restoreProductQuantity(Long productId, Long count) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        product.setTotalQuantity(product.getTotalQuantity() + count);
+        productRepository.save(product);
+    }
+
+    //sse
+    public Long getProductQuantity(Long productId) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        return product.getTotalQuantity();
+    }
+    //sse 재고변경 시 브랜드유저 전송용
+    public ProductInfoDTO getProductInfo(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+
+        Long brandUserId = product.getBrandUser().getUserNumber(); // Assuming BrandUser is related to Product
+        Long totalQuantity = product.getTotalQuantity();
+
+        return new ProductInfoDTO(brandUserId, productId, totalQuantity);
+    }
+
+/*
+    //rabbit mq
+    @Transactional
+    public void updateProductQuantity(Long productId, Long count) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        product.setTotalQuantity(product.getTotalQuantity() - count);
+        productRepository.save(product);
+    }
+
+    @Transactional
+    public void restoreProductQuantity(Long productId, Long count) {
+        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
+        product.setTotalQuantity(product.getTotalQuantity() + count);
+        productRepository.save(product);
+    }
+
+ */
+
 
 }
