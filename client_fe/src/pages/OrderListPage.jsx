@@ -17,7 +17,7 @@ const OrderListPage = () => {
             }
         };
 
-        axios.get("http://localhost:8080/normalUser/order/history", config)
+        axios.get("http://155.230.43.12:8090/normalUser/order/history", config)
         .then(response =>{
             setOrderData(response.data);
             console.log("2번--------------")

@@ -15,9 +15,10 @@ const MypageDetail = () => {
             }
         };
 
-        axios.get("http://localhost:8080/normalUser/user/detail", config)
+        axios.get("http://155.230.43.12:8090/normalUser/user/detail", config)
             .then(response =>{
                 setUserData(response.data);
+                console.log("userData", response.data);
                 // 수정된 데이터 초기화
                 setUpdatedUserData(response.data);
             })
@@ -55,7 +56,7 @@ const MypageDetail = () => {
             "phoneNumber" : updatedUserData.user.phoneNumber
         }
         console.log(data);
-        axios.patch("http://localhost:8080/normalUser/modify", JSON.stringify(data), config)
+        axios.patch("http://155.230.43.12:8090/normalUser/modify", JSON.stringify(data), config)
             .then(response => {
                 console.log("수정 성공:", response.data);
                 alert("수정되었습니다."); // 수정 성공 알림창
@@ -65,16 +66,14 @@ const MypageDetail = () => {
             });
     };
 
+    
+
     return (
         <div className="mypage_detail_container">
             <div className="mypagedetail">
-                {userData ? (
-                    <img className="mypage_detail_profile" src={userImg} alt="User Image" />
-                ) : (
-                    <div className="mypage_detail_profile">
-                        <img src={userImg} alt="User Image" />
-                    </div>
-                )}
+                <div className="mypage_detail_profile">
+                    <img src={userImg} alt="User Image" />
+                </div>
                 <div className="mypage_detail_button_div">
                     <button onClick={handleSubmit}>사진 변경</button>
                 </div>

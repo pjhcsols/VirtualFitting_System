@@ -13,7 +13,7 @@ const Delivery = () => {
                 Authorization: `Bearer ${jwtToken}` // Authorization 헤더에 JWT 포함
             }
         };
-        axios.get("http://localhost:8080/normalUser/user/detail", config)
+        axios.get("http://155.230.43.12:8090/normalUser/user/detail", config)
         .then(response =>{
             setUserData(response.data);
         })

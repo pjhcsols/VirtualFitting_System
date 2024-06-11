@@ -19,6 +19,9 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
         };
 
         try {
+            if (type === "single"){
+                console.log("확인용", selectedProducts);
+            }
             // Fetch user details
             const response = await axios.get("http://155.230.43.12:8090/normalUser/user/detail", config);
             const user = response.data.user;
@@ -73,10 +76,11 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                 },
                 async (rsp) => {
                     console.log(rsp);
+                    console.log("fuck + ",  selectedProducts);
                     if (rsp.success) {
                         try {
                             // Process payment confirmation and order handling
-                            await axios.post(`http://218.233.221.147:8080/normalUser/order/payment/${rsp.imp_uid}`, {
+                            await axios.post(`http://155.230.43.12:8090/normalUser/order/payment/${rsp.imp_uid}`, {
                                 memberId: user.userId,
                                 orderId: orderId,
                                 price: rsp.paid_amount,
@@ -101,7 +105,7 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                             
                         }
                         Swal.fire({
-                            position: "top-end",
+                            position: "top-middle",
                             icon: "success",
                             title: user.name + "님! 결제가 성공했습니다 :)",
                             showConfirmButton: false,
@@ -110,7 +114,6 @@ const Payment = ({ userInfo, selectedProducts, type}) => {
                                 // 페이지 새로고침
                                 window.location.reload();
                             });
-                            window.location.reload();
                         } catch (error) {
                             console.error("Error completing payment or deleting products:", error);
                         }
