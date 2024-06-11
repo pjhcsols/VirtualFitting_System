@@ -7,6 +7,7 @@ import EmptyheartIcon from '../assets/img/Empty_heart.png';
 import { useNavigate } from 'react-router-dom';
 import Modal from 'react-modal';
 
+import clothes from '../assets/img/clothes.webp'
 
 Modal.setAppElement('#root'); 
 
@@ -169,19 +170,51 @@ function StorePage() {
     const navigate = useNavigate();
     const location = useLocation();
     const category = location.state?.category || "New Arrival";
-
-   
+    const d = {
+        productId: 0,
+        productName: "",
+        productPrice: "",
+        productTotalLength: "",
+        productChest: "",
+        productShoulder: "",
+        productArm: "",
+        productDesc: "",
+        productCategory: "",
+        categoryId: "",
+        productMaterial: [],
+        productSize: [],
+        productColor: [],
+        productPhotoUrl: [],
+        productSubPhotoUrl: [],
+    }
+    
     useEffect(() => {
         const fetchProducts = async () => {
+            let data = [];
             try {
                 let url = 'http://155.230.43.12:8090/products/getAll';
-                let data = [];
-    
+                
                 // "New Arrival" 선택 시 모든 상품을 기본 순으로 가져온 후 역순으로 정렬
                 if (category === "New Arrival") {
                     const response = await fetch(url);
-                    data = await response.json();
-                    data = data.sort((a, b) => b.productId - a.productId);
+                    let formalList = await response.json();
+                    formalList.sort((a, b) => b.productId - a.productId);
+                    if (localStorage.getItem("productId")){
+                        for(var key in d) {
+                            if(key === "productPhotoUrl"){
+                                d[key][0] = clothes;
+                            }else{
+                                d[key] = localStorage.getItem(key);
+                            }
+                        }
+                        data = [
+                            ...formalList,
+                            d
+                        ]
+                    }else{
+                        data = [...formalList]
+                    }
+                    
                 } 
                 // "Top", "Outer", "Bottom", "Bag & Acc" 선택 시 특정 categoryId에 따라 상품을 가져오고 역순으로 정렬
                 else {

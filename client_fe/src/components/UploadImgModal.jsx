@@ -13,7 +13,10 @@ const UploadImgModal = ({ isOpen, onClose, onUpload }) => {
       alert('파일을 선택해주세요.');
       return;
     }
-    const userId = localStorage.getItem('user_id');
+    const userData = localStorage.getItem('user_info');
+    const regex = /"userId":"(.*?)"/;
+    const match = userData.match(regex);
+    const userId = match[1];
     console.log(userId);
     if (!userId) {
       alert('localStorage에서 사용자 ID를 찾을 수 없습니다.');
@@ -25,7 +28,7 @@ const UploadImgModal = ({ isOpen, onClose, onUpload }) => {
     formData.append('file', selectedFile);
 
     try {
-      const response = await fetch('http://218.233.221.41:8080/User/uploadImage', {
+      const response = await fetch('http://155.230.43.12:8090/User/uploadImage', {
         method: 'POST',
         body: formData,
       });

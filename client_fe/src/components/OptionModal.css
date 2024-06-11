@@ -1,0 +1,59 @@
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center; /* 수평 가운데 정렬 */
+    align-items: center; /* 수직 가운데 정렬 */
+}
+
+.modal {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 300px; /* 모달 창의 너비를 조절할 수 있습니다. */
+    max-width: 80%; /* 모달 창이 화면 너비의 80%를 넘지 않도록 설정합니다. */
+    max-height: 80%; /* 모달 창이 화면 높이의 80%를 넘지 않도록 설정합니다. */
+    overflow: auto; /* 모달 창이 너무 커서 화면을 벗어나는 경우 스크롤을 추가합니다. */
+}
+
+.modal h2 {
+    margin-top: 0;
+}
+
+.modal-content {
+    margin-bottom: 20px;
+}
+
+.modal-option {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: baseline; /* 라벨과 입력 필드를 기준선에 맞춤 */
+}
+
+.modal-option label {
+    margin-right: 10px;
+    width: 60px; /* 라벨의 고정 너비를 설정하여 입력 필드가 정렬되도록 함 */
+    line-height: 30px; /* 라벨의 높이를 텍스트 필드와 맞추기 위해 설정 */
+}
+
+.modal-option select,
+.modal-option input[type="number"] {
+    flex: 1; /* 입력 필드와 선택 상자가 라벨 옆에서 균등하게 크기를 차지하도록 설정 */
+    width: calc(100% - 70px); /* 라벨의 너비와 여백을 제외한 나머지 너비를 입력 필드에 할당 */
+    padding: 5px;
+    height: 30px; /* 입력 필드와 선택 상자의 높이를 설정 */
+    box-sizing: border-box; /* 패딩을 포함하여 너비를 계산하도록 설정 */
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    margin-left: 10px;
+}

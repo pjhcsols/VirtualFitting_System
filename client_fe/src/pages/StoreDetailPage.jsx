@@ -47,7 +47,6 @@ const StoreDetailPage =() => {
         userId : userId, userImg: imageUrl,
         clothImg: product.productPhotoUrl[0],
       };
-  
       try {
 
         setIsimgLoading(true);
@@ -79,10 +78,24 @@ const StoreDetailPage =() => {
 
         setIsimgLoading(false);
 
+        const acknowledgeResponse = await fetch('http://155.230.29.183:9090/acknowledge_receipt', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ userId: userId })
+      });
+
+      if (!acknowledgeResponse.ok) {
+          throw new Error('이미지 삭제 요청이 실패했습니다.');
+      }
+
+      console.log('이미지 삭제 요청이 성공했습니다.');
+
       } catch (error) {
         console.error(error);
       }
-    };
+    }
 
     useEffect(() => {
       if (product && product.productPhotoUrl.length > 0) {
@@ -175,6 +188,7 @@ const StoreDetailPage =() => {
             color: option.color,
             creationTime: null,
             photoUrl: product.productPhotoUrl[0],
+            productId : product.productId,
             price: pricePerItem,
             productName: product.productName,
             shoppingCartId: null,
@@ -228,7 +242,9 @@ const StoreDetailPage =() => {
       const handleVirtualTryOn = async () => {
         try {
           // localStorage에서 사용자 ID를 검색
-          const userId = localStorage.getItem('user_id');
+          const userData = localStorage.getItem('user_info');
+          console.log(userData);
+          const userId = userData ? JSON.parse(userData).userId : null;
           console.log(userId);
           if (!userId) {
             throw new Error('localStorage에서 사용자 ID를 찾을 수 없습니다.');
@@ -238,7 +254,7 @@ const StoreDetailPage =() => {
           formData.append('userId', userId);
       
           // 서버로 요청을 보냄
-          const userPhotoResponse = await fetch('http://218.233.221.147:8080/User/getImageUrl', {
+          const userPhotoResponse = await fetch('http://155.230.43.12:8090/User/getImageUrl', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/x-www-form-urlencoded', // 헤더에 Content-Type을 application/x-www-form-urlencoded로 설정
@@ -246,7 +262,8 @@ const StoreDetailPage =() => {
             body: formData // FormData 객체를 요청 본문으로 사용
           });
           if (!userPhotoResponse.ok) {
-            throw new Error('사용자 사진 URL을 가져오는 데 실패했습니다.');
+            showUploadModal();
+            return;
           }
 
           const userimageUrl = await userPhotoResponse.text();
