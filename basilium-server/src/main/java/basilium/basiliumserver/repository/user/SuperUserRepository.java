@@ -16,4 +16,6 @@ public interface SuperUserRepository {
     Optional<SuperUser> findByEmail(String emailAddress);
     List<String> getAllUserImageUrls();
     List<SuperUser> findByUserImageUrlsIn(Set<String> imageUrls);
+    List<String> getAllUserProfileUrls();
+    List<SuperUser> findByUserProfileUrlsIn(Set<String> imageUrls);
 }

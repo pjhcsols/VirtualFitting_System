@@ -87,5 +87,18 @@ public class JpaSuperUserRepository implements SuperUserRepository {
             em.merge(existingUser); // 변경 내용 저장
         }
     }
+
+    @Override
+    public List<String> getAllUserProfileUrls() {
+        return em.createQuery("SELECT s.userProfileImageUrl FROM SuperUser s", String.class).getResultList();
+    }
+
+    @Override
+    public List<SuperUser> findByUserProfileUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM SuperUser u WHERE u.userProfileImageUrl IN :imageUrls", SuperUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
+    }
+
 }
 

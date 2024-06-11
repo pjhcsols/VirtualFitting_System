@@ -129,4 +129,18 @@ public class JpaNormalUserRepository implements NormalUserRepository{
         return em.createQuery("select d from DeliveryInfo d where d.normalUser.userNumber = :userNumber", DeliveryInfo.class).setParameter("userNumber", userNumber).getSingleResult();
     }
 
+    @Override
+    public List<String> getAllUserProfileUrls() {
+        return em.createQuery("SELECT u.userProfileImageUrl FROM NormalUser u", String.class)
+                .getResultList();
+    }
+
+    @Override
+    public List<NormalUser> findByUserProfileUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM NormalUser u WHERE u.userProfileImageUrl IN :imageUrls", NormalUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
+    }
+
+
 }

@@ -2,6 +2,7 @@ package basilium.basiliumserver.repository.user;
 
 import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.NormalUser;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,4 +23,8 @@ public interface NormalUserRepository {
     //List<NormalUser> findAll();
     List<String> getAllUserImageUrls();
     List<NormalUser> findByUserImageUrlsIn(Set<String> imageUrls);
+    //@Query("SELECT u.userProfileImageUrl FROM NormalUser u")
+    List<String> getAllUserProfileUrls();
+    List<NormalUser> findByUserProfileUrlsIn(Set<String> imageUrls);
+
 }

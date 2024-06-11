@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+//product 이미지 용
 @Service
 public class S3StorageService {
 

@@ -37,8 +37,8 @@ public class SseController {
      */
     @GetMapping("/subscribe/{productId}")
     public SseEmitter subscribeInventory(@PathVariable Long productId) {
-        SseEmitter emitter = new SseEmitter(10 * 60 * 1000L); // 10분
-        //SseEmitter emitter = new SseEmitter(0); //구독 연결시간 무제한
+        //SseEmitter emitter = new SseEmitter(10 * 60 * 1000L); // 10분
+        SseEmitter emitter = new SseEmitter(); //구독 연결시간 무제한
         emitters.put(productId, emitter);
 
         // Heartbeat 설정

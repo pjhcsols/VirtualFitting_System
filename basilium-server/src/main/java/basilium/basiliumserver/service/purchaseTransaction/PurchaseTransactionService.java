@@ -118,7 +118,7 @@ public class PurchaseTransactionService {
         if (success) {
             ScheduledFuture<?> scheduledTask = scheduledTasks.remove(productId);
             if (scheduledTask != null) {
-                scheduledTask.cancel(false);
+                scheduledTask.cancel(false); //한번은 취소되는데 두번 스케줄러에 쌓여있을때 삭제안됨
             }
             log.info("[결제성공(true) scheduledTask: 상품 수량 복구 취소->일괄 처리 작업 취소] ");
         } else {
