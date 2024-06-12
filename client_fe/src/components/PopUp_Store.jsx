@@ -6,6 +6,7 @@
 
     const PopUpStore = ({logout}) => {
         const [isOpen, setIsOpen] = useState(true);
+        const [profileImageUrl, setProfileImageUrl] = useState(userImg);
         const popupRef = useRef(null);
         const navigate = useNavigate();
         const storedUserInfo = localStorage.getItem('user_info');
@@ -27,6 +28,25 @@
             };
         }, []);
 
+        useEffect(() => {
+            const fetchProfileImage = async () => {
+                try {
+                    const response = await fetch(`http://218.233.221.147:8080/User/getProfileImage?userId=${userId}`);
+                    if (response.ok) {
+                        const blob = await response.blob();
+                        if (blob.size > 0) {
+                            const imageUrl = URL.createObjectURL(blob);
+                            setProfileImageUrl(imageUrl);
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error fetching profile image:', error);
+                }
+            };
+    
+            fetchProfileImage();
+        }, [userId]);
+
         const handleLogout = () => {    
             console.log("클릭");
             logout();
@@ -45,7 +65,7 @@
                 {isOpen && (
                     <div className="popup-container-store" ref={popupRef}>
                         <div className="user-store-container">
-                            <img src={userImg} alt="user" onClick={() => handleClick('/MyPage')}/>
+                            <img src={profileImageUrl} alt="user" onClick={() => handleClick('/MyPage')}/>
                             <span className="userId-store">
                                 {userId}님<br/>
                                 {loginType}
