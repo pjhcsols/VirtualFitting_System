@@ -9,11 +9,11 @@
 
 .profile {
     background-color: #D9D9D9;
-    width: 250px;
-    height: 250px;
+    width: 255px;
+    height: 255px;
     text-align: center;
     border-radius: 50%; /* 원 모양으로 만듦 */
-    
+    object-fit: cover;
     display: flex;
     justify-content: center; /* 이미지를 가로 중앙으로 정렬 */
     align-items: center; /* 이미지를 세로 중앙으로 정렬 */

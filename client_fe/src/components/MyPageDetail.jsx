@@ -1,11 +1,18 @@
 import React, { useState, useEffect } from "react";
 import './MyPageDetail.css'
-import userImg from '../assets/img/userImg.svg';
+import initialUserImg from '../assets/img/userImg.svg';
 import axios from "axios";
 
 const MypageDetail = () => {
     const [userData, setUserData] = useState(null);
     const [updatedUserData, setUpdatedUserData] = useState({});
+    const [selectedFile, setSelectedFile] = useState(null);
+    const [userImg, setUserImg] = useState(initialUserImg);
+    const [isUploaded, setIsUploaded] = useState(true);
+
+    const storedUserInfo = localStorage.getItem('user_info');
+    const userInfo = JSON.parse(storedUserInfo);
+    const userId = userInfo.userId;
 
     useEffect(() =>{
         const jwtToken = localStorage.getItem("login-token");
@@ -26,6 +33,28 @@ const MypageDetail = () => {
                 console.log('Error fetching user data:', error);
             });
     }, []);
+
+
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await fetch(`http://218.233.221.147:8080/User/getProfileImage?userId=${userId}`);
+                if (response.ok) {
+                    const blob = await response.blob();
+                    if (blob.size > 0) {
+                        const imageUrl = URL.createObjectURL(blob);
+                        setUserImg(imageUrl);
+                        setIsUploaded(false);
+                    }
+                }
+            } catch (error) {
+                console.error('Error fetching profile image:', error);
+            }
+        };
+
+        fetchProfileImage();
+    }, [userId]);
+
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -66,16 +95,55 @@ const MypageDetail = () => {
             });
     };
 
+    const handleFileChange = async (event) => {
+        const file = event.target.files[0];
+        if (file) {
+          setSelectedFile(file);
+          setUserImg(URL.createObjectURL(file));
+          await handleImgSubmit(file);
+        }
+      };
+    
+      const handleButtonClick = () => {
+        document.getElementById('fileInput').click();
+      };
+    
+      const handleImgSubmit = async (file) => {
+        const formData = new FormData();
+        formData.append('userId', userId);
+        formData.append('file', file);
+    
+        try {
+          const response = await fetch('http://218.233.221.147:8080/User/uploadProfileImage', {
+            method: 'POST',
+            body: formData,
+          });
+    
+          if (response.ok) {
+            alert('이미지 업로드를 성공하였습니다.');
+          } else {
+            alert('이미지 업로드를 실패하였습니다.');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          alert('서버 오류가 발생했습니다.');
+        }
+      };
+    
+
+
+
     
 
     return (
         <div className="mypage_detail_container">
             <div className="mypagedetail">
                 <div className="mypage_detail_profile">
-                    <img src={userImg} alt="User Image" />
+                    <img className={isUploaded ? 'initialProfileImg' : 'uploadedProfileImg'} src={userImg} alt="User Image" />
                 </div>
                 <div className="mypage_detail_button_div">
-                    <button onClick={handleSubmit}>사진 변경</button>
+                <button onClick={handleButtonClick}>사진 변경</button>
+                <input type="file" id="fileInput" style={{ display: 'none' }} onChange={handleFileChange}/>
                 </div>
             </div>
             <div className="mypage_detail_info">
