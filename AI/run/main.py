@@ -81,25 +81,22 @@ async def receive_data(request_data: RequestData):
         
         cloth_img_path = "./"+userId+"_cloth.png"
         user_img_path="./"+userId+"_user.png"
-    
-        #download cloth image
-        
-        # Download the user image from the specified server
+       
         #218.233.221.147:8080
         server_url = "http://155.230.43.12:8090/User/sentUserImageFile"
         
         await asyncio.gather(
+            #download cloth image
             download_image(cloth_img_url,cloth_img_path),
+            # Download the user image from the specified server
             download_image_from_server(server_url, user_img_url, user_img_path)
         )
         
-
         crop_ootd(user_img_path, cloth_img_path, userId)
         fitting_img_path="./"+userId+"_fittingImg.png"
     
         return FileResponse(fitting_img_path)
-        #로컬 test용 코드
-        #return FileResponse(user_img_path)
+
     except Exception as e:
         return JSONResponse(status_code=400, content={"message": str(e)})
     
