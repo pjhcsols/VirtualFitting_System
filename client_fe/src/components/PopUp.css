@@ -1,0 +1,114 @@
+.popup-container-store {
+    position: absolute;
+    top: 45px;
+    right: 5px; 
+    width: 280px;
+    height: 140px; 
+    border-radius: 10px;
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    z-index: 1; 
+    display: flex;
+    flex-direction: column; 
+    justify-content: flex-start; 
+    align-items: flex-start; 
+}
+
+.popup-container-bottom {
+    position: absolute;
+    top: 25px;
+    right: -15px; 
+    width: 280px;
+    height: 140px; /* 긴 userId를 수용하기 위해 높이 증가 */
+    border-radius: 10px;
+    background-color: white; 
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    z-index: 1; 
+    display: flex;
+    flex-direction: column; /* 항목을 수직으로 쌓기 위해 변경 */
+    justify-content: flex-start; 
+    align-items: flex-start; 
+}
+
+.logoutButton {
+    background-color: #dee2e6; 
+    border: none; 
+    padding: 8px 15px;
+    border-radius: 10px;
+    color: black; 
+    font-size: 12px; 
+    font-weight: bold;
+    position: absolute; /* 절대 위치를 사용하여 오른쪽 상단에 배치 */
+    top: 10px; /* 상단에서 약간의 여유를 둠 */
+    right: 10px; /* 오른쪽에서 약간의 여유를 둠 */
+    cursor: pointer; 
+}
+
+.userId-bottom {
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 30px;
+    padding-top: 10px;
+    word-break: break-all; /* 긴 단어가 넘치지 않도록 단어를 분할 */
+}
+
+.user-bottom-container {
+    display: flex;
+    flex-direction: row; /* 항목을 수직으로 쌓기 위해 변경 */
+    align-items: flex-start;
+    margin-top: 30px;
+    width: 100%; /* 전체 너비를 차지하도록 설정 */
+}   
+
+.user-bottom-container img {
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+    margin-top: -2px;
+    margin-left: 20px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.user-bottom-container span {
+    margin-top: 10px;
+}
+
+.userId-store{
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+    margin-left: 30px;
+    padding-top: 10px;
+    word-break: break-all;
+}
+
+.user-store-container {
+    display: flex;
+    flex-direction: row; 
+    align-items: flex-start;
+    margin-top: 30px;
+    width: 100%; 
+}
+
+.user-store-container img {
+    width: 90px;
+    height: 90px;
+    cursor: pointer;
+    margin-top: -2px;
+    margin-left: 20px;
+    border-radius: 50%;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    object-fit: cover;
+}
+
+.user-store-container span {
+    margin-top: 10px;
+}
+
