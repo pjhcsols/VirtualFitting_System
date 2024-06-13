@@ -20,6 +20,7 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 //user 통합 로그인
 @Slf4j
@@ -32,6 +33,9 @@ public class UserStateController {
 
     @Value("${uploadDir}")
     private String uploadDir;
+
+    @Value("${profileDir}")
+    private String profileDir;
 
     //bean
     @Autowired
@@ -150,6 +154,28 @@ public class UserStateController {
             ImageIO.write(image, "jpg", outputStream);
 
             return outputStream.toByteArray();
+        }
+    }
+
+    //user profile
+    @PostMapping("/uploadProfileImage")
+    public ResponseEntity<String> uploadProfileImage(@RequestParam("userId") String userId,
+                                                     @RequestParam("file") MultipartFile file) {
+        String encodedPath = userStateService.uploadProfileImage(userId, file);
+        if (encodedPath != null) {
+            return ResponseEntity.ok().body(encodedPath);
+        } else {
+            return ResponseEntity.badRequest().body("프로필 이미지 업로드에 실패하였습니다.");
+        }
+    }
+
+    @GetMapping("/getProfileImage")
+    public ResponseEntity<byte[]> getProfileImage(@RequestParam("userId") String userId) {
+        try {
+            byte[] image = userStateService.getProfileImage(userId);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 

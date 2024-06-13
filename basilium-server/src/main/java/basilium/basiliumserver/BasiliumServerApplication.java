@@ -29,10 +29,15 @@ public class BasiliumServerApplication {
 	@Bean
 	public ApplicationRunner initializeDatabase(DataSource dataSource) {
 		return args -> {
-			ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
-					new ClassPathResource("data.sql"));
-			populator.execute(dataSource);
+			try {
+				ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
+						new ClassPathResource("data.sql"));
+				populator.execute(dataSource);
+				System.out.println("Database initialized successfully");
+			} catch (Exception e) {
+				System.err.println("Database initialization failed: " + e.getMessage());
+				e.printStackTrace();
+			}
 		};
 	}
-
 }
