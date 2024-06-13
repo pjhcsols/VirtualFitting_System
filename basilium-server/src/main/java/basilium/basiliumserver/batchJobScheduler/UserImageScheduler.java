@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+//local user 가상착용 이미지
 @Slf4j
 @Component
 public class UserImageScheduler {
@@ -40,6 +41,7 @@ public class UserImageScheduler {
 
     @Transactional
     @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // 서버시작시간기준, 24시간마다 실행
+    //@Scheduled(initialDelay = 60000, fixedDelay = 120000)
     public void deleteUnusedImages() {
         log.info("************************************************************************************");
         log.info("[ [user Image] 스케줄링 시작]");

@@ -10,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @Slf4j
 @RestController
@@ -50,6 +51,22 @@ public class BrandUserController {
     public ResponseEntity<BrandUser> brandUserInfo(@RequestParam String userId) {
         BrandUser brandUser = brandUserService.userInfoById(userId);
         return ResponseEntity.ok(brandUser);
+    }
+
+    //브랜드 user id로 user number를 찾음
+    @GetMapping("/findUserNumberById")
+    public ResponseEntity<String> findUserNumberById(@RequestParam String userId) {
+        Optional<String> userNumber = brandUserService.findUserNumberById(userId);
+        return userNumber.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    //usernumber로 브랜드user객체를 불러옴
+    @GetMapping("/brandUser/byNumber")
+    public ResponseEntity<BrandUser> getBrandUserByNumber(@RequestParam Long userNumber) {
+        Optional<BrandUser> brandUserOptional = brandUserService.findByBrandUserOfNumber(userNumber);
+        return brandUserOptional.map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // 기타 브랜드 유저 상품 등록 삭제 수정 기능 로직 구현

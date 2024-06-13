@@ -1,10 +1,6 @@
 package basilium.basiliumserver.service.user;
 
-import basilium.basiliumserver.domain.user.BrandUser;
-import basilium.basiliumserver.domain.user.LoginResponse;
-import basilium.basiliumserver.domain.user.LoginStatus;
-import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.domain.user.SuperUser;
+import basilium.basiliumserver.domain.user.*;
 import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
@@ -24,6 +20,9 @@ import java.io.IOException;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Base64;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 
@@ -52,6 +51,9 @@ public class UserStateService {
 
     @Value("${uploadDir}")
     private String uploadDir;
+
+    @Value("${profileDir}")
+    private String profileDir;
 
 
 
@@ -220,6 +222,83 @@ public class UserStateService {
             return Files.readAllBytes(imagePath);
         } else {
             // 이미지 파일이 존재하지 않는 경우 FileNotFoundException을 던집니다.
+            throw new FileNotFoundException("이미지 파일이 존재하지 않습니다.");
+        }
+    }
+
+
+    //user profile 경로 base64인코딩 및 디코딩 수행
+    public String uploadProfileImage(String userId, MultipartFile file) {
+        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
+        Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
+        Optional<SuperUser> superUser = superUserRepository.findById(userId);
+
+        if (normalUser.isPresent()) {
+            return saveProfileImage(normalUser.get(), file);
+        } else if (brandUser.isPresent()) {
+            return saveProfileImage(brandUser.get(), file);
+        } else if (superUser.isPresent()) {
+            return saveProfileImage(superUser.get(), file);
+        }
+        return null;
+    }
+
+    private String saveProfileImage(User user, MultipartFile file) {
+        if (file.isEmpty()) {
+            return null;
+        }
+
+        try {
+            String fileName = user.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
+            String filePath = profileDir + fileName;
+            file.transferTo(new File(filePath));  // 프로필 이미지 파일을 지정된 경로에 저장
+
+            // 경로를 Base64로 인코딩
+            String encodedPath = Base64.getEncoder().encodeToString(filePath.getBytes());
+
+            user.setUserProfileImageUrl(encodedPath);
+            if (user instanceof NormalUser) {
+                normalUserRepository.save((NormalUser) user);
+            } else if (user instanceof BrandUser) {
+                brandUserRepository.save((BrandUser) user);
+            } else if (user instanceof SuperUser) {
+                superUserRepository.save((SuperUser) user);
+            }
+
+            return encodedPath;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    public byte[] getProfileImage(String userId) throws IOException {
+        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
+        Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
+        Optional<SuperUser> superUser = superUserRepository.findById(userId);
+
+        String encodedPath = null;
+
+        if (normalUser.isPresent()) {
+            encodedPath = normalUser.get().getUserProfileImageUrl();
+        } else if (brandUser.isPresent()) {
+            encodedPath = brandUser.get().getUserProfileImageUrl();
+        } else if (superUser.isPresent()) {
+            encodedPath = superUser.get().getUserProfileImageUrl();
+        }
+
+        if (encodedPath == null) {
+            throw new FileNotFoundException("이미지 파일이 존재하지 않습니다.");
+        }
+
+        // Base64로 인코딩된 경로를 디코딩하여 실제 파일 경로 얻기
+        byte[] decodedBytes = Base64.getDecoder().decode(encodedPath);
+        String filePath = new String(decodedBytes);
+
+        Path imagePath = Paths.get(filePath);
+        if (Files.exists(imagePath)) {
+            return Files.readAllBytes(imagePath);
+        } else {
             throw new FileNotFoundException("이미지 파일이 존재하지 않습니다.");
         }
     }

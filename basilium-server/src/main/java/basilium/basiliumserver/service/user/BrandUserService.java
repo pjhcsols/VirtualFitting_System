@@ -87,6 +87,17 @@ public class BrandUserService {
             throw new IllegalStateException("비밀번호는 영문 소문자, 대문자, 특수문자를 포함해야됩니다.");
         }
     }
+
+    //브랜드 user id로 user number를 찾음
+    public Optional<String> findUserNumberById(String id) {
+        return brandUserRepository.findByNumber(id);
+    }
+
+    //브랜드 user number로 브랜드유저를 찾음
+    public Optional<BrandUser> findByBrandUserOfNumber(Long userNumber) {
+        return brandUserRepository.findByBrandUserOfNumber(userNumber);
+    }
+
     // S3스토리지에서 브랜드 유저 id와 이미지를 함께 넘겨주어 id로 유저있는지 확인 후 업로드 aws/products
     public Optional<BrandUser> findById(String id) {
         return brandUserRepository.findById(id);

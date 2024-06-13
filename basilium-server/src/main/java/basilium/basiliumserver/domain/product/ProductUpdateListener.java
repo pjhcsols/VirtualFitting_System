@@ -9,7 +9,10 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
 
-//Kafka MQ Listener
+import java.util.UUID;
+
+// Kafka MQ
+//Kafka 메시지 큐에서 상품 업데이트 메시지를 수신하여 상품 수량을 업데이트하고, 주어진 UUID를 사용하여 스케줄링된 작업을 추가합니다.
 @Component
 @RequiredArgsConstructor
 public class ProductUpdateListener {
@@ -23,42 +26,12 @@ public class ProductUpdateListener {
         ProductUpdateMessage message = objectMapper.readValue(record.value(), ProductUpdateMessage.class);
         Long productId = message.getProductId();
         Long count = message.getCount();
+        UUID taskId = message.getTaskId();
 
+        // Product quantity update
         productService.updateProductQuantity(productId, count);
-        purchaseTransactionService.scheduleRestoration(productId, count);
+
+        // Schedule restoration with the provided UUID
+        purchaseTransactionService.scheduleRestoration(productId, count, taskId);
     }
 }
-
-
-
-
-
-
-/*
-// rabbit mq 용
-import basilium.basiliumserver.rabbitMQ.RabbitMQConfig;
-import basilium.basiliumserver.service.product.ProductService;
-import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.stereotype.Component;
-
-@Component
-@RequiredArgsConstructor
-public class ProductUpdateListener {
-
-    private final ProductService productService;
-    private final PurchaseTransactionService purchaseTransactionService;
-
-    @RabbitListener(queues = RabbitMQConfig.PRODUCT_UPDATE_QUEUE)
-    public void handleProductUpdate(ProductUpdateMessage message) {
-        Long productId = message.getProductId();
-        Long count = message.getCount();
-
-        productService.updateProductQuantity(productId, count);
-        purchaseTransactionService.scheduleRestoration(productId, count);
-    }
-}
-
-
- */
