@@ -4,55 +4,79 @@ import basilium.basiliumserver.domain.product.ProductUpdateMessage;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-//결제 시 재고 실시간 관리 카프카 mq + 스케줄링
-    /*
-    컨트롤러1.
-    1-1.처음에 프론트에서 request에 productid 와 count를 주면 총수량을 즉각적으로 수정해서 저장
-    1-2.실시간으로 프론트에게 재고 수량을 알려주는 기능 추가
+import java.util.Map;
+import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 
-    컨트롤러2.
-    2-1.후에 response로 결제 성공 실패 유무를 받아서 성공(true)시에는 수정하지않고
-    2-2.false 요청이 들어오면 즉시 구매한 수량만큼 다시 복구
-    2-3.또는 요청이 안들어오고 10분이 초과되면 총수량에서 구매한 수량만큼 다시 복구
-
-
-     */
-
+// 결제 시 재고 실시간 관리 카프카 mq + 스케줄링
 @RestController
 @RequestMapping("/payment")
 @RequiredArgsConstructor
+@Slf4j
 public class PaymentController {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final PurchaseTransactionService purchaseTransactionService;
     private final ObjectMapper objectMapper = new ObjectMapper();
-
-    //카프카 mq
-    //처음에 프론트에서 request에 productid 와 count를 주면 총수량을 즉각적으로 수정해서 저장
+    private static final ConcurrentHashMap<UUID, String> requestTaskMaps = new ConcurrentHashMap<>();
+    //private final ConcurrentHashMap<String, String> requestTaskMap = new ConcurrentHashMap<>();
     @PostMapping("/request")
-    public String requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
-        ProductUpdateMessage message = new ProductUpdateMessage(productId, count);
+    public ResponseEntity<String> requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
+        UUID requestId = UUID.randomUUID(); // 요청 ID를 UUID로 생성
+
+        ProductUpdateMessage message = new ProductUpdateMessage(productId, count, requestId);
+
         String messageStr = objectMapper.writeValueAsString(message);
         kafkaTemplate.send("product-update-topic", messageStr);
-        return "Payment request sent.";
+
+        purchaseTransactionService.scheduleRestoration(productId, count, requestId);
+
+        String key = productId + "-" + count; // productId와 count를 조합하여 고유한 키 생성
+        requestTaskMaps.put(requestId, key); // (productId+count)key와 requestId를 사용하여 매핑하여 저장
+        log.info("************************************************");
+        log.info("requestId {} with key {}",requestId, key);
+        return ResponseEntity.ok(requestId.toString());
     }
 
-    // 카프카 mq
-    //후에 response로 결제 성공 실패 유무를 받아서 성공(true)시에는 수정하지않고
-    //false 요청이 들어오면 즉시 구매한 수량만큼 다시 product 수량 복구
-    //또는 요청이 안들어오고 10분이 초과되면 총수량에서 구매한 수량만큼 다시 product 수량 복구
     @PostMapping("/response")
-    public String paymentResponse(@RequestParam Long productId, @RequestParam Long count, @RequestParam boolean success) {
-        purchaseTransactionService.processPaymentResponse(productId, count, success);
+    public String paymentResponse(@RequestParam UUID requestId, @RequestParam boolean success) {
+        // requestId로 해당 요청의 key를 가져옴
+        String key = requestTaskMaps.get(requestId);
+
+        if (key == null) {
+            log.info("No scheduled task found for requestId: {}", requestId);
+            return "No scheduled task found for product.";
+        }
+
+        // key 파싱하여 productId와 count 추출
+        String[] parts = key.split("-");
+        Long productId = Long.valueOf(parts[0]);
+        Long count = Long.valueOf(parts[1]);
+
+        log.info("[response]: taskId {} with key {}", requestId, key);
+
+        UUID taskId = requestId;
+        // requestId를 그대로 taskId로 사용하여 processPaymentResponse 호출
+        purchaseTransactionService.processPaymentResponse(productId, count, success, taskId);
+
+        // 요청이 처리된 후에는 해당 매핑을 제거하여 메모리 누수를 방지합니다.
+        log.info("[컨트롤러-response]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
+        requestTaskMaps.remove(requestId);
+        log.info("[컨트롤러-response]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
         return success ? "Payment successful." : "Payment failed.";
     }
-}
 
+    public static void removeControllerMap(UUID requestId) {
+        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
+        requestTaskMaps.remove(requestId);
+        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
+    }
+
+}
 

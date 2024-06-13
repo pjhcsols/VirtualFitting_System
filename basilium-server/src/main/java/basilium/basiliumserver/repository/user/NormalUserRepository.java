@@ -20,7 +20,6 @@ public interface NormalUserRepository {
     Optional<NormalUser> findByEmail(String emailAddress);
     List<NormalUser> findByName(String name);
     Optional<NormalUser> findByPhoneNumber(String phoneNumber);
-    //List<NormalUser> findAll();
     List<String> getAllUserImageUrls();
     List<NormalUser> findByUserImageUrlsIn(Set<String> imageUrls);
     //@Query("SELECT u.userProfileImageUrl FROM NormalUser u")

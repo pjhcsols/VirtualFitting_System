@@ -73,25 +73,4 @@ public class Product {
     @Column(name = "total_quantity")
     Long totalQuantity; //총량
 
-    //프로필 아이콘용 이미지 url 추가
-
-    /*
-    @Column(name="product_photo_url")
-    String productPhotoUrl;
-
-    @Column(name="product_sub_photo_url")
-    String productSubPhotoUrl;
-     */
-    //삭제하기
-    /*
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "firm_name")
-    private BrandUser productFirmName;
-
-    public Product(){
-
-    }
-    */
-
-
 }

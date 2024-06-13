@@ -25,20 +25,10 @@ public class SseController {
         SseController.productService = productService;
     }
     /*
-
-        // 특정 상품의 재고를 구독하는 메서드
-        @GetMapping("/subscribe/{productId}")
-        public SseEmitter subscribeInventory(@PathVariable Long productId) {
-            SseEmitter emitter = new SseEmitter();
-            emitters.put(productId, emitter);
-            return emitter;
-        }
-
-     */
     @GetMapping("/subscribe/{productId}")
     public SseEmitter subscribeInventory(@PathVariable Long productId) {
         //SseEmitter emitter = new SseEmitter(10 * 60 * 1000L); // 10분
-        SseEmitter emitter = new SseEmitter(); //구독 연결시간 무제한
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE); //구독 연결시간 무제한
         emitters.put(productId, emitter);
 
         // Heartbeat 설정
@@ -52,6 +42,34 @@ public class SseController {
         }, 0, 30, TimeUnit.SECONDS); // 30초마다 heartbeat
 
         emitter.onCompletion(executorService::shutdown);
+        emitter.onTimeout(() -> {
+            emitters.remove(productId);
+            executorService.shutdown();
+        });
+
+        return emitter;
+    }
+
+     */
+
+    @GetMapping("/subscribe/{productId}")
+    public SseEmitter subscribeInventory(@PathVariable Long productId) {
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        emitters.put(productId, emitter);
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(SseEmitter.event().comment("heartbeat"));
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }, 0, 30, TimeUnit.SECONDS);
+
+        emitter.onCompletion(() -> {
+            emitters.remove(productId);
+            executorService.shutdown();
+        });
         emitter.onTimeout(() -> {
             emitters.remove(productId);
             executorService.shutdown();
@@ -98,45 +116,3 @@ public class SseController {
     }
 
 }
-
-/*
-//구독한 product의 재고가 변경될때마다 즉시 전송 sse
-@RestController
-@RequestMapping("/inventory")
-public class SseController {
-
-    private static final Map<Long, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private static ProductService productService;
-
-    @Autowired
-    public SseController(ProductService productService) {
-        SseController.productService = productService;
-    }
-
-    @GetMapping("/subscribe/{productId}")
-    public SseEmitter subscribeInventory(@PathVariable Long productId) {
-        SseEmitter emitter = new SseEmitter();
-        emitters.put(productId, emitter);
-        return emitter;
-    }
-
-    @PostMapping("/unsubscribe/{productId}")
-    public void unsubscribeInventory(@PathVariable Long productId) {
-        emitters.remove(productId);
-    }
-
-    public static void updateInventory(Long productId) {
-        SseEmitter emitter = emitters.get(productId);
-        if (emitter != null) {
-            try {
-                Long inventory = productService.getProductQuantity(productId);
-                emitter.send(inventory.toString());
-            } catch (IOException e) {
-                emitter.completeWithError(e);
-            }
-        }
-    }
-}
-
-
- */
