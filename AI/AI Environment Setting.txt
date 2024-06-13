@@ -1,0 +1,14 @@
+CUDA v11.8 download
+conda create -n ootd python==3.10
+conda activate ootd
+pip install torch==2.0.1 torchvision==0.15.2 torchaudio==2.0.2 --index-url https://download.pytorch.org/whl/cu118
+pip install -r requirements.txt
+pip install aiohttp
+
+이후 run 폴더에서 코드 실행
+1. 상의
+ python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id"
+2. 하의:
+python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id" --model_type dc --category 1 
+3. 드레스
+python run_ootd.py --model_path "model-image-path" --cloth_path "cloth-image-path" --id "id" --model_type dc --category 2 
