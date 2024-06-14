@@ -14,7 +14,7 @@ Modal.setAppElement('#root');
 const Product = ({ product, onClick }) => {
     const [isLiked, setIsLiked] = useState(false);
     const [modalIsOpen, setIsOpen] = useState(false);
-    const [productOptions, setProductOptions] = useState({ sizes: [], colors: [] }); // 제품 옵션 상태 관리
+    const [productOptions, setProductOptions] = useState({ sizes: [], colors: [] }); 
     const [selectedOptions, setSelectedOptions] = useState({ size: '', color: '', amount: 1 });
     
     const jwtToken = localStorage.getItem("login-token");
@@ -48,7 +48,7 @@ const Product = ({ product, onClick }) => {
 
     const handleCartClick = async (event) => {
         event.stopPropagation();
-        openModal(); // 장바구니 클릭 시 모달 열기
+        openModal();
     };
 
     const handleChange = (event) => {
