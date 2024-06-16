@@ -1,6 +1,6 @@
 package basilium.basiliumserver.controller.product.sse;
 
-import basilium.basiliumserver.domain.product.ProductInfoDTO;
+import basilium.basiliumserver.domain.product.paymentInventory.ProductInfoDTO;
 import basilium.basiliumserver.service.product.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

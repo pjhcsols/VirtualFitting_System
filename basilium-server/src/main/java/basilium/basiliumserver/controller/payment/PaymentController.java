@@ -1,6 +1,7 @@
 package basilium.basiliumserver.controller.payment;
 
-import basilium.basiliumserver.domain.product.ProductUpdateMessage;
+import basilium.basiliumserver.domain.product.paymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.product.paymentInventory.ProductUpdateMessage;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,6 +27,52 @@ public class PaymentController {
     private static final ConcurrentHashMap<UUID, String> requestTaskMaps = new ConcurrentHashMap<>();
     //private final ConcurrentHashMap<String, String> requestTaskMap = new ConcurrentHashMap<>();
     @PostMapping("/request")
+    public ResponseEntity<PaymentInventoryResponse> requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
+        UUID requestId = UUID.randomUUID();
+
+        // Assuming kafkaTemplate.send() method is called to trigger the payment process
+        ProductUpdateMessage message = new ProductUpdateMessage(productId, count, requestId);
+        String messageStr = objectMapper.writeValueAsString(message);
+        kafkaTemplate.send("product-update-topic", messageStr);
+
+        //hashmap 안쓸거면 리팩토링
+        String key = productId + "-" + count; // productId와 count를 조합하여 고유한 키 생성
+        requestTaskMaps.put(requestId, key); // (productId+count)key와 requestId를 사용하여 매핑하여 저장
+        log.info("************************************************");
+        log.info("requestId {} with key {}", requestId, key);
+
+        // Call the service method and capture the PaymentInventoryResponse object
+        PaymentInventoryResponse response = purchaseTransactionService.scheduleRestoration(productId, count, requestId);
+
+        return ResponseEntity.ok(response);
+    }
+    /*
+    //타이머랑 함께 리턴
+    @PostMapping("/request")
+    public ResponseEntity<String> requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
+        UUID requestId = UUID.randomUUID(); // 요청 ID를 UUID로 생성
+
+        ProductUpdateMessage message = new ProductUpdateMessage(productId, count, requestId);
+
+        String messageStr = objectMapper.writeValueAsString(message);
+        kafkaTemplate.send("product-update-topic", messageStr);
+
+        // 스케줄된 작업을 추가하고 그 정보를 반환받음
+        String responseMessage = purchaseTransactionService.scheduleRestoration(productId, count, requestId);
+
+        String key = productId + "-" + count; // productId와 count를 조합하여 고유한 키 생성
+        requestTaskMaps.put(requestId, key); // (productId+count)key와 requestId를 사용하여 매핑하여 저장
+        log.info("************************************************");
+        log.info("requestId {} with key {}", requestId, key);
+
+        // 클라이언트에게 요청 ID와 스케줄링된 지연 시간을 포함한 응답을 반환
+        return ResponseEntity.ok(responseMessage);
+    }
+
+     */
+    /*
+    //원본
+    @PostMapping("/request")
     public ResponseEntity<String> requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
         UUID requestId = UUID.randomUUID(); // 요청 ID를 UUID로 생성
 
@@ -43,6 +89,9 @@ public class PaymentController {
         log.info("requestId {} with key {}",requestId, key);
         return ResponseEntity.ok(requestId.toString());
     }
+
+     */
+
 
     @PostMapping("/response")
     public String paymentResponse(@RequestParam UUID requestId, @RequestParam boolean success) {

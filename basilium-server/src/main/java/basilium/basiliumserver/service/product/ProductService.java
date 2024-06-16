@@ -2,11 +2,9 @@ package basilium.basiliumserver.service.product;
 
 import basilium.basiliumserver.controller.product.sse.SseController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.product.ProductInfoDTO;
+import basilium.basiliumserver.domain.product.paymentInventory.ProductInfoDTO;
 import basilium.basiliumserver.domain.user.BrandUser;
-import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.product.ProductRepository;
-import basilium.basiliumserver.repository.user.BrandUserRepository;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -2,6 +2,7 @@ package basilium.basiliumserver.service.purchaseTransaction;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.domain.product.paymentInventory.PaymentInventoryResponse;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
@@ -11,6 +12,8 @@ import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
 import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.controller.product.sse.SseController;
+
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,11 +55,10 @@ public class PurchaseTransactionService {
     private final ConcurrentHashMap<Long, ConcurrentHashMap<UUID, ScheduledFuture<?>>> scheduledTasks = new ConcurrentHashMap<>();
 
 
-
-    public List<OrderListDTO> userOrderHistory(Long userId){
+    public List<OrderListDTO> userOrderHistory(Long userId) {
         List<OrderListDAO> list = jpaPurchaseTransactionRepo.userOrderHistory(userId);
         List<OrderListDTO> newList = new ArrayList<>();
-        for (OrderListDAO item : list){
+        for (OrderListDAO item : list) {
             OrderListDTO temp = new OrderListDTO();
             temp.setSize(item.getSize());
             temp.setColor(item.getColor());
@@ -75,7 +77,7 @@ public class PurchaseTransactionService {
 
     @Transactional
     public void processPayment(String userId, String impUid, OrderPaymentRequest request) {
-        try{
+        try {
             List<PurchaseTransaction> transactions = new ArrayList<>();
 
             request.getInventoryList().forEach(item -> {
@@ -96,13 +98,69 @@ public class PurchaseTransactionService {
                 jpaPurchaseTransactionRepo.savePurchaseTransaction(transaction); // Using the standard save method from JpaRepository
                 System.out.println(transaction.toString());
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     //kafka mq
+    // Method to schedule restoration and return DTO
+    public PaymentInventoryResponse scheduleRestoration(Long productId, Long count, UUID taskId) {
+        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(productId, new ConcurrentHashMap<>());
+        if (!tasks.containsKey(taskId)) {
+            ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
+                productService.restoreProductQuantity(productId, count);
+                removeScheduledTask(productId, taskId);
+                log.info("[상품 수량 복구, 결제 시간 5분 초과] productId: {}, count: {}", productId, count);
+                log.info("[서비스-예약 스케줄러 메모리 해제 후]: Getting scheduled tasks - size: {}", scheduledTasks.size());
+                SseController.updateInventory(productId);
+                PaymentController.removeControllerMap(taskId);
+            }, 1, TimeUnit.MINUTES);
+
+            addScheduledTask(productId, taskId, scheduledTask);
+
+            long delay = scheduledTask.getDelay(TimeUnit.SECONDS);
+            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
+            return new PaymentInventoryResponse(taskId, delayTime);
+        } else {
+            ScheduledFuture<?> existingTask = tasks.get(taskId);
+            long delay = existingTask.getDelay(TimeUnit.SECONDS);
+            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
+            return new PaymentInventoryResponse(taskId, delayTime);
+        }
+    }
+    /*
+    // 예약된 작업을 추가하고 타이머 정보를 반환하는 메서드
+    public String scheduleRestoration(Long productId, Long count, UUID taskId) {
+        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(productId, new ConcurrentHashMap<>());
+        if (!tasks.containsKey(taskId)) { // 이미 해당 작업이 예약되어 있는지 확인
+            ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
+                productService.restoreProductQuantity(productId, count);
+                removeScheduledTask(productId, taskId); // 서비스 메모리 누수 해결
+                log.info("[상품 수량 복구, 결제 시간 5분 초과] productId: {}, count: {}", productId, count);
+                log.info("[서비스-예약 스케줄러 메모리 해제 후]: Getting scheduled tasks - size: {}", scheduledTasks.size());
+                SseController.updateInventory(productId);
+                PaymentController.removeControllerMap(taskId); // 컨트롤러 메모리 누수 해결
+            }, 1, TimeUnit.MINUTES); // 실제 운영시 5분으로 설정 // 5분 지나면 클라이언트에게 결제 종료 메시지 보내기
+
+            addScheduledTask(productId, taskId, scheduledTask);
+
+            long delay = scheduledTask.getDelay(TimeUnit.SECONDS);
+            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay); //변환
+            return String.format("요청 ID: %s, 예정된 실행까지 남은 시간: %s", taskId.toString(), delayTime);
+            //return String.format("요청 ID: %s, 예정된 실행까지 남은 시간: %d 초", taskId.toString(), delay);
+        } else {
+            // 이미 예약된 작업이 있을 경우 해당 작업의 남은 시간을 반환
+            ScheduledFuture<?> existingTask = tasks.get(taskId);
+            long delay = existingTask.getDelay(TimeUnit.SECONDS);
+            return String.format("이미 예약된 작업입니다. 예정된 실행까지 남은 시간: %d 초", delay);
+        }
+    }
+
+     */
+
     // 예약된 작업을 추가하는 메서드
+    /*
     public void scheduleRestoration(Long productId, Long count, UUID taskId) {
         ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(productId, new ConcurrentHashMap<>());
         if (!tasks.containsKey(taskId)) { // 이미 해당 작업이 예약되어 있는지 확인
@@ -114,21 +172,23 @@ public class PurchaseTransactionService {
                 SseController.updateInventory(productId);
                 PaymentController.removeControllerMap(taskId); //컨트롤러 메모리 누수 해결
             }, 1, TimeUnit.MINUTES); // 실제 운영시 5분으로 설정 //5분 지나면 클라이언트에게 결제 종료 메시지 보내기
-
             addScheduledTask(productId, taskId, scheduledTask);
         }
     }
 
+     */
 
     // 특정 작업을 취소하는 메서드
     public void processPaymentResponse(Long productId, Long count, boolean success, UUID taskId) {
         if (success) {
             cancelScheduledTask(productId, taskId); //서비스 메모리 누수 해결
+            log.info("[true 서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
             log.info("[결제성공(true): 상품 수량 복구 취소->일괄 처리 작업 취소] ");
         } else {
             log.info("[결제취소(false)응답: 상품 수량 즉시 복구] ");
             restoreProductQuantity(productId, count);
             cancelScheduledTask(productId, taskId); //서비스 메모리 누수 해결
+            log.info("[false 서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
             SseController.updateInventory(productId);
             log.info("[결제실패(false)응답: 상품 수량 복구 완료->일괄 처리 작업 취소] ");
         }
@@ -154,7 +214,7 @@ public class PurchaseTransactionService {
         if (tasks != null) {
             log.info("[서비스-취소 스케줄러 메모리 해제 전]: Getting scheduled tasks - size: {}", scheduledTasks.size());
             ScheduledFuture<?> task = tasks.remove(taskId);
-            log.info("[서비스-취소 스케줄러 메모리 해제 후]: Getting scheduled tasks - size: {}", scheduledTasks.size());
+            //log.info("[서비스-취소 스케줄러 메모리 해제 후]: Getting scheduled tasks - size: {}", scheduledTasks.size());
             if (task != null) {
                 task.cancel(false);
             }

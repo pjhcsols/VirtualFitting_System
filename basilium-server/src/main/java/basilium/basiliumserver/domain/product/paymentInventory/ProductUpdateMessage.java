@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product;
+package basilium.basiliumserver.domain.product.paymentInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

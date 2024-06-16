@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product;
+package basilium.basiliumserver.domain.product.paymentInventory;
 
 
 //SSE 재고관리시 데이터 메시지 전송용
