@@ -20,6 +20,7 @@ import GoogleLogin from './API/GoogleLogin';
 import SearchResultPage from './pages/SearchResultPage';
 import ProductRegisterationPage from './pages/ProductRegisterationPage';
 import Redirection from './components/Redirection';
+import GoolgeRedirection from './components/GoogleRedirection';
 
 function App() {
   return (
@@ -44,6 +45,7 @@ function App() {
           <Route path="/searchResult" element={<SearchResultPage />} />
           <Route path="/productRegisteration" element={<ProductRegisterationPage />} />
           <Route path="/oauth/kakao/callback" element={<Redirection />} />
+          <Route path="/oauth/google/callback" element={<GoolgeRedirection />} />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

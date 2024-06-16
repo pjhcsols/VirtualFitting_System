@@ -2,9 +2,9 @@ import React from "react";
 import GoogleLogo from "../assets/img/goggle.png";
 
 const GoogleLogin = () => {
-    const googleClientId = process.env.REACT_APP_GOOGLE_KEY;
+    const googleClientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
     const googleRedirectUrl = process.env.REACT_APP_GOOGLE_REDIRECT_URL;
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=${googleClientId}&scope=openid%20profile%20email&redirect_uri=${googleRedirectUrl}`
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/auth?client_id=${googleClientId}&redirect_uri=${googleRedirectUrl}&response_type=code&scope=openid email profile`
 
     const loginHandler = () => {
         window.location.href = googleAuthUrl;

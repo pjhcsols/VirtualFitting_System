@@ -3,7 +3,7 @@
     import './ProductRegisterationPage.css';
     import CustomSelect from "../components/CustomSelect";
     import CheckBox from "../components/CheckBox";
-    import CloseImg from "../assets/img/close.png";
+    import CloseImg from "../assets/img/close.png"; 
     import { useNavigate } from "react-router-dom";
     import ServerAPI from "../API/ServerAPI.js";
     import Swal from "sweetalert2";
@@ -222,52 +222,47 @@
                 productPhotoUrl: inputValue.productPhotoUrl,
                 productSubPhotoUrl: inputValue.productSubPhotoUrl,
                 brandUser: {
-                    userNumber: 1
+                    userNumber: 3
                 }
             };
-            for(var key in data) {
-                localStorage.setItem(key, data[key]);
+            try {
+                console.log("서버응답*******************");
+                const response = await ServerAPI.post('/products/create', data);
+
+                if (response.status === 200) {
+                    Swal.fire({
+                        title: '상품등록 성공!',
+                        icon: 'success',
+                        confirmButtonColor: '#000',
+                        confirmButtonText: '확인',
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            navigate("/");
+                        }
+                    });
+                }
             }
-            Swal.fire({title: "등록하였습니다!", icon: 'success', confirmButtonColor: "#000", confirmButtonText: "확인"});
-
-            // try {
-            //     console.log("서버응답*******************");
-            //     const response = await ServerAPI.post('/products/create', data);
-
-            //     if (response.status === 200) {
-            //         Swal.fire({
-            //             title: '상품등록 성공!',
-            //             icon: 'success',
-            //             confirmButtonColor: '#000',
-            //             confirmButtonText: '확인',
-            //         }).then((result) => {
-            //             if (result.isConfirmed) {
-            //                 navigate("/");
-            //             }
-            //         });
-            //     }
-            // }
-            // catch (error) {
-            //     Swal.fire({
-            //         title: '등록 실패!',
-            //         icon: 'error',
-            //         confirmButtonColor: '#000',
-            //         confirmButtonText: '확인',
-            //     }).then((result) => {
-            //         if (result.isConfirmed) {
-            //             navigate('/productRegisteration');
-            //         }
-            //     });
-            //     console.error("서버와의 통신 중 오류 발생", error);
-            //     console.log(data);
-            // }
+            catch (error) {
+                Swal.fire({
+                    title: '등록 실패!',
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/productRegisteration');
+                    }
+                });
+                console.error("서버와의 통신 중 오류 발생", error);
+                console.log(data);
+            }
         };
 
         const handleUpdate = async (e) => {
             e.preventDefault();
             
             const data = {
-                productId: null,
+                productId: 33,
                 productCategory: {
                     categoryId: inputValue.categoryId
                 },
@@ -284,37 +279,37 @@
                 productPhotoUrl: inputValue.productPhotoUrl,
                 productSubPhotoUrl: inputValue.productSubPhotoUrl,
                 brandUser: {
-                    userNumber: 1
+                    userNumber: 3
                 }
             };
-        //     try {
-        //         console.log("서버응답*******************8");
-        //         const response = await ServerAPI.post('/products/update', data);
-        //         Swal.fire({
-        //             title: '상품수정 성공!',
-        //             icon: 'success',
-        //             confirmButtonColor: '#000',
-        //             confirmButtonText: '확인',
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 navigate("/");
-        //             }
-        //         });
-        //     }
-        //     catch (error) {
-        //         Swal.fire({
-        //             title: '수정 실패!',
-        //             icon: 'error',
-        //             confirmButtonColor: '#000',
-        //             confirmButtonText: '확인',
-        //         }).then((result) => {
-        //             if (result.isConfirmed) {
-        //                 navigate('/productRegisteration');
-        //             }
-        //         });
-        //         console.error("서버와의 통신 중 오류 발생", error);
-        //         console.log(data);
-        //     }
+            try {
+                console.log("서버응답*******************8");
+                const response = await ServerAPI.post('/products/update', data);
+                Swal.fire({
+                    title: '상품수정 성공!',
+                    icon: 'success',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate("/");
+                    }
+                });
+            }
+            catch (error) {
+                Swal.fire({
+                    title: '수정 실패!',
+                    icon: 'error',
+                    confirmButtonColor: '#000',
+                    confirmButtonText: '확인',
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        navigate('/productRegisteration');
+                    }
+                });
+                console.error("서버와의 통신 중 오류 발생", error);
+                console.log(data);
+            }
         };
  
         const materialsOptions = ["COTTON", "POLYESTER", "WOOL", "FABRIC", "SILK"];

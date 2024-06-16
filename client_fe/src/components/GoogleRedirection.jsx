@@ -5,7 +5,7 @@ import axios from 'axios';
 import ServerAPI from "../API/ServerAPI";
 import "./Redirection.css";
 
-const Redirection = () => {
+const GoolgeRedirection = () => {
   const code = new URL(document.location.toString()).searchParams.get('code');
   const navigate = useNavigate();
   const isFirstRun = useRef(true);
@@ -18,14 +18,14 @@ const Redirection = () => {
       };
 
       try {
-        const response = await ServerAPI.post('/oauth/kakao/login', data);
+        const response = await ServerAPI.post('/oauth/google/login', data);
 
         if (response.status === 201) {
           localStorage.clear();
           localStorage.setItem('login-token', response.data.accessToken);
           const userInfo = {
             userId: "user1",
-            loginType: "kakao"
+            loginType: "google"
           };
           localStorage.setItem('user_info', JSON.stringify(userInfo));
           
@@ -56,4 +56,4 @@ const Redirection = () => {
   );
 };
 
-export default Redirection;
+export default GoolgeRedirection;
