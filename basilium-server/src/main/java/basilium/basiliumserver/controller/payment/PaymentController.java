@@ -1,7 +1,7 @@
 package basilium.basiliumserver.controller.payment;
 
-import basilium.basiliumserver.domain.product.paymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.product.paymentInventory.ProductUpdateMessage;
+import basilium.basiliumserver.domain.product.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.product.kafkaPaymentInventory.ProductUpdateMessage;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -42,9 +43,20 @@ public class PaymentController {
         log.info("requestId {} with key {}", requestId, key);
 
         // Call the service method and capture the PaymentInventoryResponse object
+        //서비스 사용안하게 리펙토링하기
         PaymentInventoryResponse response = purchaseTransactionService.scheduleRestoration(productId, count, requestId);
-
         return ResponseEntity.ok(response);
+
+        //밑에는 서비스를 사용안해도 되는거 테스트
+        /*
+        // 지연 시간 계산 (예: 5분 후)
+        LocalDateTime delayTime = LocalDateTime.now().plusMinutes(5);
+        // PaymentInventoryResponse 객체 생성
+        PaymentInventoryResponse response = new PaymentInventoryResponse(requestId, delayTime);
+        // ResponseEntity로 반환
+        return ResponseEntity.ok(response);
+
+         */
     }
     /*
     //타이머랑 함께 리턴

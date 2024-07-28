@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product.paymentInventory;
+package basilium.basiliumserver.domain.product.kafkaPaymentInventory;
 
 import basilium.basiliumserver.configuration.kafkaMQ.KafkaConfig;
 import basilium.basiliumserver.service.product.ProductService;

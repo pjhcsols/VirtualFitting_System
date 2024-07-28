@@ -2,7 +2,7 @@ package basilium.basiliumserver.service.purchaseTransaction;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.product.paymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.product.kafkaPaymentInventory.PaymentInventoryResponse;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
@@ -25,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 //mq
-import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
@@ -123,6 +122,9 @@ public class PurchaseTransactionService {
             LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
             return new PaymentInventoryResponse(taskId, delayTime);
         } else {
+            //컨트롤러에서 한번은 카프카 한번은 서비스로 요청을 하는데 이미 값이 존재해서 else로 넘어감
+            //이거 리팩토링하기
+            log.info("이거 설마 두번 호출??");
             ScheduledFuture<?> existingTask = tasks.get(taskId);
             long delay = existingTask.getDelay(TimeUnit.SECONDS);
             LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);

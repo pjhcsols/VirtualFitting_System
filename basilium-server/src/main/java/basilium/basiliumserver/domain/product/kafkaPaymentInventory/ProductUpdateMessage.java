@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product.paymentInventory;
+package basilium.basiliumserver.domain.product.kafkaPaymentInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
