@@ -1,10 +1,13 @@
 package basilium.basiliumserver;
 
 import javax.sql.DataSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -18,12 +21,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //위 스케줄링
 @EnableFeignClients
 @SpringBootApplication
+@ConfigurationPropertiesScan("basilium.basiliumserver.properties")
 @ImportAutoConfiguration({FeignAutoConfiguration.class})
 public class BasiliumServerApplication {
 
+	private static final Logger logger = LoggerFactory.getLogger(BasiliumServerApplication.class);
+
 	public static void main(String[] args) {
 		SpringApplication.run(BasiliumServerApplication.class, args);
-
 	}
 
 	@Bean
@@ -33,10 +38,10 @@ public class BasiliumServerApplication {
 				ResourceDatabasePopulator populator = new ResourceDatabasePopulator(
 						new ClassPathResource("data.sql"));
 				populator.execute(dataSource);
-				System.out.println("Database initialized successfully");
+				logger.info("Database initialized successfully");
 			} catch (Exception e) {
-				System.err.println("Database initialization failed: " + e.getMessage());
-				e.printStackTrace();
+				logger.error("Database initialization failed: {}", e.getMessage());
+				logger.error("Exception stack trace: ", e);
 			}
 		};
 	}

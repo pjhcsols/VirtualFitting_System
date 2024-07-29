@@ -4,11 +4,13 @@ import basilium.basiliumserver.domain.user.LoginRequest;
 import basilium.basiliumserver.domain.user.LoginResponse;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.User;
+import basilium.basiliumserver.properties.ImageProperties;
 import basilium.basiliumserver.service.user.UserStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,17 +32,32 @@ import java.io.IOException;
 public class UserStateController {
 
     private final UserStateService userStateService;
-
+    private final ImageProperties imageProperties;
+/*
     @Value("${uploadDir}")
     private String uploadDir;
 
+    //사용안함
     @Value("${profileDir}")
     private String profileDir;
 
+    // ClassPathResource를 사용하여 리소스 경로를 얻습니다.
+    ClassPathResource locateResource = new ClassPathResource(uploadDir);
+    // 실제 파일 저장 경로를 지정합니다.
+    File resourceUploadDir = new File(locateResource.getPath());
+
+    // ClassPathResource를 사용하여 리소스 경로를 얻습니다.
+    ClassPathResource locateProfileResource = new ClassPathResource(profileDir);
+    // 실제 파일 저장 경로를 지정합니다.
+    File resourceProfileDir = new File(locateProfileResource.getPath());
+
+ */
+
     //bean
     @Autowired
-    public UserStateController(UserStateService userStateService) {
+    public UserStateController(UserStateService userStateService, ImageProperties imageProperties) {
         this.userStateService = userStateService;
+        this.imageProperties = imageProperties;
     }
 
     /*
@@ -129,7 +146,7 @@ public class UserStateController {
     public ResponseEntity<byte[]> getImageFileByUrl(@RequestBody String imageUrl) {
         try {
             String fileName = getImageFileName(imageUrl);
-            String absoluteImagePath = uploadDir + fileName;
+            String absoluteImagePath = imageProperties.getFullUploadDir() + fileName;
 
             byte[] imageByte = userStateService.getImageFileByUrl(absoluteImagePath);
             log.info("전송 성공");

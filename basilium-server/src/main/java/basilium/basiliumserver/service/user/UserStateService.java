@@ -1,6 +1,7 @@
 package basilium.basiliumserver.service.user;
 
 import basilium.basiliumserver.domain.user.*;
+import basilium.basiliumserver.properties.ImageProperties;
 import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
@@ -10,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,37 +26,38 @@ import java.util.Base64;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //user 통합 로그인 로그아웃 이미지 업로드
 @Slf4j
 @Transactional
 @Service
 public class UserStateService {
+    private static final Logger logger = LoggerFactory.getLogger(UserStateService.class);
+
 
     private final NormalUserRepository normalUserRepository;
     private final BrandUserRepository brandUserRepository;
     private final SuperUserRepository superUserRepository;
+    private final ImageProperties imageProperties;  // ImageProperties 빈 주입
+
 
     @Autowired
-    //public UserStateService(NormalUserRepository normalUserRepository) {
-    public UserStateService(NormalUserRepository normalUserRepository, BrandUserRepository brandUserRepository, SuperUserRepository superUserRepository) {
+    public UserStateService(NormalUserRepository normalUserRepository,
+                            BrandUserRepository brandUserRepository,
+                            SuperUserRepository superUserRepository,
+                            ImageProperties imageProperties) {
         this.normalUserRepository = normalUserRepository;
         this.brandUserRepository = brandUserRepository;
         this.superUserRepository = superUserRepository;
+        this.imageProperties = imageProperties;  // 주입된 ImageProperties 사용
     }
 
 
     @Value("${jwt.secret}")
     private String secretKey;
     private Long expiredMs = 1000 * 60 * 60l;
-
-    @Value("${uploadDir}")
-    private String uploadDir;
-
-    @Value("${profileDir}")
-    private String profileDir;
-
 
 
     public LoginResponse login(String userId, String userPassword) {
@@ -75,7 +78,6 @@ public class UserStateService {
             return response;
         }
     }
-
 
 
     public String createTokenByUserType(String userId) {
@@ -131,6 +133,7 @@ public class UserStateService {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             JwtUtil.blacklistToken(token);
+            log.info("로그아웃 처리됨. 토큰 블랙리스트에 추가됨: {}", token);
         }
         // 다른 로그아웃 관련 로직 추가 가능
     }
@@ -161,27 +164,28 @@ public class UserStateService {
             if (user instanceof NormalUser) {
                 NormalUser normalUser = (NormalUser) user;
                 String fileName = normalUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                filePath = uploadDir + fileName;
+                filePath = imageProperties.getFullUploadDir() + fileName;
                 file.transferTo(new File(filePath)); //업로드 된 파일을 지정된 경로에 저장
                 normalUser.setUserImageUrl(filePath);
                 normalUserRepository.save(normalUser);
             } else if (user instanceof BrandUser) {
                 BrandUser brandUser = (BrandUser) user;
                 String fileName = brandUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                filePath = uploadDir + fileName;
+                filePath = imageProperties.getFullUploadDir() + fileName;
                 file.transferTo(new File(filePath));
                 brandUser.setUserImageUrl(filePath);
                 brandUserRepository.save(brandUser);
             } else if (user instanceof SuperUser) {
                 SuperUser superUser = (SuperUser) user;
                 String fileName = superUser.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-                filePath = uploadDir + fileName;
+                filePath = imageProperties.getFullUploadDir() + fileName;
                 file.transferTo(new File(filePath));
                 superUser.setUserImageUrl(filePath);
                 superUserRepository.save(superUser);
             }
+            logger.info("이미지 업로드 성공: {}", filePath);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("이미지 업로드 실패", e);
             return null;
         }
         return filePath; // 파일의 경로를 반환
@@ -195,13 +199,13 @@ public class UserStateService {
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
 
         if (normalUser.isPresent()) {
-            System.out.println("normalImage : " + normalUser.get().getUserImageUrl());
+            logger.info("NormalUser 이미지 URL: {}", normalUser.get().getUserImageUrl());
             return normalUser.get().getUserImageUrl();
         } else if (brandUser.isPresent()) {
-            System.out.println("brandImage : " + brandUser.get().getUserImageUrl());
+            logger.info("BrandUser 이미지 URL: {}", brandUser.get().getUserImageUrl());
             return brandUser.get().getUserImageUrl();
         } else if (superUser.isPresent()) {
-            System.out.println("superImage : " + superUser.get().getUserImageUrl());
+            logger.info("SuperUser 이미지 URL: {}", superUser.get().getUserImageUrl());
             return superUser.get().getUserImageUrl();
         } else {
             return null; // 사용자가 존재하지 않는 경우
@@ -213,12 +217,11 @@ public class UserStateService {
     public byte[] getImageFileByUrl(String imageUrl) throws IOException {
         // 이미지 파일의 절대 경로를 확인합니다.
         Path imagePath = Paths.get(imageUrl);
-        log.info(String.valueOf(imagePath));
+        logger.info("이미지 파일 경로: {}", imagePath);
         // 이미지 파일이 존재하는지 확인합니다.
         if (Files.exists(imagePath)) {
             // 이미지 파일이 존재하면 파일의 내용을 byte 배열로 읽어옵니다.
-            log.info("[AI 서버에 이미지 전송]");
-            log.info(String.valueOf(imagePath));
+            logger.info("[AI 서버에 이미지 전송] 이미지 파일 경로: {}", imagePath);
             return Files.readAllBytes(imagePath);
         } else {
             // 이미지 파일이 존재하지 않는 경우 FileNotFoundException을 던집니다.
@@ -250,11 +253,11 @@ public class UserStateService {
 
         try {
             String fileName = user.getId() + "_" + System.currentTimeMillis() + "_" + file.getOriginalFilename();
-            String filePath = profileDir + fileName;
+            String filePath = imageProperties.getFullProfileDir() + fileName;
             file.transferTo(new File(filePath));  // 프로필 이미지 파일을 지정된 경로에 저장
 
-            // 경로를 Base64로 인코딩
-            String encodedPath = Base64.getEncoder().encodeToString(filePath.getBytes());
+            // 경로를 Base64로 safe 인코딩 방식
+            String encodedPath = Base64.getUrlEncoder().encodeToString(filePath.getBytes());
 
             user.setUserProfileImageUrl(encodedPath);
             if (user instanceof NormalUser) {
@@ -265,9 +268,10 @@ public class UserStateService {
                 superUserRepository.save((SuperUser) user);
             }
 
+            logger.info("프로필 이미지 업로드 성공: {}", encodedPath);
             return encodedPath;
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error("프로필 이미지 업로드 실패", e);
             return null;
         }
     }
@@ -291,8 +295,8 @@ public class UserStateService {
             throw new FileNotFoundException("이미지 파일이 존재하지 않습니다.");
         }
 
-        // Base64로 인코딩된 경로를 디코딩하여 실제 파일 경로 얻기
-        byte[] decodedBytes = Base64.getDecoder().decode(encodedPath);
+        // Base64로 인코딩된 경로를 safe 디코딩하여 실제 파일 경로 얻기
+        byte[] decodedBytes = Base64.getUrlDecoder().decode(encodedPath);
         String filePath = new String(decodedBytes);
 
         Path imagePath = Paths.get(filePath);
