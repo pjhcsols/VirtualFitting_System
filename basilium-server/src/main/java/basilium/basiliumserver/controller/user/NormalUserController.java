@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+//like order payment 분리
 @Slf4j
 @RestController
 @RequestMapping("/normalUser")

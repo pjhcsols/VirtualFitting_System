@@ -2,7 +2,7 @@ package basilium.basiliumserver.service.purchaseTransaction;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.product.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory.PaymentInventoryResponse;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
 import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
@@ -32,7 +32,7 @@ import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 
-
+//order와 puchaseTrancsaction 분리
 @Service
 @RequiredArgsConstructor
 @Slf4j

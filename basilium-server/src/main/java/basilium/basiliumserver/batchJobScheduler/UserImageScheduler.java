@@ -6,6 +6,7 @@ import basilium.basiliumserver.domain.user.SuperUser;
 import basilium.basiliumserver.domain.user.User;
 import basilium.basiliumserver.properties.ImageProperties;
 import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,8 +26,9 @@ import java.util.stream.Collectors;
 
 //local user 가상착용 이미지
 @Component
+@RequiredArgsConstructor //오토 와이어 제거
 public class UserImageScheduler {
-
+/*
     @Autowired
     private EntityManager em;
 
@@ -39,6 +41,13 @@ public class UserImageScheduler {
 
     @Autowired
     private ImageProperties imageProperties;
+
+ */
+    private final EntityManager em;
+    private final NormalUserRepository normalUserRepository;
+    private final BrandUserRepository brandUserRepository;
+    private final SuperUserRepository superUserRepository;
+    private final ImageProperties imageProperties;
 
     private static final Logger logger = LoggerFactory.getLogger(UserImageScheduler.class);
 

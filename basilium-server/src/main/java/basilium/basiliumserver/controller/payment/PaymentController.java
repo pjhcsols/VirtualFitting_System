@@ -1,7 +1,7 @@
 package basilium.basiliumserver.controller.payment;
 
-import basilium.basiliumserver.domain.product.kafkaPaymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.product.kafkaPaymentInventory.ProductUpdateMessage;
+import basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory.ProductUpdateMessage;
 import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -18,7 +17,7 @@ import java.util.concurrent.ConcurrentHashMap;
 // 결제 시 재고 실시간 관리 카프카 mq + 스케줄링
 @RestController
 @RequestMapping("/payment")
-@RequiredArgsConstructor
+@RequiredArgsConstructor //오토와이어 제거한 버전
 @Slf4j
 public class PaymentController {
 

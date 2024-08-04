@@ -9,7 +9,7 @@ import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
 import jakarta.persistence.EntityManager;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +28,9 @@ import java.util.stream.Collectors;
 
 //user profile
 @Component
+@RequiredArgsConstructor //오토와이어 제거
 public class UserProfileScheduler {
-
+/*
     @Autowired
     private EntityManager em;
 
@@ -42,6 +43,13 @@ public class UserProfileScheduler {
 
     @Autowired
     private ImageProperties imageProperties;
+
+ */
+    private final EntityManager em;
+    private final NormalUserRepository normalUserRepository;
+    private final BrandUserRepository brandUserRepository;
+    private final SuperUserRepository superUserRepository;
+    private final ImageProperties imageProperties;
 
     private static final Logger logger = LoggerFactory.getLogger(UserProfileScheduler.class);
 

@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product.kafkaPaymentInventory;
+package basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory;
 
 
 //SSE 재고관리시 데이터 메시지 전송용
