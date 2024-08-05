@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory;
+package basilium.basiliumserver.domain.payment.kafkaPaymentInventory;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 

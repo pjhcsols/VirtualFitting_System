@@ -1,7 +1,7 @@
-package basilium.basiliumserver.repository.purchaseTransaction;
+package basilium.basiliumserver.repository.payment;
 
-import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
-import basilium.basiliumserver.domain.purchaseTransaction.PurchaseTransaction;
+import basilium.basiliumserver.domain.payment.OrderListDAO;
+import basilium.basiliumserver.domain.payment.Payment;
 import jakarta.persistence.EntityManager;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
-public class JpaPurchaseTransactionRepo {
+public class JpaPaymentRepository {
     private final EntityManager em;
 
     public List<OrderListDAO> userOrderHistory(Long userId){
-        return em.createQuery("select P.productId, cast(null as Long), PT.creationTime ,P.productPrice, PT.totalCnt, P.productName, PT.size, PT.color FROM Product P, PurchaseTransaction PT where PT.normalUser.userNumber = :userId and P.productId = PT.product.productId", OrderListDAO.class)
+        return em.createQuery("select P.productId, cast(null as Long), PT.creationTime ,P.productPrice, PT.totalCnt, P.productName, PT.size, PT.color FROM Product P, Payment PT where PT.normalUser.userNumber = :userId and P.productId = PT.product.productId", OrderListDAO.class)
                 .setParameter("userId", userId).getResultList();
     }
 
@@ -22,7 +22,7 @@ public class JpaPurchaseTransactionRepo {
                 .setParameter("productId", productId).getResultList().get(0);
     }
 
-    public void savePurchaseTransaction(PurchaseTransaction transaction){
+    public void savePurchaseTransaction(Payment transaction){
         em.persist(transaction);
     }
 }

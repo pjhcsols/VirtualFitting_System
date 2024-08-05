@@ -1,15 +1,15 @@
-package basilium.basiliumserver.service.purchaseTransaction;
+package basilium.basiliumserver.service.payment;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
-import basilium.basiliumserver.domain.purchaseTransaction.OrderListDTO;
-import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
-import basilium.basiliumserver.domain.purchaseTransaction.PurchaseTransaction;
+import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.payment.OrderListDAO;
+import basilium.basiliumserver.domain.payment.OrderListDTO;
+import basilium.basiliumserver.domain.payment.OrderPaymentRequest;
+import basilium.basiliumserver.domain.payment.Payment;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.repository.product.JpaProductRepository;
-import basilium.basiliumserver.repository.purchaseTransaction.JpaPurchaseTransactionRepo;
+import basilium.basiliumserver.repository.payment.JpaPaymentRepository;
 import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.controller.product.sse.SseController;
 
@@ -36,9 +36,9 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class PurchaseTransactionService {
+public class PaymentService {
 
-    private final JpaPurchaseTransactionRepo jpaPurchaseTransactionRepo;
+    private final JpaPaymentRepository jpaPaymentRepository;
     private final JpaNormalUserRepository normalUserRepository;
     private final JpaProductRepository productRepository;
 
@@ -55,14 +55,14 @@ public class PurchaseTransactionService {
 
 
     public List<OrderListDTO> userOrderHistory(Long userId) {
-        List<OrderListDAO> list = jpaPurchaseTransactionRepo.userOrderHistory(userId);
+        List<OrderListDAO> list = jpaPaymentRepository.userOrderHistory(userId);
         List<OrderListDTO> newList = new ArrayList<>();
         for (OrderListDAO item : list) {
             OrderListDTO temp = new OrderListDTO();
             temp.setSize(item.getSize());
             temp.setColor(item.getColor());
             temp.setPrice(item.getPrice());
-            temp.setPhotoUrl(jpaPurchaseTransactionRepo.productPhotoUrl(item.getProductId()));
+            temp.setPhotoUrl(jpaPaymentRepository.productPhotoUrl(item.getProductId()));
             temp.setCreationTime(item.getCreationTime());
             temp.setProductName(item.getProductName());
             temp.setPrice(item.getPrice());
@@ -77,10 +77,10 @@ public class PurchaseTransactionService {
     @Transactional
     public void processPayment(String userId, String impUid, OrderPaymentRequest request) {
         try {
-            List<PurchaseTransaction> transactions = new ArrayList<>();
+            List<Payment> transactions = new ArrayList<>();
 
             request.getInventoryList().forEach(item -> {
-                PurchaseTransaction transaction = new PurchaseTransaction();
+                Payment transaction = new Payment();
                 transaction.setColor(item.getColor());
                 transaction.setSize(item.getSize());
                 transaction.setPaymentType("CARD");
@@ -93,8 +93,8 @@ public class PurchaseTransactionService {
                 transactions.add(transaction);
             });
 
-            for (PurchaseTransaction transaction : transactions) {
-                jpaPurchaseTransactionRepo.savePurchaseTransaction(transaction); // Using the standard save method from JpaRepository
+            for (Payment transaction : transactions) {
+                jpaPaymentRepository.savePurchaseTransaction(transaction); // Using the standard save method from JpaRepository
                 System.out.println(transaction.toString());
             }
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.purchaseTransaction;
+package basilium.basiliumserver.domain.payment;
 
 
 import java.time.LocalDateTime;

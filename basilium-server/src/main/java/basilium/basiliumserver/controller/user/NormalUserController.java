@@ -1,12 +1,10 @@
 package basilium.basiliumserver.controller.user;
 
 import basilium.basiliumserver.auth.support.AuthUser;
-import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.purchaseTransaction.OrderPaymentRequest;
-import basilium.basiliumserver.domain.shoppingCart.ShoppingListDTO;
+import basilium.basiliumserver.domain.payment.OrderPaymentRequest;
 import basilium.basiliumserver.domain.user.*;
 import basilium.basiliumserver.service.Like.LikeService;
-import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
+import basilium.basiliumserver.service.payment.PaymentService;
 import basilium.basiliumserver.service.shoppingCart.ShoppingCartService;
 import basilium.basiliumserver.service.user.NormalUserService;
 import io.micrometer.common.util.StringUtils;
@@ -27,11 +25,8 @@ import java.util.List;
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class NormalUserController {
-    private final NormalUserService normalUserService;
 
-    private final PurchaseTransactionService purchaseTransactionService;
-    private final ShoppingCartService shoppingCartService;
-    private final LikeService likeService;
+    private final NormalUserService normalUserService;
 
 
     @PostMapping(value = "/signup")
@@ -104,101 +99,4 @@ public class NormalUserController {
 
         return ResponseEntity.ok(new NormalUserInfoDTO(ret, info));
     }
-
-    @GetMapping("/order/history")
-    public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
-        NormalUser ret = normalUserService.userInfoById(userId);
-        return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
-    }
-
-    @GetMapping("/order/payment")
-    public ResponseEntity<?> saveUserPayment(@AuthUser String userId){
-        NormalUser ret = normalUserService.userInfoById(userId);
-        return ResponseEntity.ok(purchaseTransactionService.userOrderHistory(ret.getUserNumber()));
-    }
-
-    @GetMapping("/shopping/list")
-    public ResponseEntity<List<?>> userShoppingCartList(@AuthUser String userId){
-        NormalUser ret = normalUserService.userInfoById(userId);
-
-        return ResponseEntity.ok(shoppingCartService.userShoppingCartHistory(ret.getUserNumber()));
-    }
-
-    @GetMapping("/like/list")
-    public ResponseEntity<List<?>> userLikeList(@AuthUser String userId){
-        System.out.println("LikeList");
-        NormalUser ret = normalUserService.userInfoById(userId);
-
-        return ResponseEntity.ok(likeService.userLikeInfo(ret.getUserNumber()));
-    }
-
-    @PostMapping("order/payment/{impUid}")
-    public ResponseEntity<String> handlePayment(@AuthUser String userId, @PathVariable String impUid, @RequestBody OrderPaymentRequest request) {
-        purchaseTransactionService.processPayment(userId, impUid, request);
-        return ResponseEntity.ok("Payment processed successfully");
-    }
-
-    @DeleteMapping("/shopping/list")
-    public ResponseEntity<?> deleteShoppingList(@AuthUser String userId, @RequestParam Long shoppingListId){
-
-        shoppingCartService.deleteSelectedProducts(shoppingListId);
-        return ResponseEntity.ok("Selected products deleted successfully");
-
-    }
-
-    @PostMapping("like/{productId}")
-    public ResponseEntity<?> likeProduct(@AuthUser String userId, @PathVariable(name = "productId") Long productId){
-        NormalUser ret = normalUserService.userInfoById(userId);
-        return ResponseEntity.ok(normalUserService.setLike(ret, productId));
-    }
-    @PostMapping("shopping/{productId}")
-    public ResponseEntity<?> addShoppingCart(@AuthUser String userId, @PathVariable(name = "productId") Long productId, @RequestParam String size, @RequestParam String color, @RequestParam Long amount){
-        NormalUser ret = normalUserService.userInfoById(userId);
-        shoppingCartService.addShoppingCart(ret, productId, size, color, amount);
-        return ResponseEntity.ok("장바구니 등록이 완료되었습니다.");
-    }
-
-
-    @GetMapping("like/rank")
-    public ResponseEntity<?> getTopFiveProduct(){
-        return ResponseEntity.ok(likeService.topFive());
-    }
-
-    /*
-    @PostMapping("/login")
-    public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest){
-        log.info("------------------------------------------------------------");
-        log.info("1. normalUser 로그인 시도");
-        log.info("ID: " + loginRequest.getUserId() + " ");
-        log.info("Password: " + loginRequest.getUserPassword() + " ");
-        LoginStatus loginResult = normalUserService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
-        if (loginResult != LoginStatus.SUCCESS)return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
-        log.info("------------------------------------------------------------");
-        log.info("2. 로그인 성공");
-        String token = normalUserService.afterSuccessLogin(loginRequest.getUserId());
-        log.info("[normalUser 토큰 정상 발급]");
-        log.info(token);
-        return ResponseEntity.ok().body(token);
-    }
-
-
-
-
-//***************토큰으로 로그아웃 버튼은 1개이니 로그아웃 로직만 유저 전체 합치기*************************
-    //예외가 생길수가 없는 로직이니 수정하기
-    @GetMapping("/logout")
-    public ResponseEntity<String> logout(HttpServletRequest request) {
-        try {
-            normalUserService.logout(request);
-            return new ResponseEntity<>("로그아웃 성공", HttpStatus.OK);
-        } catch (Exception e) {
-            //return new ResponseEntity<>("로그아웃 실패: " + e.getMessage(), HttpStatus.BAD_REQUEST);
-            return new ResponseEntity<>("로그아웃 실패", HttpStatus.BAD_REQUEST);
-        }
-    }
-//***************토큰으로 로그아웃 로그인? 로직만 유저 전체 합치기*************************
-    //회원가입 로직만 별도로 만들기?
-
-
- */
 }

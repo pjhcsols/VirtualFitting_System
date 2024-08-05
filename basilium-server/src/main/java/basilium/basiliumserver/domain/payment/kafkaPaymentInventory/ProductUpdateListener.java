@@ -1,8 +1,8 @@
-package basilium.basiliumserver.domain.purchaseTransaction.kafkaPaymentInventory;
+package basilium.basiliumserver.domain.payment.kafkaPaymentInventory;
 
 import basilium.basiliumserver.configuration.kafkaMQ.KafkaConfig;
 import basilium.basiliumserver.service.product.ProductService;
-import basilium.basiliumserver.service.purchaseTransaction.PurchaseTransactionService;
+import basilium.basiliumserver.service.payment.PaymentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -18,7 +18,7 @@ import java.util.UUID;
 public class ProductUpdateListener {
 
     private final ProductService productService;
-    private final PurchaseTransactionService purchaseTransactionService;
+    private final PaymentService paymentService;
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     @KafkaListener(topics = KafkaConfig.PRODUCT_UPDATE_TOPIC, groupId = "product-group")
@@ -32,6 +32,6 @@ public class ProductUpdateListener {
         productService.updateProductQuantity(productId, count);
 
         // Schedule restoration with the provided UUID
-        purchaseTransactionService.scheduleRestoration(productId, count, taskId);
+        paymentService.scheduleRestoration(productId, count, taskId);
     }
 }

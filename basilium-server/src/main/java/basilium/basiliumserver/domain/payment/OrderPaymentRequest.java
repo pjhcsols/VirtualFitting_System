@@ -1,9 +1,8 @@
-package basilium.basiliumserver.domain.purchaseTransaction;
+package basilium.basiliumserver.domain.payment;
 
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 

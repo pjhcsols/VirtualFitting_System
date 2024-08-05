@@ -299,6 +299,7 @@ VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 12
 
 
 /*주문목록*/
+/*
 -- 주문 테이블에 데이터 삽입
 INSERT INTO orders (price, order_uid, user_number)
 VALUES (160000, '20240515091315', 1);
@@ -308,6 +309,7 @@ INSERT INTO orders_products (order_id, products_product_id)
 VALUES (1, 1),
        (1, 2);
 
+ */
 
 /*
 INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
@@ -340,7 +342,7 @@ values (1, 1);
 commit;
 
 
-INSERT INTO purchase_transaction(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
+INSERT INTO payment(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
 VALUES (1, 1, 1, "L","black",1, 0, CURRENT_TIMESTAMP);
 
 

@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.purchaseTransaction;
+package basilium.basiliumserver.domain.payment;
 
 import basilium.basiliumserver.domain.product.Product;
 import basilium.basiliumserver.domain.user.NormalUser;
@@ -23,7 +23,7 @@ import org.hibernate.annotations.CreationTimestamp;
 @Getter @Setter
 @NoArgsConstructor
 @ToString
-public class PurchaseTransaction {
+public class Payment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @SequenceGenerator(name = "transaction_sequence", sequenceName = "TRANSACTION_SEQUENCE", allocationSize = 1)
