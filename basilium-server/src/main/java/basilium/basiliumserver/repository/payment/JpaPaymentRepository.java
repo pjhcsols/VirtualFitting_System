@@ -1,6 +1,6 @@
 package basilium.basiliumserver.repository.payment;
 
-import basilium.basiliumserver.domain.payment.OrderListDAO;
+import basilium.basiliumserver.domain.DAO.payment.OrderListDAO;
 import basilium.basiliumserver.domain.payment.Payment;
 import jakarta.persistence.EntityManager;
 import java.util.List;

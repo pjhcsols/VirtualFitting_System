@@ -1,8 +1,7 @@
-package basilium.basiliumserver.domain.shoppingCart;
+package basilium.basiliumserver.service.DTO.shoppingCart;
 
 import java.util.List;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 

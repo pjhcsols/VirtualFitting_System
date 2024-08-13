@@ -2,10 +2,10 @@ package basilium.basiliumserver.service.payment;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.payment.OrderListDAO;
-import basilium.basiliumserver.domain.payment.OrderListDTO;
-import basilium.basiliumserver.domain.payment.OrderPaymentRequest;
+import basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.domain.DAO.payment.OrderListDAO;
+import basilium.basiliumserver.service.DTO.payment.OrderListDTO;
+import basilium.basiliumserver.service.DTO.payment.OrderPaymentRequest;
 import basilium.basiliumserver.domain.payment.Payment;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.repository.product.JpaProductRepository;

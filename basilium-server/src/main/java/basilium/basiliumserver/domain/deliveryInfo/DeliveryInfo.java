@@ -1,6 +1,7 @@
-package basilium.basiliumserver.domain.user;
+package basilium.basiliumserver.domain.deliveryInfo;
 
 
+import basilium.basiliumserver.domain.user.NormalUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

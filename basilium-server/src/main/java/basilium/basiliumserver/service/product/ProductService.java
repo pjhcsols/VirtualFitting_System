@@ -2,7 +2,7 @@ package basilium.basiliumserver.service.product;
 
 import basilium.basiliumserver.controller.product.sse.SseController;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.ProductInfoDTO;
+import basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory.ProductInfoDTO;
 import basilium.basiliumserver.domain.user.BrandUser;
 import basilium.basiliumserver.repository.product.ProductRepository;
 import jakarta.transaction.Transactional;

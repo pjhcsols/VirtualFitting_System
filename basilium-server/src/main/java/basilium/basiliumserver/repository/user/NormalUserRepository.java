@@ -1,8 +1,6 @@
 package basilium.basiliumserver.repository.user;
 
-import basilium.basiliumserver.domain.user.DeliveryInfo;
 import basilium.basiliumserver.domain.user.NormalUser;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;

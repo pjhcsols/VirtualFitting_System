@@ -3,6 +3,7 @@ package basilium.basiliumserver.util;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
+/*
 @Getter
 public enum JoinStatus {
     SUCCESS(1, "회원가입 성공", HttpStatus.CREATED),
@@ -20,3 +21,6 @@ public enum JoinStatus {
         this.status = status;
     }
 }
+
+
+ */

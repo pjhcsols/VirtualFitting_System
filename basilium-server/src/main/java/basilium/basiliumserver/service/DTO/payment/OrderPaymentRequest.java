@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.payment;
+package basilium.basiliumserver.service.DTO.payment;
 
 import java.util.List;
 import lombok.Getter;

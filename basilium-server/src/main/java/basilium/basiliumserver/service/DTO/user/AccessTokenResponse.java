@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.user;
+package basilium.basiliumserver.service.DTO.user;
 
 
 

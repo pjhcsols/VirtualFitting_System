@@ -1,7 +1,7 @@
 package basilium.basiliumserver.auth.exception;
 
 
-import basilium.basiliumserver.common.exception.BaseException;
+import basilium.basiliumserver.error.exception.BaseException;
 
 public class AuthException extends BaseException {
 

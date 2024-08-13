@@ -1,9 +1,9 @@
 package basilium.basiliumserver.controller.payment;
 
 import basilium.basiliumserver.auth.support.AuthUser;
-import basilium.basiliumserver.domain.payment.OrderPaymentRequest;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.ProductUpdateMessage;
+import basilium.basiliumserver.service.DTO.payment.OrderPaymentRequest;
+import basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory.PaymentInventoryResponse;
+import basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory.ProductUpdateMessage;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.service.payment.PaymentService;
 import basilium.basiliumserver.service.user.NormalUserService;

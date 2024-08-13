@@ -1,4 +1,4 @@
-package basilium.basiliumserver.service.Like;
+package basilium.basiliumserver.service.like;
 
 
 import basilium.basiliumserver.domain.product.Product;

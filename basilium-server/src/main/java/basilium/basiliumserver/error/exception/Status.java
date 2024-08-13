@@ -1,4 +1,4 @@
-package basilium.basiliumserver.common.exception;
+package basilium.basiliumserver.error.exception;
 
 public enum Status {
 

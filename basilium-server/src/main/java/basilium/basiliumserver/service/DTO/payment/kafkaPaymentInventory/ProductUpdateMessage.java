@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.payment.kafkaPaymentInventory;
+package basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

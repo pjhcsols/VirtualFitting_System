@@ -1,4 +1,4 @@
-package basilium.basiliumserver.common.exception;
+package basilium.basiliumserver.error.exception;
 
 import java.util.Arrays;
 import org.springframework.http.HttpStatus;

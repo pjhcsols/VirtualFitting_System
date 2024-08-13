@@ -1,10 +1,11 @@
-package basilium.basiliumserver.domain.user;
+package basilium.basiliumserver.service.DTO.user;
 
+import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
+import basilium.basiliumserver.domain.user.NormalUser;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.hibernate.validator.constraints.Normalized;
 
 @Getter@Setter
 @NoArgsConstructor

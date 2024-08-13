@@ -1,16 +1,12 @@
 package basilium.basiliumserver.controller.user;
 
-import basilium.basiliumserver.domain.user.LoginRequest;
-import basilium.basiliumserver.domain.user.LoginResponse;
-import basilium.basiliumserver.domain.user.LoginStatus;
-import basilium.basiliumserver.domain.user.User;
+import basilium.basiliumserver.service.DTO.user.LoginRequest;
+import basilium.basiliumserver.service.DTO.user.LoginResponse;
 import basilium.basiliumserver.properties.ImageProperties;
 import basilium.basiliumserver.service.user.UserStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;

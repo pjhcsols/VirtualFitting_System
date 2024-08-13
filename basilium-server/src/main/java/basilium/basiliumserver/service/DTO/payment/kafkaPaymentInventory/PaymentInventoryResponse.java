@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.payment.kafkaPaymentInventory;
+package basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
@@ -33,30 +33,4 @@ public class PaymentInventoryResponse {
         this.delayTime = delayTime;
     }
 }
-    //LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
-    /*
-    public PaymentInventoryResponse(UUID requestId, long delay) {
-        this.requestId = requestId;
-        this.delay = delay;
-    }
-
-    public UUID getRequestId() {
-        return requestId;
-    }
-
-    public void setRequestId(UUID requestId) {
-        this.requestId = requestId;
-    }
-
-    public long getDelay() {
-        return delay;
-    }
-
-    public void setDelay(long delay) {
-        this.delay = delay;
-    }
-
-     */
-
-
 

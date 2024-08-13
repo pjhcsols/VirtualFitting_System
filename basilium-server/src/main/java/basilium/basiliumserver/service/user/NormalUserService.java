@@ -2,11 +2,9 @@ package basilium.basiliumserver.service.user;
 
 import basilium.basiliumserver.domain.like.Like;
 import basilium.basiliumserver.domain.product.Product;
-import basilium.basiliumserver.domain.user.DeliveryInfo;
+import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
 import basilium.basiliumserver.domain.user.JoinStatus;
-import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.domain.user.UserModifiedInfo;
 import basilium.basiliumserver.repository.like.JpaLikeRepo;
 import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
@@ -25,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import org.springframework.web.bind.annotation.DeleteMapping;
 
 
 @Slf4j

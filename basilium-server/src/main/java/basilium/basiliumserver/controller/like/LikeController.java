@@ -2,7 +2,7 @@ package basilium.basiliumserver.controller.like;
 
 import basilium.basiliumserver.auth.support.AuthUser;
 import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.service.Like.LikeService;
+import basilium.basiliumserver.service.like.LikeService;
 import basilium.basiliumserver.service.user.NormalUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;

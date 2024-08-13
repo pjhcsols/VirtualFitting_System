@@ -1,8 +1,8 @@
 package basilium.basiliumserver.auth.exception;
 
 
-import basilium.basiliumserver.common.exception.ExceptionType;
-import basilium.basiliumserver.common.exception.Status;
+import basilium.basiliumserver.error.exception.ExceptionType;
+import basilium.basiliumserver.error.exception.Status;
 
 public enum AuthExceptionType implements ExceptionType {
 

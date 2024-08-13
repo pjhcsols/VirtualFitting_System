@@ -1,6 +1,6 @@
 package basilium.basiliumserver.repository.user;
 
-import basilium.basiliumserver.domain.user.DeliveryInfo;
+import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
 import basilium.basiliumserver.domain.user.NormalUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
