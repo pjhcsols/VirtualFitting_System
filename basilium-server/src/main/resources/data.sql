@@ -34,6 +34,10 @@ INSERT INTO normal_user (user_number, id, password, email_address, phone_number,
 VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', '2000-12-20', '서울특별시 강남구');
 commit;
 
+-- 포인트 테이블에 데이터 추가
+INSERT INTO points (id, user_number, amount)
+VALUES (1, 1, 10000);
+
 
 /*1*/
 INSERT INTO product (product_id, category_id, product_name, product_price, product_total_length, product_chest, product_shoulder, product_arm, product_desc, brand_user_number, total_quantity)

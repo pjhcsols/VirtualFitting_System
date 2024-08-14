@@ -8,6 +8,9 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 // 구독한 product의 재고가 변경될 때마다 즉시 전송하는 SSE 컨트롤러
 
@@ -23,6 +26,32 @@ public class SseController {
         this.productService = productService;
     }
 
+    @GetMapping("/subscribe/{productId}")
+    public SseEmitter subscribeInventory(@PathVariable Long productId) {
+        SseEmitter emitter = new SseEmitter(Long.MAX_VALUE);
+        emitters.put(productId, emitter);
+
+        ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor();
+        executorService.scheduleAtFixedRate(() -> {
+            try {
+                emitter.send(SseEmitter.event().comment("heartbeat"));
+            } catch (IOException e) {
+                emitter.completeWithError(e);
+            }
+        }, 0, 30, TimeUnit.SECONDS);
+
+        emitter.onCompletion(() -> {
+            emitters.remove(productId);
+            executorService.shutdown();
+        });
+        emitter.onTimeout(() -> {
+            emitters.remove(productId);
+            executorService.shutdown();
+        });
+
+        return emitter;
+    }
+/*
     @GetMapping("/subscribe/{productId}")
     public SseEmitter subscribeInventory(@PathVariable Long productId) {
         SseEmitter emitter = new SseEmitter();
@@ -41,6 +70,8 @@ public class SseController {
         emitters.put(productId, emitter);
         return emitter;
     }
+
+ */
 
     @PostMapping("/unsubscribe/{productId}")
     public void unsubscribeInventory(@PathVariable Long productId) {
