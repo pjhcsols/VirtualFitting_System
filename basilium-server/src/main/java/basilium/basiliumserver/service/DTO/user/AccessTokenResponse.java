@@ -1,7 +1,7 @@
 package basilium.basiliumserver.service.DTO.user;
 
 
-
+/*
 //RefreshToken
 public class AccessTokenResponse {
     private String accessToken;
@@ -18,3 +18,5 @@ public class AccessTokenResponse {
         this.accessToken = accessToken;
     }
 }
+
+ */

@@ -5,7 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
-
+/*
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -19,3 +19,5 @@ public class JwtUserInfoDTO {
     private String authorities;
 
 }
+
+ */

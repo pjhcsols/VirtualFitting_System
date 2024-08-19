@@ -1,4 +1,4 @@
-package basilium.basiliumserver.auth.controller;
+package basilium.basiliumserver.auth;
 
 
 import basilium.basiliumserver.auth.exception.AuthException;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,8 +44,8 @@ public class AuthArgumentResolver implements HandlerMethodArgumentResolver {
             if (token != null && !token.trim().isEmpty()) {
                 if (jwtUtil.validateToken(token)) {
                     log.info("jwtUtil.getUserInfoFromToken(token).getId() : {}",
-                            jwtUtil.getUserEmail(token));
-                    return jwtUtil.getUserEmail(token);
+                            jwtUtil.getUserId(token));
+                    return jwtUtil.getUserId(token);
                 }
             }
             AuthUser annotation = parameter.getParameterAnnotation(AuthUser.class);

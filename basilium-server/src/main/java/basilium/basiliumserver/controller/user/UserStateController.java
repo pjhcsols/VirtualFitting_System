@@ -3,6 +3,7 @@ package basilium.basiliumserver.controller.user;
 import basilium.basiliumserver.service.DTO.user.LoginRequest;
 import basilium.basiliumserver.service.DTO.user.LoginResponse;
 import basilium.basiliumserver.properties.ImageProperties;
+import basilium.basiliumserver.service.DTO.user.RefreshTokenResponse;
 import basilium.basiliumserver.service.user.UserStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -29,62 +30,19 @@ public class UserStateController {
 
     private final UserStateService userStateService;
     private final ImageProperties imageProperties;
-/*
-    @Value("${uploadDir}")
-    private String uploadDir;
 
-    //사용안함
-    @Value("${profileDir}")
-    private String profileDir;
-
-    // ClassPathResource를 사용하여 리소스 경로를 얻습니다.
-    ClassPathResource locateResource = new ClassPathResource(uploadDir);
-    // 실제 파일 저장 경로를 지정합니다.
-    File resourceUploadDir = new File(locateResource.getPath());
-
-    // ClassPathResource를 사용하여 리소스 경로를 얻습니다.
-    ClassPathResource locateProfileResource = new ClassPathResource(profileDir);
-    // 실제 파일 저장 경로를 지정합니다.
-    File resourceProfileDir = new File(locateProfileResource.getPath());
-
- */
-
-    //bean
     @Autowired
     public UserStateController(UserStateService userStateService, ImageProperties imageProperties) {
         this.userStateService = userStateService;
         this.imageProperties = imageProperties;
     }
 
-    /*
-        @PostMapping("/login")
-        public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest) {
-            log.info("------------------------------------------------------------");
-            log.info("1. User 로그인 시도");
-            log.info("ID: " + loginRequest.getUserId() + " ");
-            log.info("Password: " + loginRequest.getUserPassword() + " ");
-            LoginStatus loginResult = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
-            if (loginResult != LoginStatus.SUCCESS)
-                return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
-            log.info("------------------------------------------------------------");
-            log.info("2. 로그인 성공");
-            String token = userStateService.afterSuccessLogin(loginRequest.getUserId());
-            log.info("[User 토큰 정상 발급]");
-            log.info(token);
-            return ResponseEntity.ok().body(token);
-        }
-
-     */
     @PostMapping("/login")
     public ResponseEntity<?> loginNormalUser(@RequestBody LoginRequest loginRequest) {
         LoginResponse response = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
         if (response.getType() == null) {
-
             return new ResponseEntity<>("로그인 실패", HttpStatus.BAD_REQUEST);
         }
-
-        String token = userStateService.createTokenByUserType(loginRequest.getUserId());
-        response.setToken(token);
         return ResponseEntity.ok().body(response);
     }
 
@@ -99,13 +57,19 @@ public class UserStateController {
         }
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<RefreshTokenResponse> refreshAccessToken(@RequestParam String refreshToken) {
+        RefreshTokenResponse response = userStateService.refreshAccessToken(refreshToken);
+
+        if (response.getAccessToken() == null) {
+            return ResponseEntity.badRequest().body(response);  // 잘못된 요청인 경우
+        }
+
+        return ResponseEntity.ok(response);  // 성공적으로 액세스 토큰이 발급된 경우
+    }
 
 
-    /*
-    @PostMapping("/uploadImage")
-    public ResponseEntity<String> uploadImage(@AuthUser String userId,
-                                              @RequestParam("file") MultipartFile file) {
-     */
+
     //사용자가 이미지 업로드 시 저장 후 image url 프론트에게 반환
     //아니면 백엔드에서 이미지 전송을 AI에게 바로 주는 로직 추가
     //새로운 이미지 삽입시 이미지 url 교체 작업됨
@@ -121,7 +85,7 @@ public class UserStateController {
         }
     }
 
-    //2.사용자의 기존에 등록된 이미지 불러오기 버튼
+    //2.사용자의 기존에 등록된 이미지url 불러오기 버튼
     @GetMapping("/getImageUrl")
     public ResponseEntity<String> getUserImageUrl(@RequestParam("userId") String userId) {
         log.info("-----------------------------------------------------------");

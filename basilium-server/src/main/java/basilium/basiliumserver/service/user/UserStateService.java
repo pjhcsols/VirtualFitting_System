@@ -6,6 +6,7 @@ import basilium.basiliumserver.repository.user.BrandUserRepository;
 import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.repository.user.SuperUserRepository;
 import basilium.basiliumserver.service.DTO.user.LoginResponse;
+import basilium.basiliumserver.service.DTO.user.RefreshTokenResponse;
 import basilium.basiliumserver.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
@@ -39,102 +40,136 @@ public class UserStateService {
     private final BrandUserRepository brandUserRepository;
     private final SuperUserRepository superUserRepository;
     private final ImageProperties imageProperties;  // ImageProperties 빈 주입
-
+    private final JwtUtil jwtUtil;
 
     @Autowired
     public UserStateService(NormalUserRepository normalUserRepository,
                             BrandUserRepository brandUserRepository,
                             SuperUserRepository superUserRepository,
-                            ImageProperties imageProperties) {
+                            ImageProperties imageProperties,
+                            JwtUtil jwtUtil) {
         this.normalUserRepository = normalUserRepository;
         this.brandUserRepository = brandUserRepository;
         this.superUserRepository = superUserRepository;
-        this.imageProperties = imageProperties;  // 주입된 ImageProperties 사용
+        this.imageProperties = imageProperties;
+        this.jwtUtil = jwtUtil;
     }
-
-
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private Long expiredMs = 1000 * 60 * 60l;
 
 
     public LoginResponse login(String userId, String userPassword) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
-        LoginResponse response = new LoginResponse();
+
         if (normalUser.isPresent() && normalUser.get().getPassword().equals(userPassword)) {
-            response.setType("NORMAL");
-            return response;
+            return generateTokens(userId, "normal");
         } else if (brandUser.isPresent() && brandUser.get().getPassword().equals(userPassword)) {
-            response.setType("BRAND");
-            return response;
+            return generateTokens(userId, "brand");
         } else if (superUser.isPresent() && superUser.get().getPassword().equals(userPassword)) {
-            response.setType("ADMIN");
-            return response;
+            return generateTokens(userId, "super");
+        }
+
+        return new LoginResponse();  // Return empty LoginResponse for failed login
+    }
+
+
+
+    private LoginResponse generateTokens(String userId, String userType) {
+        String accessToken = jwtUtil.createJwt(userId, userType);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+        return new LoginResponse(userType, accessToken, refreshToken);
+    }
+
+    // 사용자 조회 메서드
+    private Optional<User> findUserById(String userId) {
+        Optional<User> user = normalUserRepository.findById(userId)
+                .map(u -> (User) u);
+        if (user.isPresent()) return user;
+
+        user = brandUserRepository.findById(userId)
+                .map(u -> (User) u);
+        if (user.isPresent()) return user;
+
+        return superUserRepository.findById(userId)
+                .map(u -> (User) u);
+    }
+
+    // 사용자 타입을 확인하는 메서드
+    private String getUserType(User user) {
+        if (user instanceof NormalUser) {
+            return "normal";
+        } else if (user instanceof BrandUser) {
+            return "brand";
+        } else if (user instanceof SuperUser) {
+            return "super";
         } else {
-            return response;
+            throw new IllegalArgumentException("알 수 없는 사용자 타입입니다.");
         }
     }
 
-
-    public String createTokenByUserType(String userId) {
-        Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
-        if (normalUser.isPresent()) {
-            return createNormalUserToken(userId);
+    // 액세스 토큰 갱신 메서드
+    public RefreshTokenResponse refreshAccessToken(String refreshToken) {
+        // 리프레시 토큰이 블랙리스트에 있는지 확인
+        if (jwtUtil.isTokenBlacklisted(refreshToken)) {
+            throw new IllegalArgumentException("리프레시 토큰이 블랙리스트에 있습니다.");
         }
-        else {
-            // 노말 유저가 존재하지 않으면 브랜드 유저 확인
-            Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
-            if (brandUser.isPresent()) {
-                return createBrandUserToken(userId);
-            }
-            else {
-                // 브랜드 유저가 존재하지 않으면 슈퍼 유저에서 토큰 생성
-                Optional<SuperUser> superUser = superUserRepository.findById(userId);
-                if (superUser.isPresent()) {
-                    return createSuperUserToken(userId);
-                }
-                else {
-                    // 브랜드 유저 및 슈퍼 유저도 존재하지 않으면 예외 처리 혹은 기본 토큰 생성 로직 추가
-                    // 여기서는 슈퍼 유저가 없다고 가정하고 노말 유저 토큰 생성
-                    return createNormalUserToken(userId);
-                }
-            }
+
+        // 리프레시 토큰이 유효한지 검증
+        if (jwtUtil.validateRefreshToken(refreshToken)) {
+            String userId = jwtUtil.getUserId(refreshToken);
+            // 사용자 정보를 데이터베이스에서 조회
+            User user = findUserById(userId)
+                    .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+            // 사용자 타입을 가져오기
+            String userType = getUserType(user);
+            log.info("userId = {}, userType = {}", userId, userType);
+
+            // 새로운 액세스 토큰 발급
+            String newAccessToken = jwtUtil.createJwt(userId, userType);
+
+            return new RefreshTokenResponse(userId, newAccessToken);  // 리프레시 토큰은 반환하지 않음
         }
+
+        throw new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다.");
     }
 
 
 
-
-    private String createNormalUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "normal", secretKey, expiredMs);
-    }
-
-    private String createBrandUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "brand", secretKey, expiredMs);
-    }
-
-    private String createSuperUserToken(String userId) {
-        return JwtUtil.createJwt(userId, "super", secretKey, expiredMs);
-    }
-
-
-
-    //로그아웃
     public void logout(HttpServletRequest request) {
-        // 클라이언트 측에서 토큰을 삭제하거나 무효화하는 로직 추가
-        // 여기서는 클라이언트 측에서 토큰을 삭제하는 방법으로 가정
-
-        // 로그아웃한 토큰을 블랙리스트에 추가
         String authorizationHeader = request.getHeader("Authorization");
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
-            JwtUtil.blacklistToken(token);
+            jwtUtil.blacklistToken(token);
             log.info("로그아웃 처리됨. 토큰 블랙리스트에 추가됨: {}", token);
         }
-        // 다른 로그아웃 관련 로직 추가 가능
     }
+/*
+    public void logout(HttpServletRequest request) {
+        String authorizationHeader = request.getHeader("Authorization");
+
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+            log.warn("로그아웃 요청에서 Authorization 헤더가 누락되었거나 Bearer 토큰이 아닙니다.");
+            throw new IllegalArgumentException("Authorization 헤더가 누락되었거나 Bearer 토큰이 아닙니다.");
+        }
+
+        String token = authorizationHeader.substring(7);
+
+        if (jwtUtil.isTokenBlacklisted(token)) {
+            log.info("로그아웃 처리됨. 토큰이 이미 블랙리스트에 존재함: {}", token);
+            return;
+        }
+
+        if (!jwtUtil.validateToken(token)) {
+            log.info("유효하지 않은 액세스 토큰: {}", token);
+            throw new IllegalArgumentException("유효하지 않은 액세스 토큰입니다.");
+        }
+
+        jwtUtil.blacklistToken(token);
+        log.info("로그아웃 처리됨. 액세스 토큰을 블랙리스트에 추가함: {}", token);
+    }
+
+ */
 
 
     public String uploadImage(String userId, MultipartFile file) {

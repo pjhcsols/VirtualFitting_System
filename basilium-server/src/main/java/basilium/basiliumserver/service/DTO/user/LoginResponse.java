@@ -4,11 +4,22 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@Getter@Setter
-@RequiredArgsConstructor
+@Getter
+@Setter
 public class LoginResponse {
 
-    String token;
-    String type;
+    private String type;
+    private String accessToken;
+    private String refreshToken;
 
+    // 기본 생성자
+    public LoginResponse() {
+    }
+
+    // 직접 생성자 정의
+    public LoginResponse(String type, String accessToken, String refreshToken) {
+        this.type = type;
+        this.accessToken = accessToken;
+        this.refreshToken = refreshToken;
+    }
 }

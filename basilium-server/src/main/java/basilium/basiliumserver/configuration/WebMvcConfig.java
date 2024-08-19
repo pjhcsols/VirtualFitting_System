@@ -1,6 +1,6 @@
 package basilium.basiliumserver.configuration;
 
-import basilium.basiliumserver.auth.controller.AuthArgumentResolver;
+import basilium.basiliumserver.auth.AuthArgumentResolver;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;

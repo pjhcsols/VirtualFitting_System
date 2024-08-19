@@ -1,13 +1,13 @@
 package basilium.basiliumserver.auth.service;
 
-
+/*
 import basilium.basiliumserver.auth.dto.TokenResponse;
 import basilium.basiliumserver.auth.exception.AuthException;
 import basilium.basiliumserver.auth.exception.AuthExceptionType;
 import basilium.basiliumserver.domain.user.JoinStatus;
 import basilium.basiliumserver.domain.user.LoginStatus;
 import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.repository.user.JpaUserRepo;
+import basilium.basiliumserver.repository.user.UserRepository;
 import basilium.basiliumserver.util.JwtUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import java.util.Optional;
@@ -18,13 +18,15 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+ */
+/*
 @Service
 @Transactional
 @RequiredArgsConstructor
 @Slf4j
 public class AuthService {
 
-    private final JpaUserRepo userRepository;
+    private final UserRepository userRepository;
     private final JwtUtil jwtUtil;
     private final PasswordEncoder passwordEncoder;
 
@@ -91,3 +93,5 @@ public class AuthService {
         // 다른 로그아웃 관련 로직 추가 가능
     }
 }
+
+ */

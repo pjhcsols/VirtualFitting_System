@@ -1,10 +1,8 @@
 package basilium.basiliumserver.configuration;
 
-
-import basilium.basiliumserver.auth.service.AuthService;
+import basilium.basiliumserver.auth.JwtFilter;
 import basilium.basiliumserver.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -21,10 +19,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthService authService;
-
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -44,8 +39,7 @@ public class SecurityConfig {
                 //.antMatchers(HttpMethod.POST, "/v1/brandUser/**").hasRole("BRAND_USER")
                 //.antMatchers(HttpMethod.POST, "/v1/superUser/**").hasRole("SUPER_USER")
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtFilter(authService, new JwtUtil(secretKey)),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

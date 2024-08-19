@@ -1,12 +1,9 @@
 package basilium.basiliumserver.domain.user;
 
 
-import basilium.basiliumserver.auth.entity.Provider;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 
 @Getter

@@ -1,6 +1,6 @@
 package basilium.basiliumserver.service.DTO.user;
 
-
+/*
 //RefreshToken
 public class RefreshTokenRequest {
     private String refreshToken;
@@ -14,3 +14,5 @@ public class RefreshTokenRequest {
     }
 }
 
+
+ */

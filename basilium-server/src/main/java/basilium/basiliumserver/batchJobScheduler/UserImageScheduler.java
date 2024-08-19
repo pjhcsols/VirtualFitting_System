@@ -28,21 +28,7 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor //오토 와이어 제거
 public class UserImageScheduler {
-/*
-    @Autowired
-    private EntityManager em;
 
-    @Autowired
-    private NormalUserRepository normalUserRepository;
-    @Autowired
-    private BrandUserRepository brandUserRepository;
-    @Autowired
-    private SuperUserRepository superUserRepository;
-
-    @Autowired
-    private ImageProperties imageProperties;
-
- */
     private final EntityManager em;
     private final NormalUserRepository normalUserRepository;
     private final BrandUserRepository brandUserRepository;

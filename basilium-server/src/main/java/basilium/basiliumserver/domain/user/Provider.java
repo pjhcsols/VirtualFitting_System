@@ -1,4 +1,4 @@
-package basilium.basiliumserver.auth.entity;
+package basilium.basiliumserver.domain.user;
 
 
 import basilium.basiliumserver.auth.exception.AuthException;
