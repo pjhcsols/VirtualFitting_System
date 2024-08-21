@@ -26,16 +26,13 @@ public class BrandUserService {
         this.brandUserRepository = brandUserRepository;
     }
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private final Long expiredMs = 1000 * 60 * 60L;
 
     public List<BrandUser> getAllBrandUsers() {
-        return brandUserRepository.getAllBrandUsers();
+        return brandUserRepository.findAll();
     }
 
     public void modify(BrandUser brandUser) {
-        brandUserRepository.modify(brandUser);
+        brandUserRepository.save(brandUser);
     }
 
     public BrandUser userInfoById(String userId) {

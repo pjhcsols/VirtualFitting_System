@@ -1,6 +1,6 @@
 package basilium.basiliumserver.repository.user;
 
-
+/*
 import basilium.basiliumserver.domain.user.SuperUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;
@@ -102,3 +102,6 @@ public class JpaSuperUserRepository implements SuperUserRepository {
 
 }
 
+
+
+ */

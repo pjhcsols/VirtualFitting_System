@@ -34,6 +34,11 @@ INSERT INTO normal_user (user_number, id, password, email_address, phone_number,
 VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', '2000-12-20', '서울특별시 강남구');
 commit;
 
+-- id 유저별 겹치는거 해결하기
+INSERT INTO super_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url)
+VALUES (1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1');
+commit;
+
 -- 포인트 테이블에 데이터 추가
 INSERT INTO points (id, user_number, amount)
 VALUES (1, 1, 10000);

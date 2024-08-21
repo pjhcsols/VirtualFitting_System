@@ -37,7 +37,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         // Token 꺼내기
         String token = authorization.split(" ")[1];
-        log.info("[logout 시도]");
+        log.info("[Token 검증]");
         log.info(token);
 /*
         // Token 검증

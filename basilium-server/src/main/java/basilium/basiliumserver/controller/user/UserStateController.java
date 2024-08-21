@@ -24,7 +24,7 @@ import java.io.IOException;
 //user 통합 로그인
 @Slf4j
 @RestController
-@RequestMapping("/User")
+@RequestMapping("/users")
 @PreAuthorize("isAuthenticated()")
 public class UserStateController {
 

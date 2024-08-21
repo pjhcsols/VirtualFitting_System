@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// 경로는 인증된 사용자만 접근할 수 있도록 설정되었습니다. 즉, 사용자는 해당 경로에 접근하기 위해 유효한 JWT 토큰을 제공해야 합니다.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor

@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -56,6 +55,12 @@ public class UserStateService {
     }
 
 
+    private LoginResponse generateTokens(String userId, String userType) {
+        String accessToken = jwtUtil.createJwt(userId, userType);
+        String refreshToken = jwtUtil.createRefreshToken(userId);
+        return new LoginResponse(userType, accessToken, refreshToken);
+    }
+
     public LoginResponse login(String userId, String userPassword) {
         Optional<NormalUser> normalUser = normalUserRepository.findById(userId);
         Optional<BrandUser> brandUser = brandUserRepository.findById(userId);
@@ -72,13 +77,6 @@ public class UserStateService {
         return new LoginResponse();  // Return empty LoginResponse for failed login
     }
 
-
-
-    private LoginResponse generateTokens(String userId, String userType) {
-        String accessToken = jwtUtil.createJwt(userId, userType);
-        String refreshToken = jwtUtil.createRefreshToken(userId);
-        return new LoginResponse(userType, accessToken, refreshToken);
-    }
 
     // 사용자 조회 메서드
     private Optional<User> findUserById(String userId) {
@@ -109,6 +107,7 @@ public class UserStateService {
 
     // 액세스 토큰 갱신 메서드
     public RefreshTokenResponse refreshAccessToken(String refreshToken) {
+        log.info("[엑세스 토큰 재발급]");
         // 리프레시 토큰이 블랙리스트에 있는지 확인
         if (jwtUtil.isTokenBlacklisted(refreshToken)) {
             throw new IllegalArgumentException("리프레시 토큰이 블랙리스트에 있습니다.");
@@ -123,10 +122,10 @@ public class UserStateService {
 
             // 사용자 타입을 가져오기
             String userType = getUserType(user);
-            log.info("userId = {}, userType = {}", userId, userType);
 
             // 새로운 액세스 토큰 발급
             String newAccessToken = jwtUtil.createJwt(userId, userType);
+            log.info("userId = {}, userType = {}, newAccessToken = {} ", userId, userType, newAccessToken);
 
             return new RefreshTokenResponse(userId, newAccessToken);  // 리프레시 토큰은 반환하지 않음
         }
@@ -135,41 +134,16 @@ public class UserStateService {
     }
 
 
-
     public void logout(HttpServletRequest request) {
         String authorizationHeader = request.getHeader("Authorization");
+        log.info("[로그아웃 시도] authorizationHeader = {}", authorizationHeader);
+
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
             String token = authorizationHeader.substring(7);
             jwtUtil.blacklistToken(token);
             log.info("로그아웃 처리됨. 토큰 블랙리스트에 추가됨: {}", token);
         }
     }
-/*
-    public void logout(HttpServletRequest request) {
-        String authorizationHeader = request.getHeader("Authorization");
-
-        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
-            log.warn("로그아웃 요청에서 Authorization 헤더가 누락되었거나 Bearer 토큰이 아닙니다.");
-            throw new IllegalArgumentException("Authorization 헤더가 누락되었거나 Bearer 토큰이 아닙니다.");
-        }
-
-        String token = authorizationHeader.substring(7);
-
-        if (jwtUtil.isTokenBlacklisted(token)) {
-            log.info("로그아웃 처리됨. 토큰이 이미 블랙리스트에 존재함: {}", token);
-            return;
-        }
-
-        if (!jwtUtil.validateToken(token)) {
-            log.info("유효하지 않은 액세스 토큰: {}", token);
-            throw new IllegalArgumentException("유효하지 않은 액세스 토큰입니다.");
-        }
-
-        jwtUtil.blacklistToken(token);
-        log.info("로그아웃 처리됨. 액세스 토큰을 블랙리스트에 추가함: {}", token);
-    }
-
- */
 
 
     public String uploadImage(String userId, MultipartFile file) {

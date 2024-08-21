@@ -24,16 +24,13 @@ public class SuperUserService {
         this.superUserRepository = superUserRepository;
     }
 
-    @Value("${jwt.secret}")
-    private String secretKey;
-    private final Long expiredMs = 1000 * 60 * 60L;
 
     public List<SuperUser> getAllSuperUsers() {
-        return superUserRepository.getAllSuperUsers();
+        return superUserRepository.findAll(); // JpaRepository가 제공하는 기본 메서드 사용
     }
 
     public void modify(SuperUser superUser) {
-        superUserRepository.modify(superUser);
+        superUserRepository.save(superUser); // JpaRepository의 save() 메서드를 사용하여 수정
     }
 
     public SuperUser userInfoById(String userId) {

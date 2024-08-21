@@ -2,6 +2,7 @@ package basilium.basiliumserver.service.payment;
 
 import basilium.basiliumserver.controller.payment.PaymentController;
 import basilium.basiliumserver.domain.product.Product;
+import basilium.basiliumserver.repository.user.NormalUserRepository;
 import basilium.basiliumserver.service.DTO.payment.kafkaPaymentInventory.PaymentInventoryResponse;
 import basilium.basiliumserver.domain.DAO.payment.OrderListDAO;
 import basilium.basiliumserver.service.DTO.payment.OrderListDTO;
@@ -10,7 +11,6 @@ import basilium.basiliumserver.domain.payment.Payment;
 import basilium.basiliumserver.domain.user.NormalUser;
 import basilium.basiliumserver.repository.product.JpaProductRepository;
 import basilium.basiliumserver.repository.payment.JpaPaymentRepository;
-import basilium.basiliumserver.repository.user.JpaNormalUserRepository;
 import basilium.basiliumserver.controller.product.sse.SseController;
 
 import java.time.LocalDateTime;
@@ -39,7 +39,7 @@ import java.util.concurrent.TimeUnit;
 public class PaymentService {
 
     private final JpaPaymentRepository jpaPaymentRepository;
-    private final JpaNormalUserRepository normalUserRepository;
+    private final NormalUserRepository normalUserRepository;
     private final JpaProductRepository productRepository;
 
     private final ProductService productService;

@@ -7,7 +7,7 @@ import java.util.Optional;
 import basilium.basiliumserver.domain.user.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-
+/*
 @Repository
 public interface UserRepository extends JpaRepository<NormalUser, Long> {
 
@@ -18,6 +18,8 @@ public interface UserRepository extends JpaRepository<NormalUser, Long> {
 
 
 }
+
+ */
 /*
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
