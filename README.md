@@ -28,13 +28,13 @@ Init : 초기화
 
 |                                       Backend                                        |                                       Backend                                        |
 |:-------------------------------------------------------------------------------------:|:-------------------------------------------------------------------------------------:
-| <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="한솔"> | <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="승준"> 
+| <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="한솔"> | <img src="https://avatars.githubusercontent.com/u/93867639?v=4" width=130px alt="승준"> 
 |                          [한솔](https://github.com/pjhcsols)                           |                            [승준](https://github.com/)                            
 
 
 |                                        Frontend                                         |                                        Frontend                                         |                                        AI                                         |
 |:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------------------:
-| <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="민준"/> | <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="나은"/> | <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt="건아"/> | <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt=""> |
+| <img src="https://avatars.githubusercontent.com/u/93867639?v=4" width=130px alt="민준"/> | <img src="https://avatars.githubusercontent.com/u/93867639?v=4" width=130px alt="나은"/> | <img src="https://avatars.githubusercontent.com/u/93867639?v=4" width=130px alt="건아"/> | <img src="https://avatars.githubusercontent.com/u/110244523?s=400" width=130px alt=""> |
 |                             [민준](https://github.com/)                             |                          [나은](https://github.com/)                          |                           [건아](https://github.com/)                           |                           [](https://github.com/)                           | 
 
 <br><br><br>
