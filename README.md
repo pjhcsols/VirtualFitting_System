@@ -23,20 +23,6 @@ Init : 초기화
 <br>
 <br>
 
-## 상표/저작권 및 성과
-<img width="320" alt="security" src="https://github.com/user-attachments/assets/c96ac92d-4e9f-47bc-a163-4416d57ff66a">
-<img width="320" alt="security" src="https://github.com/user-attachments/assets/b8d7a6dd-6297-469d-bb88-079efa16424f">
-
-<br>
-<br>
-
-[PR-2024-027-01-KR_프로그램등록신청명세서.pdf](https://github.com/user-attachments/files/17705382/PR-2024-027-01-KR_.pdf)
-<br>
-
-[C-2024-020439_등록증_PR-2024-027-01-KR.pdf](https://github.com/user-attachments/files/17705381/C-2024-020439_._PR-2024-027-01-KR.pdf)
-
-
-
 ## 팀원 👨‍👨‍👧‍👧
 
 |                                       Backend                                        |                                       Backend                                        |
@@ -51,6 +37,47 @@ Init : 초기화
 |                             [민준](https://github.com/)                             |                          [나은](https://github.com/)                          |                           [건아](https://github.com/)                           |                           [](https://github.com/)                           | 
 
 <br><br><br>
+
+# BASILIUM 연혁
+
+### 가상 착용 및 결제 관련 서비스
+  - **Park HanSol(Infra/BackEnd Developer & CEO)**
+    - Skills: Spring, Batch Job Scheduling, Kafka MQ, SSE, Ngrinder, Jenkins, AWS (EC2/RDS/S3 Storage), MySQL
+- **프로젝트 기간**: 2022.01 ~ 2024.06
+- **역할**: 백엔드 및 인프라 개발 리드
+- **업적 및 활동**:
+  - 2년간 서비스 유지보수 및 기능 개선
+  - **산학협력 프로젝트 (결제/재고/AI 이미지 메타데이터)시스템 개선**: A+ (2024.03 ~ 2024.06)
+  - **온프레미스 및 하이브리드 클라우드 구축**:
+    - 우경정보기술의 A10 서버 기반 온프레미스 환경 구축
+    - AWS EC2/RDS 하이브리드 클라우드 설계 및 구현
+  - **DataDog PoC (Proof of Concept)** 수행
+
+### BASILIUM AI Project
+- **LINC3.0 동아리 활동**: 2022.05 ~ 2023.12
+
+
+### BASILIUM 수료증
+
+<img width="220" alt="security" src="https://github.com/user-attachments/assets/e596a163-66c3-490a-8d85-f37f0fe32bf5">
+<img width="220" alt="security" src="https://github.com/user-attachments/assets/319b4c15-17d6-41d9-8996-d90304394aa8">
+
+<br>
+
+
+## 상표/저작권
+<img width="320" alt="security" src="https://github.com/user-attachments/assets/c96ac92d-4e9f-47bc-a163-4416d57ff66a">
+<img width="320" alt="security" src="https://github.com/user-attachments/assets/b8d7a6dd-6297-469d-bb88-079efa16424f">
+
+<br>
+<br>
+
+[PR-2024-027-01-KR_프로그램등록신청명세서.pdf](https://github.com/user-attachments/files/17705382/PR-2024-027-01-KR_.pdf)
+<br>
+
+[C-2024-020439_등록증_PR-2024-027-01-KR.pdf](https://github.com/user-attachments/files/17705381/C-2024-020439_._PR-2024-027-01-KR.pdf)
+
+<br>
 
 ## 프로젝트 설명
 <img width="1263" alt="스크린샷 2024-06-13 오후 8 10 01" src="https://github.com/pjhcsols/VirtualFitting_System/assets/110244523/d7821a4b-1fd6-44fb-9e20-478dd464e8b6">
@@ -69,3 +96,5 @@ Init : 초기화
 <br>
 <br>
 <br>
+
+
