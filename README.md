@@ -23,6 +23,19 @@ Init : 초기화
 <br>
 <br>
 
+## 상표/저작권 및 성과
+<img width="320" alt="security" src="https://github.com/user-attachments/assets/c96ac92d-4e9f-47bc-a163-4416d57ff66a">
+<img width="320" alt="security" src="https://github.com/user-attachments/assets/b8d7a6dd-6297-469d-bb88-079efa16424f">
+
+<br>
+<br>
+
+[PR-2024-027-01-KR_프로그램등록신청명세서.pdf](https://github.com/user-attachments/files/17705382/PR-2024-027-01-KR_.pdf)
+<br>
+
+[C-2024-020439_등록증_PR-2024-027-01-KR.pdf](https://github.com/user-attachments/files/17705381/C-2024-020439_._PR-2024-027-01-KR.pdf)
+
+
 
 ## 팀원 👨‍👨‍👧‍👧
 
