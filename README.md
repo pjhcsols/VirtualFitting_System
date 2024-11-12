@@ -66,8 +66,10 @@ Init : 초기화
 
 
 ## 상표/저작권
-<img width="320" alt="security" src="https://github.com/user-attachments/assets/c96ac92d-4e9f-47bc-a163-4416d57ff66a">
-<img width="320" alt="security" src="https://github.com/user-attachments/assets/b8d7a6dd-6297-469d-bb88-079efa16424f">
+<img width="320" alt="security" src="https://github.com/user-attachments/assets/0416cebd-c4dd-4754-83f0-27302c629e79">
+<img width="324" alt="security" src="https://github.com/user-attachments/assets/88da7cff-58d5-49f4-89e7-e84ec790ec0c">
+
+
 
 <br>
 <br>
