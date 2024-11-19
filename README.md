@@ -1,32 +1,23 @@
-# VirtualFitting_System
-가상피팅&amp;의류입점 플랫폼
+# :closed_lock_with_key: [BASILIUM 바실리움] VirtualFitting_System
+<br>
+<img width="680" alt="security" src="https://github.com/user-attachments/assets/b8a23e60-f0d7-495b-b3cc-998196fc2f57">
 
-## git commit message head
-Feat : 새로운 기능 추가, 기존의 기능을 요구 사항에 맞추어 수정  
-Fix : 기능에 대한 버그 수정  
-Build : 빌드 관련 수정  
-Chore : 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore  
-Docs : 문서(주석) 수정  
-Refactor : 기능의 변화가 아닌 코드 리팩터링 ex) 변수 이름 변경  
-Test : 테스트 코드 추가/수정  
-Init : 초기화  
+<br>
 
 ## 주제
-가상 피팅 서비스 & 의류 브랜드 입점 웹 서비스 : “BASILIUM"
+**가상 피팅 서비스 & 의류 브랜드 입점 및 결제 시스템 : “BASILIUM: VirtualFitting_System"**
 <br>
 <br>
 <br>
 
 ## 시연영상 Youtube
-<img width="820" alt="security" src="https://github.com/user-attachments/assets/b8a23e60-f0d7-495b-b3cc-998196fc2f57">
+
 <br>
 
 [https://www.youtube.com/BASILIUM_바실리움_시연영상](https://youtu.be/1ecBDWDEmYw?si=vfk2R8ldSRPVWj3A)
 <br>
-<br>
 
 [https://www.youtube.com/BASILIUM_바실리움_AI_서버](https://youtu.be/owJlofTqY7c?si=le0aPa5x5BSDhCQM)
-<br>
 <br>
 
 [https://www.youtube.com/BASILIUM바실리움_AI_동아리](https://youtu.be/RYS-lmbtfOc)
@@ -110,4 +101,12 @@ Init : 초기화
 <br>
 <br>
 
-
+## git commit message head
+Feat : 새로운 기능 추가, 기존의 기능을 요구 사항에 맞추어 수정  
+Fix : 기능에 대한 버그 수정  
+Build : 빌드 관련 수정  
+Chore : 패키지 매니저 수정, 그 외 기타 수정 ex) .gitignore  
+Docs : 문서(주석) 수정  
+Refactor : 기능의 변화가 아닌 코드 리팩터링 ex) 변수 이름 변경  
+Test : 테스트 코드 추가/수정  
+Init : 초기화  
