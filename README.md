@@ -1,10 +1,10 @@
-# :closed_lock_with_key: [BASILIUM 바실리움] VirtualFitting_System
+# <img width="30" alt="security" src="https://github.com/user-attachments/assets/d1ffee27-8576-4b32-b7b3-0227dac29b43"> [BASILIUM 바실리움] VirtualFitting_System
 <br>
 <img width="680" alt="security" src="https://github.com/user-attachments/assets/b8a23e60-f0d7-495b-b3cc-998196fc2f57">
-
 <br>
 
 ## 주제
+
 **가상 피팅 서비스 & 의류 브랜드 입점 및 결제 시스템 : “BASILIUM: VirtualFitting_System"**
 <br>
 <br>
