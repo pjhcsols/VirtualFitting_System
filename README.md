@@ -18,7 +18,11 @@ Init : 초기화
 <br>
 
 ## 시연영상 Youtube
-[https://www.youtube.com/RYS-lmbtfOc](https://youtu.be/RYS-lmbtfOc)
+[https://www.youtube.com/BASILIUM_바실리움_시연영상](https://youtu.be/1ecBDWDEmYw?si=vfk2R8ldSRPVWj3A)
+<br>
+[https://www.youtube.com/BASILIUM_바실리움_AI_서버](https://youtu.be/owJlofTqY7c?si=le0aPa5x5BSDhCQM)
+<br>
+[https://www.youtube.com/BASILIUM바실리움_AI_동아리](https://youtu.be/RYS-lmbtfOc)
 <br>
 <br>
 <br>
