@@ -18,10 +18,17 @@ Init : 초기화
 <br>
 
 ## 시연영상 Youtube
+<img width="820" alt="security" src="https://github.com/user-attachments/assets/b8a23e60-f0d7-495b-b3cc-998196fc2f57">
+<br>
+
 [https://www.youtube.com/BASILIUM_바실리움_시연영상](https://youtu.be/1ecBDWDEmYw?si=vfk2R8ldSRPVWj3A)
 <br>
+<br>
+
 [https://www.youtube.com/BASILIUM_바실리움_AI_서버](https://youtu.be/owJlofTqY7c?si=le0aPa5x5BSDhCQM)
 <br>
+<br>
+
 [https://www.youtube.com/BASILIUM바실리움_AI_동아리](https://youtu.be/RYS-lmbtfOc)
 <br>
 <br>
