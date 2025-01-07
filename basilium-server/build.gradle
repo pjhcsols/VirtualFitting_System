@@ -27,6 +27,9 @@ dependencies {
 	implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.3.0'
 	 */
 
+	//hashmap 보기 Spring Actuator http://localhost:8080/actuator/hashmap
+	//implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	//spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.projectlombok:lombok:1.18.28'
@@ -39,6 +42,8 @@ dependencies {
 	//mysql
 	//implementation 'com.mysql:mysql-connector-java'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	//runtimeOnly 'mysql:mysql-connector-java'
+	//runtimeOnly 'mysql:mysql-connector-java:8.0.32'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'

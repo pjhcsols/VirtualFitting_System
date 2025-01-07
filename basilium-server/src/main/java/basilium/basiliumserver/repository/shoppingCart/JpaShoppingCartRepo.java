@@ -1,7 +1,7 @@
 package basilium.basiliumserver.repository.shoppingCart;
 
 
-import basilium.basiliumserver.domain.purchaseTransaction.OrderListDAO;
+import basilium.basiliumserver.domain.DAO.payment.OrderListDAO;
 import basilium.basiliumserver.domain.shoppingCart.ShoppingCart;
 import jakarta.persistence.EntityManager;
 import java.util.List;

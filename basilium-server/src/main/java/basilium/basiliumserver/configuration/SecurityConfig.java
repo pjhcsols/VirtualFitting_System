@@ -1,10 +1,8 @@
 package basilium.basiliumserver.configuration;
 
-
-import basilium.basiliumserver.auth.service.AuthService;
+import basilium.basiliumserver.auth.JwtFilter;
 import basilium.basiliumserver.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,15 +14,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+// 경로는 인증된 사용자만 접근할 수 있도록 설정되었습니다. 즉, 사용자는 해당 경로에 접근하기 위해 유효한 JWT 토큰을 제공해야 합니다.
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final AuthService authService;
-
-    @Value("${jwt.secret}")
-    private String secretKey;
+    private final JwtUtil jwtUtil;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
@@ -44,8 +40,7 @@ public class SecurityConfig {
                 //.antMatchers(HttpMethod.POST, "/v1/brandUser/**").hasRole("BRAND_USER")
                 //.antMatchers(HttpMethod.POST, "/v1/superUser/**").hasRole("SUPER_USER")
                 .sessionManagement(configurer -> configurer.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterBefore(new JwtFilter(authService, new JwtUtil(secretKey)),
-                        UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 }

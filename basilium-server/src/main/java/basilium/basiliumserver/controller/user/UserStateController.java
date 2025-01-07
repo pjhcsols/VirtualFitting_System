@@ -1,14 +1,13 @@
 package basilium.basiliumserver.controller.user;
 
-import basilium.basiliumserver.domain.user.LoginRequest;
-import basilium.basiliumserver.domain.user.LoginResponse;
-import basilium.basiliumserver.domain.user.LoginStatus;
-import basilium.basiliumserver.domain.user.User;
+import basilium.basiliumserver.service.DTO.user.LoginRequest;
+import basilium.basiliumserver.service.DTO.user.LoginResponse;
+import basilium.basiliumserver.properties.ImageProperties;
+import basilium.basiliumserver.service.DTO.user.RefreshTokenResponse;
 import basilium.basiliumserver.service.user.UserStateService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,54 +19,30 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 //user 통합 로그인
 @Slf4j
 @RestController
-@RequestMapping("/User")
+@RequestMapping("/users")
 @PreAuthorize("isAuthenticated()")
 public class UserStateController {
 
     private final UserStateService userStateService;
+    private final ImageProperties imageProperties;
 
-    @Value("${uploadDir}")
-    private String uploadDir;
-
-    //bean
     @Autowired
-    public UserStateController(UserStateService userStateService) {
+    public UserStateController(UserStateService userStateService, ImageProperties imageProperties) {
         this.userStateService = userStateService;
+        this.imageProperties = imageProperties;
     }
 
-    /*
-        @PostMapping("/login")
-        public ResponseEntity<String> loginNormalUser(@RequestBody LoginRequest loginRequest) {
-            log.info("------------------------------------------------------------");
-            log.info("1. User 로그인 시도");
-            log.info("ID: " + loginRequest.getUserId() + " ");
-            log.info("Password: " + loginRequest.getUserPassword() + " ");
-            LoginStatus loginResult = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
-            if (loginResult != LoginStatus.SUCCESS)
-                return new ResponseEntity<>(loginResult.getMessage(), loginResult.getStatus());
-            log.info("------------------------------------------------------------");
-            log.info("2. 로그인 성공");
-            String token = userStateService.afterSuccessLogin(loginRequest.getUserId());
-            log.info("[User 토큰 정상 발급]");
-            log.info(token);
-            return ResponseEntity.ok().body(token);
-        }
-
-     */
     @PostMapping("/login")
     public ResponseEntity<?> loginNormalUser(@RequestBody LoginRequest loginRequest) {
         LoginResponse response = userStateService.login(loginRequest.getUserId(), loginRequest.getUserPassword());
         if (response.getType() == null) {
-
             return new ResponseEntity<>("로그인 실패", HttpStatus.BAD_REQUEST);
         }
-
-        String token = userStateService.createTokenByUserType(loginRequest.getUserId());
-        response.setToken(token);
         return ResponseEntity.ok().body(response);
     }
 
@@ -82,13 +57,19 @@ public class UserStateController {
         }
     }
 
+    @PostMapping("/refresh-token")
+    public ResponseEntity<RefreshTokenResponse> refreshAccessToken(@RequestParam String refreshToken) {
+        RefreshTokenResponse response = userStateService.refreshAccessToken(refreshToken);
+
+        if (response.getAccessToken() == null) {
+            return ResponseEntity.badRequest().body(response);  // 잘못된 요청인 경우
+        }
+
+        return ResponseEntity.ok(response);  // 성공적으로 액세스 토큰이 발급된 경우
+    }
 
 
-    /*
-    @PostMapping("/uploadImage")
-    public ResponseEntity<String> uploadImage(@AuthUser String userId,
-                                              @RequestParam("file") MultipartFile file) {
-     */
+
     //사용자가 이미지 업로드 시 저장 후 image url 프론트에게 반환
     //아니면 백엔드에서 이미지 전송을 AI에게 바로 주는 로직 추가
     //새로운 이미지 삽입시 이미지 url 교체 작업됨
@@ -104,7 +85,7 @@ public class UserStateController {
         }
     }
 
-    //2.사용자의 기존에 등록된 이미지 불러오기 버튼
+    //2.사용자의 기존에 등록된 이미지url 불러오기 버튼
     @GetMapping("/getImageUrl")
     public ResponseEntity<String> getUserImageUrl(@RequestParam("userId") String userId) {
         log.info("-----------------------------------------------------------");
@@ -125,7 +106,7 @@ public class UserStateController {
     public ResponseEntity<byte[]> getImageFileByUrl(@RequestBody String imageUrl) {
         try {
             String fileName = getImageFileName(imageUrl);
-            String absoluteImagePath = uploadDir + fileName;
+            String absoluteImagePath = imageProperties.getFullUploadDir() + fileName;
 
             byte[] imageByte = userStateService.getImageFileByUrl(absoluteImagePath);
             log.info("전송 성공");
@@ -150,6 +131,28 @@ public class UserStateController {
             ImageIO.write(image, "jpg", outputStream);
 
             return outputStream.toByteArray();
+        }
+    }
+
+    //user profile
+    @PostMapping("/uploadProfileImage")
+    public ResponseEntity<String> uploadProfileImage(@RequestParam("userId") String userId,
+                                                     @RequestParam("file") MultipartFile file) {
+        String encodedPath = userStateService.uploadProfileImage(userId, file);
+        if (encodedPath != null) {
+            return ResponseEntity.ok().body(encodedPath);
+        } else {
+            return ResponseEntity.badRequest().body("프로필 이미지 업로드에 실패하였습니다.");
+        }
+    }
+
+    @GetMapping("/getProfileImage")
+    public ResponseEntity<byte[]> getProfileImage(@RequestParam("userId") String userId) {
+        try {
+            byte[] image = userStateService.getProfileImage(userId);
+            return ResponseEntity.ok().contentType(MediaType.IMAGE_JPEG).body(image);
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 

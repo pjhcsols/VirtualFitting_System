@@ -20,18 +20,28 @@ INSERT INTO basilium.category (category_id, category_name) VALUES (18, '수영�
 INSERT INTO basilium.category (category_id, category_name) VALUES (19, '액세서리');
 commit;
 
-INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, firm_name, firm_address, business_registration, firm_web_url)
-VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/brand01_1713958965868_mysql.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+
+INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url, firm_name, firm_address, business_registration, firm_web_url)
+VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_1713958965868_mysql.png','프로필지워짐1', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
 commit;
-INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, firm_name, firm_address, business_registration, firm_web_url)
-VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url,firm_name, firm_address, business_registration, firm_web_url)
+VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png','프로필지워짐2', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
 commit;
-INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, name, birth_date, address)
-VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj', '우정잉', null, '서울특별시 강남구');
+INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, user_profile_image_url, name, birth_date, address)
+VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj','프로필지워짐3', '우정잉', null, '서울특별시 강남구');
 commit;
-INSERT INTO normal_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, name, birth_date, address)
-VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/java/basilium/basiliumserver/userImageStorage/example_1713958965868_mysql.png', '우정잉', '2000-12-20', '서울특별시 강남구');
+INSERT INTO normal_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url, name, birth_date, address)
+VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', '2000-12-20', '서울특별시 강남구');
 commit;
+
+-- id 유저별 겹치는거 해결하기
+INSERT INTO super_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url)
+VALUES (1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1');
+commit;
+
+-- 포인트 테이블에 데이터 추가
+INSERT INTO points (id, user_number, amount)
+VALUES (1, 1, 10000);
 
 
 /*1*/
@@ -298,6 +308,7 @@ VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 12
 
 
 /*주문목록*/
+/*
 -- 주문 테이블에 데이터 삽입
 INSERT INTO orders (price, order_uid, user_number)
 VALUES (160000, '20240515091315', 1);
@@ -307,6 +318,7 @@ INSERT INTO orders_products (order_id, products_product_id)
 VALUES (1, 1),
        (1, 2);
 
+ */
 
 /*
 INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
@@ -339,7 +351,7 @@ values (1, 1);
 commit;
 
 
-INSERT INTO purchase_transaction(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
+INSERT INTO payment(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
 VALUES (1, 1, 1, "L","black",1, 0, CURRENT_TIMESTAMP);
 
 

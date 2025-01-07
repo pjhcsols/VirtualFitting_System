@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-
+/*
 @Slf4j
 @Repository
 public class JpaBrandUserRepository implements BrandUserRepository {
@@ -49,6 +49,37 @@ public class JpaBrandUserRepository implements BrandUserRepository {
                 .getResultList();
     }
 
+    //BrandUser의 id로 userNumber를 찾음
+    @Override
+    public Optional<String> findByNumber(String id) {
+        try {
+            String userNumber = em.createQuery(
+                            "SELECT b.userNumber FROM BrandUser b WHERE b.id = :id", String.class)
+                    .setParameter("id", id)
+                    .getSingleResult();
+            return Optional.ofNullable(userNumber);
+        } catch (NoResultException e) {
+            log.info("No BrandUser found with id: {}", id);
+            return Optional.empty();
+        }
+    }
+
+    // BrandUser의 number로 브랜드유저 객체찾음
+    @Override
+    public Optional<BrandUser> findByBrandUserOfNumber(Long userNumber) {
+        try {
+            BrandUser brandUser = em.createQuery(
+                            "SELECT b FROM BrandUser b WHERE b.userNumber = :userNumber", BrandUser.class)
+                    .setParameter("userNumber", userNumber)
+                    .getSingleResult();
+            return Optional.ofNullable(brandUser);
+        } catch (NoResultException e) {
+            log.info("No BrandUser found with userNumber: {}", userNumber);
+            return Optional.empty();
+        }
+    }
+
+    //id로 브랜드 유저 객체 불러옴
     @Override
     public Optional<BrandUser> findById(String id) {
         try {
@@ -95,5 +126,20 @@ public class JpaBrandUserRepository implements BrandUserRepository {
         }
     }
 
+    @Override
+    public List<String> getAllUserProfileUrls() {
+        return em.createQuery("SELECT b.userProfileImageUrl FROM BrandUser b", String.class).getResultList();
+    }
+
+    @Override
+    public List<BrandUser> findByUserProfileUrlsIn(Set<String> imageUrls) {
+        return em.createQuery("SELECT u FROM BrandUser u WHERE u.userProfileImageUrl IN :imageUrls", BrandUser.class)
+                .setParameter("imageUrls", imageUrls)
+                .getResultList();
+    }
+
+
 }
+
+ */
 

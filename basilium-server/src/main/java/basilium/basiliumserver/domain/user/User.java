@@ -1,12 +1,9 @@
 package basilium.basiliumserver.domain.user;
 
 
-import basilium.basiliumserver.auth.entity.Provider;
 import jakarta.persistence.*;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
 
 @Getter
@@ -23,7 +20,9 @@ public class User {
     private String phoneNumber;
     private Grade userGrade;
     private Provider loginType;
-    String userImageUrl;
+    String userImageUrl; //local 이미지 자체 저장
+    @Column(length = 1000)
+    String userProfileImageUrl; //이미지 byte array 인코딩된 이미지의 경로나 식별자
 
     public User() {
 
