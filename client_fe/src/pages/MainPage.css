@@ -1,0 +1,206 @@
+.main {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #1E1E1E;
+    color: white;
+}
+
+.mainPage {
+    background-color: #1E1E1E;
+}
+
+.mainImg {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    text-align: center;
+    margin-bottom: 100px;
+    overflow: hidden; /* 이 부분을 추가하여 mainImg 내부의 모든 내용이 해당 div를 벗어나지 않도록 합니다. */
+}
+
+.mainImg::after { /* 가상 요소를 이용하여 그라데이션 효과 추가 */
+    content: ''; /* 가상 요소에는 content 속성이 필수입니다. */
+    position: absolute;
+    bottom: 0; /* 이미지의 아래쪽에 위치 */
+    left: 0;
+    width: 100%;
+    height: 20%; /* 그라데이션 효과의 높이를 조절하고 싶다면 이 값을 조정하세요. */
+    background: linear-gradient(to bottom, rgba(30, 30, 30, 0), #1E1E1E); /* 상단은 투명, 하단은 배경색과 동일하게 */
+}
+
+.mainImage {
+    width: 100vw;
+    position: relative; /* 이미지가 가상 요소와 올바르게 겹치도록 설정 */
+}
+
+
+.imgText1 {
+    position: absolute;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 40px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.imgText2 {
+    position: absolute;
+    top: 36%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 15px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.imgBtn {
+    display: flex;
+    align-items: center;
+    position: absolute;
+    gap: 5px;
+    top: 45%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border: white;
+    background-color: transparent;
+    border-radius: 40px;
+    border: 3px solid white;
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    color: white;
+    padding: 15px 22px;
+    padding-bottom: 20px;
+    font-size: 20px;
+    font-weight: 500;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+}
+  
+.imgBtn:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.imgBtn img {
+    height: 25px; 
+}
+
+.bestSeller {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bestSellertitle {
+    color: white;
+    font-size: 25px;
+    padding-top: 70px;
+}
+
+.bestSellerImagesContainer {
+    display: flex;
+    overflow-x: auto; /* 컨테이너에서 가로 스크롤을 활성화 */
+    width: 800px;
+    padding: 20px;
+    margin-bottom: 100px;
+    flex-wrap: nowrap; /* 이미지들이 가로로 나열되도록 설정 */
+    
+    /* 스크롤바 숨기기 */
+    -ms-overflow-style: none; /* IE와 Edge */
+    scrollbar-width: none; /* Firefox */
+}
+
+.bestSellerImagesContainer::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.bestSellerImg {
+    flex: 0 0 auto; /* flex 아이템의 크기가 컨테이너 크기에 따라 변하지 않도록 설정 */
+    width: 300px; 
+    height: 350px;
+    background-color: lightgray;
+    margin-right: 20px;
+}
+
+.bestSellerImg:first-child {
+    margin-left: 0; /* 첫 번째 이미지의 왼쪽 마진 제거 */
+}
+
+.bestSellerImg:last-child {
+    margin-right: 0; /* 마지막 이미지의 오른쪽 마진 제거 */
+}
+
+.content {
+    color: white;
+    text-align: center;
+    white-space: pre-line;
+    margin-bottom: 50px;
+}
+
+.brandimageContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.image {
+    display: flex;
+    width: 300px;
+    height: 400px;
+    background-color: #ccc;
+    margin: 0 30px;
+    margin-bottom: 30px;
+}
+
+.loadMore {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 120px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.location {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.AIservice {
+    margin-bottom: 100px;
+}
+
+.imageContainer {
+    display: flex;
+    justify-content: space-between; /* 이미지 그룹들을 양쪽으로 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    padding: 20px; /* 필요에 따라 조정 */
+}
+
+.imageGroup {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #746C6C;
+}
+
+.imageGroup div:nth-child(2) {
+    font-weight: bold;
+}
+
+.imageGroup div:nth-child(3) {
+    font-size: 0.8em;
+}
+
+
+.imageNew {
+    width: 500px;
+    height: 350px;
+    background-color: #ccc;
+    margin: 50px 20px;
+    margin-bottom: 20px;
+}

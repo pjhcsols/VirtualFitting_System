@@ -1,0 +1,156 @@
+.storePage {
+    background-color: #1E1E1E;
+    padding-bottom: 200px;
+}
+
+.store_mainImg {
+    background-color: #ccc;
+    width: 60%;
+    height: 300px;
+    margin: 70px auto;
+}
+
+.horizontal-line {
+    height: 2px;
+    background-color: #E0D5D5; 
+    width: 100%;
+}
+
+.new-arrival {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: center;
+    margin-top: 100px;
+    color: #E9E9E9;
+}
+
+.underline {
+    width: 60px;
+    height: 1px; 
+    background-color: #E0D5D5;
+    margin: 10px auto 30px;
+}
+
+.products-container {
+    display: flex;
+    width: 70%;
+    flex-wrap: wrap;
+    padding: 10px;
+    margin: 0 auto;
+}
+
+.store_product {
+    width: calc(25% - 40px);
+    margin: 0 5px 30px;
+    padding: 15px;
+    display: flex;
+    flex-direction: column; 
+}
+
+.product-image {
+    width: 100%;
+    height: 250px;
+    background-color: #D9D9D9;
+    margin-bottom: 5px;
+}
+
+.product-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 2px;
+}
+
+.store_heart-icon {
+    cursor: pointer;
+    height: 18px;
+    width: 16px;
+
+}
+
+.store_cart-icon {
+    border: none;
+    background-color: transparent;
+    cursor: pointer;
+    font-size: 15px;
+    color: #FFFFFF;
+    font-weight: light;
+}
+
+.icon_underline {
+    width: 100%;
+    height: 1px; 
+    background-color: #E0D5D5;
+    margin-bottom: 10px;
+}
+
+.product_title {
+    margin: 0;
+    margin-bottom: 10px; 
+    font-size: 15px;
+    color: #FFFFFF;
+    font-weight: 400;
+}
+
+.product_price {
+    margin: 0;
+    margin-bottom: 10px;
+    font-weight: 300;
+    color: #FFFFFF; 
+}
+
+.description {
+    margin: 0;
+    font-size: 12px;
+    color: #CCCCCC;
+}
+
+
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.75); /* 반투명 검정 배경 */
+  }
+  
+  .modalContent {
+    width: 20%;
+    height: 30%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    right: auto;
+    bottom: auto;
+    margin-right: -50%;
+    transform: translate(-50%, -50%);
+    z-index: 1000;
+    background-color: #F1F1F5;
+    padding: 20px 40px;
+    border-radius: 15px;
+  }
+
+  .productModal {
+    display: grid;
+    margin-left: 20px;
+    grid-template-columns: auto auto; /* 두 개의 열 생성 */
+    grid-template-rows: auto auto auto; /* 세 개의 행 생성 */
+    gap: 10px; /* 그리드 항목 사이의 간격 설정 */
+}
+
+.productModal > div {
+    display: contents;
+}
+
+.productModal select { width: 50%; }
+
+.productModal input { 
+    width: 30%; 
+    margin-bottom: 20px;
+}
+
+.modalContent button {
+    position: absolute; 
+    right: 40px; 
+    bottom: 30px; 
+}
