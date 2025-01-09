@@ -1,18 +1,17 @@
 package basilium.basiliumserver.batchJobScheduler;
 
-import basilium.basiliumserver.domain.user.BrandUser;
-import basilium.basiliumserver.domain.user.NormalUser;
-import basilium.basiliumserver.domain.user.SuperUser;
-import basilium.basiliumserver.domain.user.User;
+import basilium.basiliumserver.domain.user.entity.BrandUser;
+import basilium.basiliumserver.domain.user.entity.NormalUser;
+import basilium.basiliumserver.domain.user.entity.SuperUser;
+import basilium.basiliumserver.domain.user.entity.User;
 import basilium.basiliumserver.properties.ImageProperties;
-import basilium.basiliumserver.repository.user.BrandUserRepository;
-import basilium.basiliumserver.repository.user.NormalUserRepository;
-import basilium.basiliumserver.repository.user.SuperUserRepository;
+import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
+import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
+import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

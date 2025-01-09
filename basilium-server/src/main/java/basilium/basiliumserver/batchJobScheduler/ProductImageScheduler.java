@@ -1,10 +1,9 @@
 package basilium.basiliumserver.batchJobScheduler;
 
-import basilium.basiliumserver.s3Storage.service.S3StorageService;
-import basilium.basiliumserver.service.product.ProductService;
+import basilium.basiliumserver.domain.user.s3Storage.service.S3StorageService;
+import basilium.basiliumserver.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
