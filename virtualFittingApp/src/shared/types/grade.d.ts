@@ -1,0 +1,2 @@
+export type USER_GRADE = BRONZE | SILVER | GOLD | PLATINUM | DIAMOND;
+export type LOGIN_TYPE = NORMAL;
