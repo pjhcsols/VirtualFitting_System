@@ -1,0 +1,68 @@
+.header_Bottom {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    padding: 20px 20px;
+}
+
+.menu_Bottom {
+    display: flex; 
+    align-items: center;
+    justify-content: center;
+}
+
+.menu_Bottom span, .menu_Bottom div span {
+    color: white;
+    font-size: 18px;
+    margin: -5px 100px;
+    font-weight: 600;
+    margin-top: 5px;
+    cursor: pointer;
+}
+
+.searchBarContainer {
+    position: absolute;
+    right: 80px;
+    width: 200px;
+    height: 40px;
+    z-index: 1000;
+    background: #1E1E1E;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    padding: 10px;
+    display: none;
+    border-radius: 20px;
+    border: 1px solid white;
+}
+
+.searchBarContainer.active {
+    display: block;
+}
+
+.searchBarContainer input {
+    width: 100%;
+    padding: 10px;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    color: white;
+    font-size: 16px;
+}
+
+.iconContainer {
+    position: absolute; 
+    top: 15px;
+    right: 20px;
+    display: flex;
+    align-items: center; 
+    gap: 15px; 
+}
+
+.cartIcon {
+    height: 20px;
+}
+
+.MyIcon {
+    height: 18px;
+}
