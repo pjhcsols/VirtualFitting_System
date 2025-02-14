@@ -1,3 +1,7 @@
+
+export { default as AboutPage } from "@/pages/AboutPage";
+export { default as BrandPage } from "@/pages/BrandPage";
+
 // * Admin Page
 export { ProductRegisterationPage } from "./admin/ui/ProductRegisterationPage";
 
@@ -18,3 +22,4 @@ export { StorePage } from "./store/ui/StorePage";
 export { StoreDetailPage } from "./store/ui/StoreDetailPage";
 
 // * New Store Page
+
