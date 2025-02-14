@@ -1,0 +1,114 @@
+.order_list_container {
+    margin: auto;
+    width: 70%;
+    margin-top: 10%;
+}
+
+.order_list_title {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
+
+.header_div {
+    display: flex;
+    align-items: center; /* 세로 정렬 설정 */
+    border-bottom: solid 2px black; /* 이 줄을 추가하여 헤더 아래에 밑줄을 추가합니다. */
+}
+
+.order_list_table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.order_list_thead{
+    width: 100%;
+    border-bottom: solid 1px black;
+}
+
+.order_list_thead th,
+.order_list_table td {
+    padding: 10px;
+    text-align: center;
+}
+
+.order_list_thead th:first-child,
+.order_list_table td:first-child {
+    width: 25%; /* 첫 번째 열의 너비를 25%로 지정 */
+}
+
+.image_div {
+    background-color: #D9D9D9;
+    width: 80%;
+    height: 200px;
+    text-align: center;
+    margin: 0 auto; /* 좌우 마진을 auto로 설정하여 수평 중앙 정렬 */
+    display: flex;
+    justify-content: center; /* 이미지를 가로 중앙으로 정렬 */
+    align-items: center; /* 이미지를 세로 중앙으로 정렬 */
+}
+
+.image1{
+    width: 120px;
+    height: 120px;
+}
+
+.image2{
+    width: 100%;
+    height: 100%;
+}
+
+.order_list_thead th:nth-child(2),
+.order_list_table td:nth-child(2) {
+    width: 25%; /* 두 번째 열의 너비를 25%로 지정 */
+    font-weight: bold;
+}
+
+.order_list_thead th:nth-child(3),
+.order_list_table td:nth-child(3) {
+    width: 20%; /* 세 번째 열의 너비를 20%로 지정 */
+    font-weight: bold;
+}
+
+.order_list_thead th:nth-child(4),
+.order_list_table td:nth-child(4) {
+    width: 30%; /* 네 번째 열의 너비를 30%로 지정 */
+    font-weight: bold;
+}
+
+
+.optional_button{
+    margin-top: 15px;
+    border-radius: 15px;
+    background-color: #D9D9D9;
+    color: black;
+    border: none;
+    height: 25px;
+    font-weight: bold;
+}
+
+
+.product_info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.image_div {
+    margin-bottom: 10px;
+}
+
+.product_details {
+    text-align: center;
+}
+
+.product_name {
+    font-weight: bold;
+    font-size: 1.1em;
+}
+
+.product_specs {
+    color: gray;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+
