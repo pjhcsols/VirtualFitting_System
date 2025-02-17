@@ -1,23 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../../lib/AuthContext';
+import { isUserLoggedIn } from './utils/loggedIn.util'; // Import the function
 import Swal from "sweetalert2";
 import { SEARCH_ICON, CROWN_ICON, CART_ICON, MY_ICON } from './constants';
-import { User } from '../../../types/user';
-import { isUserLoggedIn } from './utils/loggedIn.util';
-import { fetchUserInfo } from './api/fetchUser.action';
 import './HeaderBottom.css';
-import { PopUpBottom } from '../../pop-up/pop-up-bottom/PopUpBottom'
+import PopUpBottom from '@/shared/components/pop-up/pop-up-bottom/PopUpBottom';
 
 const HeaderBottom = () => {
     const navigate = useNavigate();
     const [popupOpen, setPopupOpen] = useState(false);
-    const { user, logout } = useAuth();
+    const [user, setUser] = useState<any>(null);
+
     const isLoggedIn = isUserLoggedIn();
 
     useEffect(() => {
-        if (!isLoggedIn) {
-            setPopupOpen(false);
+        if (isLoggedIn) {
+            const userData = JSON.parse(localStorage.getItem('user_info') || '{}');
+            setUser(userData);
+        } else {
+            setUser(null);
         }
     }, [isLoggedIn]);
 

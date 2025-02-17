@@ -1,5 +1,4 @@
-
-export { default as BlankContent } from "./components/blank-content/BlankContent";
+export { default as BlankContent } from "./components/blank-content/ui/BlankContent";
 export { default as Payment } from "./components/payment/ui/Payment";
 export { default as ShoppingCart } from "./components/shopping-cart/ui/ShoppingCart"
 export { default as LikedCarousel } from "./components/liked-carousel/ui/LikedCarousel"

@@ -1,12 +1,12 @@
 import React, { useState, useRef, useEffect } from "react";
-import './PopUp.css';
-import userImg from '../assets/img/mypage_user.png';
-import { useAuth } from "../context/AuthContext";
+import '../ui/PopUp.css';
+import { IMG_USER } from "../constants";
+// import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 const PopUpBottom = ({ logout }) => {
     const [isOpen, setIsOpen] = useState(true);
-    const [profileImageUrl, setProfileImageUrl] = useState(userImg);
+    const [profileImageUrl, setProfileImageUrl] = useState(IMG_USER);
     const popupRef = useRef(null);
     const navigate = useNavigate();
     const storedUserInfo = localStorage.getItem('user_info');

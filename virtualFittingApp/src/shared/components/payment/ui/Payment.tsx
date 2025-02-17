@@ -1,7 +1,7 @@
 import React from "react";
 import Swal from "sweetalert2";
 import { fetchUserInfo, postPayment, deleteProductFromCart } from '../api/payment.action';
-import { formatDate } from '../utils/date.util';
+import { formatDate } from '@/shared/utils/date.util';
 import { IMP_KEY, PG_NAME, PAY_METHOD, ESCROW } from '../constants/index';
 import { PaymentProps } from '../types/paymentProps';
 import PaymentButton from '../ui/PaymentButton';
