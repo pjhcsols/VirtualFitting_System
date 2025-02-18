@@ -12,6 +12,11 @@ export { CategorySelectBar } from "./components/selectBar/CategorySelectBar";
 export { SearchBar } from "./components/searchBar/ui/SearchBar";
 export { Pagination } from "./components/pagination/ui/Pagination";
 export { AdminProductCard } from "./components/card/AdminProductCard";
+export { ProductSmallCard } from "@/shared/components/product/ui/ProductSmallCard";
+export { Review } from "@/shared/components/review/ui/Review";
+export { ShoppingCartButton } from "@/shared/components/button/ui/ShoppingCartButton";
+export { LikeButton } from "@/shared/components/button/ui/LikeButton";
+export { ShareButton } from "@/shared/components/button/ui/ShareButton";
 
 export { UserLayout } from "./layout/UserLayout";
 export { AdminLayout } from "./layout/AdminLayout";
