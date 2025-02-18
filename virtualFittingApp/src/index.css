@@ -5,6 +5,22 @@
   src: url("/font/Prata-Regular.ttf") format("truetype");
 }
 
+@font-face {
+  font-size: 16px;
+  font-family: "Pretendard";
+  font-weight: normal;
+  src: url("/font/PretendardVariable.woff2") format("woff2");
+}
+
+@font-face {
+  font-size: 16px;
+  font-family: "studio-sans";
+  font-weight: normal;
+  src: url(/font/StudioSans-Bold.otf) url(/font/StudioSans-ExtraBold.otf)
+    url(/font/StudioSans-ExtraLight.otf) url(/font/StudioSans-Light.otf)
+    url(/font/StudioSans-Medium.otf) url(/font/StudioSans.otf) format("oft");
+}
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif, prata;
   line-height: 1.5;
