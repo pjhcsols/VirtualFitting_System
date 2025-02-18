@@ -25,6 +25,10 @@ function Header() {
           Basilium
         </LogoTitle>
       </LogoContainer>
+      <RouterList>
+        <HeaderContent>Cart</HeaderContent>
+        <HeaderContent>Liked</HeaderContent>
+      </RouterList>
     </Wrapper>
   );
 }
@@ -83,6 +87,23 @@ const LogoTitle = styled.h1<{ scrolled: boolean }>`
   cursor: pointer;
   transform-origin: left;
   transition: 0.5s all ease-in-out;
+`;
+
+const RouterList = styled.ul`
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+`;
+
+const HeaderContent = styled.li`
+  list-style: none;
+  font-family: "Prata-Regular";
+  font-size: 1vw;
+  font-weight: 700;
+  color: white;
+  cursor: pointer;
 `;
 
 export { Header };
