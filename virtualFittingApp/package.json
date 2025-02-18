@@ -20,7 +20,8 @@
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.1.5",
     "styled-components": "^6.1.14",
-    "sweetalert2": "^11.16.0"
+    "sweetalert2": "^11.16.0",
+    "vite-tsconfig-paths": "^5.1.4"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",
