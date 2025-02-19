@@ -6,6 +6,7 @@ import { StoreRouter } from "./app/store/StoreRouter";
 import { AdminRouter } from "./app/admin/AdminRouter";
 import { AboutRouter } from "./app/about/AboutRouter";
 import { BrandRouter } from "./app/brand/BrandRouter";
+import { LogInRouter  } from "./app/login/LogInRouter";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
       <AdminRouter />
       <BrandRouter />
       <StoreRouter />
+      <LogInRouter />
       <UserSignUpAnimationRouter />
     </BrowserRouter>
   );

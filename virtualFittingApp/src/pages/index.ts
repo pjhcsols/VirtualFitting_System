@@ -1,6 +1,7 @@
 
 export { default as AboutPage } from "./about/ui/AboutPage";
 export { default as BrandPage } from "./brand/ui/BrandPage";
+export { default as LogInPage} from "./login/ui/LoginPage";
 
 // * Admin Page
 export { ProductRegisterationPage } from "./admin/ui/ProductRegisterationPage";

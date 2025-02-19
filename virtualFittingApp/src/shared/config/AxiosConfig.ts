@@ -1,6 +1,5 @@
 import axios, { type HeadersDefaults } from "axios";
 import Cookies from "js-cookie";
-import { createContext, useContext } from 'react';
 
 import {
   basilium_ai_refresh_token,
@@ -148,13 +147,3 @@ API_BASILIUM_AI.interceptors.response.use(
     return Promise.reject(error);
   }
 );
-
-const AuthContext = createContext();
-
-export const useAuth = () => {
-  const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};
