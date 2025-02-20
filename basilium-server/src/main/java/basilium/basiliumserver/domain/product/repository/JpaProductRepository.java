@@ -10,7 +10,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-
+/*
 @Repository
 public class JpaProductRepository implements ProductRepository {
 
@@ -99,7 +99,7 @@ public class JpaProductRepository implements ProductRepository {
     }
 
  */
-
+/*
     //상품 이름 2글자이상 검색기능
     @Override
     public List<Product> findByNameContaining(String name) {
@@ -130,3 +130,5 @@ public class JpaProductRepository implements ProductRepository {
     }
 
 }
+
+ */
