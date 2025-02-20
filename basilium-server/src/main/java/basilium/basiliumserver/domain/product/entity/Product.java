@@ -149,6 +149,14 @@ public class Product {
         this.productColorOptions.add(colorOption);
     }
 
+    @PrePersist
+    @PreUpdate
+    private void calculateTotalQuantity() {
+        this.totalQuantity = (productOptions != null)
+                ? productOptions.stream().mapToLong(ProductOption::getOptionQuantity).sum()
+                : 0L;
+    }
+
     public Set<ProductOption> getProductOptions() {
         return Collections.unmodifiableSet(productOptions);
     }

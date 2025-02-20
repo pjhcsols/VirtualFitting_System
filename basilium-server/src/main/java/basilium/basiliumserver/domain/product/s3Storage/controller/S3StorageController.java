@@ -1,7 +1,7 @@
-package basilium.basiliumserver.domain.user.s3Storage.controller;
+package basilium.basiliumserver.domain.product.s3Storage.controller;
 
 import basilium.basiliumserver.domain.user.entity.BrandUser;
-import basilium.basiliumserver.domain.user.s3Storage.service.S3StorageService;
+import basilium.basiliumserver.domain.product.s3Storage.service.S3StorageService;
 import basilium.basiliumserver.domain.user.service.BrandUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

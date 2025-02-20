@@ -19,6 +19,7 @@ import lombok.ToString;
 import org.hibernate.annotations.CreationTimestamp;
 
 
+//결제 상태 (결제 완료, 배송중, 배송완료, 결제 취소, 환불, 교환)
 @Entity
 @Getter @Setter
 @NoArgsConstructor

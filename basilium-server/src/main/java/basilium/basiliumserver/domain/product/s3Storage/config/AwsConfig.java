@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.user.s3Storage.config;
+package basilium.basiliumserver.domain.product.s3Storage.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

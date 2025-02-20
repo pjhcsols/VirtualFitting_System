@@ -2,9 +2,9 @@ package basilium.basiliumserver.domain.shoppingCart.service;
 
 import basilium.basiliumserver.domain.payment.dto.OrderListDTO;
 import basilium.basiliumserver.domain.payment.repository.dao.OrderListDAO;
+import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.shoppingCart.entity.ShoppingCart;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
-import basilium.basiliumserver.domain.product.repository.JpaProductRepository;
 import basilium.basiliumserver.domain.shoppingCart.repository.JpaShoppingCartRepo;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShoppingCartService {
 
     private final JpaShoppingCartRepo shoppingCartRepo;
-    private final JpaProductRepository productRepository;
+    private final ProductRepository productRepository;
 
     public List<OrderListDTO> userShoppingCartHistory(Long userId){
         List<OrderListDAO> list = shoppingCartRepo.getUserShoppingCartInfo(userId);
@@ -43,7 +43,7 @@ public class ShoppingCartService {
     @Transactional
     public void deleteSelectedProducts(Long shoppingListId) {
 
-                shoppingCartRepo.deleteById(shoppingListId);
+        shoppingCartRepo.deleteById(shoppingListId);
 
 
     }

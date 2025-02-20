@@ -1,5 +1,8 @@
 package basilium.basiliumserver.domain.payment.controller;
 
+import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.RequestTaskInfo;
+import basilium.basiliumserver.domain.product.entity.Color;
+import basilium.basiliumserver.domain.product.entity.Size;
 import basilium.basiliumserver.global.auth.support.AuthUser;
 import basilium.basiliumserver.domain.payment.dto.OrderPaymentRequest;
 import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.PaymentInventoryResponse;
@@ -16,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 // 결제 시 재고 실시간 관리 카프카 mq + 스케줄링
@@ -32,76 +34,50 @@ public class PaymentController {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private static final ConcurrentHashMap<UUID, String> requestTaskMaps = new ConcurrentHashMap<>();
+    //private static final ConcurrentHashMap<UUID, String> requestTaskMaps = new ConcurrentHashMap<>();
 
 
     @PostMapping("/request")
-    public ResponseEntity<PaymentInventoryResponse> requestPayment(@RequestParam Long productId, @RequestParam Long count) throws Exception {
-        UUID requestId = UUID.randomUUID();
+    public ResponseEntity<PaymentInventoryResponse> requestPayment(
+            @AuthUser String userId,
+            @RequestParam Long productId,
+            @RequestParam Long count,
+            @RequestParam Size productSize,
+            @RequestParam Color productColor) throws Exception {
 
-        // Assuming kafkaTemplate.send() method is called to trigger the payment process
-        ProductUpdateMessage message = new ProductUpdateMessage(productId, count, requestId);
+        UUID taskId = UUID.randomUUID();
+
+        // Kafka 메시지 전송
+        ProductUpdateMessage message = new ProductUpdateMessage(userId, productId, count, taskId, productSize, productColor);
         String messageStr = objectMapper.writeValueAsString(message);
         kafkaTemplate.send("product-update-topic", messageStr);
 
-        //hashmap 안쓸거면 리팩토링
-        String key = productId + "-" + count; // productId와 count를 조합하여 고유한 키 생성
-        requestTaskMaps.put(requestId, key); // (productId+count)key와 requestId를 사용하여 매핑하여 저장
         log.info("************************************************");
-        log.info("requestId {} with key {}", requestId, key);
+        log.info("taskId {}: userId={}, productId={}, count={}, productSize={}, productColor={}",
+                taskId, userId, productId, count, productSize, productColor);
 
-        // Call the service method and capture the PaymentInventoryResponse object
-        //서비스 사용안하게 리펙토링하기
-        PaymentInventoryResponse response = paymentService.scheduleRestoration(productId, count, requestId);
+        // 요청 정보를 PaymentService에 저장
+        RequestTaskInfo info = new RequestTaskInfo(userId, productId, count, productSize, productColor);
+        paymentService.addRequestTask(taskId, info);
+
+        // 예약 복구 작업 등록 및 PaymentInventoryResponse 반환
+        PaymentInventoryResponse response = paymentService.scheduleRestoration(userId, productId, count, taskId, productSize, productColor);
         return ResponseEntity.ok(response);
-
-        //밑에는 서비스를 사용안해도 되는거 테스트
-        /*
-        // 지연 시간 계산 (예: 5분 후)
-        LocalDateTime delayTime = LocalDateTime.now().plusMinutes(5);
-        // PaymentInventoryResponse 객체 생성
-        PaymentInventoryResponse response = new PaymentInventoryResponse(requestId, delayTime);
-        // ResponseEntity로 반환
-        return ResponseEntity.ok(response);
-
-         */
     }
-
-
 
     @PostMapping("/response")
-    public String paymentResponse(@RequestParam UUID requestId, @RequestParam boolean success) {
-        // requestId로 해당 요청의 key를 가져옴
-        String key = requestTaskMaps.get(requestId);
-
-        if (key == null) {
-            log.info("No scheduled task found for requestId: {}", requestId);
-            return "No scheduled task found for product.";
-        }
-
-        // key 파싱하여 productId와 count 추출
-        String[] parts = key.split("-");
-        Long productId = Long.valueOf(parts[0]);
-        Long count = Long.valueOf(parts[1]);
-
-        log.info("[response]: taskId {} with key {}", requestId, key);
-
-        UUID taskId = requestId;
-        // requestId를 그대로 taskId로 사용하여 processPaymentResponse 호출
-        paymentService.processPaymentResponse(productId, count, success, taskId);
-
-        // 요청이 처리된 후에는 해당 매핑을 제거하여 메모리 누수를 방지합니다.
-        log.info("[컨트롤러-response]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
-        requestTaskMaps.remove(requestId);
-        log.info("[컨트롤러-response]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
-        return success ? "Payment successful." : "Payment failed.";
+    public ResponseEntity<String> paymentResponse(@RequestParam UUID taskId, @RequestParam boolean success) {
+        paymentService.processPaymentResponse(taskId, success);
+        return ResponseEntity.ok(success ? "결제 성공" : "결제 실패");
     }
-
-    public static void removeControllerMap(UUID requestId) {
+/*
+    public static void removeControllerMap(UUID taskId) {
         log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
-        requestTaskMaps.remove(requestId);
+        requestTaskMaps.remove(taskId);
         log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
     }
+
+ */
 
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){

@@ -1,6 +1,6 @@
 package basilium.basiliumserver.batchJobScheduler;
 
-import basilium.basiliumserver.domain.user.s3Storage.service.S3StorageService;
+import basilium.basiliumserver.domain.product.s3Storage.service.S3StorageService;
 import basilium.basiliumserver.domain.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

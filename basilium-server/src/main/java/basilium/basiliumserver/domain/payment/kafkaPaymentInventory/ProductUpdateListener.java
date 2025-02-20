@@ -1,5 +1,7 @@
 package basilium.basiliumserver.domain.payment.kafkaPaymentInventory;
 
+import basilium.basiliumserver.domain.product.entity.Color;
+import basilium.basiliumserver.domain.product.entity.Size;
 import basilium.basiliumserver.global.configuration.kafkaMQ.KafkaConfig;
 import basilium.basiliumserver.domain.product.service.ProductService;
 import basilium.basiliumserver.domain.payment.service.PaymentService;
@@ -23,15 +25,25 @@ public class ProductUpdateListener {
 
     @KafkaListener(topics = KafkaConfig.PRODUCT_UPDATE_TOPIC, groupId = "product-group")
     public void handleProductUpdate(ConsumerRecord<String, String> record) throws Exception {
+        // ProductUpdateMessage는 productId, count, taskId, productSize, productColor 필드를 포함한다고 가정합니다.
         ProductUpdateMessage message = objectMapper.readValue(record.value(), ProductUpdateMessage.class);
+        String userId = message.getUserId();
         Long productId = message.getProductId();
         Long count = message.getCount();
         UUID taskId = message.getTaskId();
+        Size productSize = message.getProductSize();
+        Color productColor = message.getProductColor();
 
-        // Product quantity update
-        productService.updateProductQuantity(productId, count);
+        //(작동시간을 컨트롤러에 넘기기)
+        //(여기)
 
-        // Schedule restoration with the provided UUID
-        paymentService.scheduleRestoration(productId, count, taskId);
+
+        // 결제 처리: 옵션 단위 재고 차감 및 전체 재고 업데이트
+        productService.processPaymentProductQuantity(productId, productSize, productColor, count);
+
+        // 예약된 재고 복구 작업 등록
+        //paymentService.scheduleRestoration(productId, count, taskId);
+        // 예약된 재고 복구 작업 등록 (옵션 정보 포함)
+        paymentService.scheduleRestoration(userId, productId, count, taskId, productSize, productColor);
     }
 }

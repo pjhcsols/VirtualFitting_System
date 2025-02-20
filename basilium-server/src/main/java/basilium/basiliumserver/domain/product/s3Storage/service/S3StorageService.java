@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.user.s3Storage.service;
+package basilium.basiliumserver.domain.product.s3Storage.service;
 
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;

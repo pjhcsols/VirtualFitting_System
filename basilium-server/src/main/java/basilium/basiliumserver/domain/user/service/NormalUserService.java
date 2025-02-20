@@ -1,13 +1,13 @@
 package basilium.basiliumserver.domain.user.service;
 
 import basilium.basiliumserver.domain.like.entity.Like;
+import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
 import basilium.basiliumserver.domain.like.repository.JpaLikeRepo;
-import basilium.basiliumserver.domain.product.repository.JpaProductRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,11 +21,11 @@ import java.util.List;
 @Service
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
-    private final JpaProductRepository productRepository;
+    private final ProductRepository productRepository;
     private final JpaLikeRepo likeRepo;
 
     @Autowired
-    public NormalUserService(NormalUserRepository normalUserRepository, JpaProductRepository productRepository, JpaLikeRepo likeRepo) {
+    public NormalUserService(NormalUserRepository normalUserRepository, ProductRepository productRepository, JpaLikeRepo likeRepo) {
         this.normalUserRepository = normalUserRepository;
         this.productRepository = productRepository;
         this.likeRepo = likeRepo;
