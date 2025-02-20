@@ -1,112 +1,126 @@
 package basilium.basiliumserver.domain.product.controller;
 
+import basilium.basiliumserver.domain.product.controller.apiDocs.ProductApiDocs;
+import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
+import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.product.service.ProductService;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
-//브랜드 유저 id로 자신이 관리할수있는 상품 보기->필터로 brand 권한 확인
 @RestController
-@RequestMapping("/products")
-public class ProductController {
+@RequestMapping("/b1/products")
+public class ProductController implements ProductApiDocs {
 
     private final ProductService productService;
 
     public ProductController(ProductService productService) {
         this.productService = productService;
     }
-/*
-    @PostMapping("/create")
-    public Product addProduct(@RequestBody Product product) {
-        return productService.addProduct(product);
+
+    // 상품 생성 (POST /api/products)
+    @PostMapping
+    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
+        Product createdProduct = productService.addProduct(product);
+        return ResponseEntity.ok(createdProduct);
     }
 
- */
-    @PostMapping("/create")
-    public ResponseEntity<?> addProduct(@RequestBody Product product) {
-        try {
-            Product createdProduct = productService.addProduct(product);
-            return ResponseEntity.ok(createdProduct);
-        } catch (Exception e) {
-            // 예외 처리 로직
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to add product: " + e.getMessage());
-        }
-    }
-
-
+    // 상품 단건 조회 (GET /api/products/{productId})
     @GetMapping("/{productId}")
-    public ResponseEntity<?> getProductById(@PathVariable Long productId) {
-        Optional<Product> productOptional = productService.getProductById(productId);
-        if (productOptional.isPresent()) {
-            Product product = productOptional.get();
-            return ResponseEntity.ok(product);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Product not found with id: " + productId);
-        }
+    public ResponseEntity<Product> getProductById(@PathVariable Long productId) {
+        Product product = productService.getProductById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다. (상품 ID: " + productId + ")"));
+        return ResponseEntity.ok(product);
     }
 
-    @GetMapping("/getAll")
-    public List<Product> getAllProducts() {
-        return productService.getAllProducts();
+    // 전체 상품 조회 (GET /api/products?...)
+    @GetMapping
+    public ResponseEntity<List<ProductAllRetrieveDTO>> getAllProducts(Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProducts(pageable).getContent());
     }
 
-    @PostMapping("/update")
-    public ResponseEntity<String> updateProduct(@RequestBody Product product) {
-        try {
-            productService.updateProduct(product);
-            return ResponseEntity.ok("상품 정보 수정 성공");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("상품 정보 수정 실패: " + e.getMessage());
-        }
+    // 상품 수정 (PATCH /api/products/{id})
+    @PatchMapping("/{id}")
+    public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
+                                                @RequestBody ProductUpdateRequest updateRequest) {
+        productService.updateProduct(productId, updateRequest);
+        return ResponseEntity.ok("상품 정보 수정 성공");
     }
 
-
-    @DeleteMapping("/deleteProduct")
-    public void deleteProduct(@RequestParam Long productId) {
+    // 상품 삭제 (DELETE /api/products/{id})
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long productId) {
         productService.deleteProduct(productId);
+        return ResponseEntity.noContent().build();
     }
 
+    // 전체 상품 수 조회 (GET /api/products/count)
     @GetMapping("/count")
-    public long countProducts() {
-        return productService.countProducts();
+    public ResponseEntity<Long> countProducts() {
+        return ResponseEntity.ok(productService.countProducts());
     }
 
+    // 상품 검색 (GET /api/products/search?productName=xxx)
     @GetMapping("/search")
-    public ResponseEntity<?> getProductsByName(@RequestParam String productName) {
+    public ResponseEntity<List<Product>> searchProductsByName(@RequestParam String productName) {
         List<Product> products = productService.getProductsByName(productName);
-        if (!products.isEmpty()) {
-            return ResponseEntity.ok(products);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No products found with name: " + productName);
+        if (products.isEmpty()) {
+            throw new IllegalArgumentException("검색어 '" + productName + "'에 해당하는 상품이 없습니다.");
         }
+        return ResponseEntity.ok(products);
     }
 
+    // BrandUser 조회 (GET /api/products/brandUser?productId=xxx)
     @GetMapping("/brandUser")
-    public ResponseEntity<?> getBrandUserByProductId(@RequestParam Long productId) {
-        Optional<BrandUser> brandUserOptional = productService.findBrandUserByProductId(productId);
-        if (brandUserOptional.isPresent()) {
-            BrandUser brandUser = brandUserOptional.get();
-            return ResponseEntity.ok(brandUser);
-        } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Brand user not found for product id: " + productId);
-        }
+    public ResponseEntity<BrandUser> getBrandUserByProductId(@RequestParam Long productId) {
+        BrandUser brandUser = productService.findBrandUserByProductId(productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품 ID (" + productId + ")에 해당하는 브랜드 유저를 찾을 수 없습니다."));
+        return ResponseEntity.ok(brandUser);
     }
 
-    //카테고리id로 검색
+    // 카테고리별 상품 조회 (GET /api/products/category/{categoryId})
     @GetMapping("/category/{categoryId}")
-    public List<Product> getProductsByCategory(@PathVariable Long categoryId) {
-        return productService.findByCategoryId(categoryId);
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long categoryId) {
+        return ResponseEntity.ok(productService.findByCategoryId(categoryId));
     }
 
-    //스케줄러 확인 용
-    @GetMapping("/allImageUrls")
+    // ========================
+    // 상품 옵션 관련 엔드포인트
+    // ========================
+
+    // 상품 옵션 수정 (PATCH /b1/products/{productId}/options)
+    @PatchMapping("/{productId}/options")
+    public ResponseEntity<String> updateProductOption(@PathVariable Long productId,
+                                                      @RequestBody ProductOptionUpdateRequest optionUpdateRequest) {
+        productService.updateProductOption(productId, optionUpdateRequest);
+        return ResponseEntity.ok("상품 옵션 수정 성공");
+    }
+
+    // 상품 옵션 추가 (POST /b1/products/{productId}/options)
+    @PostMapping("/{productId}/options")
+    public ResponseEntity<String> addProductOption(@PathVariable Long productId,
+                                                   @RequestBody ProductOptionUpdateRequest createRequest) {
+        productService.addProductOption(productId, createRequest);
+        return ResponseEntity.ok("상품 옵션 추가 성공");
+    }
+
+    // 상품 옵션 삭제 (DELETE /b1/products/{productId}/options?productSize=xxx&productColor=xxx)
+    @DeleteMapping("/{productId}/options")
+    public ResponseEntity<String> deleteProductOption(@PathVariable Long productId,
+                                                      @RequestParam String productSize,
+                                                      @RequestParam String productColor) {
+        productService.deleteProductOption(productId, productSize, productColor);
+        return ResponseEntity.ok("상품 옵션 삭제 성공");
+    }
+
+    // 스케줄러용: 전체 상품 이미지 URL 조회 (GET /api/products/imageUrls)
+    @GetMapping("/imageUrls")
     public ResponseEntity<List<String>> getAllProductImageUrls() {
-        List<String> imageUrls = productService.getAllProductImageUrls();
-        return ResponseEntity.ok(imageUrls);
+        return ResponseEntity.ok(productService.getAllProductImageUrls());
     }
 }
