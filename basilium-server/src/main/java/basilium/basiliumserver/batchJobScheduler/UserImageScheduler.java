@@ -24,6 +24,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 //local user 가상착용 이미지
+// 이미지 명만 따와서 비교하기 brand01_1713958965868_mysql.png 서버 이전 시에 기존 디비에 저장된 위치 url이 달라서 날아갈 위험
 @Component
 @RequiredArgsConstructor //오토 와이어 제거
 public class UserImageScheduler {

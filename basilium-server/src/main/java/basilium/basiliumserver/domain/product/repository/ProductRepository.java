@@ -1,6 +1,7 @@
 package basilium.basiliumserver.domain.product.repository;
 
 import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
+import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -30,6 +31,18 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.productCategory " +
+            "LEFT JOIN FETCH p.brandUser " +
+            "LEFT JOIN FETCH p.productOptions " +
+            "LEFT JOIN FETCH p.productSizeOptions " +
+            "LEFT JOIN FETCH p.productColorOptions pc " +
+            "LEFT JOIN FETCH pc.productPhotoUrls " +  // 대표 이미지만 fetch join
+            "WHERE p.productId = :productId " +
+            "AND pc.id.productColor = :color")
+    Optional<Product> findByIdAndColorWithRepresentativeImages(@Param("productId") Long productId,
+                                                               @Param("color") Color color);
+
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "LEFT JOIN FETCH p.productCategory " +
             "LEFT JOIN FETCH p.productOptions " +
             "LEFT JOIN FETCH p.productSizeOptions " +
             "LEFT JOIN FETCH p.productColorOptions " +
@@ -42,27 +55,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Page<Product> findAllWithDetails(Pageable pageable);
 
 
-/*
-    @Query("SELECT new com.example.dto.ProductAllRetrieveDTO(" +
-            "p.id, p.name, c.categoryName, " +
-            "(SELECT DISTINCT col FROM ProductColorOption col WHERE col.product = p), " +
-            "(SELECT DISTINCT opt FROM ProductOption opt WHERE opt.product = p)) " +
-            "FROM Product p JOIN p.productCategory c")
-    Page<ProductAllRetrieveDTO> findAllWithDetails(Pageable pageable);
-
- */
-
-
-
-    /*
-    @Query(value = "SELECT DISTINCT p FROM Product p " +
-            "LEFT JOIN FETCH p.productCategory " +
-            "LEFT JOIN FETCH p.productColorOptions " +
-            "LEFT JOIN FETCH p.productOptions",
-            countQuery = "SELECT COUNT(p) FROM Product p")
-    Page<Product> findAllWithDetails(Pageable pageable);
-
-     */
     /**
      * 제품 이름에 특정 문자열이 포함된 제품 목록 조회.
      */

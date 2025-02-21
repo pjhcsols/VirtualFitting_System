@@ -4,17 +4,14 @@ import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
 import basilium.basiliumserver.domain.product.dto.ProductInfoDTO;
 import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
-import basilium.basiliumserver.domain.product.entity.Product;
-import basilium.basiliumserver.domain.product.entity.ProductOption;
-import basilium.basiliumserver.domain.product.entity.ProductOptionId;
-import basilium.basiliumserver.domain.product.entity.Size;
-import basilium.basiliumserver.domain.product.entity.Color;
+import basilium.basiliumserver.domain.product.entity.*;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.product.sse.SseController;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,7 +19,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.LinkedHashSet;
+
 
 
 @Slf4j
@@ -68,10 +69,20 @@ public class ProductService {
     /**
      * 상품 ID로 단건 조회 (Fetch Join)
      */
+    // set
+
     @Transactional
-    public Optional<Product> getProductById(Long productId) {
-        return executeWithLogging(() -> productRepository.findByIdWithDetails(productId),
-                "상품 조회 중 오류 발생 (상품 ID: " + productId + "): ");
+    public Optional<Product> getProductDetailsByColor(Long productId, Color color) {
+        return productRepository.findByIdAndColorWithRepresentativeImages(productId, color)
+                .map(product -> {
+                    // 각 ProductColorOption의 서브 이미지 컬렉션을 강제 로드 (빈 컬렉션이어도 size() 호출로 초기화)
+                    product.getProductColorOptions().forEach(pc -> {
+                        pc.getProductSubPhotoUrls().size();
+                    });
+                    // productMaterial도 강제 초기화
+                    product.getProductMaterial().size();
+                    return product;
+                });
     }
 
     /**
