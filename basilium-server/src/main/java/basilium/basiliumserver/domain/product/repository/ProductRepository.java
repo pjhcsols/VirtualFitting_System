@@ -29,6 +29,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
  */
 
+    //상세보기
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.productCategory " +
             "LEFT JOIN FETCH p.brandUser " +
@@ -71,27 +72,3 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      */
     List<Product> findByProductCategory_CategoryId(Long categoryId);
 }
-
-/*
-public interface ProductRepository {
-    long count();
-    List<Product> getAllProducts();
-    Product save(Product product);
-    Optional<Product> findById(Long productId);
-    void delete(Product product);
-    void deleteById(Long productId);
-    void deleteAll();
-    void modify(Product product);
-    //List<Product> findByName(String name);
-    List<Product> findByNameContaining(String name);
-    Optional<BrandUser> findBrandUserByProductId(Long productId);
-    List<Product> findByCategoryId(Long categoryId);
-}
-
- */
-/*
-@Repository
-public interface ProductRepository extends JpaRepository<Product, Long> {
-    List<Product> findByProductCategory_CategoryId(Long categoryId);
-}
- */

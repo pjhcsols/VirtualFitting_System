@@ -18,13 +18,13 @@ public class ProductUpdateRequest {
     private Optional<Long> totalQuantity = Optional.empty();
 
     // 상품 옵션 업데이트 정보
-    private Optional<List<ProductOptionUpdateRequest>> productOptions = Optional.empty();
+    private Optional<List<ProductOptionDTO>> productOptions = Optional.empty();
 
     // 상품 사이즈 옵션 업데이트 정보
-    private Optional<List<ProductSizeOptionUpdateRequest>> productSizeOptions = Optional.empty();
+    private Optional<List<ProductSizeOptionDTO>> productSizeOptions = Optional.empty();
 
     // 상품 색상 옵션 업데이트 정보
-    private Optional<List<ProductColorOptionUpdateRequest>> productColorOptions = Optional.empty();
+    private Optional<List<ProductColorOptionDTO>> productColorOptions = Optional.empty();
 
     public Optional<Category> getProductCategory() { return productCategory; }
     public Optional<String> getProductName() { return productName; }
@@ -32,7 +32,7 @@ public class ProductUpdateRequest {
     public Optional<List<Material>> getProductMaterial() { return productMaterial; }
     public Optional<String> getProductDesc() { return productDesc; }
     public Optional<Long> getTotalQuantity() { return totalQuantity; }
-    public Optional<List<ProductOptionUpdateRequest>> getProductOptions() { return productOptions; }
-    public Optional<List<ProductSizeOptionUpdateRequest>> getProductSizeOptions() { return productSizeOptions; }
-    public Optional<List<ProductColorOptionUpdateRequest>> getProductColorOptions() { return productColorOptions; }
+    public Optional<List<ProductOptionDTO>> getProductOptions() { return productOptions; }
+    public Optional<List<ProductSizeOptionDTO>> getProductSizeOptions() { return productSizeOptions; }
+    public Optional<List<ProductColorOptionDTO>> getProductColorOptions() { return productColorOptions; }
 }

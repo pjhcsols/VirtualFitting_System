@@ -1,5 +1,6 @@
 package basilium.basiliumserver.domain.product.entity;
 
+import basilium.basiliumserver.domain.product.dto.ProductSizeOptionDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -38,7 +39,7 @@ public class ProductSizeOption {
         this.product = product;
     }
 
-    public void updateFrom(basilium.basiliumserver.domain.product.dto.ProductSizeOptionUpdateRequest sizeUpdate) {
+    public void updateFrom(ProductSizeOptionDTO sizeUpdate) {
         this.totalLength = sizeUpdate.getTotalLength();
         this.chest = sizeUpdate.getChest();
         this.shoulder = sizeUpdate.getShoulder();

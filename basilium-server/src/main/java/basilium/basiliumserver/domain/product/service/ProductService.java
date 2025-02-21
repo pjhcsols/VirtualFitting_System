@@ -2,7 +2,7 @@ package basilium.basiliumserver.domain.product.service;
 
 import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
 import basilium.basiliumserver.domain.product.dto.ProductInfoDTO;
-import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.*;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
@@ -11,7 +11,6 @@ import basilium.basiliumserver.domain.user.entity.BrandUser;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,11 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
-import java.util.LinkedHashSet;
-
 
 
 @Slf4j
@@ -174,7 +169,7 @@ public class ProductService {
      * 상품 옵션 수정 (개별 옵션 업데이트)
      */
     @Transactional
-    public void updateProductOption(Long productId, ProductOptionUpdateRequest optionUpdate) {
+    public void updateProductOption(Long productId, ProductOptionDTO optionUpdate) {
         runWithLogging(() -> {
             Product product = productRepository.findByIdWithDetails(productId)
                     .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상품 ID: " + productId));
@@ -210,7 +205,7 @@ public class ProductService {
      * 상품 옵션 추가: 한 상품에 대해 새로운 옵션 추가
      */
     @Transactional
-    public void addProductOption(Long productId, ProductOptionUpdateRequest createRequest) {
+    public void addProductOption(Long productId, ProductOptionDTO createRequest) {
         runWithLogging(() -> {
             Product product = productRepository.findByIdWithDetails(productId)
                     .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상품 ID: " + productId));

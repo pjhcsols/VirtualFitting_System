@@ -1,12 +1,12 @@
 package basilium.basiliumserver.domain.product.entity;
 
+import basilium.basiliumserver.domain.product.dto.ProductColorOptionDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.List;
 
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
@@ -50,7 +50,7 @@ public class ProductColorOption {
         this.product = product;
     }
 
-    public void updateFrom(basilium.basiliumserver.domain.product.dto.ProductColorOptionUpdateRequest colorUpdate) {
+    public void updateFrom(ProductColorOptionDTO colorUpdate) {
         this.productPhotoUrls = new ArrayList<>(colorUpdate.getProductPhotoUrls());
         this.productSubPhotoUrls = new ArrayList<>(colorUpdate.getProductSubPhotoUrls());
     }

@@ -1,6 +1,6 @@
 package basilium.basiliumserver.domain.product.controller.apiDocs;
 
-import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
@@ -53,12 +53,12 @@ public interface ProductApiDocs {
     @Operation(summary = "상품 옵션 수정", description = "상품 ID와 옵션 업데이트 정보를 기반으로 상품 옵션을 부분 수정합니다.")
     @PatchMapping("/{productId}/options")
     ResponseEntity<?> updateProductOption(@PathVariable Long productId,
-                                          @RequestBody ProductOptionUpdateRequest optionUpdateRequest);
+                                          @RequestBody ProductOptionDTO optionUpdateRequest);
 
     @Operation(summary = "상품 옵션 추가", description = "상품 ID와 새로운 옵션 정보를 기반으로 상품 옵션을 추가합니다.")
     @PostMapping("/{productId}/options")
     ResponseEntity<?> addProductOption(@PathVariable Long productId,
-                                       @RequestBody ProductOptionUpdateRequest createRequest);
+                                       @RequestBody ProductOptionDTO createRequest);
 
     @Operation(summary = "상품 옵션 삭제", description = "상품 ID와 옵션 식별 정보를 기반으로 상품 옵션을 삭제합니다. (Query Parameter: productSize, productColor)")
     @DeleteMapping("/{productId}/options")

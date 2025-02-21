@@ -1,6 +1,6 @@
 package basilium.basiliumserver.domain.product.entity;
 
-import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -35,7 +35,7 @@ public class ProductOption {
     }
 
     // ProductOptionUpdateRequest를 기반으로 옵션 업데이트
-    public void updateFrom(ProductOptionUpdateRequest optUpdate) {
+    public void updateFrom(ProductOptionDTO optUpdate) {
         this.updateQuantity(optUpdate.getOptionQuantity());
     }
 }

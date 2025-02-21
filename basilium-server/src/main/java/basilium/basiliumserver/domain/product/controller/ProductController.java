@@ -2,7 +2,7 @@ package basilium.basiliumserver.domain.product.controller;
 
 import basilium.basiliumserver.domain.product.controller.apiDocs.ProductApiDocs;
 import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
-import basilium.basiliumserver.domain.product.dto.ProductOptionUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
@@ -98,7 +98,7 @@ public class ProductController implements ProductApiDocs {
     // 상품 옵션 수정 (PATCH /b1/products/{productId}/options)
     @PatchMapping("/{productId}/options")
     public ResponseEntity<String> updateProductOption(@PathVariable Long productId,
-                                                      @RequestBody ProductOptionUpdateRequest optionUpdateRequest) {
+                                                      @RequestBody ProductOptionDTO optionUpdateRequest) {
         productService.updateProductOption(productId, optionUpdateRequest);
         return ResponseEntity.ok("상품 옵션 수정 성공");
     }
@@ -106,7 +106,7 @@ public class ProductController implements ProductApiDocs {
     // 상품 옵션 추가 (POST /b1/products/{productId}/options)
     @PostMapping("/{productId}/options")
     public ResponseEntity<String> addProductOption(@PathVariable Long productId,
-                                                   @RequestBody ProductOptionUpdateRequest createRequest) {
+                                                   @RequestBody ProductOptionDTO createRequest) {
         productService.addProductOption(productId, createRequest);
         return ResponseEntity.ok("상품 옵션 추가 성공");
     }
