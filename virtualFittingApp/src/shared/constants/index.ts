@@ -6,6 +6,7 @@ import MyPageUser from "/img/MyPageUser.png";
 import WarningImg from "/img/Warning.png";
 import ReviewImg from "/svg/pencil.svg";
 import TestImg from "/img/clothes/testPants.png";
+import CloseIcon from "/svg/closeIcon.svg";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_MYPAGE_USER = MyPageUser;
@@ -17,6 +18,7 @@ export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
 export const ICON_RIGHT_ARROW = RightArrow;
 export const ICON_REVIEW = ReviewImg;
+export const ICON_CLOSE = CloseIcon;
 
 export const AnimationProps = {
   initial: {
