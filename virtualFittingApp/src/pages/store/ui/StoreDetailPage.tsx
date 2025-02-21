@@ -25,8 +25,8 @@ const Wrapper = styled.div`
 
 const Divider = styled.div`
   width: 100%;
-  height: 1px;
-  background: #f5f5f5;
+  height: 2px;
+  background: #f0f0f0;
   border-radius: 1000px;
 `;
 

@@ -12,21 +12,25 @@ export const StoreDetailHeaderContent = [
   {
     id: 0,
     title: "SIZE",
+    subtitle: "",
     content: ["test"],
   },
   {
     id: 1,
     title: "INFO",
+    subtitle: "AI Fitting Info",
     content: ["test"],
   },
   {
     id: 2,
     title: "고객지원",
+    subtitle: "",
     content: ["test"],
   },
   {
     id: 3,
     title: "FAQ",
+    subtitle: "",
     content: ["test"],
   },
 ];

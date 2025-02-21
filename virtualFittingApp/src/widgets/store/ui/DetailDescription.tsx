@@ -1,14 +1,28 @@
 import styled from "styled-components";
-import { StoreDetailHeaderContent } from "../constants";
+import { StoreDetailHeaderContent } from "@/widgets/store/constants";
+import { useState } from "react";
 
 function DetailDescription() {
+  const [selectedOption, setSelectedOption] = useState<number>(1);
   return (
     <Wrapper>
       <DescriptionHeader>
         {StoreDetailHeaderContent.map((item, key) => {
-          return <HeaderContent key={key}>{item.title}</HeaderContent>;
+          return (
+            <HeaderContent key={key} onClick={() => setSelectedOption(key)}>
+              {item.title}
+            </HeaderContent>
+          );
         })}
       </DescriptionHeader>
+      <OptionContentContainer>
+        <OptionContentTitle>
+          {StoreDetailHeaderContent[selectedOption].subtitle ?? ""}
+        </OptionContentTitle>
+        <OptionContent>
+          {StoreDetailHeaderContent[selectedOption].content}
+        </OptionContent>
+      </OptionContentContainer>
     </Wrapper>
   );
 }
@@ -18,7 +32,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
 `;
 
 const DescriptionHeader = styled.ul`
@@ -47,6 +61,30 @@ const HeaderContent = styled.li`
   &:hover {
     background: #f5f5f5;
   }
+`;
+
+const OptionContentContainer = styled.div`
+  box-sizing: border-box;
+  padding: 30px 120px;
+  text-align: center;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+`;
+
+const OptionContentTitle = styled.span`
+  font-family: "pretendard";
+  font-size: 2vw;
+  font-weight: 900;
+  color: black;
+`;
+
+const OptionContent = styled(OptionContentTitle)`
+  font-size: 0.9vw;
+  font-weight: 400;
+  color: black;
 `;
 
 export { DetailDescription };
