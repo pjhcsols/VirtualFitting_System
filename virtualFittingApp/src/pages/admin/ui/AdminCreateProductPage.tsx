@@ -1,41 +1,36 @@
-import { useRef, useState } from "react";
+import { useRef } from "react";
 
 import styled from "styled-components";
-import { type ProductInputType } from "../types/Product";
 import { useNavigate } from "react-router-dom";
 import { PRODUCT_CREATION_SYSTEM_MESSAGE } from "../constants";
+import { useProduct } from "../hooks/useProduct";
+import { ICON_CLOSE } from "@/shared/constants";
 
 function AdminCreateProductPage() {
   const router = useNavigate();
 
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const [product, setProduct] = useState<ProductInputType>({
-    productId: 0,
-    productName: "",
-    productPrice: "",
-    productCategory: {
-      categoryId: 0,
-      categoryName: "",
-    },
-    productTotalLength: 0,
-    productChest: 0,
-    productShoulder: 0,
-    productArm: 0,
+  const productName = useProduct("productName");
+  const productPrice = useProduct("productPrice");
+  const productCategory = useProduct("productCategory");
 
-    productDesc: "",
+  const productTotalLength = useProduct("productTotalLength");
 
-    productColor: [],
-    productMaterial: [],
-    productSize: [],
+  const productChest = useProduct("productChest");
+  const productShoulder = useProduct("productShoulder");
+  const productArm = useProduct("productArm");
 
-    productPhotoUrl: [],
-    productSubPhotoUrl: [],
+  const productDesc = useProduct("productDesc");
 
-    totalQuantity: 0,
-  });
+  const productColors = useProduct("productColor");
+  const productMaterials = useProduct("productMaterial");
+  const productSizes = useProduct("productSize");
 
-  const onChangeProductPhoto = () => {};
+  const productPhotoUrl = useProduct("productPhotoUrl");
+  const productSubPhotoUrl = useProduct("productSubPhotoUrl");
+
+  const productTotalQuantity = useProduct("totalQuantity");
 
   const onClickCardButton = () => {
     if (!imageInputRef.current) {
@@ -50,13 +45,36 @@ function AdminCreateProductPage() {
       <ProductContainer>
         {/* Photo Upload Container */}
         <InputContainer>
+          {productPhotoUrl.thumbNail ? (
+            // div background url 에 전달할 때, reader 로 ArrayBuffer 가 나올 수 있어, 이에 대한 예외처리 필요
+            <ProductPhotoCard
+              src={productPhotoUrl.thumbNail ?? null}
+              onClick={onClickCardButton}
+            >
+              <ProductPhotoInput
+                ref={imageInputRef}
+                name={productPhotoUrl.name}
+                onChange={productPhotoUrl.onChange}
+              />
+              <CloseButton
+                onClick={() => productPhotoUrl.onDelete("productPhotoUrl")}
+              >
+                <CloseIcon />
+              </CloseButton>
+            </ProductPhotoCard>
+          ) : (
+            <InputBox>
+              <ProductPhotoInput
+                ref={imageInputRef}
+                name={productPhotoUrl.name}
+                onChange={productPhotoUrl.onChange}
+              />
+              <ProductPhotoCardBtn onClick={onClickCardButton} />
+            </InputBox>
+          )}
+
           <InputBox>
-            <ProductPhotoInput
-              ref={imageInputRef}
-              name="productPhotoUrl"
-              onChange={onChangeProductPhoto}
-            />
-            <ProductPhotoCard onClick={onClickCardButton}></ProductPhotoCard>
+            <ProductSmallPhotoCard></ProductSmallPhotoCard>
           </InputBox>
         </InputContainer>
 
@@ -64,7 +82,7 @@ function AdminCreateProductPage() {
         <InputContainer>
           {PRODUCT_CREATION_SYSTEM_MESSAGE.map((item, key) => {
             return (
-              <InputBox>
+              <InputBox key={key}>
                 <InputLabel>{item.title}</InputLabel>
                 <InputTag />
               </InputBox>
@@ -108,8 +126,8 @@ const InputContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: start;
-  align-items: center;
-  gap: 8px;
+  align-items: start;
+  gap: 32px;
 `;
 
 const InputBox = styled.div`
@@ -135,19 +153,78 @@ const InputTag = styled.input.attrs({ type: "text" })`
   box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25);
 `;
 
-const ProductPhotoInput = styled.input.attrs({ type: "file" })`
-  display: none;
+const ProductPhotoCard = styled.div<{ src: string }>`
+  position: relative;
+  width: 25vw;
+  height: 35vw;
+  border-radius: 24px;
+  transition: 0.25s all ease-out;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  background-image: url(${(props) => props.src});
+  background-repeat: no-repeat;
+  object-fit: fill;
+  &:hover {
+    transform: scale(1.005);
+  }
 `;
 
-const ProductPhotoCard = styled.button`
+const CloseButton = styled.button`
+  position: absolute;
+  top: -0.5vw;
+  right: -0.5vw;
+  width: 2vw;
+  height: 2vw;
+  border-radius: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fff2f2;
+  z-index: 20;
+  cursor: pointer;
+  box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
+`;
+
+const CloseIcon = styled.img.attrs({ src: ICON_CLOSE, alt: "close-icon" })`
+  width: 0.9vw;
+  height: 0.9vw;
+  object-fit: cover;
+`;
+
+const ProductPhotoInput = styled.input.attrs({ type: "file" })`
+  display: none;
+  opacity: 0;
+`;
+
+const ProductPhotoCardBtn = styled.button`
   overflow: hidden;
-  width: 28em;
-  height: 40em;
+  width: 25vw;
+  height: 35vw;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 24px;
-  background: gray;
+  background: #ececec;
+  transition: 0.25s all ease-out;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    transform: scale(1.01);
+  }
+`;
+
+const ProductSmallPhotoCard = styled.button`
+  overflow: hidden;
+  width: 5vw;
+  height: 7.5vw;
+  display: flex;
+  border-radius: 8px;
+  justify-content: center;
+  align-items: center;
+  background: #ececec;
+  transition: 0.25s all ease-out;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  &:hover {
+    transform: scale(1.01);
+  }
 `;
 
 export { AdminCreateProductPage };
