@@ -2,6 +2,7 @@ package basilium.basiliumserver.domain.product.controller;
 
 import basilium.basiliumserver.domain.product.controller.apiDocs.ProductApiDocs;
 import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
+import basilium.basiliumserver.domain.product.dto.ProductDetailDTO;
 import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.Color;
@@ -33,12 +34,12 @@ public class ProductController implements ProductApiDocs {
 
     // 상품 단건 조회 (GET /api/products/{productId})
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getProductDetails(@PathVariable Long productId,
-                                                     @RequestParam Color color) {
-        Product product = productService.getProductDetailsByColor(productId, color)
-                .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다. (상품 ID: " + productId + ")"));
-        return ResponseEntity.ok(product);
+    public ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Long productId,
+                                                              @RequestParam Color color) {
+        ProductDetailDTO detailDTO = productService.getProductDetailsByColor(productId, color);
+        return ResponseEntity.ok(detailDTO);
     }
+
 
     // 전체 상품 조회 (GET /api/products?...)
     @GetMapping

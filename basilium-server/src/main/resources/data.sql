@@ -467,9 +467,9 @@ VALUES
 -- 상품 서브 사진 URL 삽입 (List) for product 9, WHITE color (Product 2)
 INSERT INTO product_sub_photo_urls (product_id, product_color, product_sub_photo_url)
 VALUES
-    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png'),
-    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png'),
-    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7.png');
+    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1_2.png'),
+    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2_2.png'),
+    (9, 'WHITE', 'https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_7_2.png');
 
 -- 상품 재질(Material) 삽입 (Product 1,2의 재질 그대로)
 INSERT INTO product_materials (product_id, product_material)

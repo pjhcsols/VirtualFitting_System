@@ -21,5 +21,6 @@ public class ProductDetailDTO {
     private Long totalQuantity;
     private List<ProductOptionDTO> productOptions;
     private List<ProductSizeOptionDTO> productSizeOptions;
-    private List<ProductColorOptionDTO> productColorOptions;
+    //private List<ProductColorOptionDTO> productColorOptions;
+    private ProductImageDTO productImages;
 }

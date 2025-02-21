@@ -79,9 +79,10 @@ public class Product {
     @BatchSize(size = 100)
     private Set<ProductColorOption> productColorOptions = new HashSet<>();
 
+    @Builder.Default
     @Version
-    @Column(name = "version")
-    private Long version;
+    @Column(name = "version", nullable = false, columnDefinition = "bigint default 0")
+    private Long version = 0L;
 
     /**
      * 업데이트 (PATCH) 도메인 메서드.

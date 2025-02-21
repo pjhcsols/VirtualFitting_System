@@ -1,8 +1,10 @@
 package basilium.basiliumserver.domain.product.repository;
 
 import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
+import basilium.basiliumserver.domain.product.dto.ProductImageDTO;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
+import basilium.basiliumserver.domain.product.entity.ProductColorOption;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -20,28 +22,30 @@ import java.util.Optional;
  * JpaRepository<Product, Long>를 상속받아 기본 CRUD, 페이징, 정렬 기능을 자동 제공받습니다.
  */
 public interface ProductRepository extends JpaRepository<Product, Long> {
-/*
-    @Query("SELECT DISTINCT p FROM Product p " +
-            "LEFT JOIN FETCH p.productCategory " +
-            "LEFT JOIN FETCH p.productOptions " +
-            "LEFT JOIN FETCH p.productPhotoUrl")
-    List<Product> findAllCategoryOptionsPhotoWithFetchJoin();
 
- */
-
-    //상세보기
+    // 단건 조회
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.productCategory " +
             "LEFT JOIN FETCH p.brandUser " +
             "LEFT JOIN FETCH p.productOptions " +
             "LEFT JOIN FETCH p.productSizeOptions " +
-            "LEFT JOIN FETCH p.productColorOptions pc " +
-            "LEFT JOIN FETCH pc.productPhotoUrls " +  // 대표 이미지만 fetch join
-            "WHERE p.productId = :productId " +
-            "AND pc.id.productColor = :color")
-    Optional<Product> findByIdAndColorWithRepresentativeImages(@Param("productId") Long productId,
-                                                               @Param("color") Color color);
+            //"LEFT JOIN FETCH p.productColorOptions " +
+            "WHERE p.productId = :productId")
+    Optional<Product> findByIdWithDetailsIdAndColor(@Param("productId") Long productId);
 
+    @Query("SELECT pc FROM ProductColorOption pc " +
+            "WHERE pc.product.productId = :productId " +
+            "AND pc.id.productColor = :color")
+    Optional<ProductColorOption> findProductColorOptionByProductIdAndColor(@Param("productId") Long productId,
+                                                                           @Param("color") Color color);
+
+    // 전체 보기
+    @Query(value = "SELECT p FROM Product p " +
+            "LEFT JOIN FETCH p.productCategory",
+            countQuery = "SELECT COUNT(p) FROM Product p")
+    Page<Product> findAllWithDetails(Pageable pageable);
+
+    // 옵션 수정
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.productCategory " +
             "LEFT JOIN FETCH p.productOptions " +
@@ -49,12 +53,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "LEFT JOIN FETCH p.productColorOptions " +
             "WHERE p.productId = :productId")
     Optional<Product> findByIdWithDetails(@Param("productId") Long productId);
-
-    @Query(value = "SELECT p FROM Product p " +
-            "LEFT JOIN FETCH p.productCategory",
-            countQuery = "SELECT COUNT(p) FROM Product p")
-    Page<Product> findAllWithDetails(Pageable pageable);
-
 
     /**
      * 제품 이름에 특정 문자열이 포함된 제품 목록 조회.

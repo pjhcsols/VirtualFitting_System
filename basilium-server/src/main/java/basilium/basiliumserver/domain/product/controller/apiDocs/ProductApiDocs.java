@@ -1,5 +1,6 @@
 package basilium.basiliumserver.domain.product.controller.apiDocs;
 
+import basilium.basiliumserver.domain.product.dto.ProductDetailDTO;
 import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
 import basilium.basiliumserver.domain.product.entity.Color;
@@ -20,7 +21,7 @@ public interface ProductApiDocs {
     @Operation(summary = "상품 상세 정보 조회",
             description = "상품 ID와 색상 정보를 기반으로 단건 조회하여 해당 색상의 상품 이미지(대표 및 서브 이미지)와 기타 연관 데이터를 함께 반환합니다.")
     @GetMapping("/{productId}")
-    ResponseEntity<?> getProductDetails(@PathVariable Long productId, @RequestParam Color color);
+    ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Long productId, @RequestParam Color color);
 
     @Operation(summary = "전체 상품 조회", description = "페이징 처리가 적용된 전체 상품 목록을 조회합니다.")
     @GetMapping

@@ -1,9 +1,6 @@
 package basilium.basiliumserver.domain.product.service;
 
-import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
-import basilium.basiliumserver.domain.product.dto.ProductInfoDTO;
-import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
-import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.*;
 import basilium.basiliumserver.domain.product.entity.*;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.product.sse.SseController;
@@ -19,8 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.HashSet;
 
 
+// 상품 id에 맞는 색상 보내주기
+// 검색 필터링
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -64,20 +65,90 @@ public class ProductService {
     /**
      * 상품 ID로 단건 조회 (Fetch Join)
      */
-    // set
-
     @Transactional
-    public Optional<Product> getProductDetailsByColor(Long productId, Color color) {
-        return productRepository.findByIdAndColorWithRepresentativeImages(productId, color)
-                .map(product -> {
-                    // 각 ProductColorOption의 서브 이미지 컬렉션을 강제 로드 (빈 컬렉션이어도 size() 호출로 초기화)
-                    product.getProductColorOptions().forEach(pc -> {
-                        pc.getProductSubPhotoUrls().size();
-                    });
-                    // productMaterial도 강제 초기화
-                    product.getProductMaterial().size();
-                    return product;
-                });
+    public ProductDetailDTO getProductDetailsByColor(Long productId, Color color) {
+        // 1. 기본 상품 정보 조회 (Fetch Join)
+        Product product = productRepository.findByIdWithDetailsIdAndColor(productId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 상품을 찾을 수 없습니다. (상품 ID: " + productId + ")"));
+
+        // 2. 방어적 복사: lazy 컬렉션을 일반 ArrayList로 복사
+        List<Material> materials = new ArrayList<>(Optional.ofNullable(product.getProductMaterial())
+                .orElseGet(ArrayList::new));
+
+        // 요청한 색상에 해당하는 옵션만 필터링하여 DTO로 변환
+        List<ProductOptionDTO> optionDTOs = Optional.ofNullable(product.getProductOptions())
+                .orElseGet(() -> new HashSet<>())
+                .stream()
+                .filter(opt -> opt.getId().getProductColor().equals(color))
+                .map(opt -> new ProductOptionDTO(
+                        opt.getId().getProductSize().name(),
+                        opt.getId().getProductColor().name(),
+                        opt.getOptionQuantity()))
+                .collect(Collectors.toList());
+
+        // 요청한 색상의 옵션 재고 합계를 계산
+        long totalColorQuantity = optionDTOs.stream()
+                .mapToLong(ProductOptionDTO::getOptionQuantity)
+                .sum();
+
+        // 사이즈 옵션은 그대로 DTO로 변환
+        List<ProductSizeOptionDTO> sizeOptionDTOs = Optional.ofNullable(product.getProductSizeOptions())
+                .orElseGet(() -> new HashSet<>())
+                .stream()
+                .map(sizeOpt -> new ProductSizeOptionDTO(
+                        sizeOpt.getId().getProductSize().name(),
+                        sizeOpt.getTotalLength(),
+                        sizeOpt.getChest(),
+                        sizeOpt.getShoulder(),
+                        sizeOpt.getArm()))
+                .collect(Collectors.toList());
+
+        // BrandUser 매핑
+        BrandUserDTO brandUserDTO = Optional.ofNullable(product.getBrandUser())
+                .map(bu -> new BrandUserDTO(
+                        bu.getUserNumber(),
+                        bu.getId(),
+                        bu.getEmailAddress(),
+                        bu.getPhoneNumber(),
+                        bu.getUserGrade().name(),
+                        bu.getLoginType().name(),
+                        bu.getFirmName(),
+                        bu.getFirmAddress(),
+                        bu.getBusinessRegistration(),
+                        bu.getFirmWebUrl()))
+                .orElseGet(BrandUserDTO::new);
+
+        // 3. 색상에 따른 이미지 데이터 조회 (별도 Repository 메서드 사용)
+        ProductColorOption colorOption = productRepository.findProductColorOptionByProductIdAndColor(productId, color)
+                .orElseThrow(() -> new IllegalArgumentException("해당 색상의 이미지 데이터를 찾을 수 없습니다. (색상: " + color + ")"));
+
+        List<String> repUrls = new ArrayList<>(Optional.ofNullable(colorOption.getProductPhotoUrls())
+                .orElseGet(ArrayList::new));
+        List<String> subUrls = new ArrayList<>(Optional.ofNullable(colorOption.getProductSubPhotoUrls())
+                .orElseGet(ArrayList::new));
+
+        ProductImageDTO imageDTO = new ProductImageDTO(
+                colorOption.getId().getProductColor().name(),
+                repUrls,
+                subUrls
+        );
+
+        // 4. 최종 DTO 생성 (생성자를 활용하여 모든 필드를 초기화)
+        return new ProductDetailDTO(
+                product.getProductId(),
+                product.getProductName(),
+                product.getProductPrice(),
+                product.getProductDesc(),
+                materials,
+                Optional.ofNullable(product.getProductCategory())
+                        .map(cat -> cat.getCategoryName())
+                        .orElse(""),
+                brandUserDTO,
+                totalColorQuantity, // 요청한 색상의 옵션 재고 합계
+                optionDTOs,
+                sizeOptionDTOs,
+                imageDTO
+        );
     }
 
     /**
@@ -121,41 +192,20 @@ public class ProductService {
         });
     }
 
-
-    /*
-    @Transactional
-    public Page<ProductAllRetrieveDTO> getAllProducts(Pageable pageable) {
-        Page<ProductAllRetrieveDTO> productPage = productRepository.findAllWithDetails(pageable);
-
-        // DTO 가공 (컬러 및 URL 중복 제거 및 정렬)
-        return productPage.map(dto -> {
-            List<String> distinctColors = dto.getProductColors().stream()
-                    .distinct()
-                    .sorted()
-                    .collect(Collectors.toList());
-
-            List<String> distinctPhotoUrls = dto.getProductPhotoUrls().stream()
-                    .distinct()
-                    .sorted()
-                    .collect(Collectors.toList());
-
-            return new ProductAllRetrieveDTO(
-                    dto.getProductId(),
-                    dto.getProductName(),
-                    dto.getProductPrice(),
-                    dto.getTotalQuantity(),
-                    dto.getCategoryName(),
-                    distinctColors,
-                    distinctPhotoUrls
-            );
-        });
-    }
-
-     */
-
     /**
      * 상품 수정 (PATCH 방식: 부분 업데이트)
      */
+    /*
+    @Transactional
+    public void updateProduct(Long productId, ProductUpdateRequest updateRequest) {
+        runWithLogging(() -> {
+            Product product = productRepository.findById(productId)
+                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상품 ID: " + productId));
+            product.updateFrom(updateRequest);
+        }, "상품 수정 중 오류 발생 (상품 ID: " + productId + "): ");
+    }
+    */
+
     @Transactional
     public void updateProduct(Long productId, ProductUpdateRequest updateRequest) {
         runWithLogging(() -> {
