@@ -1,12 +1,19 @@
 import React from "react";
 import Swal from "sweetalert2";
-import { fetchUserInfo, postPayment, deleteProductFromCart } from '../api/payment.action';
-import { formatDate } from '@/shared/utils/date.util';
-import { IMP_KEY, PG_NAME, PAY_METHOD, ESCROW } from '../constants/index';
-import { PaymentProps } from '../types/paymentProps';
-import PaymentButton from '../ui/PaymentButton';
+import {
+  fetchUserInfo,
+  postPayment,
+  deleteProductFromCart,
+} from "../api/payment.action";
+import { IMP_KEY, PG_NAME, PAY_METHOD, ESCROW } from "../constants/index";
+import { PaymentProps } from "../types/paymentProps";
+import PaymentButton from "../ui/PaymentButton";
 
-const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) => {
+const Payment: React.FC<PaymentProps> = ({
+  userInfo,
+  selectedProducts,
+  type,
+}) => {
   const handlePayment = async () => {
     if (!Array.isArray(selectedProducts)) {
       console.error("selectedProducts is not an array:", selectedProducts);
@@ -17,11 +24,11 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
 
     if (!jwtToken) {
       Swal.fire({
-        icon: 'error',
-        title: '로그인 정보가 없습니다.',
-        text: '로그인이 필요합니다.',
+        icon: "error",
+        title: "로그인 정보가 없습니다.",
+        text: "로그인이 필요합니다.",
       }).then(() => {
-        window.location.href = '/login';
+        window.location.href = "/login";
       });
       return;
     }
@@ -32,10 +39,12 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
 
       const currentTime = new Date();
       const tenMinutesLater = new Date(currentTime.getTime() + 10 * 60 * 1000);
-      const from = formatDate(currentTime);
-      const to = formatDate(tenMinutesLater);
+      // const from = formatDate(currentTime);
+      // const to = formatDate(tenMinutesLater);
       const orderId = `order_no_${new Date().getTime()}`;
-      const productNames = selectedProducts.map((product) => product.productName).join(", ");
+      const productNames = selectedProducts
+        .map((product) => product.productName)
+        .join(", ");
 
       window.IMP.init(IMP_KEY);
       window.IMP.request_pay(
@@ -45,13 +54,15 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
           merchant_uid: orderId,
           name: `주문명: ${productNames}`,
           amount: selectedProducts.reduce(
-            (total, product) => total + (product.price ?? 0) * (product.totalCnt ?? 0), // 기본값 0
+            (total, product) =>
+              total + (product.price ?? 0) * (product.totalCnt ?? 0), // 기본값 0
             0
           ),
           buyer_email: user.emailAddress,
           buyer_name: user.name,
           buyer_tel: user.phoneNumber,
-          buyer_addr: userInfo?.deliveryInfo?.defaultDeliveryAddress ?? user.address,
+          buyer_addr:
+            userInfo?.deliveryInfo?.defaultDeliveryAddress ?? user.address,
           buyer_postcode: userInfo?.postcode ?? "기본 우편번호",
           escrow: ESCROW,
           vbank_due: to,
@@ -67,17 +78,21 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
         async (rsp: IMPResponse) => {
           if (rsp.success) {
             try {
-              await postPayment(rsp.imp_uid, {
-                memberId: user.userId,
-                orderId,
-                price: rsp.paid_amount,
-                inventoryList: selectedProducts.map((product) => ({
-                  productId: product.productId,
-                  color: product.color,
-                  size: product.size,
-                  cnt: product.totalCnt,
-                })),
-              }, jwtToken);
+              await postPayment(
+                rsp.imp_uid,
+                {
+                  memberId: user.userId,
+                  orderId,
+                  price: rsp.paid_amount,
+                  inventoryList: selectedProducts.map((product) => ({
+                    productId: product.productId,
+                    color: product.color,
+                    size: product.size,
+                    cnt: product.totalCnt,
+                  })),
+                },
+                jwtToken
+              );
 
               if (type !== "single") {
                 await Promise.all(
@@ -97,7 +112,10 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
                 window.location.reload();
               });
             } catch (error) {
-              console.error("Error completing payment or deleting products:", error);
+              console.error(
+                "Error completing payment or deleting products:",
+                error
+              );
             }
           } else {
             Swal.fire({
@@ -114,7 +132,10 @@ const Payment: React.FC<PaymentProps> = ({ userInfo, selectedProducts, type }) =
   };
 
   return (
-    <PaymentButton onClick={handlePayment} label={type === "single" ? "BUY IT NOW" : "구매하기"} />
+    <PaymentButton
+      onClick={handlePayment}
+      label={type === "single" ? "BUY IT NOW" : "구매하기"}
+    />
   );
 };
 
