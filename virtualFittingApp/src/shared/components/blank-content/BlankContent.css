@@ -1,0 +1,34 @@
+  .blank-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #1E1E1E;
+    color: white;
+  }
+
+  .message-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 5px double white;
+    padding: 20px 60px;
+    border-radius: 20px;
+  }
+
+  .warining{
+    width: 100px;
+  } 
+  
+  .main-message {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 5px;
+  }
+  
+  .sub-message {
+    font-size: 16px;
+  }
+  
