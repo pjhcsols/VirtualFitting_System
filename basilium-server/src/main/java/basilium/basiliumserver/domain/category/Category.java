@@ -1,4 +1,4 @@
-package basilium.basiliumserver.domain.product;
+package basilium.basiliumserver.domain.category;
 
 
 import jakarta.persistence.Column;

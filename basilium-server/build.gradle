@@ -20,12 +20,6 @@ repositories {
 dependencies {
 	//import
 	implementation group: 'com.github.iamport', name: 'iamport-rest-client-java', version: '0.2.22'
-	/*
-	implementation group: 'com.squareup.retrofit2', name: 'adapter-rxjava2', version: '2.9.0'
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.5'
-	implementation group: 'com.squareup.okhttp3', name: 'okhttp', version: '4.9.3'
-	implementation group: 'com.squareup.retrofit2', name: 'converter-gson', version: '2.3.0'
-	 */
 
 	//spring
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -37,8 +31,13 @@ dependencies {
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
 	//mysql
+	//db CustomDatabaseHealthIndicator
+	//implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
 	//implementation 'com.mysql:mysql-connector-java'
 	runtimeOnly 'com.mysql:mysql-connector-j'
+	//runtimeOnly 'mysql:mysql-connector-java'
+	//runtimeOnly 'mysql:mysql-connector-java:8.0.32'
 	testImplementation 'org.springframework.security:spring-security-test'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	compileOnly 'org.projectlombok:lombok'
@@ -72,7 +71,7 @@ dependencies {
 	implementation 'software.amazon.awssdk:s3:2.17.84' // 사용하고자 하는 AWS SDK 버전에 맞게 변경
 
 	//rabbit mq
-	implementation 'org.springframework.boot:spring-boot-starter-amqp'
+	//implementation 'org.springframework.boot:spring-boot-starter-amqp'
 	//implementation 'org.springframework.boot:spring-boot-starter-scheduling:3.2.3'
 	runtimeOnly 'com.h2database:h2'
 
@@ -82,6 +81,10 @@ dependencies {
 	//sse
 	implementation 'com.fasterxml.jackson.core:jackson-databind' // 필요한 경우
 	developmentOnly 'org.springframework.boot:spring-boot-devtools' // 개발 환경에서 사용
+
+	//p6spy : 실제 실행되는 쿼리(배치 쿼리 포함)를 로그
+	implementation 'p6spy:p6spy:3.9.1'
+	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.1'
 }
 
 ext {

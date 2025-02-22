@@ -1,0 +1,14 @@
+package basilium.basiliumserver.domain.product.dto;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter
+public class ProductOptionDTO {
+    private String productSize;   // Enum 이름 (예: "M")
+    private String productColor;  // Enum 이름 (예: "BLACK")
+    private Long optionQuantity;
+}

@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: "jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1"
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: ""
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    database-platform: org.hibernate.dialect.H2Dialect
+
+
+# AWS S3 Service Configuration
+cloud:
+  aws:
+    s3BucketName: deep
+    s3BucketUrl: deep
+    credentialsAccessKey: deep
+    credentialsSecretKey: deep
+    region-static: ap-northeast-2
+    stack:
+      auto: false
+
+# JWT Configuration
+jwt:
+  key: deep
+  access-token-validity: 3600000
+  refresh-token-validity: 86400000
+
+# Kakao Configuration
+kakao:
+  client-id: deep
+  redirect-uri: http://localhost:8080

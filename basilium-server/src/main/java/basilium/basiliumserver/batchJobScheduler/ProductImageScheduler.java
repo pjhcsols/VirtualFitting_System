@@ -1,9 +1,9 @@
 package basilium.basiliumserver.batchJobScheduler;
 
-import basilium.basiliumserver.s3Storage.service.S3StorageService;
-import basilium.basiliumserver.service.product.ProductService;
+import basilium.basiliumserver.domain.product.s3Storage.service.S3StorageService;
+import basilium.basiliumserver.domain.product.service.ProductService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,17 +11,21 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.stream.Collectors;
 
+//상품 이미지
 @Slf4j
+@RequiredArgsConstructor //오토와이어 제거
 @Component
 public class ProductImageScheduler {
     private final ProductService productService;
     private final S3StorageService s3StorageService;
-
+/*
     @Autowired
     public ProductImageScheduler(ProductService productService, S3StorageService s3StorageService) {
         this.productService = productService;
         this.s3StorageService = s3StorageService;
     }
+
+ */
 
 
     //@Scheduled(initialDelay = 60000, fixedDelay = 120000) // 1분 후에 시작하고, 그 이후에는 매 2분마다 실행
