@@ -1,10 +1,7 @@
-import React from "react";
-import { BlankContent } from "@/shared";
+import { BlankContent } from "../../../shared/components/blank-content/BlankContent";
 
-const BrandPage =() => {
-    return (
-        <BlankContent/>
-    )
+const BrandPage = () => {
+  return <BlankContent />;
 };
 
 export default BrandPage;

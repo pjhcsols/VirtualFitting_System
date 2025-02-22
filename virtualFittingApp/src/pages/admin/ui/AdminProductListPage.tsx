@@ -8,7 +8,9 @@ function AdminProductListPage() {
   return (
     <Wrapper>
       <Title>출고 상품 목록</Title>
-      <SearchBar />
+      <SearchBarContainer>
+        <SearchBar />
+      </SearchBarContainer>
       <ProductListContainer>
         <BrandProductList />
       </ProductListContainer>
@@ -19,7 +21,7 @@ function AdminProductListPage() {
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 10px 60px;
+  padding: 10px 100px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -29,9 +31,19 @@ const Wrapper = styled.div`
 `;
 
 const Title = styled.h1`
-  font-family: "Prata-Regular";
-  font-size: 2em;
+  font-family: "studio-sans";
+  font-size: 2vw;
+  font-weight: 500;
   color: black;
+`;
+
+const SearchBarContainer = styled.div`
+  box-sizing: border-box;
+  padding: 0px 40px 0px 0px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
 `;
 
 const ProductListContainer = styled.div`
@@ -40,13 +52,6 @@ const ProductListContainer = styled.div`
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  align-items: center;
-`;
-
-const TableColumn = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
   align-items: center;
 `;
 

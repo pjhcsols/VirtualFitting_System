@@ -1,23 +1,30 @@
 import styled from "styled-components";
 import TestClothes from "/img/clothes/top06.jpg";
+import { Link } from "react-router-dom";
 
-function AdminProductCard() {
+function AdminProductCard({ id }: { id: string }) {
   return (
-    <Wrapper>
+    <Wrapper to={`/admin/${id}`}>
       <ImgBox src={TestClothes} alt="test" />
       <InfoContainer>
-        <Title>옷</Title>
+        <Title>ONE-TUCK WIDE SWEAT PANTS [BLACK]</Title>
         <Content>그냥 옷</Content>
       </InfoContainer>
     </Wrapper>
   );
 }
 
-const Wrapper = styled.div`
-  width: 10em;
-  height: 15em;
+const Wrapper = styled(Link)`
+  padding: 1vw 1.2vw;
+  width: 15vw;
+  height: 20vw;
+  display: flex;
+  flex-flow: column nowrap;
   border-radius: 12px;
-  border: 1px solid #121212;
+  background: #fff5f5;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  cursor: pointer;
 `;
 
 const ImgBox = styled.img`
@@ -34,16 +41,21 @@ const InfoContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  align-items: center;
+  align-items: flex-start;
 `;
 
-const Title = styled.h1`
-  font-size: 0.8em;
+const Title = styled.p`
+  font-family: "Prata-Regular";
+  text-align: start;
+  font-size: 0.8vw;
+  font-weight: 700;
   color: black;
 `;
 
 const Content = styled.span`
-  font-size: 0.4em;
+  font-family: "pretendard";
+  font-size: 0.6vw;
+  font-weight: 400;
   color: black;
 `;
 
