@@ -1,12 +1,10 @@
 import React, { useState } from "react";
-import LoginForm from './LoginForm';
 import SignUpForm from './SignUpForm';
-import backgroundImage from '../assets/img/loginBackground.png';
-import logoImg from '../assets/img/logo.png';
-import './LoginPage.css';
+import { IMG_LOGO, IMG_BACKGROUND } from "../constants";
+import './LogInPage.css';
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
+const LogInForm = () => {
     const navigate = useNavigate();
     const [isLogin, setIsLogin] = useState(true);
 
@@ -19,14 +17,15 @@ const LoginPage = () => {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            height: `110vh`,
             position: 'relative',
-            background: `linear-gradient(to right, rgba(0, 0, 0, 0) 50%, black 50%), url(${backgroundImage})`,
-            backgroundSize: `100% 100%, contain`,
+            height: "110vh",
+            background: `linear-gradient(to right, rgba(0, 0, 0, 0) 50%, black 50%), url(${IMG_BACKGROUND})`,
+            backgroundSize: "100% 100%, contain",
+
             backgroundPositionX: 'left',
             backgroundRepeat: `no-repeat`
         }}>
-            <img src={logoImg} alt='Logo' style={{
+            <img src={IMG_LOGO} alt='Logo' style={{
                 position: 'absolute',
                 top: '40px',
                 right: '40.5%',
@@ -40,7 +39,7 @@ const LoginPage = () => {
                 </div>
                 <div className="body">
                     {isLogin ? (
-                        <LoginForm />
+                        <LogInForm />
                     ) : (
                         <SignUpForm />  
                     )}
@@ -50,4 +49,4 @@ const LoginPage = () => {
     );
 };
 
-export default LoginPage;
+export default LogInForm;
