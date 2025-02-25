@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import LoginForm from "./LoginForm";
-import SignUpForm from "./SignUpForm";
 import { IMG_LOGO, IMG_BACKGROUND } from "../constants";
 import "./LogInPage.css";
 import { useNavigate } from "react-router-dom";
@@ -46,9 +44,6 @@ const LogInPage = () => {
                     <div className={`signUpHeader ${isLogin ? "" : "active"}`} onClick={() => handleTabClick(false)}>
                         회원가입
                     </div>
-                </div>
-                <div className="body">
-                    {isLogin ? <LoginForm /> : <SignUpForm />}
                 </div>
             </div>
         </div>
