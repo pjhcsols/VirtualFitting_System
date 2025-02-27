@@ -1,7 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import { ProductOrderListProps } from "../product-order-list/types/product";
 import { formatDate } from "./utils/date.util";
-// import product from '../assets/img/product.svg'; [수정]
 import "./Product_Order_List.css";
 
 const Product_Order_List: React.FC<ProductOrderListProps> = (props) => {

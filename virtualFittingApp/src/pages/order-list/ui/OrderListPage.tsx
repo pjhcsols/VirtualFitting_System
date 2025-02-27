@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import HeaderBottom from "@/shared/components/header/header-bottom/HeaderBottom";
+import Header from "@/shared/components/header/ui/HeaderBottom";
 import Product_Order_List from "@/shared/components/product/product-order-list/Product_Order_List";
 import { fetchOrderHistory } from "../api/order.action";
 import Delivery from "@/shared/components/delivery/ui/Delivery";
@@ -23,7 +23,7 @@ const OrderListPage = () => {
 
     return (
         <div>
-            <HeaderBottom />
+            <Header />
             <Product_Order_List orderData={orderData} isOrderListPage={true} />
             <Delivery />
         </div>
