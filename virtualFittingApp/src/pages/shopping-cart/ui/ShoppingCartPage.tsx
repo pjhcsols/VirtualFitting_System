@@ -1,5 +1,5 @@
 import React from "react";
-import Header_Bottom from "@/shared/components/header/ui/HeaderBottom";
+import { Header } from "@/shared/components/header/ui/Header";
 import ShoppingCart from "@/shared/components/shopping-cart/ui/ShoppingCart";
 import LikedCarousel from "@/shared/components/liked-carousel/ui/LikedCarousel";
 import useShoppingCartData from "../utils/items.util";
@@ -9,7 +9,7 @@ const ShoppingCartPage = () => {
 
   return (
     <div>
-      <Header_Bottom />
+      <Header />
       <ShoppingCart shoppingData={shoppingData} />
       <LikedCarousel likedItems={likedItems} />
     </div>
