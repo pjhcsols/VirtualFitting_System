@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { AdminHeader } from "../components/header/ui/AdminHeader";
+import { AdminHeader } from "../../components/header/ui/AdminHeader";
 import { Outlet } from "react-router-dom";
 
 function AdminLayout() {

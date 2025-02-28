@@ -1,4 +1,4 @@
-import { API_BASILIUM } from "@/shared/config/AxiosConfig";
+import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
 
 export const post_shopping_cart = async ({
   productId,

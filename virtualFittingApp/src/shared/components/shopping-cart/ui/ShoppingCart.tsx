@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import Payment from "../../payment/ui/Payment";
-import { ShoppingCartProps } from '../types/shoppingCartProps';
-import { fetchUserInfo, deleteItemFromCart } from '../api/shoppingCart.action';
-import { User } from '../../../types/user';
+import { ShoppingCartProps } from "../types/shoppingCartProps";
+import { fetchUserInfo, deleteItemFromCart } from "../api/shoppingCart.action";
+import { User } from "../../../types/user/user";
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -41,10 +41,12 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
     const jwtToken = localStorage.getItem("login-token");
     if (jwtToken) {
       try {
-        await Promise.all(selectedItems.map(async (index) => {
-          const shoppingListId = shoppingDataState[index].shoppingCartId;
-          await deleteItemFromCart(shoppingListId, jwtToken);
-        }));
+        await Promise.all(
+          selectedItems.map(async (index) => {
+            const shoppingListId = shoppingDataState[index].shoppingCartId;
+            await deleteItemFromCart(shoppingListId, jwtToken);
+          })
+        );
         const updatedList = shoppingDataState.filter(
           (_, index) => !selectedItems.includes(index)
         );
@@ -56,16 +58,24 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
     }
   };
 
-  const selectedProducts = selectedItems.map((index) => shoppingDataState[index]);
+  const selectedProducts = selectedItems.map(
+    (index) => shoppingDataState[index]
+  );
   const isEmpty = shoppingDataState.length === 0;
 
   return (
     <div>
       <div className="shopping_list_container">
         <div className="header_div">
-          <h2 className="shopping_list_title" onClick={() => {}}>장바구니</h2>
+          <h2 className="shopping_list_title" onClick={() => {}}>
+            장바구니
+          </h2>
           {userInfo && (
-            <Payment userInfo={userInfo} selectedProducts={selectedProducts} type="multi" />
+            <Payment
+              userInfo={userInfo}
+              selectedProducts={selectedProducts}
+              type="multi"
+            />
           )}
         </div>
         {isEmpty ? (
@@ -92,10 +102,16 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
                         alt="product"
                       />
                       <div className="product_details">
-                        <span className="product_name">{productObj.productName}</span>
+                        <span className="product_name">
+                          {productObj.productName}
+                        </span>
                         <br />
                         <span className="product_specs">
-                          {"(색상: " + productObj.color + ", 사이즈: " + productObj.size + ")"}
+                          {"(색상: " +
+                            productObj.color +
+                            ", 사이즈: " +
+                            productObj.size +
+                            ")"}
                         </span>
                       </div>
                     </div>

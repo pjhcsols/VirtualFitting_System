@@ -4,9 +4,6 @@ export { default as ShoppingCart } from "./components/shopping-cart/ui/ShoppingC
 export { default as LikedCarousel } from "./components/liked-carousel/ui/LikedCarousel";
 export { default as HeaderBottom } from "./components/header/header-bottom/HeaderBottom";
 export { PopUpBottom } from "./components/pop-up/pop-up-bottom/PopUpBottom";
-
-export { API_BASILIUM, API_BASILIUM_AI } from "./config/AxiosConfig";
-
 export { CheckBox } from "./components/checkbox/CheckBox";
 export { CategorySelectBar } from "./components/selectBar/CategorySelectBar";
 export { SearchBar } from "./components/searchBar/ui/SearchBar";
@@ -18,14 +15,17 @@ export { ShoppingCartButton } from "@/shared/components/button/ui/ShoppingCartBu
 export { LikeButton } from "@/shared/components/button/ui/LikeButton";
 export { ShareButton } from "@/shared/components/button/ui/ShareButton";
 
-export { UserLayout } from "./layout/UserLayout";
-export { AdminLayout } from "./layout/AdminLayout";
-export { UserSignLayout } from "./layout/UserSignLayout";
-export { AdminSignLayout } from "./layout/AdminSignLayout";
+// * action
+export * from "@/shared/action";
 
-export {
-  type ColorType,
-  type MaterialType,
-  type SizeType,
-} from "./types/option.d";
-export { type USER_GRADE } from "./types/grade.d";
+// * config
+export * from "@/shared/config";
+
+// * layout
+export * from "@/shared/layout";
+
+// * types
+export * from "@/shared/types";
+
+// * utils
+export * from "@/shared/utils";

@@ -1,22 +1,10 @@
-import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useScrollDetector } from "@/shared/hooks/scroll/useScrollDetector";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 
 function Header() {
   const router = useNavigate();
-  const [isScrolled, setIsScrolled] = useState<boolean>(false);
-
-  useEffect(() => {
-    const scrollEvent = () => {
-      setIsScrolled(window.scrollY > 30);
-    };
-
-    window.addEventListener("scroll", scrollEvent);
-    return () => {
-      window.removeEventListener("scroll", scrollEvent);
-    };
-  }, []);
+  const isScrolled = useScrollDetector();
 
   return (
     <Wrapper scrolled={isScrolled}>

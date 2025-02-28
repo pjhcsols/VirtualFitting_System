@@ -1,4 +1,4 @@
-import { API_BASILIUM } from "../../../config/AxiosConfig";
+import { API_BASILIUM } from "../../../config/axios/AxiosConfig";
 
 export const search_product = async (searchValue: string) => {
   try {
