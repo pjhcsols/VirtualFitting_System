@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
-import Header_Bottom from "@/shared/components/header/header-bottom/HeaderBottom"; 
+import Header_Bottom from "@/shared/components/header/header-bottom/HeaderBottom";
 import Profile_Header from "../components/Profile_Header";
 import Product_Order_List from "../components/Product_Order_List";
 import ShoppingCart from "../components/ShoppingCart";
 import Like_List from "../components/Like_List";
-import { API_BASILIUM } from "../../../shared/config/AxiosConfig";
+import { API_BASILIUM } from "../../../shared/config/axios/AxiosConfig";
 import useShoppingCartData from "../../shopping-cart/utils/items.util";
-import useUserData from "../utils/data.util"; 
+import useUserData from "../utils/data.util";
 
 // 데이터 타입 정의
 interface OrderData {

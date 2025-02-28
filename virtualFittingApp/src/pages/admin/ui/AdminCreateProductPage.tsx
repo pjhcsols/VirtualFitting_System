@@ -1,9 +1,11 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
-import { PRODUCT_CREATION_SYSTEM_MESSAGE } from "../constants";
-import { useProduct } from "../hooks/useProduct";
+
+import { PRODUCT_CREATION_SYSTEM_MESSAGE } from "@/pages/admin/constants";
+import { useProduct } from "@/pages/admin/hooks/useProduct";
+
 import { ICON_CLOSE } from "@/shared/constants";
 
 function AdminCreateProductPage() {
@@ -11,26 +13,18 @@ function AdminCreateProductPage() {
 
   const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const productName = useProduct("productName");
-  const productPrice = useProduct("productPrice");
-  const productCategory = useProduct("productCategory");
-
-  const productTotalLength = useProduct("productTotalLength");
-
-  const productChest = useProduct("productChest");
-  const productShoulder = useProduct("productShoulder");
-  const productArm = useProduct("productArm");
-
-  const productDesc = useProduct("productDesc");
-
-  const productColors = useProduct("productColor");
-  const productMaterials = useProduct("productMaterial");
-  const productSizes = useProduct("productSize");
-
-  const productPhotoUrl = useProduct("productPhotoUrl");
-  const productSubPhotoUrl = useProduct("productSubPhotoUrl");
-
-  const productTotalQuantity = useProduct("totalQuantity");
+  const {
+    product,
+    productThumbNail,
+    productSubThumbNails,
+    onChangeProduct,
+    onChangeMaterials,
+    onChangeSizes,
+    onChangeColors,
+    onChangeCategory,
+    onChangeImage,
+    onDeleteImage,
+  } = useProduct();
 
   const onClickCardButton = () => {
     if (!imageInputRef.current) {
@@ -45,20 +39,18 @@ function AdminCreateProductPage() {
       <ProductContainer>
         {/* Photo Upload Container */}
         <InputContainer>
-          {productPhotoUrl.thumbNail ? (
+          {productThumbNail ? (
             // div background url 에 전달할 때, reader 로 ArrayBuffer 가 나올 수 있어, 이에 대한 예외처리 필요
             <ProductPhotoCard
-              src={productPhotoUrl.thumbNail ?? null}
+              src={product.productPhotoUrl[0] ?? null}
               onClick={onClickCardButton}
             >
               <ProductPhotoInput
                 ref={imageInputRef}
-                name={productPhotoUrl.name}
-                onChange={productPhotoUrl.onChange}
+                name={"productPhotoUrl"}
+                onChange={onChangeImage}
               />
-              <CloseButton
-                onClick={() => productPhotoUrl.onDelete("productPhotoUrl")}
-              >
+              <CloseButton onClick={() => onDeleteImage("productPhotoUrl")}>
                 <CloseIcon />
               </CloseButton>
             </ProductPhotoCard>
@@ -66,13 +58,12 @@ function AdminCreateProductPage() {
             <InputBox>
               <ProductPhotoInput
                 ref={imageInputRef}
-                name={productPhotoUrl.name}
-                onChange={productPhotoUrl.onChange}
+                name={"productPhotoUrl"}
+                onChange={onChangeImage}
               />
               <ProductPhotoCardBtn onClick={onClickCardButton} />
             </InputBox>
           )}
-
           <InputBox>
             <ProductSmallPhotoCard></ProductSmallPhotoCard>
           </InputBox>
@@ -141,16 +132,18 @@ const InputBox = styled.div`
 
 const InputLabel = styled.label`
   font-family: "Prata-Regular";
-  font-size: 1em;
+  font-weight: 700;
+  font-size: 0.9em;
   color: black;
 `;
 
 const InputTag = styled.input.attrs({ type: "text" })`
+  padding: 1rem 2rem;
   width: 100%;
-  height: 3.75vw;
-  border-radius: 18px;
+  height: 20px;
+  border-radius: 12px;
   background: white;
-  box-shadow: 4px 4px 20px 0px rgba(0, 0, 0, 0.25);
+  box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
 `;
 
 const ProductPhotoCard = styled.div<{ src: string }>`

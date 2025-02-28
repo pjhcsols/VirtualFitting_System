@@ -1,7 +1,7 @@
-import { API_BASILIUM } from "../../../shared";
-import { ProductInputType } from "../types/Product";
+import { API_BASILIUM } from "@/shared";
+import { ProductInputType } from "@/pages/admin/types/Product";
 
-export const delete_product = async (productId: number) => {
+export const deleteProductAPI = async (productId: number) => {
   try {
     const res = await API_BASILIUM.delete(
       `/products/deleteProduct/${productId}`
@@ -14,7 +14,7 @@ export const delete_product = async (productId: number) => {
   }
 };
 
-export const create_product = async (request: ProductInputType) => {
+export const createProductAPI = async (request: ProductInputType) => {
   try {
     const res = await API_BASILIUM.post("/products/deleteProduct", request);
     if (res.status === 201) {
@@ -25,7 +25,7 @@ export const create_product = async (request: ProductInputType) => {
   }
 };
 
-export const update_product = async (request: ProductInputType) => {
+export const updateProductAPI = async (request: ProductInputType) => {
   try {
     const res = await API_BASILIUM.post("/products/deleteProduct", request);
     if (res.status === 201) {

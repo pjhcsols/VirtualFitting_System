@@ -1,6 +1,8 @@
-import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { LogInPage } from "../../pages";
+
+import { AnimatePresence } from "motion/react";
+
+import LogInPage from "@/pages/login/ui/LogInPage";
 
 function LogInRouter() {
   const location = useLocation();
