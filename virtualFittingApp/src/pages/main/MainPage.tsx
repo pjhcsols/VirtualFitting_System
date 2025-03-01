@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_BASILIUM } from "../../shared/config/AxiosConfig";
 import { useNavigate } from 'react-router-dom';
-import Header_Bottom from "@/shared/components/header/header-bottom/HeaderBottom";  
+import Header_Bottom from "@/shared/components/header/ui/HeaderBottom";  
 import './MainPage.css';
 
 interface ProductData {
