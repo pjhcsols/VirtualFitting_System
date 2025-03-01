@@ -1,15 +1,17 @@
-import { Route, Routes, useLocation } from "react-router-dom";
-
 import { AnimatePresence } from "motion/react";
-
-import LogInPage from "@/pages/login/ui/LogInPage";
+import { Route, Routes, useLocation } from "react-router-dom";
+import { LogInPage } from "../../pages";
+import { LogInLayout } from "@/shared/layout/LogInLayout";
 
 function LogInRouter() {
   const location = useLocation();
+
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/login" element={<LogInPage />} />
+        <Route path="/login" element={<LogInLayout />}>
+          <Route index element={<LogInPage />} />
+        </Route>
       </Routes>
     </AnimatePresence>
   );
