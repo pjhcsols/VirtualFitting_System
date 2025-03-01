@@ -49,3 +49,24 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
+
+export const productCategoryIndexing = {
+  Top: [1, 2, 3, 4, 5, 13],
+  Outer: [10, 11, 12],
+  Bottom: [6, 7, 8, 9],
+  "Bag & Acc": [19],
+  "T-shirts": [1],
+  "long sleeves": [2],
+  blouse: [3],
+  knitwear: [4],
+  hood: [5],
+  vest: [13],
+  jacket: [10],
+  cardigan: [11],
+  padding: [12],
+  jeans: [6],
+  slacks: [7],
+  shorts: [8],
+  skirt: [9],
+  accessories: [19],
+};

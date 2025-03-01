@@ -4,7 +4,7 @@ import Cookies from "js-cookie";
 import {
   basilium_ai_refresh_token,
   basilium_refresh_token,
-} from "../action/token.action";
+} from "@/shared/action/token/token.action";
 
 // * Default Server
 

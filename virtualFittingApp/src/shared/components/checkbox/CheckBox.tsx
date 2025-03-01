@@ -5,7 +5,7 @@ import {
   type ColorType,
   type MaterialType,
   type SizeType,
-} from "../../types/option";
+} from "../../types/product/option";
 
 type CheckBoxType = {
   items: { key: number; value: string }[];

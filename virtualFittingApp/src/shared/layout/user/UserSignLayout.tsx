@@ -2,7 +2,7 @@ import { ReactNode } from "react";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { motion } from "motion/react";
-import { AnimationProps } from "../constants";
+import { AnimationProps } from "../../constants";
 
 function UserSignLayout() {
   return (

@@ -7,7 +7,7 @@ import ShoppingCart from "../components/ShoppingCart";
 import Like_List from "../components/Like_List";
 import { API_BASILIUM } from "../../../shared";
 import useShoppingCartData from "../../shopping-cart/utils/items.util";
-import useUserData from "../utils/data.util"; 
+import useUserData from "../utils/data.util";
 
 // 데이터 타입 정의
 interface OrderData {

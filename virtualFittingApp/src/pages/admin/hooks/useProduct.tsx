@@ -16,9 +16,7 @@ import type {
 } from "@/pages/admin/types/Product.d";
 import type { SizeType, MaterialType, ColorType } from "@/shared";
 
-function useProduct<K extends keyof useProductReturnType>(
-  key: K
-): useProductReturnType[K] {
+function useProduct(): useProductReturnType {
   const [product, setProduct] = useState<ProductInputType>({
     productId: 0,
     productName: "",
@@ -159,49 +157,18 @@ function useProduct<K extends keyof useProductReturnType>(
     }
   };
 
-  switch (key) {
-    case "productMaterial":
-      return {
-        name: key,
-        value: product[key],
-        onChange: (values: MaterialType[]) => onChangeMaterials(values),
-      } as useProductReturnType[K];
-    case "productSize":
-      return {
-        name: key,
-        value: product[key],
-        onChange: (values: SizeType[]) => onChangeSizes(values),
-      } as useProductReturnType[K];
-    case "productColor":
-      return {
-        name: key,
-        value: product[key],
-        onChange: (values: ColorType[]) => onChangeColors(values),
-      } as useProductReturnType[K];
-    case "productCategory":
-      return {
-        name: key,
-        value: product[key],
-        onChange: ({ key, value }: { key: number; value: string }) =>
-          onChangeCategory({ key, value }),
-      } as useProductReturnType[K];
-    case "productPhotoUrl":
-    case "productSubPhotoUrl":
-      return {
-        thumbNail:
-          key === "productPhotoUrl" ? productThumbNail : productSubThumbNails,
-        name: key,
-        value: product[key],
-        onChange: (e: ChangeEvent<HTMLInputElement>) => onChangeImage(e),
-        onDelete: (name: string) => onDeleteImage(name),
-      } as useProductReturnType[K];
-    default:
-      return {
-        name: key,
-        value: product[key],
-        onChange: (e: ChangeEvent<HTMLInputElement>) => onChangeInputTag(e),
-      } as useProductReturnType[K];
-  }
+  return {
+    product,
+    productThumbNail,
+    productSubThumbNails,
+    onChangeProduct: onChangeInputTag,
+    onChangeMaterials,
+    onChangeSizes,
+    onChangeColors,
+    onChangeCategory,
+    onChangeImage,
+    onDeleteImage,
+  };
 }
 
 export { useProduct };

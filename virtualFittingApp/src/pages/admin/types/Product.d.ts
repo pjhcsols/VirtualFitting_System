@@ -36,78 +36,14 @@ export type ProductCategoryType = {
 };
 
 export type useProductReturnType = {
-  productName: {
-    name: "productName";
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productPrice: {
-    name: "productPrice";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productCategory: {
-    name: "productCategory";
-    value: { categoryId: number; categoryName: string };
-    onChange: ({ key, value }: { key: number; value: string }) => void;
-  };
-  productTotalLength: {
-    name: "productTotalLength";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productChest: {
-    name: "productChest";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productShoulder: {
-    name: "productShoulder";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productArm: {
-    name: "productArm";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productDesc: {
-    name: "productDesc";
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
-  productColor: {
-    name: "productColor";
-    value: ColorType[];
-    onChange: (values: ColorType[]) => void;
-  };
-  productMaterial: {
-    name: "productMaterial";
-    value: MaterialType[];
-    onChange: (values: MaterialType[]) => void;
-  };
-  productSize: {
-    name: "productSize";
-    value: SizeType[];
-    onChange: (values: SizeType[]) => void;
-  };
-  productPhotoUrl: {
-    name: "productPhotoUrl";
-    value: string[];
-    thumbNail: string | ArrayBuffer | null;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    onDelete: (name: "productPhotoUrl" | "productSubPhotoUrl") => void;
-  };
-  productSubPhotoUrl: {
-    name: "productSubPhotoUrl";
-    value: string[];
-    thumbNail: (string | ArrayBuffer)[] | null;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    onDelete: (name: "productPhotoUrl" | "productSubPhotoUrl") => void;
-  };
-  totalQuantity: {
-    name: "totalQuantity";
-    value: number;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  };
+  product: ProductInputType;
+  productThumbNail: string | ArrayBuffer | null;
+  productSubThumbNails: (string | ArrayBuffer)[] | null;
+  onChangeProduct: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeMaterials: (values: MaterialType[]) => void;
+  onChangeSizes: (values: SizeType[]) => void;
+  onChangeColors: (values: ColorType[]) => void;
+  onChangeCategory: ({ key, value }: { key: number; value: string }) => void;
+  onChangeImage: (e: ChangeEvent<HTMLInputElement>) => void;
+  onDeleteImage: (name: string) => void;
 };
