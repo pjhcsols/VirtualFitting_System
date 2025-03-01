@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Header_Bottom from "@/shared/components/header/ui/HeaderBottom"; 
+
+import Header_Bottom from "@/shared/components/header/ui/HeaderBottom";
 import Profile_Header from "../components/Profile_Header";
 import Product_Order_List from "../components/Product_Order_List";
 import ShoppingCart from "../components/ShoppingCart";
 import Like_List from "../components/Like_List";
-import { API_BASILIUM } from "../../../shared/config/AxiosConfig";
+import { API_BASILIUM } from "../../../shared";
 import useShoppingCartData from "../../shopping-cart/utils/items.util";
 import useUserData from "../utils/data.util"; 
 
