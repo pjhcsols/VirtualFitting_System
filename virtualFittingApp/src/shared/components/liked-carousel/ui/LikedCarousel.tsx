@@ -1,6 +1,6 @@
-import React from 'react';
-import { LikedCarouselProps } from '../types/likedItem'
-import { DEFAULT_IMAGE_URL } from '../constants'; // constants import
+import React from "react";
+import { LikedCarouselProps } from "../types/likedItem";
+import { DEFAULT_IMAGE_URL } from "../constants"; // constants import
 
 const LikedCarousel: React.FC<LikedCarouselProps> = ({ likedItems }) => {
   // 최대 표시할 아이템 개수
@@ -25,11 +25,14 @@ const LikedCarousel: React.FC<LikedCarouselProps> = ({ likedItems }) => {
       <div className="first-item">
         {/* 첫 번째 아이템을 UI에 표시 */}
         <p>첫 번째 아이템: {firstItem ? firstItem.productName : "없음"}</p>
-        <img src={firstItem ? firstItem.productPhotoUrl[0] : DEFAULT_IMAGE_URL} alt="First Liked Item" />
+        <img
+          src={firstItem ? firstItem.productPhotoUrl[0] : DEFAULT_IMAGE_URL}
+          alt="First Liked Item"
+        />
       </div>
       {repeatedItems}
     </div>
   );
 };
 
-export default LikedCarousel;
+export { LikedCarousel };

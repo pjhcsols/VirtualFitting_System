@@ -18,13 +18,15 @@ function SearchBar() {
   const onClickSearch = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
       const res = await search_product("test");
-      router("/admin");
+      if (res) {
+        router("/admin");
+      }
     }
   };
   return (
     <Wrapper>
       <SearchIcon src={ICON_SEARCH} alt="search_Icon" />
-      <SearchInput />
+      <SearchInput onClick={onClickSearch} />
     </Wrapper>
   );
 }

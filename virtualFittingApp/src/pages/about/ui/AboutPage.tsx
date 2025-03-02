@@ -1,7 +1,7 @@
-import { BlankContent } from "../../../shared/components/blank-content/BlankContent";
+import { BlankContent } from "../../../shared/components/blank-content/ui/BlankContent";
 
 const AboutPage = () => {
   return <BlankContent />;
 };
 
-export default AboutPage;
+export { AboutPage };

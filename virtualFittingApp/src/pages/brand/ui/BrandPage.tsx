@@ -1,7 +1,7 @@
-import { BlankContent } from "../../../shared/components/blank-content/BlankContent";
+import { BlankContent } from "@/shared";
 
 const BrandPage = () => {
   return <BlankContent />;
 };
 
-export default BrandPage;
+export { BrandPage };

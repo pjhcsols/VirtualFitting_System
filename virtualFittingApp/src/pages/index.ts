@@ -1,26 +1,21 @@
-export { default as AboutPage } from "./about/ui/AboutPage";
-export { default as BrandPage } from "./brand/ui/BrandPage";
-export { default as LogInPage } from "./login/ui/LogInPage";
+export * from "@/pages/main";
 
-export { default as OrderListPage }  from "./order-list/ui/OrderListPage";
+export * from "@/pages/about";
 
-export { default as ShoppingCartPage } from "./shopping-cart/ui/ShoppingCartPage";
+export * from "@/pages/signup";
 
-// * New Admin Page
-export { AdminProductListPage } from "@/pages/admin/ui/AdminProductListPage";
-export { AdminCreateProductPage } from "@/pages/admin/ui/AdminCreateProductPage";
-export { AdminProductPage } from "@/pages/admin/ui/AdminProductPage";
+export * from "@/pages/login";
 
-// * SignUp Page
-export { UserSignUpPage } from "@/pages/signup/ui/UserSignUpPage";
-export { UserSignUpDetailPage } from "@/pages/signup/ui/UserSignUpDetailPage";
-export { BrandSignUpPage } from "@/pages/signup/ui/BrandSignUpPage";
+export * from "@/pages/my";
 
-// * New SignUP Page
+export * from "@/pages/brand";
 
-// * Store Page
-export { StorePage } from "@/pages/store/ui/StorePage";
-export { StoreDetailPage } from "@/pages/store/ui/StoreDetailPage";
+export * from "@/pages/store";
 
-// * New Store Page
+export * from "@/pages/order-list";
 
+export * from "@/pages/search";
+
+export * from "@/pages/shopping-cart";
+
+export * from "@/pages/admin";

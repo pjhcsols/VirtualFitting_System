@@ -1,6 +1,7 @@
-import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { BrandPage } from "../../pages";
+import { BrandPage } from "@/pages";
+
+import { AnimatePresence } from "motion/react";
 
 function BrandRouter() {
   const location = useLocation();

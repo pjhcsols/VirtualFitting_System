@@ -26,4 +26,4 @@ const useShoppingCartData = () => {
   return { shoppingData, likedItems };
 };
 
-export default useShoppingCartData;
+export { useShoppingCartData };

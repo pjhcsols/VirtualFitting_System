@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 interface PaymentButtonProps {
   onClick: () => void;
@@ -6,11 +6,7 @@ interface PaymentButtonProps {
 }
 
 const PaymentButton: React.FC<PaymentButtonProps> = ({ onClick, label }) => {
-  return (
-    <button onClick={onClick}>
-      {label}
-    </button>
-  );
+  return <button onClick={onClick}>{label}</button>;
 };
 
-export default PaymentButton;
+export { PaymentButton };
