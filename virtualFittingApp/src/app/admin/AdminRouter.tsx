@@ -1,11 +1,13 @@
-import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { AdminLayout } from "../../shared";
+
+import { AdminLayout } from "@/shared";
 import {
   AdminCreateProductPage,
   AdminProductListPage,
   AdminProductPage,
-} from "../../pages";
+} from "@/pages";
+
+import { AnimatePresence } from "motion/react";
 
 function AdminRouter() {
   const location = useLocation();

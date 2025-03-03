@@ -1,7 +1,9 @@
-import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { LogInPage } from "../../pages";
-import { LogInLayout } from "@/shared/layout/LogInLayout";
+
+import { LogInPage } from "@/pages";
+import { LogInLayout } from "@/shared";
+
+import { AnimatePresence } from "motion/react";
 
 function LogInRouter() {
   const location = useLocation();

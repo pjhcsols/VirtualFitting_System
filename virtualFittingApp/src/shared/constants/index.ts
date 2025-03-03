@@ -1,15 +1,14 @@
-import Basilium3DLogo from "/img/Basilium3DLogo.png";
+import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
+import WarningImg from "/img/warning/Warning.png";
+import TestImg from "/img/clothes/testPants.png";
+
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
 import RightArrow from "/svg/RightArrow.svg";
-import MyPageUser from "/img/MyPageUser.png";
-import WarningImg from "/img/Warning.png";
 import ReviewImg from "/svg/pencil.svg";
-import TestImg from "/img/clothes/testPants.png";
 import CloseIcon from "/svg/closeIcon.svg";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
-export const IMG_MYPAGE_USER = MyPageUser;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;

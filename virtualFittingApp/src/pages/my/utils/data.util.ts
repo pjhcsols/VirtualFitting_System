@@ -28,4 +28,4 @@ const useUserData = () => {
   return { userData };
 };
 
-export default useUserData;
+export { useUserData };

@@ -1,8 +1,5 @@
-import React from "react";
-import { Header } from "@/shared/components/header/ui/Header";
-import ShoppingCart from "@/shared/components/shopping-cart/ui/ShoppingCart";
-import LikedCarousel from "@/shared/components/liked-carousel/ui/LikedCarousel";
-import useShoppingCartData from "../utils/items.util";
+import { Header, ShoppingCart, LikedCarousel } from "@/shared";
+import { useShoppingCartData } from "@/pages/shopping-cart/utils/items.util";
 
 const ShoppingCartPage = () => {
   const { shoppingData, likedItems } = useShoppingCartData();
@@ -16,4 +13,4 @@ const ShoppingCartPage = () => {
   );
 };
 
-export default ShoppingCartPage;
+export { ShoppingCartPage };

@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
-import Payment from "../../payment/ui/Payment";
-import { ShoppingCartProps } from "../types/shoppingCartProps";
-import { fetchUserInfo, deleteItemFromCart } from "../api/shoppingCart.action";
-import { User } from "../../../types/user/user";
+import { Payment } from "@/shared/components/payment";
+import type { ShoppingCartProps } from "@/shared/components/shopping-cart/types/shoppingCartProps";
+import {
+  fetchUserInfo,
+  deleteItemFromCart,
+} from "@/shared/components/shopping-cart/api/shoppingCart.action";
+import type { User } from "@/shared/types/user/user";
 
 const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
@@ -45,10 +48,10 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
           selectedItems.map(async (index) => {
             const shoppingListId = shoppingDataState[index].shoppingCartId;
             await deleteItemFromCart(shoppingListId, jwtToken);
-          })
+          }),
         );
         const updatedList = shoppingDataState.filter(
-          (_, index) => !selectedItems.includes(index)
+          (_, index) => !selectedItems.includes(index),
         );
         setShoppingData(updatedList);
         setSelectedItems([]);
@@ -59,7 +62,7 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
   };
 
   const selectedProducts = selectedItems.map(
-    (index) => shoppingDataState[index]
+    (index) => shoppingDataState[index],
   );
   const isEmpty = shoppingDataState.length === 0;
 
@@ -139,4 +142,4 @@ const ShoppingCart: React.FC<ShoppingCartProps> = ({ shoppingData }) => {
   );
 };
 
-export default ShoppingCart;
+export { ShoppingCart };

@@ -7,7 +7,7 @@ import {
 } from "../api/payment.action";
 import { IMP_KEY, PG_NAME, PAY_METHOD, ESCROW } from "../constants/index";
 import { PaymentProps } from "../types/paymentProps";
-import PaymentButton from "../ui/PaymentButton";
+import { PaymentButton } from "../ui/PaymentButton";
 
 const Payment: React.FC<PaymentProps> = ({
   userInfo,
@@ -56,7 +56,7 @@ const Payment: React.FC<PaymentProps> = ({
           amount: selectedProducts.reduce(
             (total, product) =>
               total + (product.price ?? 0) * (product.totalCnt ?? 0), // 기본값 0
-            0
+            0,
           ),
           buyer_email: user.emailAddress,
           buyer_name: user.name,
@@ -91,14 +91,14 @@ const Payment: React.FC<PaymentProps> = ({
                     cnt: product.totalCnt,
                   })),
                 },
-                jwtToken
+                jwtToken,
               );
 
               if (type !== "single") {
                 await Promise.all(
                   selectedProducts.map((product) =>
-                    deleteProductFromCart(product.shoppingCartId, jwtToken)
-                  )
+                    deleteProductFromCart(product.shoppingCartId, jwtToken),
+                  ),
                 );
               }
 
@@ -114,7 +114,7 @@ const Payment: React.FC<PaymentProps> = ({
             } catch (error) {
               console.error(
                 "Error completing payment or deleting products:",
-                error
+                error,
               );
             }
           } else {
@@ -124,7 +124,7 @@ const Payment: React.FC<PaymentProps> = ({
               text: `${user.name}님 결제를 실패하셨어요 ㅠㅠ!`,
             });
           }
-        }
+        },
       );
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -139,4 +139,4 @@ const Payment: React.FC<PaymentProps> = ({
   );
 };
 
-export default Payment;
+export { Payment };

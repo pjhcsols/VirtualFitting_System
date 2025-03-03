@@ -5,7 +5,10 @@ import { type MouseEvent } from "react";
 function ShoppingCartButton({ id }: { id: string }) {
   const onClickButton = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
-    const res = post_shopping_cart({ productId: id });
+    const res = await post_shopping_cart({ productId: id });
+    if (res) {
+      alert("장바구니에 담겼습니다!");
+    }
   };
   return (
     <ShoppingCartBtn onClick={onClickButton}>장바구니에 담기</ShoppingCartBtn>
