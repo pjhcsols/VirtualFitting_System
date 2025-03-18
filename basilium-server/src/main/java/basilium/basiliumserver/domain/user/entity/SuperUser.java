@@ -4,6 +4,7 @@ import jakarta.persistence.Entity;
 import lombok.Getter;
 import lombok.Setter;
 
+//name, 직책
 @Getter
 @Setter
 @Entity

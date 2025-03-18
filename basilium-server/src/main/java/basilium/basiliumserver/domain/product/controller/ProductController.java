@@ -70,12 +70,9 @@ public class ProductController implements ProductApiDocs {
 
     // 상품 검색 (GET /api/products/search?productName=xxx)
     @GetMapping("/search")
-    public ResponseEntity<List<Product>> searchProductsByName(@RequestParam String productName) {
-        List<Product> products = productService.getProductsByName(productName);
-        if (products.isEmpty()) {
-            throw new IllegalArgumentException("검색어 '" + productName + "'에 해당하는 상품이 없습니다.");
-        }
-        return ResponseEntity.ok(products);
+    public ResponseEntity<List<ProductAllRetrieveDTO>> searchProductsByName(@RequestParam String productName) {
+        List<ProductAllRetrieveDTO> searchProduct = productService.searchProductsByName(productName);
+        return ResponseEntity.ok(searchProduct);
     }
 
     // BrandUser 조회 (GET /api/products/brandUser?productId=xxx)
@@ -92,6 +89,9 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(productService.findByCategoryId(categoryId));
     }
 
+    // 상품의 색상 조회 기능
+
+
     // ========================
     // 상품 옵션 관련 엔드포인트
     // ========================
@@ -105,6 +105,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     // 상품 옵션 추가 (POST /b1/products/{productId}/options)
+    // 추가 수정할것 색상에 따른 이미지도 추가 가능 고민
     @PostMapping("/{productId}/options")
     public ResponseEntity<String> addProductOption(@PathVariable Long productId,
                                                    @RequestBody ProductOptionDTO createRequest) {

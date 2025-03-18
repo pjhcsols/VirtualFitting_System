@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -91,6 +93,17 @@ public class JwtFilter extends OncePerRequestFilter {
         //log.info("userType:{}", userType);
 
         // "host" 유저에만 권한 부여
+        /*
+        // 실제 역할 추출
+        List<SimpleGrantedAuthority> authorities = jwtUtil.getUserRoles(token);
+        UsernamePasswordAuthenticationToken authenticationToken =
+                new UsernamePasswordAuthenticationToken(userName, null, authorities);
+
+        public List<SimpleGrantedAuthority> getUserRoles(String token) {
+        List<String> roles = extractRolesFromToken(token); // JWT에서 역할 추출
+        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+    }
+         */
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority("USER")));

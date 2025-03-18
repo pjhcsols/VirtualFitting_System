@@ -297,10 +297,48 @@ public class ProductService {
     /**
      * 상품 이름에 특정 문자열이 포함된 상품 조회
      */
-    public List<Product> getProductsByName(String name) {
-        return executeWithLogging(() -> productRepository.findByProductNameContaining(name),
-                "상품 이름 검색 중 오류 발생 (검색어: '" + name + "'): ");
+    @Transactional
+    public List<ProductAllRetrieveDTO> searchProductsByName(String productName) {
+        List<Product> products = executeWithLogging(
+                () -> productRepository.findByProductNameContainingWithDetails(productName),
+                "상품 이름 검색 중 오류 발생 (검색어: '" + productName + "'): "
+        );
+
+        if (products.isEmpty()) {
+            throw new IllegalArgumentException("검색어 '" + productName + "'에 해당하는 상품이 없습니다.");
+        }
+
+        return products.stream().map(product -> {
+            // 카테고리 이름 추출 (없으면 빈 문자열)
+            String categoryName = Optional.ofNullable(product.getProductCategory())
+                    .map(cat -> cat.getCategoryName())
+                    .orElse("");
+
+            // productColorOptions에서 색상과 사진 URL 추출
+            var colorOptions = product.getProductColorOptions();
+            List<String> colors = colorOptions.stream()
+                    .map(colorOption -> colorOption.getId().getProductColor().name())
+                    .distinct()
+                    .sorted()
+                    .toList();
+
+            List<String> photoUrls = colorOptions.stream()
+                    .flatMap(colorOption -> colorOption.getProductPhotoUrls().stream())
+                    .sorted()
+                    .toList();
+
+            return new ProductAllRetrieveDTO(
+                    product.getProductId(),
+                    product.getProductName(),
+                    product.getProductPrice(),
+                    product.getTotalQuantity(),
+                    categoryName,
+                    colors,
+                    photoUrls
+            );
+        }).collect(Collectors.toList());
     }
+
 
     /**
      * 상품 ID를 기반으로 관련 BrandUser 조회

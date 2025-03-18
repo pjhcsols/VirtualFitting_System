@@ -1,5 +1,6 @@
 package basilium.basiliumserver.domain.product.controller.apiDocs;
 
+import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
 import basilium.basiliumserver.domain.product.dto.ProductDetailDTO;
 import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
 import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
@@ -10,6 +11,8 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @Tag(name = "상품 관리 기능", description = "상품 관리 및 조회와 관련된 API")
 public interface ProductApiDocs {
@@ -39,9 +42,9 @@ public interface ProductApiDocs {
     @GetMapping("/count")
     ResponseEntity<?> countProducts();
 
-    @Operation(summary = "상품 검색", description = "상품 이름에 특정 문자열이 포함된 상품을 조회합니다.")
+    @Operation(summary = "상품 검색", description = "상품 이름에 특정 문자열이 포함된 상품을 조회합니다. 전체 조회와 동일한 DTO(ProductAllRetrieveDTO)로 반환합니다.")
     @GetMapping("/search")
-    ResponseEntity<?> searchProductsByName(@RequestParam String productName);
+    ResponseEntity<List<ProductAllRetrieveDTO>> searchProductsByName(@RequestParam String productName);
 
     @Operation(summary = "BrandUser 조회", description = "상품 ID를 기반으로 연관된 BrandUser를 조회합니다.")
     @GetMapping("/brandUser")

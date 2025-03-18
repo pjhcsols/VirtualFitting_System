@@ -45,6 +45,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             countQuery = "SELECT COUNT(p) FROM Product p")
     Page<Product> findAllWithDetails(Pageable pageable);
 
+    @Query("SELECT DISTINCT p FROM Product p " +
+            "LEFT JOIN FETCH p.productCategory " +
+            "LEFT JOIN FETCH p.productColorOptions " +
+            "WHERE p.productName LIKE %:name%")
+    List<Product> findByProductNameContainingWithDetails(@Param("name") String name);
+
     // 옵션 수정
     @Query("SELECT DISTINCT p FROM Product p " +
             "LEFT JOIN FETCH p.productCategory " +
