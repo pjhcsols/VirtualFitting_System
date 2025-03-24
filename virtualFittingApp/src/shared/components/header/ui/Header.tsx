@@ -1,26 +1,24 @@
-import { useScrollDetector } from "@/shared/hooks/scroll/useScrollDetector";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { CART_ICON, USER_ICON, MENU_ICON } from "../constants";
+import { BAG_ICON, USER_ICON, MENU_ICON } from "../constants";
 
 function Header() {
   const router = useNavigate();
-  const isScrolled = useScrollDetector();
 
   return (
-    <Wrapper scrolled={isScrolled}>
+    <Wrapper>
       <MenuContainer>
         <img src={MENU_ICON} alt="Menu" width={24} height={24} />
       </MenuContainer>
       <LogoContainer>
-        <LogoTitle scrolled={isScrolled} onClick={() => router("/")}>
+        <LogoTitle onClick={() => router("/")}>
           Basilium
         </LogoTitle>
       </LogoContainer>
 
       <RouterList>
         <HeaderContent>
-          <img src={CART_ICON} alt="Cart" width={24} height={24} />
+          <img src={BAG_ICON} alt="Cart" width={24} height={24} />
         </HeaderContent>
         <HeaderContent>
           <img src={USER_ICON} alt="User" width={40} height={40} />
@@ -30,7 +28,7 @@ function Header() {
   );
 }
 
-const Wrapper = styled.header<{ scrolled: boolean }>`
+const Wrapper = styled.header`
   box-sizing: border-box;
   position: sticky;
   top: 0;
@@ -62,9 +60,9 @@ const LogoContainer = styled.div`
   align-items: center;
 `;
 
-const LogoTitle = styled.h1<{ scrolled: boolean }>`
+const LogoTitle = styled.h1`
   font-family: "Prata-Regular";
-  font-size: "2em";
+  font-size: 2em;
   color: #000000;
   text-transform: uppercase;
   cursor: pointer;

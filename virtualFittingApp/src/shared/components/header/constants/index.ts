@@ -1,4 +1,5 @@
-export const CART_ICON = "/svg/cart.svg";
+export const CART_ICON = "/svg/cart.svg"
+export const BAG_ICON = "/svg/bag.svg"
 export const USER_ICON = "/svg/user.svg"
 export const MENU_ICON = "/svg/menu.svg"
 
