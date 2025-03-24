@@ -7,3 +7,5 @@ export * from "@/shared/layout/user/UserSignLayout";
 export * from "@/shared/layout/login/LogInLayout";
 
 export * from "@/shared/layout/main/MainLayout";
+
+export * from "@/shared/layout/store/StoreLayout"

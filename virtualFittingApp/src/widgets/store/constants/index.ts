@@ -1,5 +1,11 @@
 import { IMG_BASILIUM_3D_LOGO } from "../../../shared/constants";
 
+export const images = [
+  "/svg/store_test.svg",
+  "/svg/store_test2.svg",
+  "/svg/store_test3.svg",
+];
+
 export const BasiliumCard = {
   id: 0,
   title: "Basilium",
