@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
-    "@react-three/drei": "^10.0.4",
-    "@react-three/fiber": "^9.1.0",
+    "@react-three/drei": "9.122.0",
+    "@react-three/fiber": "8.18.0",
     "@reduxjs/toolkit": "^2.5.1",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.9",
