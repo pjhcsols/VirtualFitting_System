@@ -1,10 +1,36 @@
+import gsap from "gsap";
+import { useEffect } from "react";
 import styled from "styled-components";
 
 function LandingHeader() {
+  useEffect(() => {
+    gsap.fromTo(
+      ".logo-texture",
+      {
+        yPercent: 100,
+        opacity: 0,
+      },
+      {
+        yPercent: 0,
+        stagger: 0.1,
+        duration: 1,
+        opacity: 1,
+        ease: "power3.out",
+      },
+    );
+  }, []);
+
   return (
     <Wrapper>
       <HeaderContainer>
-        <HeaderLogo>Basilium</HeaderLogo>
+        <HeaderLogo className="logo-texture">B</HeaderLogo>
+        <HeaderLogo className="logo-texture">A</HeaderLogo>
+        <HeaderLogo className="logo-texture">S</HeaderLogo>
+        <HeaderLogo className="logo-texture">I</HeaderLogo>
+        <HeaderLogo className="logo-texture">L</HeaderLogo>
+        <HeaderLogo className="logo-texture">I</HeaderLogo>
+        <HeaderLogo className="logo-texture">U</HeaderLogo>
+        <HeaderLogo className="logo-texture">M</HeaderLogo>
       </HeaderContainer>
     </Wrapper>
   );

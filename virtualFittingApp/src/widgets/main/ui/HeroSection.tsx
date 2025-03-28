@@ -1,32 +1,39 @@
-import { Basilium3DLogo } from "@/shared";
-import gsap from "gsap";
+import { useEffect } from "react";
 import styled from "styled-components";
 
-function HeroSection() {
-  const tl = gsap.timeline();
+import { Basilium3DLogo } from "@/shared";
 
-  tl.fromTo(
-    ".upper-text",
-    {
-      y: -100,
-    },
-    {
-      y: 0,
-      duration: 1,
-      ease: "power4.out",
-    },
-  );
-  tl.fromTo(
-    "lower-text",
-    {
-      y: 100,
-    },
-    {
-      y: 0,
-      duration: 0.6,
-      ease: "power4.out",
-    },
-  );
+import gsap from "gsap";
+
+function HeroSection() {
+  useEffect(() => {
+    gsap.fromTo(
+      ".upper-text",
+      {
+        yPercent: -100,
+        opacity: 0,
+      },
+      {
+        yPercent: 0,
+        duration: 1.5,
+        opacity: 1,
+        ease: "power4.out",
+      },
+    );
+    gsap.fromTo(
+      ".lower-text",
+      {
+        yPercent: 100,
+        opacity: 0,
+      },
+      {
+        yPercent: 0,
+        duration: 1.5,
+        opacity: 1,
+        ease: "power4.out",
+      },
+    );
+  }, []);
 
   return (
     <Wrapper>
