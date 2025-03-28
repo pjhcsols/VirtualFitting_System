@@ -10,6 +10,7 @@ import { BrandRouter } from "@/app/brand/BrandRouter";
 import { LogInRouter } from "@/app/login/LogInRouter";
 import { OrderListRouter } from "@/app/order-list/OrderListRouter";
 import { ShoppingCartRouter } from "@/app/shopping-cart/ShoppingCartRouter";
+import { MyRouter } from "@/app/my/MyRouter";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
       <LogInRouter />
       <OrderListRouter />
       <UserSignUpAnimationRouter />
+      <MyRouter />
     </BrowserRouter>
   );
 }
