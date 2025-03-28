@@ -27,12 +27,11 @@ function MainPage() {
           trigger: slider,
           pin: true,
           scrub: 2,
-          end: () => "+=" + 600,
         },
       });
 
       tl.to(slider, {
-        yPercent: 66,
+        yPercent: -100,
       });
 
       // Cleanup ScrollTrigger on unmount
@@ -60,10 +59,12 @@ function MainPage() {
       root
     >
       <Article className="slider" ref={sliderRef}>
-        <Hero>
-          <HeroSection />
-        </Hero>
-        <AIIntroduction></AIIntroduction>
+        <ModelContainer>
+          <Hero>
+            <HeroSection />
+          </Hero>
+          <AIIntroduction></AIIntroduction>
+        </ModelContainer>
         <section></section>
         <section></section>
         <section></section>
@@ -74,7 +75,9 @@ function MainPage() {
 
 export { MainPage };
 
-const Wrapper = styled(ReactLenis)``;
+const Wrapper = styled(ReactLenis)`
+  height: 600vh;
+`;
 
 const Article = styled.article`
   width: 100%;
@@ -85,7 +88,17 @@ const Article = styled.article`
   align-items: flex-start;
 `;
 
-const Hero = styled.section`
+const ModelContainer = styled.section`
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+const Hero = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;
@@ -93,7 +106,7 @@ const Hero = styled.section`
   align-items: center;
 `;
 
-const AIIntroduction = styled.section`
+const AIIntroduction = styled.div`
   width: 100%;
   height: 100vh;
   display: flex;

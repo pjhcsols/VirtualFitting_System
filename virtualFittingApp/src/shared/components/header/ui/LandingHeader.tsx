@@ -1,30 +1,30 @@
-import { useScrollDetector } from "@/shared/hooks";
 import styled from "styled-components";
 
 function LandingHeader() {
-  const isScroll = useScrollDetector();
   return (
-    <Wrapper scrolled={isScroll}>
-      <HeaderContainer></HeaderContainer>
+    <Wrapper>
+      <HeaderContainer>
+        <HeaderLogo>Basilium</HeaderLogo>
+      </HeaderContainer>
     </Wrapper>
   );
 }
 
 export { LandingHeader };
 
-const Wrapper = styled.header<{ scrolled: boolean }>`
+const Wrapper = styled.header`
   position: fixed;
   top: 0;
   left: 0;
   box-sizing: border-box;
   width: 100vw;
-  height: ${(props) => (props.scrolled ? "100px" : "120px")};
+  height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-  background: ${(props) => (props.scrolled ? "#141E30" : "transparent")};
+  background: transparent;
   z-index: 50;
-  transition: 0.3s all ease-out;
+  transition: 0.8s all ease-out;
 `;
 
 const HeaderContainer = styled.nav`
@@ -32,4 +32,13 @@ const HeaderContainer = styled.nav`
   width: 100%;
   height: 100%;
   display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const HeaderLogo = styled.span`
+  font-family: "Prata-Regular";
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
 `;

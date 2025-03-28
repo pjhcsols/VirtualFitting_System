@@ -1,23 +1,59 @@
+import { Basilium3DLogo } from "@/shared";
+import gsap from "gsap";
 import styled from "styled-components";
 
 function HeroSection() {
+  const tl = gsap.timeline();
+
+  tl.fromTo(
+    ".upper-text",
+    {
+      y: -100,
+    },
+    {
+      y: 0,
+      duration: 1,
+      ease: "power4.out",
+    },
+  );
+  tl.fromTo(
+    "lower-text",
+    {
+      y: 100,
+    },
+    {
+      y: 0,
+      duration: 0.6,
+      ease: "power4.out",
+    },
+  );
+
   return (
     <Wrapper>
       <CaptionContainer>
         <UpperLineContainer>
-          <BasiliumTitle>Basilium of the King and Queen</BasiliumTitle>
+          <TitleContainer>
+            <BasiliumTitle className="upper-text">
+              The King and Queen
+            </BasiliumTitle>
+          </TitleContainer>
         </UpperLineContainer>
         <BottomLineContainer>
-          <BasiliumTitle size="5rem">casual & street brand</BasiliumTitle>
+          <TitleContainer>
+            <BasiliumTitle size="5rem" className="lower-text">
+              casual & street brand
+            </BasiliumTitle>
+          </TitleContainer>
         </BottomLineContainer>
       </CaptionContainer>
-      <ModelingContainer>{/* <Basilium3DLogo /> */}</ModelingContainer>
+      <ModelingContainer className="3D-model">
+        <Basilium3DLogo />
+      </ModelingContainer>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
-  position: relative;
   width: 100%;
   height: 100vh;
   display: flex;
@@ -54,6 +90,12 @@ const BottomLineContainer = styled.div`
   align-items: center;
 `;
 
+const TitleContainer = styled.div`
+  width: 100%;
+  height: fit-content;
+  overflow: hidden;
+`;
+
 const BasiliumTitle = styled.span<{ size?: string }>`
   font-family: "Prata-Regular";
   font-size: ${(props) => props.size ?? "4rem"};
@@ -75,12 +117,13 @@ const BasiliumTitle = styled.span<{ size?: string }>`
  */
 
 const ModelingContainer = styled.div`
-  position: absolute;
-  width: 50%;
-  height: 100%;
+  position: fixed;
+  top: 0;
+  width: 100vw;
+  height: 100vh;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 export { HeroSection };
