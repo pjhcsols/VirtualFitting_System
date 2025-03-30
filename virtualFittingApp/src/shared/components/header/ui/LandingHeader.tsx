@@ -1,8 +1,12 @@
-import gsap from "gsap";
 import { useEffect } from "react";
 import styled from "styled-components";
 
-function LandingHeader() {
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/all";
+
+gsap.registerPlugin(ScrollTrigger);
+
+function LandingHeader({ className }: { className?: string }) {
   useEffect(() => {
     gsap.fromTo(
       ".logo-texture",
@@ -11,26 +15,49 @@ function LandingHeader() {
         opacity: 0,
       },
       {
+        delay: 3,
         yPercent: 0,
         stagger: 0.1,
         duration: 1,
         opacity: 1,
-        ease: "power3.out",
+        ease: "power4.out",
       },
     );
+    // gsap.to(".logo-texture", {
+    //   scrollTrigger: {
+    //     trigger: ".header-container",
+    //     start: "end start",
+    //     scrub: 1,
+    //     markers: true,
+    //     toggleActions: "restart",
+    //   },
+    //   yPercent: 100,
+    //   opacity: 0,
+    //   duration: 1,
+    //   ease: "power4.out",
+    // });
   }, []);
 
   return (
-    <Wrapper>
+    <Wrapper className={className}>
       <HeaderContainer>
+        <HeaderLogo className="logo-texture">T</HeaderLogo>
+        <HeaderLogo className="logo-texture">h</HeaderLogo>
+        <HeaderLogo className="logo-texture">e</HeaderLogo>
+        <HeaderLogo className="logo-texture">&nbsp;</HeaderLogo>
+        <HeaderLogo className="logo-texture">P</HeaderLogo>
+        <HeaderLogo className="logo-texture">r</HeaderLogo>
+        <HeaderLogo className="logo-texture">i</HeaderLogo>
+        <HeaderLogo className="logo-texture">m</HeaderLogo>
+        <HeaderLogo className="logo-texture">i</HeaderLogo>
+        <HeaderLogo className="logo-texture">u</HeaderLogo>
+        <HeaderLogo className="logo-texture">m</HeaderLogo>
+        <HeaderLogo className="logo-texture">&nbsp;</HeaderLogo>
         <HeaderLogo className="logo-texture">B</HeaderLogo>
-        <HeaderLogo className="logo-texture">A</HeaderLogo>
-        <HeaderLogo className="logo-texture">S</HeaderLogo>
-        <HeaderLogo className="logo-texture">I</HeaderLogo>
-        <HeaderLogo className="logo-texture">L</HeaderLogo>
-        <HeaderLogo className="logo-texture">I</HeaderLogo>
-        <HeaderLogo className="logo-texture">U</HeaderLogo>
-        <HeaderLogo className="logo-texture">M</HeaderLogo>
+        <HeaderLogo className="logo-texture">r</HeaderLogo>
+        <HeaderLogo className="logo-texture">a</HeaderLogo>
+        <HeaderLogo className="logo-texture">n</HeaderLogo>
+        <HeaderLogo className="logo-texture">d</HeaderLogo>
       </HeaderContainer>
     </Wrapper>
   );

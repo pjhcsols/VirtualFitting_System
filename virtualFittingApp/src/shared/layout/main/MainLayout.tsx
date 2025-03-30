@@ -1,12 +1,9 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
-import { LandingHeader } from "@/shared/components";
-
 function MainLayout() {
   return (
     <Wrapper>
-      <LandingHeader />
       <Container>
         <Outlet />
       </Container>
@@ -27,7 +24,6 @@ const Container = styled.div`
   box-sizing: border-box;
   padding: 0 140px;
   width: 100%;
-  height: 600vh;
   transition: 0.3s padding ease-out;
   background: linear-gradient(to bottom, #292e49, #536976 50%, #bbd2c5 100%);
   @media (max-width: 1024px) {

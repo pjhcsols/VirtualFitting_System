@@ -5,13 +5,13 @@ import * as THREE from "three";
 function Basilium3DLogoModel() {
   const { scene } = useGLTF("/BasiliumLogo.gltf");
 
-  return <primitive object={scene} scale={[2, 2, 2]} />;
+  return <primitive object={scene} scale={[1.3, 1.3, 1.3]} />;
 }
 
 function CameraSetting() {
   const { camera } = useThree();
   return useFrame(() => {
-    camera.position.lerp(new THREE.Vector3(0.25, 0.9, 0.6), 0.009);
+    camera.position.lerp(new THREE.Vector3(0.0, 1, 0.0), 0.009);
     camera.lookAt(0, 0, 0);
   });
 }
@@ -22,7 +22,7 @@ function Model() {
       <Center top>
         <Basilium3DLogoModel />
       </Center>
-      <PerspectiveCamera makeDefault position={[0, 0, 0]} />
+      <PerspectiveCamera makeDefault position={[0, 0.0, 0.1]} />
       <CameraSetting />
     </group>
   );
@@ -32,9 +32,9 @@ function Basilium3DLogo() {
   return (
     <Canvas
       shadows
-      camera={{ position: [0.005, 0.05, 0.05], fov: 0.001, near: 2, far: 3 }}
+      camera={{ position: [0, 0, 0], fov: 0.001, near: 2, far: 3 }}
     >
-      <pointLight position={[100, 100, 5]} />
+      <pointLight position={[50, 50, 50]} />
       <Model />
     </Canvas>
   );
