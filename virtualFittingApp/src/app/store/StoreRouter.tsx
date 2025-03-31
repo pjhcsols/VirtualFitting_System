@@ -1,6 +1,6 @@
 import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { UserLayout } from "../../shared";
+import { StoreLayout } from "../../shared";
 import { StoreDetailPage, StorePage } from "../../pages";
 
 function StoreRouter() {
@@ -8,7 +8,7 @@ function StoreRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="store" element={<UserLayout />}>
+        <Route path="store" element={<StoreLayout />}>
           <Route index element={<StorePage />} />
           <Route path=":id" element={<StoreDetailPage />} />
         </Route>
