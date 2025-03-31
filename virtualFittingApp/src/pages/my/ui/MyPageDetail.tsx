@@ -1,90 +1,75 @@
 import React from "react";
-import "./MyPageDetail.css";
+import styled from "styled-components";
+import { Header } from "@/shared/components/header";
+import { MyHeader } from "@/shared/components/header";
 
-const MypageDetail: React.FC = () => {
-  // const { userData } = useUserData();
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  // const [userImg, setUserImg] = useState<string>(initialUserImg);
-  // const [isUploaded, setIsUploaded] = useState<boolean>(true);
+const Container = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f3f4f6;
+`;
 
-  // const storedUserInfo = localStorage.getItem("user_info");
-  // const userInfo = storedUserInfo ? JSON.parse(storedUserInfo) : null;
-  // const userId = userInfo?.userId;
+const Card = styled.div`
+  width: 24rem;
+  background: white;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border-radius: 0.5rem;
+`;
 
-  // useEffect(() => {
-  //   const fetchProfileImage = async () => {
-  //     if (!userId) return;
-  //     try {
-  //       const response = await API_BASILIUM.get(
-  //         `/User/getProfileImage?userId=${userId}`,
-  //         { responseType: "blob" },
-  //       );
-  //       if (response.data.size > 0) {
-  //         const imageUrl = URL.createObjectURL(response.data);
-  //         setUserImg(imageUrl);
-  //         setIsUploaded(false);
-  //       }
-  //     } catch (error) {
-  //       console.error("Error fetching profile image:", error);
-  //     }
-  //   };
-  //   fetchProfileImage();
-  // }, [userId]);
+const Title = styled.h2`
+  font-size: 1.25rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 1rem;
+`;
 
-  // const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
-  //   const file = event.target.files?.[0];
-  //   if (file) {
-  //     setSelectedFile(file);
-  //     setUserImg(URL.createObjectURL(file));
-  //     await handleImgSubmit(file);
-  //   }
-  // };
+const ProfileImage = styled.div`
+  width: 6rem;
+  height: 6rem;
+  background: #d1d5db;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+`;
 
-  // const handleImgSubmit = async (file: File) => {
-  //   if (!userId) return;
-  //   const formData = new FormData();
-  //   formData.append("userId", userId);
-  //   formData.append("file", file);
+const Input = styled.input`
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.25rem;
+`;
 
-  //   try {
-  //     await API_BASILIUM.post("/User/uploadProfileImage", formData);
-  //     alert("이미지 업로드를 성공하였습니다.");
-  //   } catch (error) {
-  //     console.error("Error:", error);
-  //     alert("이미지 업로드를 실패하였습니다.");
-  //   }
-  // };
+const RadioGroup = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
 
-  // return (
-  //   <div className="mypage_detail_container">
-  //     <div className="mypagedetail">
-  //       <div className="mypage_detail_profile">
-  //         <img
-  //           className={isUploaded ? "initialProfileImg" : "uploadedProfileImg"}
-  //           src={userImg}
-  //           alt="User Image"
-  //         />
-  //       </div>
-  //       <div className="mypage_detail_button_div">
-  //         <button onClick={() => document.getElementById("fileInput")?.click()}>
-  //           사진 변경
-  //         </button>
-  //         <input
-  //           type="file"
-  //           id="fileInput"
-  //           style={{ display: "none" }}
-  //           onChange={handleFileChange}
-  //         />
-  //       </div>
-  //     </div>
-  //     <div className="mypage_detail_info">
-  //       <table className="mypage_detail_info_table">
-  //         <tbody></tbody>
-  //       </table>
-  //     </div>
-  //   </div>
-  // );
-  return <div></div>;
-};
+const Button = styled.button`
+  width: 100%;
+  padding: 0.5rem;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 500;
 
-export { MypageDetail };
+  &:hover {
+    background: #2563eb;
+  }
+`;
+
+function MyPageDetail() {
+  return (
+    <MyHeader>
+    </MyHeader>
+  );
+}
+
+export { MyPageDetail };
