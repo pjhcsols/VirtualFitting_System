@@ -1,86 +1,79 @@
-import { useScrollDetector } from "@/shared/hooks/scroll/useScrollDetector";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { BAG_ICON, USER_ICON, MENU_ICON } from "@/constants";
 
 function Header() {
   const router = useNavigate();
-  const isScrolled = useScrollDetector();
 
   return (
-    <Wrapper scrolled={isScrolled}>
+    <Wrapper>
+      <MenuContainer>
+        <img src={MENU_ICON} alt="Menu" width={24} height={24} />
+      </MenuContainer>
       <LogoContainer>
-        <LogoTitle scrolled={isScrolled} onClick={() => router("/")}>
+        <LogoTitle onClick={() => router("/")}>
           Basilium
         </LogoTitle>
       </LogoContainer>
+
       <RouterList>
-        <HeaderContent>Cart</HeaderContent>
-        <HeaderContent>Liked</HeaderContent>
+        <HeaderContent>
+          <img src={BAG_ICON} alt="Cart" width={24} height={24} />
+        </HeaderContent>
+        <HeaderContent>
+          <img src={USER_ICON} alt="User" width={40} height={40} />
+        </HeaderContent>
       </RouterList>
     </Wrapper>
   );
 }
 
-const Wrapper = styled.header<{ scrolled: boolean }>`
+const Wrapper = styled.header`
   box-sizing: border-box;
   position: sticky;
   top: 0;
   left: 0;
-  padding: 10px 140px;
+  padding: 0px 40px;
   width: 100%;
-  height: ${(props) => (props.scrolled ? "50px" : "100px")};
-  display: flex;
-  flex-flow: row nowrap;
-  transition: 0.25s all ease-in-out;
-  transform-origin: top;
-  justify-content: space-between;
+  height: 80px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  background: ${(props) =>
-    props.scrolled ? "linear-gradient(to right, #141E30, #060207)" : "#141E30"};
+  background: #FFFFFF;
   z-index: 50;
-  box-shadow: 8px 8px 12px 0px rgba(0, 0, 0, 0.25);
+  border-bottom: 0.5px solid black;
 `;
 
-const HeaderBox = styled.div<{ scrolled: boolean }>`
-  position: sticky;
-  top: 0;
-  left: 0;
-  padding: 10px 140px;
-  width: 100%;
-  height: ${(props) => (props.scrolled ? "50px" : "100px")};
+
+const MenuContainer = styled.div`
   display: flex;
-  flex-flow: row nowrap;
-  transition: 0.25s all ease-out;
-  transform-origin: top;
-  justify-content: space-between;
+  justify-content: flex-start;
   align-items: center;
-  background: ${(props) =>
-    props.scrolled ? "linear-gradient(to right, #141E30, #060207)" : "#141E30"};
-  z-index: 50;
+  img {
+    cursor: pointer;
+  }
 `;
 
 const LogoContainer = styled.div`
-  width: 200px;
-  min-width: 200px;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const LogoTitle = styled.h1<{ scrolled: boolean }>`
+const LogoTitle = styled.h1`
   font-family: "Prata-Regular";
-  font-size: ${(props) => (props.scrolled ? "1em" : "2em")};
-  color: #fffafa;
+  font-size: 2em;
+  color: #000000;
   text-transform: uppercase;
   cursor: pointer;
-  transform-origin: left;
-  transition: 0.5s all ease-in-out;
+  white-space: nowrap;
+  margin: 0;
+  padding: 0;
 `;
 
 const RouterList = styled.ul`
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
   gap: 16px;
 `;
@@ -90,7 +83,7 @@ const HeaderContent = styled.li`
   font-family: "Prata-Regular";
   font-size: 1vw;
   font-weight: 700;
-  color: white;
+  color: black;
   cursor: pointer;
 `;
 

@@ -1,9 +1,12 @@
 import styled from "styled-components";
-import { Banner } from "../../../widgets";
+import { Banner, Carousel } from "@/widgets";
 
 function StorePage() {
   return (
     <Wrapper>
+      <CarouselContainer>
+        <Carousel />
+      </CarouselContainer>
       <BannerContainer>
         <Banner />
       </BannerContainer>
@@ -19,6 +22,11 @@ const Wrapper = styled.div`
 const BannerContainer = styled.div`
   width: 100%;
   height: 100vh;
+`;
+
+const CarouselContainer = styled.div`
+  width: 100%;
+  height: 100%;
 `;
 
 export { StorePage };

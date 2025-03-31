@@ -9,7 +9,7 @@ function Banner() {
       <Wrapper>
         <BannerInstance>
           <BGAsset url={BasiliumCard.image}></BGAsset>
-          <ContentBox backgroundColor={BasiliumCard.backgroundColor}>
+          <ContentBox $backgroundColor={BasiliumCard.backgroundColor}>
             <TitleText>{BasiliumCard.title}</TitleText>
             <ContentText>{BasiliumCard.content[0]}</ContentText>
             <ContentText>{BasiliumCard.content[1]}</ContentText>
@@ -17,7 +17,7 @@ function Banner() {
         </BannerInstance>
         <BannerInstance>
           <BGAsset url={BasiliumCard.image}></BGAsset>
-          <ContentBox backgroundColor={BasiliumCard.backgroundColor}>
+          <ContentBox $backgroundColor={BasiliumCard.backgroundColor}>
             <TitleText>{BasiliumCard.title}</TitleText>
             <ContentText>{BasiliumCard.content[0]}</ContentText>
             <ContentText>{BasiliumCard.content[1]}</ContentText>
@@ -25,7 +25,7 @@ function Banner() {
         </BannerInstance>
         <BannerInstance>
           <BGAsset url={BasiliumCard.image}></BGAsset>
-          <ContentBox backgroundColor={BasiliumCard.backgroundColor}>
+          <ContentBox $backgroundColor={BasiliumCard.backgroundColor}>
             <TitleText>{BasiliumCard.title}</TitleText>
             <ContentText>{BasiliumCard.content[0]}</ContentText>
             <ContentText>{BasiliumCard.content[1]}</ContentText>
@@ -33,7 +33,7 @@ function Banner() {
         </BannerInstance>
         <BannerInstance>
           <BGAsset url={BasiliumCard.image}></BGAsset>
-          <ContentBox backgroundColor={BasiliumCard.backgroundColor}>
+          <ContentBox $backgroundColor={BasiliumCard.backgroundColor}>
             <TitleText>{BasiliumCard.title}</TitleText>
             <ContentText>{BasiliumCard.content[0]}</ContentText>
             <ContentText>{BasiliumCard.content[1]}</ContentText>
@@ -41,7 +41,7 @@ function Banner() {
         </BannerInstance>
         <BannerInstance>
           <BGAsset url={BasiliumCard.image}></BGAsset>
-          <ContentBox backgroundColor={BasiliumCard.backgroundColor}>
+          <ContentBox $backgroundColor={BasiliumCard.backgroundColor}>
             <TitleText>{BasiliumCard.title}</TitleText>
             <ContentText>{BasiliumCard.content[0]}</ContentText>
             <ContentText>{BasiliumCard.content[1]}</ContentText>
@@ -100,7 +100,7 @@ const BGAsset = styled.div<{ url: string }>`
   transform: translate(-50%, -50%);
 `;
 
-const ContentBox = styled.div<{ backgroundColor: string }>`
+const ContentBox = styled.div<{ $backgroundColor: string }>`
   box-sizing: border-box;
   padding: 1em;
   width: 100%;
@@ -110,7 +110,7 @@ const ContentBox = styled.div<{ backgroundColor: string }>`
   justify-content: flex-end;
   align-items: flex-start;
   opacity: 0;
-  background-color: ${(props) => props.backgroundColor ?? "white"};
+  background-color: ${(props) => props.$backgroundColor ?? "white"};
 `;
 
 const TitleText = styled.h1`
