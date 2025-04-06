@@ -1,0 +1,1 @@
+export * from "@/shared/components/product-card/ui/ProductCard";
