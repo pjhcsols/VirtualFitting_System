@@ -38,16 +38,25 @@ const CarouselContainer = styled.div`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  padding: 2em 2em;
+  grid-template-columns: repeat(1, 1fr);
+  padding: 5em 2em;
+  gap: 0;
+  margin: 0 auto;
+  max-width: 1000px;
 
-  @media (min-width: 768px) {
-    padding: 2em 6em; /* 태블릿 이상일 때 좌우 여백 더 주기 */
+  @media (min-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (min-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
   }
 
   @media (min-width: 1200px) {
-    padding: 2em 10em; /* 데스크탑 이상일 때 더 넓게 */
+    grid-template-columns: repeat(4, 1fr);
+    padding: 5em 10em;
   }
 `;
+
 
 export { StorePage };

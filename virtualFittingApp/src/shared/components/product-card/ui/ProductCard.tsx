@@ -1,29 +1,92 @@
-import styled from "styled-components";
+import styled, { createGlobalStyle } from "styled-components";
 
 function ProductCard({ product }: { product: any }) {
-  return (
-    <Card>
-      <ImageBox>
-        <img src={product.image} alt={product.name} />
-      </ImageBox>
-      <InfoBox>
-        <Name>{product.name}</Name>
-        <Price>￦{product.price}</Price>
-      </InfoBox>
-    </Card>
-  );
-}
+    const maxVisibleColors = 3;
+    const visibleColors = product.colors.slice(0, maxVisibleColors);
+    const remainingColors = product.colors.length - maxVisibleColors;
+  
+    return (
+      <>
+        <FontStyle />
+        <Card>
+          <ImageBox>
+            <img src={product.image} alt={product.name} />
+          </ImageBox>
+          <InfoBox>
+            <Name>{product.name}</Name>
+            <ColorPriceRow>
+              <ColorSwatches>
+                {visibleColors.map((color: string, index: number) => (
+                  <ColorCircle key={index} $color={color} />
+                ))}
+                {remainingColors > 0 && (
+                  <ExtraText>+{remainingColors}</ExtraText>
+                )}
+              </ColorSwatches>
+              <Price>￦{product.price}</Price>
+            </ColorPriceRow>
+          </InfoBox>
+        </Card>
+      </>
+    );
+  }
+
+const FontStyle = createGlobalStyle`
+  @font-face {
+    font-family: 'Inter';
+    src: url('/font/Inter-VariableFont_opsz,wght.ttf') format('truetype');
+    font-weight: 100 900;
+    font-style: normal;
+  }
+`;
 
 const Card = styled.div`
   display: flex;
   flex-direction: column;
+  border: 1px solid black;
+
+  @media (max-width: 599px) {
+  &:not(:first-child) {
+    border-top: none;
+    }
+  }
+
+  @media (min-width: 600px) and (max-width: 899px) {
+    &:nth-child(even) {
+      border-left: none;
+    }
+
+    &:nth-child(n + 3) {
+      border-top: none;
+    }
+  }
+
+
+    @media (min-width: 900px) and (max-width: 1199px){
+    &:not(:nth-child(3n - 2)) {
+      border-left: none;
+    }
+     &:nth-last-child(-n + 2) {
+      border-top: none;
+    }
+  }
+
+  @media (min-width: 1200px) {
+    &:not(:nth-child(4n - 3)) {
+    border-left: none;
+    }
+    &:nth-last-child(-n+1) {
+      border-top: none;
+    }
+  }
 `;
+
 
 const ImageBox = styled.div`
   width: 100%;
   aspect-ratio: 4 / 5;
   overflow: hidden;
-  border: 1px solid black;
+  border-bottom: 1px solid black;
 
   img {
     width: 100%;
@@ -33,20 +96,46 @@ const ImageBox = styled.div`
 `;
 
 const InfoBox = styled.div`
-  padding: 0.5em 0;
-  border: 1px solid black;
+  padding: 0.75em 0.5em;
 `;
 
 const Name = styled.div`
-  font-size: 1em;
-  font-weight: 500;
+  display: flex;
+  font-size: 0.8em;
+  font-weight: 400;
   color: black;
+  font-family: 'Inter', sans-serif;
+`;
 
+const ColorPriceRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.5em;
+`;
+
+const ColorSwatches = styled.div`
+  display: flex;
+  gap: 4px;
+`;
+
+const ColorCircle = styled.div<{ $color: string }>`
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background-color: ${(props) => props.$color};
+  border: 1px solid black;
+`;
+
+const ExtraText = styled.div`
+  font-size: 0.75em;
+  color: black;
 `;
 
 const Price = styled.div`
-  font-size: 0.9em;
+  font-size: 0.8em;
   color: black;
+  font-family: 'HelveticaNeueLight', sans-serif;
 `;
 
 export { ProductCard };
