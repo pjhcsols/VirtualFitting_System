@@ -1,11 +1,11 @@
 import styled from "styled-components";
-import { AdminHeader } from "../../components/header/ui/AdminHeader";
 import { Outlet } from "react-router-dom";
+import { Header } from "@/shared/components";
 
 function AdminLayout() {
   return (
     <Wrapper>
-      <AdminHeader />
+      <Header />
       <AdminContentContainer>
         <Outlet />
       </AdminContentContainer>
@@ -23,8 +23,24 @@ const Wrapper = styled.main`
 
 const AdminContentContainer = styled.article`
   box-sizing: border-box;
-  margin-left: calc(12rem);
-  width: calc(100%-12rem);
+  padding: 0 10rem;
+  width: calc(100%-10rem);
+
+  @media (max-width: 1280px) {
+    padding: 0 9rem;
+  }
+
+  @media (max-width: 1024px) {
+    padding: 0 7rem;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0 5rem;
+  }
+
+  @media (max-width: 640px) {
+    padding: 0 4rem;
+  }
 `;
 
 export { AdminLayout };

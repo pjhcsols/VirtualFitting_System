@@ -7,6 +7,8 @@ import LeftArrow from "/svg/LeftArrow.svg";
 import RightArrow from "/svg/RightArrow.svg";
 import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
+import UploadIcon from "/svg/UploadAsset.svg";
+import Plus from "/svg/plus.svg";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
@@ -18,6 +20,8 @@ export const ICON_LEFT_ARROW = LeftArrow;
 export const ICON_RIGHT_ARROW = RightArrow;
 export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
+export const ICON_UPLOAD = UploadIcon;
+export const ICON_PLUS = Plus;
 
 export const AnimationProps = {
   initial: {
@@ -69,3 +73,22 @@ export const productCategoryIndexing = {
   skirt: [9],
   accessories: [19],
 };
+
+/*
+ * responsible Design GuideLine
+ */
+
+// 2XL
+export const xlDouble = 1536;
+
+// XL
+export const xl = 1280;
+
+// lg
+export const lg = 1024;
+
+// md
+export const md = 768;
+
+// sm
+export const sm = 640;
