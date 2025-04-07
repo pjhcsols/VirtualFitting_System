@@ -1,7 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BAG_ICON, USER_ICON, MENU_ICON } from "../constants";
-
+import { BAG_ICON, USER_ICON, MENU_ICON } from "@/shared/components/header/constants";
 function Header() {
   const router = useNavigate();
 
