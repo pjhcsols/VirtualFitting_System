@@ -31,6 +31,12 @@ function ProductCard({ product }: { product: any }) {
     );
   }
 
+export const xlDouble = 1536;
+export const xl = 1280;
+export const lg = 1024;
+export const md = 768;
+export const sm = 640;
+
 const FontStyle = createGlobalStyle`
   @font-face {
     font-family: 'Inter';
@@ -45,13 +51,13 @@ const Card = styled.div`
   flex-direction: column;
   border: 1px solid black;
 
-  @media (max-width: 599px) {
-  &:not(:first-child) {
-    border-top: none;
+  @media (max-width: ${sm - 1}px) {
+    &:not(:first-child) {
+      border-top: none;
     }
   }
 
-  @media (min-width: 600px) and (max-width: 899px) {
+  @media (min-width: ${sm}px) and (max-width: ${md - 1}px) {
     &:nth-child(even) {
       border-left: none;
     }
@@ -61,21 +67,22 @@ const Card = styled.div`
     }
   }
 
-
-    @media (min-width: 900px) and (max-width: 1199px){
+  @media (min-width: ${md}px) and (max-width: ${xl - 1}px) {
     &:not(:nth-child(3n - 2)) {
       border-left: none;
     }
-     &:nth-last-child(-n + 2) {
+
+    &:nth-child(n + 4) {
       border-top: none;
     }
   }
 
-  @media (min-width: 1200px) {
+  @media (min-width: ${xl}px) {
     &:not(:nth-child(4n - 3)) {
-    border-left: none;
+      border-left: none;
     }
-    &:nth-last-child(-n+1) {
+
+    &:nth-child(n + 5) {
       border-top: none;
     }
   }
@@ -92,6 +99,7 @@ const ImageBox = styled.div`
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
   }
 `;
 
