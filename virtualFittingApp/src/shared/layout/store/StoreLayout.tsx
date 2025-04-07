@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { Header } from "@/components/header/ui/Header";
+import { Header } from "@/shared/components/header/ui/Header";
 
 function StoreLayout() {
   return (

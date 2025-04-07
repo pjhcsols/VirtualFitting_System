@@ -50,6 +50,7 @@ const Image = styled.img`
   width: 100%;
   height: 100%;
   min-height: 200px;
+  max-height: 400px;
   object-fit: cover;
 `;
 
