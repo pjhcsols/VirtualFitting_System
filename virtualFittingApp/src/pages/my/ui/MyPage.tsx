@@ -1,35 +1,146 @@
 import React from "react";
+import styled from "styled-components";
+import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
+import userImg from "../../../shared/components/header/ui/UserImg.png";
+import arrowImg from "./arrow.png";
 
 function MyPage() {
   const navigate = useNavigate();
   const userName = "user1";
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-96 bg-white shadow-lg p-6 rounded-lg">
-        <h2 className="text-xl font-semibold text-center mb-4">마이페이지</h2>
-        <div className="flex flex-col items-center">
-          <button
-            onClick={() => navigate("/myPage/detail")}
-            className="text-lg font-medium text-blue-500 hover:underline"
-          >
-            {userName}
-          </button>
-          <div className="mt-4 flex w-full justify-around border-t pt-4">
-            <span className="text-gray-700">포인트</span>
-            <span className="text-gray-700">쿠폰</span>
-            <span className="text-gray-700">후기 작성</span>
-          </div>
-        </div>
-        <div className="mt-6 space-y-4">
-          <button className="w-full p-3 bg-gray-100 rounded-lg text-center">주문내역</button>
-          <button className="w-full p-3 bg-gray-100 rounded-lg text-center">취소/반품/교환 내역</button>
-          <button className="w-full p-3 bg-gray-100 rounded-lg text-center">좋아요</button>
-        </div>
-      </div>
-    </div>
+    <PageWrapper>
+      <HeaderWrapper>
+        <MyHeader title="마이페이지" />
+      </HeaderWrapper>
+
+      <ContentWrapper>
+        <UserInfoSection>
+          <UserInfo onClick={() => navigate("/mypage/detail")}> 
+            <Avatar src={userImg} alt="유저 이미지" />
+            <UserName>{userName}</UserName>
+          </UserInfo>
+        </UserInfoSection>
+
+        <Divider />
+
+        <StatsWrapper>
+          <Stat>포인트</Stat>
+          <Stat>쿠폰</Stat>
+          <Stat>후기 작성</Stat>
+        </StatsWrapper>
+
+        <MenuList>
+          <MenuItem>
+            주문내역
+            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/order")} alt=">" />
+          </MenuItem>
+          <MenuItem>
+            취소/반품/교환 내역
+            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/cancel")} alt=">" />
+          </MenuItem>
+          <MenuItem>
+            좋아요
+            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
+          </MenuItem>
+        </MenuList>
+      </ContentWrapper>
+    </PageWrapper>
   );
-};
+}
 
 export { MyPage };
+
+const PageWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  height: 100vh;
+`;
+
+const HeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 100;
+`;
+
+const ContentWrapper = styled.div`
+  padding: 70px 40px;
+  margin-left: 50px;
+  width: 100%;
+`;
+
+const UserInfoSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  cursor: pointer;
+`;
+
+const UserInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const Avatar = styled.img`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+`;
+
+const UserName = styled.span`
+  font-size: 16px;
+  font-weight: 500;
+`;
+
+const Divider = styled.hr`
+  margin: 16px 0;
+  border: none;
+  height: 1px;
+  background-color: #e5e5e5;
+  width: 550px;
+`;
+
+const StatsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 8px;
+  margin-bottom: 24px;
+  width: 520px;
+`;
+
+const Stat = styled.div`
+  flex: 1;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+`;
+
+const MenuList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 555px;
+`;
+
+const MenuItem = styled.div`
+  display: flex;  
+  justify-content: space-between;
+  padding: 13px 5px;
+  font-size: 12px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  text-align: left;
+  margin-left: 8px;
+`;
+
+const ArrowImg = styled.img`
+  width: 20px;
+  height: 20px;
+  opacity: 0.6;
+`

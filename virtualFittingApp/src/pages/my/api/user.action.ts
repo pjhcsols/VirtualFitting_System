@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { API_BASILIUM } from "../../../shared";
+import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
 
 // 사용자 정보 가져오는 함수
 export const fetchUserData = async (config: AxiosRequestConfig) => {
