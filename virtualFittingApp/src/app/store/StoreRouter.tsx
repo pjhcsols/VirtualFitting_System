@@ -1,7 +1,7 @@
 import { AnimatePresence } from "motion/react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import { StoreLayout } from "../../shared";
-import { StoreDetailPage, StorePage } from "../../pages";
+import { StoreLayout } from "@/shared";
+import { StoreDetailPage, StorePage } from "@/pages";
 
 function StoreRouter() {
   const location = useLocation();
