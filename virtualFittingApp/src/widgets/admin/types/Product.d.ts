@@ -1,8 +1,16 @@
-export type ProductDto = {
-  product: Product;
+export type ServerProductDto = {};
+
+export type ClientProductDto = {
+  productName: string;
+  productDescription: string;
+  productPrice: number | string;
+  productMainPhotos: FileList | null;
+  productQuantity: number;
   productSize: Size;
   productMaterial: Material;
   productColor: Color;
+  productSubPhotos: FileList | null;
+  productSizeTable: SizeTable[];
 };
 
 export type Color =
