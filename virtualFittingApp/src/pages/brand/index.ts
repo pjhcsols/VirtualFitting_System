@@ -1,1 +1,2 @@
 export * from "@/pages/brand/ui/BrandPage";
+export * from "@/pages/brand/ui/BrandProfile";
