@@ -60,6 +60,12 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
             "WHERE p.productId = :productId")
     Optional<Product> findByIdWithDetails(@Param("productId") Long productId);
 
+    // 상품 옵션 테이블에서 해당 상품의 색상을 중복 없이 조회
+    @Query("SELECT DISTINCT po.id.productColor " +
+            "FROM ProductOption po " +
+            "WHERE po.product.productId = :productId")
+    List<Color> findDistinctProductColorsByProductId(@Param("productId") Long productId);
+
     /**
      * 제품 이름에 특정 문자열이 포함된 제품 목록 조회.
      */

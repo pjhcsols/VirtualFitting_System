@@ -27,24 +27,9 @@ public class ProductController implements ProductApiDocs {
 
     // 상품 생성 (POST /api/products)
     @PostMapping
-    public ResponseEntity<Product> createProduct(@RequestBody Product product) {
-        Product createdProduct = productService.addProduct(product);
-        return ResponseEntity.ok(createdProduct);
-    }
-
-    // 상품 단건 조회 (GET /api/products/{productId})
-    @GetMapping("/{productId}")
-    public ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Long productId,
-                                                              @RequestParam Color color) {
-        ProductDetailDTO detailDTO = productService.getProductDetailsByColor(productId, color);
-        return ResponseEntity.ok(detailDTO);
-    }
-
-
-    // 전체 상품 조회 (GET /api/products?...)
-    @GetMapping
-    public ResponseEntity<List<ProductAllRetrieveDTO>> getAllProducts(Pageable pageable) {
-        return ResponseEntity.ok(productService.getAllProducts(pageable).getContent());
+    public ResponseEntity<String> createProduct(@RequestBody Product product) {
+        productService.addProduct(product);
+        return ResponseEntity.ok("상품 정보 등록 성공");
     }
 
     // 상품 수정 (PATCH /api/products/{id})
@@ -60,6 +45,21 @@ public class ProductController implements ProductApiDocs {
     public ResponseEntity<Void> deleteProduct(@PathVariable("id") Long productId) {
         productService.deleteProduct(productId);
         return ResponseEntity.noContent().build();
+    }
+
+    // 상품 단건 조회 (GET /api/products/{productId})
+    @GetMapping("/{productId}")
+    public ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Long productId,
+                                                              @RequestParam Color color) {
+        ProductDetailDTO detailDTO = productService.getProductDetailsByColor(productId, color);
+        return ResponseEntity.ok(detailDTO);
+    }
+
+
+    // 전체 상품 조회 (GET /api/products?...)
+    @GetMapping
+    public ResponseEntity<List<ProductAllRetrieveDTO>> getAllProducts(Pageable pageable) {
+        return ResponseEntity.ok(productService.getAllProducts(pageable).getContent());
     }
 
     // 전체 상품 수 조회 (GET /api/products/count)
@@ -89,8 +89,12 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(productService.findByCategoryId(categoryId));
     }
 
-    // 상품의 색상 조회 기능
-
+    // 상품의 색상 조회 (GET /api/products/{productId}/colors)
+    @GetMapping("/{productId}/colors")
+    public ResponseEntity<List<String>> getProductColors(@PathVariable Long productId) {
+        List<String> productColors = productService.getProductColors(productId);
+        return ResponseEntity.ok(productColors);
+    }
 
     // ========================
     // 상품 옵션 관련 엔드포인트

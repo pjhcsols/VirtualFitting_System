@@ -357,6 +357,19 @@ public class ProductService {
     }
 
     /**
+     * 상품 ID에 따른 색상 목록 조회 (최적화된 쿼리 사용)
+     */
+    public List<String> getProductColors(Long productId) {
+        List<Color> colors = productRepository.findDistinctProductColorsByProductId(productId);
+        if (colors.isEmpty()) {
+            throw new IllegalArgumentException("해당 상품에 사용 가능한 색상이 없습니다. (상품 ID: " + productId + ")");
+        }
+        return colors.stream()
+                .map(Enum::name)
+                .collect(Collectors.toList());
+    }
+
+    /**
      * 스케줄러용: 전체 상품의 이미지 URL 목록 조회 (productColorOptions 사용)
      */
     @Transactional

@@ -21,6 +21,14 @@ public interface ProductApiDocs {
     @PostMapping
     ResponseEntity<?> createProduct(@RequestBody Product product);
 
+    @Operation(summary = "상품 수정", description = "상품 ID와 업데이트 정보를 기반으로 부분 수정합니다.")
+    @PatchMapping("/{id}")
+    ResponseEntity<?> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductUpdateRequest updateRequest);
+
+    @Operation(summary = "상품 삭제", description = "상품 ID를 기반으로 상품을 삭제합니다.")
+    @DeleteMapping("/{id}")
+    ResponseEntity<?> deleteProduct(@PathVariable("id") Long productId);
+
     @Operation(summary = "상품 상세 정보 조회",
             description = "상품 ID와 색상 정보를 기반으로 단건 조회하여 해당 색상의 상품 이미지(대표 및 서브 이미지)와 기타 연관 데이터를 함께 반환합니다.")
     @GetMapping("/{productId}")
@@ -29,14 +37,6 @@ public interface ProductApiDocs {
     @Operation(summary = "전체 상품 조회", description = "페이징 처리가 적용된 전체 상품 목록을 조회합니다.")
     @GetMapping
     ResponseEntity<?> getAllProducts(Pageable pageable);
-
-    @Operation(summary = "상품 수정", description = "상품 ID와 업데이트 정보를 기반으로 부분 수정합니다.")
-    @PatchMapping("/{id}")
-    ResponseEntity<?> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductUpdateRequest updateRequest);
-
-    @Operation(summary = "상품 삭제", description = "상품 ID를 기반으로 상품을 삭제합니다.")
-    @DeleteMapping("/{id}")
-    ResponseEntity<?> deleteProduct(@PathVariable("id") Long productId);
 
     @Operation(summary = "상품 수 조회", description = "전체 상품의 개수를 조회합니다.")
     @GetMapping("/count")
@@ -53,6 +53,10 @@ public interface ProductApiDocs {
     @Operation(summary = "카테고리별 상품 조회", description = "카테고리 ID를 기반으로 상품 목록을 조회합니다.")
     @GetMapping("/category/{categoryId}")
     ResponseEntity<?> getProductsByCategory(@PathVariable Long categoryId);
+
+    @Operation(summary = "상품 색상 조회", description = "상품 ID를 기반으로 해당 상품에 사용 가능한 색상 목록을 조회합니다.")
+    @GetMapping("/{productId}/colors")
+    ResponseEntity<List<String>> getProductColors(@PathVariable Long productId);
 
     @Operation(summary = "상품 옵션 수정", description = "상품 ID와 옵션 업데이트 정보를 기반으로 상품 옵션을 부분 수정합니다.")
     @PatchMapping("/{productId}/options")

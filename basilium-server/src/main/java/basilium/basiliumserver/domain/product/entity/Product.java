@@ -40,6 +40,7 @@ public class Product {
     @JoinColumn(name = "category_id")
     private Category productCategory;
 
+    //50자
     @Column(name = "product_name", nullable = false)
     private String productName;
 
@@ -54,6 +55,7 @@ public class Product {
     @Column(name = "product_material")
     private List<Material> productMaterial;
 
+    //255글자
     @Column(name = "product_desc", nullable = false)
     private String productDesc;
 
