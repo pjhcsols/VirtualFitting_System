@@ -2,6 +2,7 @@ import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 
+import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
 import RightArrow from "/svg/RightArrow.svg";
@@ -15,6 +16,7 @@ export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
 
+export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
 export const ICON_RIGHT_ARROW = RightArrow;
