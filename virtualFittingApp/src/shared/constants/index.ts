@@ -9,6 +9,8 @@ import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Plus from "/svg/plus.svg";
+import Like from "/svg/like.svg";
+import Share from "/svg/share.svg";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
@@ -22,6 +24,8 @@ export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_PLUS = Plus;
+export const ICON_LIKE = Like;
+export const ICON_SHARE = Share;
 
 export const AnimationProps = {
   initial: {

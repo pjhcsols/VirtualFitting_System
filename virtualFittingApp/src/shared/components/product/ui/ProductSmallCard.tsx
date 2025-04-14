@@ -9,13 +9,8 @@ function ProductSmallCard({ src }: { src: string }) {
 }
 
 const Wrapper = styled.div`
-  width: 5vw;
+  width: 6vw;
   height: 7.5vw;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 8px;
-  background-color: #cfcfcf;
   overflow: hidden;
   cursor: pointer;
 `;
@@ -23,7 +18,6 @@ const Wrapper = styled.div`
 const InnerClothes = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;
 `;
 
 export { ProductSmallCard };

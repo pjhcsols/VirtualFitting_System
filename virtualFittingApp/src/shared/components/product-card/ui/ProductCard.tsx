@@ -1,14 +1,19 @@
 import styled, { createGlobalStyle } from "styled-components";
 
-function ProductCard({ product }: { product: any }) {
-    const maxVisibleColors = 3;
-    const visibleColors = product.colors.slice(0, maxVisibleColors);
-    const remainingColors = product.colors.length - maxVisibleColors;
-  
-    return (
-      <>
-        <FontStyle />
-        <Card>
+type ProductCardProps = {
+  product: any;
+  onClick?: () => void;
+};
+
+function ProductCard({ product, onClick }: ProductCardProps) {
+  const maxVisibleColors = 3;
+  const visibleColors = product.colors.slice(0, maxVisibleColors);
+  const remainingColors = product.colors.length - maxVisibleColors;
+
+  return (
+    <>
+      <FontStyle />
+      <Card onClick={onClick}>
           <ImageBox>
             <img src={product.image} alt={product.name} />
           </ImageBox>
@@ -50,6 +55,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid black;
+  cursor: pointer;
 
   @media (max-width: ${sm - 1}px) {
     &:not(:first-child) {
