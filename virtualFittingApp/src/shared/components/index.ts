@@ -36,6 +36,6 @@ export * from "@/shared/components/logo3D";
 
 export * from "@/shared/components/product-card";
 
-export * from "@/shared/components/progress";
+// export * from "@/shared/components/progress";
 
 export * from "@/shared/components/precaution";

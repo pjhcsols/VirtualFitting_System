@@ -20,6 +20,7 @@ function MyPage() {
           <UserInfo onClick={() => navigate("/mypage/detail")}> 
             <Avatar src={userImg} alt="유저 이미지" />
             <UserName>{userName}</UserName>
+            <ArrowImg2 src={arrowImg} alt=">" />
           </UserInfo>
         </UserInfoSection>
 
@@ -62,12 +63,14 @@ const PageWrapper = styled.div`
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 100;
+  z-index: 1;
 `;
 
 const ContentWrapper = styled.div`
-  padding: 70px 40px;
-  margin-left: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;   // 
+  padding: 70px 0;
   width: 100%;
 `;
 
@@ -77,6 +80,11 @@ const UserInfoSection = styled.div`
   gap: 10px;
   padding: 10px 0;
   cursor: pointer;
+
+  width: 100%;
+  max-width: 550px;
+  justify-content: flex-start;
+  margin-top: 30px;
 `;
 
 const UserInfo = styled.div`
@@ -101,7 +109,8 @@ const Divider = styled.hr`
   border: none;
   height: 1px;
   background-color: #e5e5e5;
-  width: 550px;
+  width: 100%;
+  max-width: 550px;
 `;
 
 const StatsWrapper = styled.div`
@@ -111,7 +120,8 @@ const StatsWrapper = styled.div`
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 24px;
-  width: 520px;
+  width: 100%;
+  max-width: 530px;
 `;
 
 const Stat = styled.div`
@@ -125,7 +135,8 @@ const MenuList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 16px;
-  width: 555px;
+  width: 100%;
+  max-width: 550px;
 `;
 
 const MenuItem = styled.div`
@@ -143,4 +154,12 @@ const ArrowImg = styled.img`
   width: 20px;
   height: 20px;
   opacity: 0.6;
+`
+
+const ArrowImg2 = styled.img`
+  width: 28px;
+  height: 28px;
+  opacity: 0.6;
+  margin-left: -15px;
+  margin-top: 2.8px;
 `

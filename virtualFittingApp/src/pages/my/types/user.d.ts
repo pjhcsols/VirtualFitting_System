@@ -2,9 +2,9 @@ export interface UserFormData {
   id: string;
   name: string;
   email: string;
-  phoneNumber: number;
+  phoneNumber: string;
   birthdate: string;
-  gender: string;
+  gender: "남자" | "여자" | "";
   size: BodySize;
   photoUrl: string;
 }

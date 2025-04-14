@@ -12,7 +12,6 @@ function MyRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/" element={<MyPage />} />
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/detail" element={<MypageDetail />} />
         <Route path="/myPage/order" element={<MyOrderList />} />

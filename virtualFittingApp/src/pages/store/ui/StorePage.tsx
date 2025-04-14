@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { Banner, Carousel } from "@/widgets";
-import { products } from "../constants";
+import { products } from "../constants/dummy";
 import { ProductCard } from "@/shared/components/product-card";
 
 function StorePage() {
