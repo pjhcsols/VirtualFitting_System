@@ -7,7 +7,6 @@ import { useEffect, useRef } from "react";
 
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { LandingHeader } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -59,7 +58,6 @@ function MainPage() {
       ref={lenisRef}
       root
     >
-      <LandingHeader className="" />
       <Article className="slider" ref={sliderRef}>
         <ModelContainer>
           <Hero>

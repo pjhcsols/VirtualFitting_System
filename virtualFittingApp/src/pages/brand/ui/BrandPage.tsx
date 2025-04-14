@@ -1,7 +1,7 @@
-import { BlankContent } from "@/shared";
+import React from "react";
 
-const BrandPage = () => {
-  return <BlankContent />;
-};
+function BrandPage() {
+  return <div>BrandPage</div>;
+}
 
 export { BrandPage };

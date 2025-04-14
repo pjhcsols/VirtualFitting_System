@@ -1,7 +1,7 @@
-import * as S from "@/pages/admin/ui/css/AdminCreateProductPage.css";
+import * as S from "@/pages/brand/ui/css/BrandProductCreate.css";
 import { ProductEditor } from "@/widgets";
 
-function AdminCreateProductPage() {
+function BrandProductCreate() {
   return (
     <S.Wrapper>
       <div className="title-box">
@@ -14,4 +14,4 @@ function AdminCreateProductPage() {
   );
 }
 
-export { AdminCreateProductPage };
+export { BrandProductCreate };
