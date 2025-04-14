@@ -317,6 +317,7 @@ const GenderButton = styled.button<{ selected: boolean}>`
   justify-content: center;
   gap: 10px;
   width: 156px;
+  height: 40px;
   border: 1px solid #e4e6e9;
   border-radius: 6px;
   border: 2px solid ${(props) => (props.selected ? "#000" : "#e4e6e9")};
