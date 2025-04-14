@@ -1,3 +1,4 @@
+import * as T from "@/widgets/admin/ui/css/ProductInputTag.css";
 import {
   type ChangeEvent,
   type Dispatch,
@@ -6,11 +7,13 @@ import {
   useRef,
   useState,
 } from "react";
-
-import * as T from "@/widgets/admin/ui/css/ProductInputTag.css";
-
-import { materialList, palleteList } from "@/widgets/admin/constants";
+import {
+  materialList,
+  palleteList,
+  SizeTableTitles,
+} from "@/widgets/admin/constants";
 import type {
+  ClientProductDto,
   Color,
   Material,
   Size,
@@ -19,38 +22,30 @@ import type {
 
 type ProductInputTagType = {
   step: number;
-  setMainPhotos: Dispatch<SetStateAction<FileList | null>>;
-  setSubPhotos: Dispatch<SetStateAction<FileList | null>>;
+  productInfo: ClientProductDto;
+  mainPreview: string[] | null;
+  subPreview: string[] | null;
+  setProductInfo: Dispatch<SetStateAction<ClientProductDto>>;
   setMainPreview: Dispatch<SetStateAction<string[] | null>>;
   setSubPreview: Dispatch<SetStateAction<string[] | null>>;
-  setProductName: Dispatch<SetStateAction<string>>;
-  setProductPrice: Dispatch<SetStateAction<number | string>>;
-  setProductDesc: Dispatch<SetStateAction<string>>;
-  setProductColor: Dispatch<SetStateAction<Color>>;
-  setProductMeterial: Dispatch<SetStateAction<Material>>;
-  setProductSize: Dispatch<SetStateAction<Size>>;
-  setProductSizeTable: Dispatch<SetStateAction<SizeTable[]>>;
-  setProductQuantity: Dispatch<SetStateAction<number>>;
 };
 
 export default function ProductInputTag({
   step,
-  setMainPhotos,
+  productInfo,
+  mainPreview,
+  subPreview,
+  setProductInfo,
   setMainPreview,
-  setSubPhotos,
   setSubPreview,
-  setProductDesc,
-  setProductName,
-  setProductPrice,
-  setProductColor,
-  setProductMeterial,
-  setProductQuantity,
-  setProductSize,
-  setProductSizeTable,
 }: ProductInputTagType) {
+  const sizeTableMaxCnt = 5;
+
   const fileRef = useRef<HTMLInputElement>(null);
   const [mainFileName, setMainFileName] = useState<string[] | null>(null);
   const [subFileName, setSubFileName] = useState<string[] | null>(null);
+
+  const [sizeTableCount, setSizeTableCount] = useState<number>(1);
 
   const onClickFile = () => {
     fileRef.current?.click();
@@ -61,8 +56,11 @@ export default function ProductInputTag({
     if (!files) {
       throw new Error("파일이 등록되지 않았습니다.");
     }
-    if (files.length < 5) {
-      setMainPhotos(files);
+    if (files.length < 6) {
+      setProductInfo({
+        ...productInfo,
+        ["productMainPhotos"]: files,
+      });
 
       for (let i = 0; i < files.length; i++) {
         let url = URL.createObjectURL(files[i]);
@@ -74,13 +72,40 @@ export default function ProductInputTag({
     }
   };
 
+  const onClickDeleteImg = (e: MouseEvent<HTMLDivElement>, idx: number) => {
+    e.preventDefault();
+    const currentFiles = productInfo.productMainPhotos;
+    const currentPreviews = mainPreview;
+    if (!currentFiles || !currentPreviews) {
+      return;
+    }
+
+    const filesArray = Array.from(currentFiles);
+    const updatedFilesArray = filesArray.filter(
+      (_, fileIndex) => fileIndex !== idx,
+    );
+
+    const updatedFileList = new DataTransfer();
+    updatedFilesArray.forEach((file) => updatedFileList.items.add(file));
+
+    setProductInfo({
+      ...productInfo,
+      ["productMainPhotos"]: updatedFileList.files,
+    });
+  };
+
   const onChangeSubFile = (e: ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
+
     if (!files) {
       throw new Error("파일이 등록되지 않았습니다.");
     }
+
     if (files.length < 10) {
-      setSubPhotos(files);
+      setProductInfo({
+        ...productInfo,
+        ["productSubPhotos"]: files,
+      });
 
       for (let i = 0; i < files.length; i++) {
         let url = URL.createObjectURL(files[i]);
@@ -94,134 +119,167 @@ export default function ProductInputTag({
 
   const onChangeTitle = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setProductName(value);
+    setProductInfo({
+      ...productInfo,
+      ["productName"]: value,
+    });
   };
 
   const onChangePrice = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
     if (value === "") {
-      setProductPrice("");
+      setProductInfo({
+        ...productInfo,
+        ["productPrice"]: value,
+      });
       return;
     }
     const parsed = Number(value);
 
     if (!Number.isNaN(parsed) && Number.isInteger(parsed)) {
-      setProductPrice(parsed); // 정수로 저장
+      setProductInfo({
+        ...productInfo,
+        ["productPrice"]: value,
+      }); // 정수로 저장
     }
   };
 
   const onChangeDesc = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
-    setProductDesc(value);
+    setProductInfo({
+      ...productInfo,
+      ["productDescription"]: value,
+    });
   };
 
   const onClickColor = (e: MouseEvent<HTMLDivElement>, item: Color) => {
     e.preventDefault();
-    setProductColor(item);
+    setProductInfo({
+      ...productInfo,
+      ["productColor"]: item,
+    });
   };
 
   const onClickMaterial = (e: MouseEvent<HTMLDivElement>, item: Material) => {
     e.preventDefault();
-    setProductMeterial(item);
+    setProductInfo({
+      ...productInfo,
+      ["productMaterial"]: item,
+    });
+  };
+
+  const onChangeSizeTable = (e: ChangeEvent<HTMLInputElement>) => {
+    const { value, name } = e.target;
+    if (value === "") {
+      setProductInfo({
+        ...productInfo,
+        [name]: value,
+      });
+      return;
+    }
+    const parsed = Number(value);
+
+    if (!Number.isNaN(parsed) && Number.isInteger(parsed)) {
+      setProductInfo({
+        ...productInfo,
+        [name]: value,
+      });
+    }
   };
 
   const stepByInput = () => {
     if (step === 0) {
       return (
-        <>
-          <T.UploadContainer>
-            <span className="show-text">메인 이미지 업로드</span>
-            <T.UploadedFileContainer>
-              {mainFileName ? (
-                <>
-                  {mainFileName.map((item, key) => {
-                    return <T.UploadedFile key={key}>{item}</T.UploadedFile>;
-                  })}
-                </>
-              ) : (
-                <>
-                  <T.FileUploader onClick={onClickFile}>
-                    <svg
-                      aria-hidden="true"
-                      stroke="currentColor"
+        <T.UploadContainer>
+          <span className="show-text">메인 이미지 업로드</span>
+          <T.UploadedFileContainer>
+            {mainFileName ? (
+              <>
+                {mainFileName.map((item, key) => {
+                  return (
+                    <T.UploadedFile key={key}>
+                      {item}
+                      <T.UploadBtnContainer>
+                        <T.UploadBtn>수정</T.UploadBtn>
+                        <T.DeleteBtn onClick={(e) => onClickDeleteImg(e, key)}>
+                          삭제
+                        </T.DeleteBtn>
+                      </T.UploadBtnContainer>
+                    </T.UploadedFile>
+                  );
+                })}
+              </>
+            ) : (
+              <>
+                <T.FileUploader onClick={onClickFile}>
+                  <svg
+                    aria-hidden="true"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
                       stroke-width="2"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                    >
-                      <path
-                        stroke-width="2"
-                        stroke="#fffffff"
-                        d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                      ></path>
-                      <path
-                        stroke-linejoin="round"
-                        stroke-linecap="round"
-                        stroke-width="2"
-                        stroke="#fffffff"
-                        d="M17 15V18M17 21V18M17 18H14M17 18H20"
-                      ></path>
-                    </svg>
-                    파일 업로드
-                  </T.FileUploader>
-                  <T.FileTag ref={fileRef} onChange={onChangeMainFile} />
-                </>
-              )}
-            </T.UploadedFileContainer>
-          </T.UploadContainer>
-          <T.UploadContainer>
-            <span className="show-text">서브 이미지 업로드</span>
-            <T.FileUploader onClick={onClickFile}>
-              <svg
-                aria-hidden="true"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-width="2"
-                  stroke="#fffffff"
-                  d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                ></path>
-                <path
-                  stroke-linejoin="round"
-                  stroke-linecap="round"
-                  stroke-width="2"
-                  stroke="#fffffff"
-                  d="M17 15V18M17 21V18M17 18H14M17 18H20"
-                ></path>
-              </svg>
-              파일 업로드
-            </T.FileUploader>
-            <T.FileTag ref={fileRef} onChange={onChangeSubFile} />
-          </T.UploadContainer>
-        </>
+                      stroke="#fffffff"
+                      d="M13.5 3H12H8C6.34315 3 5 4.34315 5 6V18C5 19.6569 6.34315 21 8 21H11M13.5 3L19 8.625M13.5 3V7.625C13.5 8.17728 13.9477 8.625 14.5 8.625H19M19 8.625V11.8125"
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                    ></path>
+                    <path
+                      stroke-linejoin="round"
+                      stroke-linecap="round"
+                      stroke-width="2"
+                      stroke="#fffffff"
+                      d="M17 15V18M17 21V18M17 18H14M17 18H20"
+                    ></path>
+                  </svg>
+                  파일 업로드
+                </T.FileUploader>
+                <T.FileTag multiple ref={fileRef} onChange={onChangeMainFile} />
+              </>
+            )}
+          </T.UploadedFileContainer>
+        </T.UploadContainer>
       );
     } else if (step === 1) {
       return (
         <T.InputContainer>
           <T.TitleInputContainer>
-            <input type="text" id="input" onChange={onChangeTitle} required />
+            <input
+              type="text"
+              value={productInfo.productName}
+              id="input"
+              onChange={onChangeTitle}
+              required
+            />
             <label htmlFor="input" className="label">
               상품 명
             </label>
             <div className="underline" />
           </T.TitleInputContainer>
           <T.TitleInputContainer>
-            <input type="text" id="input" onChange={onChangePrice} required />
+            <input
+              type="text"
+              value={productInfo.productPrice}
+              id="input"
+              onChange={onChangePrice}
+              required
+            />
             <label htmlFor="input" className="label">
               상품 가격
             </label>
             <div className="underline" />
           </T.TitleInputContainer>
           <T.TitleInputContainer>
-            <input type="text" id="input" onChange={onChangeDesc} required />
+            <input
+              type="text"
+              value={productInfo.productDescription}
+              id="input"
+              onChange={onChangeDesc}
+              required
+            />
             <label htmlFor="input" className="label">
               상품 설명
             </label>
@@ -260,9 +318,31 @@ export default function ProductInputTag({
               })}
             </div>
           </T.MaterialContainer>
+          <T.SizeTableContainer>
+            {Array.from({ length: sizeTableCount }).map((_, key) => {
+              return (
+                <T.SizeTable key={key}>
+                  <T.SizeInput
+                    name="productSize"
+                    onChange={onChangeSizeTable}
+                  />
+                  {SizeTableTitles.map((item, key) => {
+                    return (
+                      <T.SizeInput
+                        name={item}
+                        key={key}
+                        onChange={onChangeSizeTable}
+                      />
+                    );
+                  })}
+                </T.SizeTable>
+              );
+            })}
+          </T.SizeTableContainer>
         </>
       );
     }
   };
+
   return <T.Wrapper>{stepByInput()}</T.Wrapper>;
 }

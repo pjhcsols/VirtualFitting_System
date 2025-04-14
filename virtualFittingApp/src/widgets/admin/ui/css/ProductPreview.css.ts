@@ -13,10 +13,19 @@ export const Wrapper = styled.div`
 export const ImageContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row nowrap;
   justify-content: center;
-  align-items: center;
-  gap: 32px;
+  align-items: flex-start;
+  gap: 4px;
+`;
+
+export const UploadedImageContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
 `;
 
 export const Image = styled.img<{ hv: string }>`
@@ -204,70 +213,64 @@ export const ProductSizeTableContainer = styled.div`
   }
 `;
 
-export const ProductTable = styled.table``;
-
-export const ProductTableTitle = styled.thead``;
-
-export const ProductTableBody = styled.tbody``;
-
-export const ProductTableColumn = styled.td``;
-
-export const ProductTableSize = styled.div`
-  li a {
-    text-decoration: none;
-    color: #2d2f31;
-  }
-
-  nav {
-    width: 300px;
-    background: #d9d9d9;
-    margin: 40px auto;
-  }
-
-  span {
-    padding: 30px;
-    background: #2d2f31;
-    color: white;
-    font-size: 1.2em;
-    font-variant: small-caps;
-    cursor: pointer;
-    display: block;
-  }
-
-  span::after {
-    float: right;
-    right: 10%;
-    content: "+";
-  }
-
-  .slide {
-    clear: both;
-    width: 100%;
-    height: 0px;
-    overflow: hidden;
-    text-align: center;
-    transition: height 0.4s ease;
-  }
-
-  .slide li {
-    padding: 30px;
-  }
-
-  #touch {
-    position: absolute;
-    opacity: 0;
-    height: 0px;
-  }
-
-  #touch:checked + .slide {
-    height: 300px;
-  }
-`;
-
 export const ProductCategoryContainer = styled.div`
   width: 100%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
+`;
+
+export const SizeTable = styled.table`
+  border-collapse: collapse;
+  border: 0;
+  color: black;
+  th,
+  td {
+    border: 1px solid #aaa;
+    background-clip: padding-box;
+    scroll-snap-align: start;
+  }
+  tbody tr:last-child th,
+  tbody tr:last-child td {
+    border-bottom: 0;
+  }
+  thead {
+    z-index: 1000;
+    position: relative;
+  }
+  th,
+  td {
+    padding: 0.4rem;
+    min-width: 5rem;
+    text-align: center;
+    margin: 0;
+  }
+  thead th {
+    position: sticky;
+    top: 0;
+    border-top: 0;
+    background-clip: padding-box;
+  }
+  thead th.pin {
+    left: 0;
+    z-index: 1001;
+    border-left: 0;
+  }
+  tbody th {
+    background-clip: padding-box;
+    border-left: 0;
+  }
+  tbody {
+    z-index: 10;
+    position: relative;
+  }
+  tbody th {
+    position: sticky;
+    left: 0;
+  }
+  thead th,
+  tbody th {
+    background-color: #f8f8f8;
+  }
 `;
