@@ -1,10 +1,15 @@
 import styled from "styled-components";
 import { DetailDescription, ProductContainer, ReviewContent } from "@/widgets";
+import { products } from "../constants/dummy";
+import { useParams } from "react-router-dom";
 
 function StoreDetailPage() {
+  const { id } = useParams();
+  const product = products.find((p) => String(p.id) === id);
+
   return (
     <Wrapper>
-      <ProductContainer />
+      <ProductContainer product={product} />
       <Divider />
       <DetailDescription />
       <Divider />
@@ -15,7 +20,7 @@ function StoreDetailPage() {
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 40px 60px;
+  padding: 0px 60px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;

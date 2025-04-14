@@ -2,8 +2,10 @@ import styled from "styled-components";
 import { Banner, Carousel } from "@/widgets";
 import { products } from "../constants/dummy";
 import { ProductCard } from "@/shared/components/product-card";
+import { useNavigate } from "react-router-dom";
 
 function StorePage() {
+  const navigate = useNavigate();
   return (
     <Wrapper>
       <CarouselContainer>
@@ -14,7 +16,11 @@ function StorePage() {
       </BannerContainer> */}
       <ProductGrid>
         {products.map((product) => (
-          <ProductCard key={product.id} product={product} />
+          <ProductCard
+            key={product.id}
+            product={product}
+            onClick={() => navigate(`/store/${product.id}`)}
+          />
         ))}
       </ProductGrid>
     </Wrapper>
