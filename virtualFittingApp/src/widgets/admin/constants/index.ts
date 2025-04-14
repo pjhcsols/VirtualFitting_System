@@ -14,6 +14,13 @@ export const ImageUploadCautions = [
   "서브 이미지는 최대 9개까지 업로드할 수 있습니다.",
 ];
 
+export const SizeTableTitles = [
+  "productTotalLength",
+  "productChest",
+  "productShoulder",
+  "productArm",
+];
+
 export const InfoCautions = [""];
 
 export const blackColorCode = "#130C16";

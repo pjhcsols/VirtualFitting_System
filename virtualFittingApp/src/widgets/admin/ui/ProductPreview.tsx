@@ -16,6 +16,7 @@ import {
   yellowColorCode,
 } from "@/widgets/admin/constants";
 import type {
+  ClientProductDto,
   Color,
   Material,
   Size,
@@ -25,30 +26,16 @@ import { useEffect, useRef, useState } from "react";
 
 type ProductPreviewType = {
   step: number;
-  mainPhotos: string[] | null;
-  subPhotos: string[] | null;
-  productName: string;
-  productPrice: number | string;
-  productDescription: string;
-  productSizeTable: SizeTable[];
-  productSize: Size;
-  productMaterial: Material;
-  productColor: Color;
-  productQuantity: number;
+  productInfo: ClientProductDto;
+  mainPreviews: string[] | null;
+  subPreviews: string[] | null;
 };
 
 export default function ProductPreview({
   step,
-  mainPhotos,
-  productColor,
-  productDescription,
-  productMaterial,
-  productName,
-  productPrice,
-  productQuantity,
-  productSize,
-  productSizeTable,
-  subPhotos,
+  productInfo,
+  mainPreviews,
+  subPreviews,
 }: ProductPreviewType) {
   const imageHeightRef = useRef<HTMLImageElement>(null);
   const [imageHeight, setImageHeight] = useState<number>(0);
@@ -61,19 +48,19 @@ export default function ProductPreview({
   }, []);
 
   const PalletDots = () => {
-    if (productColor === "YELLOW") {
+    if (productInfo.productColor === "YELLOW") {
       return <P.ColorDot color={yellowColorCode} />;
-    } else if (productColor === "GRAY") {
+    } else if (productInfo.productColor === "GRAY") {
       return <P.ColorDot color={grayColorCode} />;
-    } else if (productColor === "ORANGE") {
+    } else if (productInfo.productColor === "ORANGE") {
       return <P.ColorDot color={orangeColorCode} />;
-    } else if (productColor === "RED") {
+    } else if (productInfo.productColor === "RED") {
       return <P.ColorDot color={redColorCode} />;
-    } else if (productColor === "BLUE") {
+    } else if (productInfo.productColor === "BLUE") {
       return <P.ColorDot color={blueColorCode} />;
-    } else if (productColor === "GREEN") {
+    } else if (productInfo.productColor === "GREEN") {
       return <P.ColorDot color={greenColorCode} />;
-    } else if (productColor === "WHITE") {
+    } else if (productInfo.productColor === "WHITE") {
       return <P.ColorDot color={whiteColorCode} />;
     } else {
       return <P.ColorDot color={blackColorCode} />;
@@ -84,23 +71,21 @@ export default function ProductPreview({
     if (step === 0) {
       return (
         <P.ImageContainer>
-          {mainPhotos ? (
-            <P.Image
-              ref={imageHeightRef}
-              hv={`${imageHeight}px`}
-              src={mainPhotos[0]}
-            />
+          {mainPreviews ? (
+            <>
+              <P.UploadedImageContainer>
+                {mainPreviews.map((item, key) => {
+                  return <P.SubImages src={item} key={key} />;
+                })}
+              </P.UploadedImageContainer>
+              <P.Image
+                ref={imageHeightRef}
+                hv={`${imageHeight}px`}
+                src={mainPreviews[0]}
+              />
+            </>
           ) : (
             <P.NoImage hv={`${imageHeight}px`} />
-          )}
-          {subPhotos && (
-            <P.ImageBox>
-              {subPhotos.map((item, key) => {
-                return (
-                  <P.SubImages src={item} alt={`subphoto-${key}`} key={key} />
-                );
-              })}
-            </P.ImageBox>
           )}
         </P.ImageContainer>
       );
@@ -109,15 +94,15 @@ export default function ProductPreview({
         <P.ProductInfoContainer>
           <P.ProductTitleBox>
             <span className="title-text">📌 상품 명</span>
-            <span className="name-text">{productName}</span>
+            <span className="name-text">{productInfo.productName}</span>
           </P.ProductTitleBox>
           <P.ProductTitleBox>
             <span className="title-text">🏷️ 상품 가격</span>
-            <span className="price-text">{`₩${productPrice}`}</span>
+            <span className="price-text">{`₩${productInfo.productPrice}`}</span>
           </P.ProductTitleBox>
           <P.ProductTitleBox>
             <span className="title-text">📝 상품 설명</span>
-            <span className="desc-text">{productDescription}</span>
+            <span className="desc-text">{productInfo.productDescription}</span>
           </P.ProductTitleBox>
         </P.ProductInfoContainer>
       );
@@ -133,7 +118,10 @@ export default function ProductPreview({
             <div className="material-container">
               {materialList.map((item, key) => {
                 return (
-                  <P.Material key={key} clicked={productMaterial === item}>
+                  <P.Material
+                    key={key}
+                    clicked={productInfo.productMaterial === item}
+                  >
                     {item}
                   </P.Material>
                 );
@@ -142,31 +130,30 @@ export default function ProductPreview({
           </P.ProductMaterial>
           <P.ProductSizeTableContainer>
             <span className="title-text">제품 사이즈 표</span>
-            <P.ProductTable>
-              <P.ProductTableSize>
-                <nav>
-                  <label htmlFor="touch">
-                    <span>titre</span>
-                  </label>
-                  <input type="checkbox" id="touch" />
-
-                  <ul className="slide">
-                    <li>
-                      <a href="#">Lorem Ipsum</a>
-                    </li>
-                    <li>
-                      <a href="#">Lorem Ipsum</a>
-                    </li>
-                    <li>
-                      <a href="#">Lorem Ipsum</a>
-                    </li>
-                    <li>
-                      <a href="#">Lorem Ipsum</a>
-                    </li>
-                  </ul>
-                </nav>
-              </P.ProductTableSize>
-            </P.ProductTable>
+            <P.SizeTable>
+              <thead>
+                <tr>
+                  <th className="pin">사이즈</th>
+                  <th>총장</th>
+                  <th>가슴 둘레</th>
+                  <th>어깨 길이</th>
+                  <th>팔 길이</th>
+                </tr>
+              </thead>
+              <tbody>
+                {productInfo.productSizeTable.map((item, key) => {
+                  return (
+                    <tr key={key}>
+                      <th>{productInfo.productSize}</th>
+                      <td>{item.productTotalLength}</td>
+                      <td>{item.productChest}</td>
+                      <td>{item.productShoulder}</td>
+                      <td>{item.productArm}</td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </P.SizeTable>
           </P.ProductSizeTableContainer>
         </P.ProductOptionContainer>
       );

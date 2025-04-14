@@ -28,8 +28,8 @@ export type Size = "XX" | "S" | "M" | "L" | "XL" | "F";
 export type Material = "COTTON" | "POLYESTER" | "WOOL" | "FABRIC" | "SILK";
 
 export type SizeTable = {
-  productTotalLength: number;
-  productChest: number;
-  productShoulder: number;
-  productArm: number;
+  productTotalLength: number | string;
+  productChest: number | string;
+  productShoulder: number | string;
+  productArm: number | string;
 };
