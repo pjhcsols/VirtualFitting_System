@@ -8,7 +8,7 @@ function BrandHeader() {
   const isScrolled = useScrollDetector();
 
   const onClickBrandHomepage = () => {
-    router("/brand");
+    router("/brand/dashboard");
   };
 
   return (
