@@ -1,11 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 
 import { AdminLayout } from "@/shared";
-import {
-  AdminCreateProductPage,
-  AdminProductListPage,
-  AdminProductPage,
-} from "@/pages";
+import { AdminProductListPage, AdminProductPage } from "@/pages";
 
 import { AnimatePresence } from "motion/react";
 
@@ -16,7 +12,6 @@ function AdminRouter() {
       <Routes location={location} key={location.pathname}>
         <Route path="admin" element={<AdminLayout />}>
           <Route index element={<AdminProductListPage />}></Route>
-          <Route path="create" element={<AdminCreateProductPage />}></Route>
           <Route path=":id" element={<AdminProductPage />}></Route>
         </Route>
       </Routes>

@@ -75,6 +75,4 @@ const ProductGrid = styled.div`
   }
 `;
 
-
-
 export { StorePage };

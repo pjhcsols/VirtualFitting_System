@@ -8,4 +8,6 @@ export * from "@/shared/layout/login/LogInLayout";
 
 export * from "@/shared/layout/main/MainLayout";
 
-export * from "@/shared/layout/store/StoreLayout"
+export * from "@/shared/layout/store/StoreLayout";
+
+export * from "@/shared/layout/brand/BrandLayout";
