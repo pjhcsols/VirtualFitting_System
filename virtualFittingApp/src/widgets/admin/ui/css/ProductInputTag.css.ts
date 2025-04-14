@@ -64,13 +64,45 @@ export const FileUploader = styled.div`
 `;
 
 export const UploadedFile = styled.div`
+  position: relative;
   box-sizing: border-box;
   width: 100%;
   padding: 12px 24px;
   display: flex;
   justify-content: flex-start;
   align-items: center;
+  color: black;
+  border: 1px solid black;
+  border-radius: 2px;
+`;
+
+export const UploadBtnContainer = styled.div`
+  position: absolute;
+  right: 10px;
+  top: 1/2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   gap: 8px;
+`;
+
+export const DeleteBtn = styled.div`
+  width: 50px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 2px;
+  cursor: pointer;
+  background-color: #ff6f6f;
+  font-family: "Prata-Regular";
+  font-size: 12px;
+  color: white;
+  z-index: 10;
+`;
+
+export const UploadBtn = styled(DeleteBtn)`
+  background-color: #98bfff;
 `;
 
 export const UploadedFileContainer = styled.div`
@@ -79,6 +111,7 @@ export const UploadedFileContainer = styled.div`
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: center;
+  gap: 8px;
 `;
 
 export const FileTag = styled.input.attrs({ type: "file" })`
@@ -213,5 +246,34 @@ export const MaterialContainer = styled.div`
       color: black;
       cursor: pointer;
     }
+  }
+`;
+
+export const SizeTableContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+export const SizeTable = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const SizeInput = styled.input`
+  width: 20%;
+  height: 40px;
+  text-align: center;
+  background-color: white;
+  border: 0.5px solid black;
+  font-family: "Pretendard";
+  font-size: 16px;
+  color: black;
+  &:focus {
+    outline: none;
   }
 `;
