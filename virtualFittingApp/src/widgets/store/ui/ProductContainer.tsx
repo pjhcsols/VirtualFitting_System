@@ -1,102 +1,103 @@
-import {
-  LikeButton,
-  ProductSmallCard,
-  ShareButton,
-  ShoppingCartButton,
-} from "@/shared";
-import { ICON_REVIEW, IMG_TEST_CLOTHES } from "@/shared/constants";
+import {  ProductSmallCard,} from "@/shared";
+import { IMG_TEST_CLOTHES, ICON_LIKE, ICON_SHARE } from "@/shared/constants";
 import styled from "styled-components";
+import { useState } from "react";
 
-function ProductContainer() {
+function ProductContainer({ product }: { product: any }) {
+  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+
   return (
     <ProductBox>
       <ProductImageBox>
-        <ProductImage src="" alt="product-image" />
-        <ProductSmallImagesContainer>
+      <ProductSmallImagesContainer>
           <ProductSmallCard src={IMG_TEST_CLOTHES} />
           <ProductSmallCard src={IMG_TEST_CLOTHES} />
           <ProductSmallCard src={IMG_TEST_CLOTHES} />
         </ProductSmallImagesContainer>
+      <ProductImage src={product.image} alt={product.name} />
+
       </ProductImageBox>
-      <ProductDescriptionBox>
-        <BrandBox>
-          <BrandTitle>BASILIUM</BrandTitle>
-          <Description>10% OFF</Description>
-        </BrandBox>
-        <DescriptionBox>
-          <ProductTitle>ONE-TUCK WIDE SWEAT PANTS [BLACK]</ProductTitle>
-        </DescriptionBox>
-        <DescriptionBox>
-          <ReviewScoreText>4.8</ReviewScoreText>
-          <ReviewIcon />
-          <ProductReviewDescription>1000 REVIEWS</ProductReviewDescription>
-        </DescriptionBox>
-        <DescriptionBox>
-          <PriceText>10,000원</PriceText>
-        </DescriptionBox>
-        <ColorContainer>
-          <ColorText>Another Color</ColorText>
-          <ColorBoxes>
-            <ProductSmallCard src={IMG_TEST_CLOTHES} />
-            <ProductSmallCard src={IMG_TEST_CLOTHES} />
-          </ColorBoxes>
-        </ColorContainer>
-        <DescriptionBox>
-          <ShoppingCartButton id={`1`} />
-        </DescriptionBox>
-        <ButtonContainer>
-          <LikeButton />
-          <ShareButton />
-        </ButtonContainer>
-      </ProductDescriptionBox>
+      <ProductInfoBox>
+        <TopRow>
+          <Brand>BASILIUM</Brand>
+        </TopRow>
+        <TopRow>
+          <ProductName>클래식 루즈핏 티셔츠</ProductName>
+          <IconImage src={ICON_LIKE} alt="like icon" />
+        </TopRow>
+        <TopRow>
+          <Price>￦50,000</Price>
+          <IconImage src={ICON_SHARE} alt="share icon" />
+        </TopRow>
+        <ColorSwatches>
+          {product.colors.map((color: string, index: number) => (
+            <ColorCircle
+              key={index}
+              $color={color}
+              $selected={selectedColor === color}
+              onClick={() => setSelectedColor(color)}
+            />
+          ))}
+        </ColorSwatches>
+        <SelectedColorText>{selectedColor} | 폴리에스터</SelectedColorText>
+      </ProductInfoBox>
     </ProductBox>
   );
 }
 
 const ProductBox = styled.section`
-  width: 100%;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 16px;
+  gap: 24px;
+  width: 100%;
+  max-width: 1400px;
+  padding: 64px 64px;
 `;
 
 const ProductImageBox = styled.div`
   width: 50%;
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: center;
+  margin-left: 128px;
 `;
 
 const ProductImage = styled.img`
-  width: 30vw;
-  height: 45vw;
-  border-radius: 24px;
-  background: #7f7f7f 50%;
-  box-shadow: 0px 20px 20px 0 rgb(0, 0, 0, 0.25);
+  flex: 1;
+  aspect-ratio: 4 / 5;
+  padding: 0 24px;
+  object-fit: cover;
 `;
 
 const ProductSmallImagesContainer = styled.div`
-  box-sizing: border-box;
-  padding: 30px 3.5vw;
-  width: 100%;
+  width: 100px;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
+  gap: 8px;
+  flex-flow: column nowrap;
+`;
+
+const ProductInfoBox = styled.div`
+  width: 50%;
+  display: flex;
+  margin-right: 128px;
+  flex-direction: column;
   gap: 8px;
 `;
 
-const ProductDescriptionBox = styled.div`
-  box-sizing: border-box;
-  padding: 10px 32px;
-  width: 50%;
+const TopRow = styled.div`
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 16px;
+  justify-content: space-between;
+  align-items: center;
+  // border: 1px solid black;
+`;
+
+const Brand = styled.div`
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 1rem;
+  color: black;
+`;
+
+const IconImage = styled.img`
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
 `;
 
 const DescriptionBox = styled.div`
@@ -108,34 +109,32 @@ const DescriptionBox = styled.div`
   gap: 4px;
 `;
 
-const ColorContainer = styled(DescriptionBox)`
-  flex-flow: column nowrap;
-  align-items: flex-start;
-`;
-
-const ColorBoxes = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 8px;
-`;
-
-const BrandBox = styled(DescriptionBox)`
-  justify-content: space-between;
-`;
-
-const BrandTitle = styled.h1`
-  font-family: "Prata-Regular";
+const ProductName = styled.div`
+  font-family: 'HelveticaNeueLight', sans-serif;
   font-size: 2vw;
+  font-weight: 300;
   color: black;
 `;
 
-const ProductTitle = styled.p`
-  font-family: "Prata-Regular";
-  font-size: 1.5vw;
+const Price = styled.div`
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 2vw;
+  font-weight: 300;
   color: black;
+`;
+
+const ColorSwatches = styled.div`
+  display: flex;
+  gap: 4px;
+`;
+
+const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: ${(props) => props.$color};
+  border: ${(props) => (props.$selected ? "2px" : "1px")} solid black;
+  cursor: pointer;
 `;
 
 const Description = styled.p`
@@ -143,39 +142,14 @@ const Description = styled.p`
   font-size: 1vw;
   font-weight: 500;
   color: black;
+  border: 1px solid black;
 `;
 
-const ColorText = styled(Description)`
-  font-family: "studio-sans";
-  font-size: 1vw;
-  text-transform: uppercase;
-`;
-
-const ProductReviewDescription = styled(Description)`
-  font-family: "Pretendard";
-  font-size: 0.8vw;
-  color: gray;
-`;
-
-const ReviewScoreText = styled(ProductReviewDescription)`
+const SelectedColorText = styled.div`
+  display: flex;
+  font-size: 0.75vw;
+  font-family: 'HelveticaNeueLight', sans-serif;
   color: black;
-`;
-
-const ReviewIcon = styled.img.attrs({ src: ICON_REVIEW, alt: "review-icon" })`
-  width: 1.75vw;
-  height: 1.75vw;
-  object-fit: contain;
-`;
-
-const PriceText = styled.span`
-  font-family: "studio-sans";
-  font-size: 1.2vw;
-  font-weight: 500;
-  color: black;
-`;
-
-const ButtonContainer = styled(DescriptionBox)`
-  gap: 2vw;
 `;
 
 export { ProductContainer };
