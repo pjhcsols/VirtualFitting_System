@@ -5,6 +5,7 @@ import { MypageDetail } from "@/pages/my";
 import { MyOrderList } from "@/pages/my/ui/MyOrderList";
 import { MyCancel } from "@/pages/my/ui/MyCancel";
 import { MyLike } from "@/pages/my/ui/MyLike";
+import { MyOrderListDetail } from "@/pages/my/ui/MyOrderListDetail";
 
 function MyRouter() {
   const location = useLocation();
@@ -15,6 +16,7 @@ function MyRouter() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/detail" element={<MypageDetail />} />
         <Route path="/myPage/order" element={<MyOrderList />} />
+        <Route path="/myPage/order/detial" element={<MyOrderListDetail />} />
         <Route path="/myPage/cancel" element={<MyCancel />} />
         <Route path="/myPage/like" element={<MyLike />} />
       </Routes>

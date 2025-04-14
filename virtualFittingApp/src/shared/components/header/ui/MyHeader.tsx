@@ -12,7 +12,7 @@ function MyHeader({ title }: HeaderProps) {
   return (
     <Container1>
       <Container2>
-        <Left onClick={() => navigate("/")}>
+        <Left onClick={() => navigate("/myPage")}>
           <BackIcon src={backImg} alt="뒤로가기" />
         </Left>
         <Center>
@@ -43,7 +43,9 @@ const Container2 = styled.div`
   width: 100%;
   height: 56px;
   padding: 0px 16px;
-  background: rgb(255, 255, 255);
+  background: #fff;
+
+  transform: translateX(-10px);  
 `;
 
 const Left = styled.div`
