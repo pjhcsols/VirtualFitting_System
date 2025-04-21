@@ -1,2 +1,2 @@
-export * from "@/pages/admin/ui/AdminProductListPage";
-export * from "@/pages/admin/ui/AdminProductPage";
+export * from "@/pages/admin/ui/AdminLogin";
+export * from "@/pages/admin/ui/AdminBrandControllPanel";
