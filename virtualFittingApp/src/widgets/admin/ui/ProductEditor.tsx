@@ -1,13 +1,15 @@
 import * as S from "@/widgets/admin/ui/css/ProductEditor.css";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
-import type { ClientProductDto } from "@/widgets/admin/types/Product";
+import type { ClientProductDto, ProductCategory } from "@/shared";
 import { UPLOAD_PRODUCT } from "@/widgets/admin/api/admin.action";
 import ProductPreview from "@/widgets/admin/ui/ProductPreview";
 import ProductInputTag from "@/widgets/admin/ui/ProductInputTag";
+import { JudgeStandard } from "./JudgeStandard";
 
 function ProductEditor() {
   const wrapRef = useRef<HTMLDivElement>(null);
 
+  const [sizeTableCount, setSizeTableCount] = useState<number>(1);
   const [totalHeight, setTotalHeight] = useState<number>(0);
   const [step, setStep] = useState<number>(0);
 
@@ -17,13 +19,54 @@ function ProductEditor() {
     productPrice: "",
     productMainPhotos: null,
     productQuantity: 0,
-    productSize: "L",
     productColor: "BLACK",
     productMaterial: "COTTON",
     productSubPhotos: null,
-    productSizeTable: [],
+    productSizeTable: [
+      {
+        productSize: "S",
+        productArm: 0,
+        productChest: 0,
+        productShoulder: 0,
+        productTotalLength: 0,
+      },
+      {
+        productSize: "M",
+        productArm: 0,
+        productChest: 0,
+        productShoulder: 0,
+        productTotalLength: 0,
+      },
+      {
+        productSize: "L",
+        productArm: 0,
+        productChest: 0,
+        productShoulder: 0,
+        productTotalLength: 0,
+      },
+      {
+        productSize: "XL",
+        productArm: 0,
+        productChest: 0,
+        productShoulder: 0,
+        productTotalLength: 0,
+      },
+      {
+        productSize: "XX",
+        productArm: 0,
+        productChest: 0,
+        productShoulder: 0,
+        productTotalLength: 0,
+      },
+    ],
   });
 
+  const [productCategory, setProductCategory] = useState<ProductCategory[]>([
+    {
+      categoryId: 0,
+      categoryName: "",
+    },
+  ]);
   const [mainPreviews, setMainPreviews] = useState<string[] | null>([]);
   const [subPreviews, setSubPreviews] = useState<string[] | null>(null);
 
@@ -41,39 +84,55 @@ function ProductEditor() {
     }
   };
 
-  const onClickNextStep = (e: MouseEvent<HTMLDivElement>) => {
+  const onClickNextStep = async (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
-    if (step !== 3) {
+    if (step !== 5) {
       setStep((prev) => prev + 1);
     }
   };
 
-  const onSubmitProduct = async () => {
+  const onClickSubmit = async (e: MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     const res = await UPLOAD_PRODUCT();
   };
 
   return (
     <S.Wrapper ref={wrapRef}>
-      <ProductPreview
-        step={step}
-        productInfo={productInfo}
-        mainPreviews={mainPreviews}
-        subPreviews={subPreviews}
-      />
-      <S.Divider hv={`${totalHeight}px`} />
-      <ProductInputTag
-        step={step}
-        productInfo={productInfo}
-        mainPreview={mainPreviews}
-        subPreview={subPreviews}
-        setProductInfo={setProductInfo}
-        setMainPreview={setMainPreviews}
-        setSubPreview={setSubPreviews}
-      />
+      {step === 5 ? (
+        <JudgeStandard
+          step={step}
+          setStep={setStep}
+          productInfo={productInfo}
+          productCategory={productCategory}
+        />
+      ) : (
+        <>
+          <ProductPreview
+            step={step}
+            productInfo={productInfo}
+            mainPreviews={mainPreviews}
+            subPreviews={subPreviews}
+            productCategory={productCategory}
+          />
+          <S.Divider hv={`${totalHeight}px`} />
+          <ProductInputTag
+            step={step}
+            productInfo={productInfo}
+            mainPreview={mainPreviews}
+            subPreview={subPreviews}
+            productCategory={productCategory}
+            sizeTableCount={sizeTableCount}
+            setProductInfo={setProductInfo}
+            setMainPreview={setMainPreviews}
+            setSubPreview={setSubPreviews}
+            setProductCategory={setProductCategory}
+            setSizeTableCount={setSizeTableCount}
+          />
+        </>
+      )}
       <S.ButtonContainer step={step}>
         {step != 0 && <S.NextBtn onClick={onClickPrevStep}>이전</S.NextBtn>}
-        {step != 3 && <S.NextBtn onClick={onClickNextStep}>다음</S.NextBtn>}
-        {step == 3 && <S.NextBtn onClick={onClickNextStep}>업로드</S.NextBtn>}
+        {step != 5 && <S.NextBtn onClick={onClickNextStep}>다음</S.NextBtn>}
       </S.ButtonContainer>
     </S.Wrapper>
   );

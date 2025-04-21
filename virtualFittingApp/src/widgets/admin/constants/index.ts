@@ -1,5 +1,3 @@
-import { Color, Material } from "@/widgets/admin/types/Product";
-
 export const NoticeComments = [
   {
     step: 0,
@@ -14,13 +12,6 @@ export const ImageUploadCautions = [
   "서브 이미지는 최대 9개까지 업로드할 수 있습니다.",
 ];
 
-export const SizeTableTitles = [
-  "productTotalLength",
-  "productChest",
-  "productShoulder",
-  "productArm",
-];
-
 export const InfoCautions = [""];
 
 export const blackColorCode = "#130C16";
@@ -31,22 +22,3 @@ export const redColorCode = "#EC5353";
 export const yellowColorCode = "#FFEB00";
 export const greenColorCode = "#81C147";
 export const orangeColorCode = "#F98510";
-
-export const palleteList: Color[] = [
-  "BLACK",
-  "WHITE",
-  "GRAY",
-  "BLUE",
-  "RED",
-  "YELLOW",
-  "GREEN",
-  "ORANGE",
-];
-
-export const materialList: Material[] = [
-  "COTTON",
-  "POLYESTER",
-  "WOOL",
-  "FABRIC",
-  "SILK",
-];

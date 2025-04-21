@@ -16,11 +16,10 @@ export const ImageContainer = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   align-items: flex-start;
-  gap: 4px;
+  gap: 8px;
 `;
 
 export const UploadedImageContainer = styled.div`
-  width: 100%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
@@ -50,7 +49,6 @@ export const NoImage = styled.div<{ hv: string }>`
   justify-content: center;
   align-items: center;
   border: 1px solid black;
-  background-color: gray;
 `;
 
 export const ImageBox = styled.div`
@@ -70,6 +68,7 @@ export const SubImages = styled.img`
   align-items: center;
   border: 1px solid black;
   overflow-x: auto;
+  cursor: pointer;
 
   /* Firefox Web Browser */
   scrollbar-width: none;
@@ -213,14 +212,6 @@ export const ProductSizeTableContainer = styled.div`
   }
 `;
 
-export const ProductCategoryContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
-
 export const SizeTable = styled.table`
   border-collapse: collapse;
   border: 0;
@@ -273,4 +264,40 @@ export const SizeTable = styled.table`
   tbody th {
     background-color: #f8f8f8;
   }
+`;
+
+export const ProductCategoryContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 16px;
+  .title-text {
+    font-family: "Pretendard";
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: black;
+  }
+`;
+
+export const ProductCategoryBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 8px;
+`;
+
+export const ProductOptionImages = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+export const OptionImage = styled.img`
+  width: 100%;
 `;
