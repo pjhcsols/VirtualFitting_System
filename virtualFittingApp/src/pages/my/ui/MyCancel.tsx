@@ -22,7 +22,7 @@ function MyCancel() {
             <RightSection>
               <TitleLine>
                 <Brand>BASILIUM</Brand>
-                <OrderDetail onClick={() => navigate("myPage/order/detail")}>주문 상세</OrderDetail>
+                <OrderDetail onClick={() => navigate("/myPage/cancel/detial")}>주문 상세</OrderDetail>
               </TitleLine>
               <ProductName>클래식 B 루즈핏 티셔츠</ProductName>
               <OptionText>블랙 / XL / 1개</OptionText>

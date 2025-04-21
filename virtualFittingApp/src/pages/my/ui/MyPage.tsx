@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";

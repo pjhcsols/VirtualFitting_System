@@ -31,7 +31,7 @@ export const submitUserInfo = async (
     data.append("photo", photoFile);
   }
 
-  const response = await API_BASILIUM.post("/api/user/update", data, {
+  const response = await API_BASILIUM.post("/b1/api/user/update", data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

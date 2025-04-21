@@ -16,7 +16,7 @@ function MyRouter() {
         <Route path="/myPage" element={<MyPage />} />
         <Route path="/myPage/detail" element={<MypageDetail />} />
         <Route path="/myPage/order" element={<MyOrderList />} />
-        <Route path="/myPage/order/detial" element={<MyOrderListDetail />} />
+        <Route path="/myPage/cancel/detial" element={<MyOrderListDetail />} />
         <Route path="/myPage/cancel" element={<MyCancel />} />
         <Route path="/myPage/like" element={<MyLike />} />
       </Routes>
