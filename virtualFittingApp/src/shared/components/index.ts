@@ -39,3 +39,7 @@ export * from "@/shared/components/product-card";
 // export * from "@/shared/components/progress";
 
 export * from "@/shared/components/precaution";
+
+export * from "@/shared/components/input";
+
+export * from "@/shared/components/checkMark";
