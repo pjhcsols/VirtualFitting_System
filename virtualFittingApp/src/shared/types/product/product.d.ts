@@ -4,12 +4,11 @@ export type ClientProductDto = {
   productName: string;
   productDescription: string;
   productPrice: number | string;
-  productMainPhotos: FileList | null;
+  productMainPhotos: (File | null)[] | null;
   productQuantity: number;
-  productSize: Size;
   productMaterial: Material;
   productColor: Color;
-  productSubPhotos: FileList | null;
+  productSubPhotos: File[] | null;
   productSizeTable: SizeTable[];
 };
 
@@ -28,8 +27,14 @@ export type Size = "XX" | "S" | "M" | "L" | "XL" | "F";
 export type Material = "COTTON" | "POLYESTER" | "WOOL" | "FABRIC" | "SILK";
 
 export type SizeTable = {
+  productSize: Size;
   productTotalLength: number | string;
   productChest: number | string;
   productShoulder: number | string;
   productArm: number | string;
+};
+
+export type ProductCategory = {
+  categoryId: number;
+  categoryName: string;
 };
