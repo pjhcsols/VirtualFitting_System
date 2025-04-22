@@ -9,26 +9,30 @@ import {
   blueColorCode,
   grayColorCode,
   greenColorCode,
-  materialList,
   orangeColorCode,
   redColorCode,
   whiteColorCode,
   yellowColorCode,
 } from "@/widgets/admin/constants";
-import type {
-  ClientProductDto,
-  Color,
-  Material,
-  Size,
-  SizeTable,
-} from "@/widgets/admin/types/Product";
+import {
+  CategorySelector,
+  CategoryViewer,
+  type ClientProductDto,
+  type Color,
+  type Material,
+  type ProductCategory,
+  type Size,
+  type SizeTable,
+} from "@/shared";
 import { useEffect, useRef, useState } from "react";
+import { CategoryMapping, materialList } from "@/shared/constants";
 
 type ProductPreviewType = {
   step: number;
   productInfo: ClientProductDto;
   mainPreviews: string[] | null;
   subPreviews: string[] | null;
+  productCategory: ProductCategory[];
 };
 
 export default function ProductPreview({
@@ -36,6 +40,7 @@ export default function ProductPreview({
   productInfo,
   mainPreviews,
   subPreviews,
+  productCategory,
 }: ProductPreviewType) {
   const imageHeightRef = useRef<HTMLImageElement>(null);
   const [imageHeight, setImageHeight] = useState<number>(0);
@@ -46,6 +51,11 @@ export default function ProductPreview({
       setImageHeight(imageHeightRef.current.offsetWidth * 1.25);
     }
   }, []);
+
+  const showPrice = (input: string | number) => {
+    const inputStr = input.toString();
+    return inputStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  };
 
   const PalletDots = () => {
     if (productInfo.productColor === "YELLOW") {
@@ -98,7 +108,7 @@ export default function ProductPreview({
           </P.ProductTitleBox>
           <P.ProductTitleBox>
             <span className="title-text">🏷️ 상품 가격</span>
-            <span className="price-text">{`₩${productInfo.productPrice}`}</span>
+            <span className="price-text">{`₩${showPrice(productInfo.productPrice)}`}</span>
           </P.ProductTitleBox>
           <P.ProductTitleBox>
             <span className="title-text">📝 상품 설명</span>
@@ -116,7 +126,7 @@ export default function ProductPreview({
           <P.ProductMaterial>
             <span className="title-text">제품 소재</span>
             <div className="material-container">
-              {materialList.map((item, key) => {
+              {materialList.map((item: string, key: number) => {
                 return (
                   <P.Material
                     key={key}
@@ -144,7 +154,7 @@ export default function ProductPreview({
                 {productInfo.productSizeTable.map((item, key) => {
                   return (
                     <tr key={key}>
-                      <th>{productInfo.productSize}</th>
+                      <th>{item.productSize}</th>
                       <td>{item.productTotalLength}</td>
                       <td>{item.productChest}</td>
                       <td>{item.productShoulder}</td>
@@ -158,7 +168,41 @@ export default function ProductPreview({
         </P.ProductOptionContainer>
       );
     } else if (step === 3) {
-      return <P.ProductCategoryContainer></P.ProductCategoryContainer>;
+      return (
+        <P.ProductCategoryContainer>
+          <span className="title-text">제품 카테고리</span>
+          <P.ProductCategoryBox>
+            {Object.entries(CategoryMapping).map(([key, value]) => {
+              return (
+                <CategoryViewer
+                  categoryId={parseInt(key)}
+                  categoryName={value}
+                  productCategory={productCategory}
+                  key={key}
+                />
+              );
+            })}
+          </P.ProductCategoryBox>
+        </P.ProductCategoryContainer>
+      );
+    } else if (step === 4) {
+      return (
+        <P.ImageContainer>
+          <P.ProductOptionImages>
+            {subPreviews ? (
+              <>
+                {subPreviews.map((item, key) => {
+                  return (
+                    <P.OptionImage src={item} alt={`option-${key}`} key={key} />
+                  );
+                })}
+              </>
+            ) : (
+              <P.NoImage hv={`${imageHeight}px`} />
+            )}
+          </P.ProductOptionImages>
+        </P.ImageContainer>
+      );
     }
   };
 

@@ -1,11 +1,9 @@
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
-import { Header } from "@/shared/components";
 
 function AdminLayout() {
   return (
     <Wrapper>
-      <Header />
       <AdminContentContainer>
         <Outlet />
       </AdminContentContainer>
