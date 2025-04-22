@@ -11,7 +11,7 @@ function OrderListContent() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const load = async () => {
+    const fetchOrderList = async () => {
       try {
         const userId = localStorage.getItem("userId");
         if (!userId) return;
@@ -21,7 +21,7 @@ function OrderListContent() {
         console.error("주문 정보를 불러오는 데 실패했습니다.", error);
       }
     };
-    load();
+    fetchOrderList();
   }, []);
 
   if (!orders.length) {

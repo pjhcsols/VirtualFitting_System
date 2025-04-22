@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
-import userImg from "../../../shared/components/header/ui/UserImg.png";
+import { MYUSER_ICON } from "@/pages/my/constants";
 import arrowImg from "./arrow.png";
 
 function MyPage() {
@@ -17,7 +17,7 @@ function MyPage() {
       <ContentWrapper>
         <UserInfoSection>
           <UserInfo onClick={() => navigate("/mypage/detail")}> 
-            <Avatar src={userImg} alt="유저 이미지" />
+            <Avatar src={MYUSER_ICON} alt="유저 이미지" />
             <UserName>{userName}</UserName>
             <ArrowImg2 src={arrowImg} alt=">" />
           </UserInfo>

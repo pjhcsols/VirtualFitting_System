@@ -1,16 +1,22 @@
-import React from "react";
+import React, { Suspense } from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
-import { useNavigate } from "react-router-dom";
+import { LikeContentList } from "@/pages/my/ui/LikeContentList";
 
 function MyLike() {
-  const navigate = useNavigate();
-
   return (
     <PageWrapper>
       <HeaderWrapper>
         <MyHeader title="좋아요" />
       </HeaderWrapper>
+
+      <ContentWrapper>
+        <InnerContent>
+          <Suspense fallback={<div>불러오는 중...</div>}>
+            <LikeContentList />
+          </Suspense>
+        </InnerContent>
+      </ContentWrapper>
     </PageWrapper>
   );
 }
@@ -30,10 +36,17 @@ const HeaderWrapper = styled.div`
   z-index: 100;
 `;
 
-const Divider = styled.hr`
-  margin: 16px 0;
-  border: none;
-  height: 1px;
-  background-color: #e5e5e5;
-  width: 550px;
+const ContentWrapper = styled.div`
+  margin-top: 70px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+`;
+
+const InnerContent = styled.div`
+  width: 100%;
+  max-width: 600px;
+  padding: 30px 30px;
+  box-sizing: border-box;
 `;

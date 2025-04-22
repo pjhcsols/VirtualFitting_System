@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import backImg from "../ui/back.png";
+import { BACK_ICON } from "@/shared/components/header/constants";
 
 interface HeaderProps {
   title: string;
@@ -13,7 +13,7 @@ function MyHeader({ title }: HeaderProps) {
     <Container1>
       <Container2>
         <Left onClick={() => navigate("/myPage")}>
-          <BackIcon src={backImg} alt="뒤로가기" />
+          <BackIcon src={BACK_ICON} alt="뒤로가기" />
         </Left>
         <Center>
           <h3>{title}</h3>
