@@ -1,10 +1,7 @@
 import { useState, useRef } from "react";
 import styled from "styled-components";
-import userImg from "../../../shared/components/header/ui/UserImg.png";   
+import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
 import { MyHeader } from "@/shared/components/header";
-import femaleIcon from "./female.png";
-import maleIcon from "./male.png";
-import cameraIcon from "./camera.png";
 import penIcon from "./pen.png";
 import { UserFormData } from "../types/user";
 import { submitUserInfo } from "../api/submit.action";
@@ -59,7 +56,7 @@ function MypageDetail() {
 
         <ContentWrapper>
             <AvatarContainer>
-              <AvatarIcon src={profilePreviewImage ?? userImg} alt="사용자 이미지" />
+              <AvatarIcon src={profilePreviewImage ?? MYUSER_ICON} alt="사용자 이미지" />
               <PenIcon src={penIcon} alt="수정 아이콘" onClick={handleUpProfileButton} />
               <HiddenInput
                 type="file"
@@ -122,7 +119,7 @@ function MypageDetail() {
                         onClick={() => setFormData({ ...formData, gender: "남자" })}
                     >
                         <GenderImg 
-                            src={maleIcon} 
+                            src={MALE_ICON} 
                             alt="남자"
                             selected={formData.gender === "남자"}
                         /> 
@@ -134,7 +131,7 @@ function MypageDetail() {
                         onClick={() => setFormData({ ...formData, gender: "여자"})}
                         >
                             <GenderImg 
-                                src={femaleIcon} 
+                                src={FEMALE_ICON} 
                                 alt="여자"
                                 selected={formData.gender === "여자"}
                             />
@@ -152,13 +149,13 @@ function MypageDetail() {
                 </TelForm>
             </FormField>
             <FormField>
-                <Label>사진</Label>
+                <Label1>사진</Label1>
                 <div>
                 <PictureBox htmlFor="imageUpload">
                     {photoPreviewImage ? (
                         <PreviewImg src={photoPreviewImage} alt="미리보기" />
                 ) : (
-                        <CameraImg src={cameraIcon} alt="카메라 아이콘" />
+                        <CameraImg src={CAMERA_ICON} alt="카메라 아이콘" />
                 )}
                 </PictureBox>
                 <HiddenInput 
@@ -268,6 +265,13 @@ const Label = styled.label`
   color: #202429;
 `;
 
+const Label1 = styled.label`
+  flex: 0 0 120px;
+  font-size: 14px;
+  color: #202429;
+  margin-bottom: 35px;
+`;
+
 const Input = styled.input`
     width: 300px;
     padding: 10px;
@@ -331,7 +335,7 @@ const GenderImg = styled.img<{ selected: boolean}>`
   width: 16px;
   height: 16px;
   filter: ${(props) =>
-    props.selected ? "grayscale(100%) brightness(60%)" : "#000"};
+    props.selected ? "#e4e6e9" : "#000"};
 `;
 
 const SizeInput = styled(Input)`

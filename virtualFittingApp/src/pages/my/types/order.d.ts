@@ -11,4 +11,3 @@ export interface OrderItem {
     price: number;
     productImageUrl: string;
   }
-  
