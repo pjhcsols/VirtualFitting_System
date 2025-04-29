@@ -1,14 +1,16 @@
 import styled, { css } from "styled-components";
+import { type DashboardObjectType } from "@/shared/components/card/types/DashboardObject";
 
-const paddingStyle = {
+const paddingStyle: Record<DashboardObjectType, string> = {
   upload: "180px 250px",
   list: "180px 180px",
-  logout: "100px 150px",
-  analytics: "100px 150px",
+  logout: "100px 125px",
+  analytics: "100px 125px",
+  profile: "100px 125px",
 };
 
 export const ButtonObject = styled.div<{
-  type: "upload" | "list" | "logout" | "analytics";
+  type: DashboardObjectType;
 }>`
   position: relative;
   border: none;

@@ -1,12 +1,13 @@
-import * as S from "@/shared/components/card/ui/css/DashboardObject.css";
 import { type MouseEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-type DashboardObjectType = {
-  type: "upload" | "list" | "logout" | "analytics";
-};
+/* CSS */
+import * as S from "@/shared/components/card/ui/css/DashboardObject.css";
 
-function DashboardObject({ type }: DashboardObjectType) {
+/* Types */
+import { type DashboardObjectType } from "@/shared/components/card/types/DashboardObject";
+
+function DashboardObject({ type }: { type: DashboardObjectType }) {
   const router = useNavigate();
   const convertText = (): string => {
     if (type === "upload") {
@@ -17,9 +18,10 @@ function DashboardObject({ type }: DashboardObjectType) {
       return "로그아웃";
     } else if (type === "analytics") {
       return "시장 분석";
-    } else {
-      return "";
+    } else if (type === "profile") {
+      return "정보 수정";
     }
+    return "";
   };
 
   const onClickDashBoardObject = (e: MouseEvent<HTMLDivElement>) => {
@@ -31,6 +33,8 @@ function DashboardObject({ type }: DashboardObjectType) {
         router("/brand/list?page=0&size=10");
       } else if (type === "analytics") {
         router("/brand/analytics");
+      } else if (type === "profile") {
+        router("/brand/my");
       }
     }, 700);
   };

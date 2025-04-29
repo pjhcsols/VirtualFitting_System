@@ -8,6 +8,7 @@ function BrandDashboard() {
       <DashboardObject type="list" />
       <DashboardObject type="analytics" />
       <DashboardObject type="logout" />
+      <DashboardObject type="profile" />
     </S.Wrapper>
   );
 }
