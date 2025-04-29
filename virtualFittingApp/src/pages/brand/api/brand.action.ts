@@ -13,3 +13,21 @@ export const MODIFY_BRAND_INFO = async (request: BrandUserType) => {
     return err;
   }
 };
+
+type GetBrandInfoType = {
+  page: number;
+  size: number;
+};
+
+export const GET_BRAND_INFO = async ({ page, size }: GetBrandInfoType) => {
+  try {
+    const res = await API_BASILIUM.get(`/brand?page=${page}&size=${size}`);
+    if (res.status === 200) {
+      return res.data;
+    } else {
+      return false;
+    }
+  } catch (err) {
+    return err;
+  }
+};
