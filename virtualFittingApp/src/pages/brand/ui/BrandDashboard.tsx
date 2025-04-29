@@ -1,13 +1,14 @@
 import * as S from "@/pages/brand/ui/css/BrandDashboard.css";
-import { BrandSearch } from "@/shared";
+import { DashboardObject } from "@/shared";
 
 function BrandDashboard() {
   return (
     <S.Wrapper>
-      <S.SearchContainer>
-        <BrandSearch />
-      </S.SearchContainer>
-      <S.ProductList></S.ProductList>
+      <DashboardObject type="upload" />
+      <DashboardObject type="list" />
+      <DashboardObject type="analytics" />
+      <DashboardObject type="logout" />
+      <DashboardObject type="profile" />
     </S.Wrapper>
   );
 }

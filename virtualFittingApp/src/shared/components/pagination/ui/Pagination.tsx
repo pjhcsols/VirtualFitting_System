@@ -1,25 +1,49 @@
-import styled from "styled-components";
-import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "../../../constants";
-import { PaginationType } from "../types/pagination";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
 
-function Pagination({ currIdx, totalIdx }: PaginationType) {
-  const router = useNavigate();
+import styled from "styled-components";
+import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "@/shared/constants";
+
+import { sliceArrayByLimit } from "@/shared/components/pagination/utils/pagination.utils";
+import { type PaginationType } from "@/shared/components/pagination/types/pagination";
+
+function Pagination({ page, setPage, totalPage, size }: PaginationType) {
+  const [currPageArray, setCurrPageArray] = useState<number[]>([]);
+  const [totalPageArray, setTotalPageArray] = useState<number[][]>([]);
+
+  useEffect(() => {
+    if (totalPageArray.length === 0) {
+      const slicedPageArray: number[][] = sliceArrayByLimit(totalPage, size);
+      setTotalPageArray(slicedPageArray);
+      setCurrPageArray(slicedPageArray[0]);
+    }
+  }, [totalPage, size]);
+
+  useEffect(() => {
+    if ((page + 1) % size === 1 && totalPageArray.length > 0) {
+      setCurrPageArray(totalPageArray[Math.floor((page + 1) / size)]);
+    } else if ((page + 1) % size === 0 && totalPageArray.length > 0) {
+      setCurrPageArray(totalPageArray[Math.floor((page + 1) / size) - 1]);
+    }
+  }, [page]);
 
   const onClickPrev = () => {
-    if (currIdx === 1) {
+    if (page === 0) {
       return;
     } else {
-      router("/admin?page=1&size=10");
+      setPage(page - 1);
     }
   };
 
   const onClickNext = () => {
-    if (currIdx >= totalIdx) {
+    if (page >= totalPage) {
       return;
     } else {
-      router("/adin?page=2&size=10");
+      setPage(page + 1);
     }
+  };
+
+  const onClickNumber = (key: number) => {
+    setPage(key);
   };
 
   return (
@@ -30,8 +54,16 @@ function Pagination({ currIdx, totalIdx }: PaginationType) {
           alt="left-arrow"
           onClick={onClickPrev}
         />
-        {Array.from({ length: totalIdx }).map((_, key) => {
-          return <PaginationNumber key={key}>{key + 1}</PaginationNumber>;
+        {currPageArray?.map((value) => {
+          return (
+            <PaginationNumber
+              key={value}
+              onClick={() => onClickNumber(value)}
+              isClicked={value === page}
+            >
+              {value + 1}
+            </PaginationNumber>
+          );
         })}
         <ArrowIcon
           src={ICON_RIGHT_ARROW}
@@ -67,9 +99,10 @@ const ArrowIcon = styled.img`
   cursor: pointer;
 `;
 
-const PaginationNumber = styled.span`
+const PaginationNumber = styled.span<{ isClicked: boolean }>`
   font-size: 0.8em;
-  color: black;
+  color: ${(props) => (props.isClicked ? "#00aff0" : "black")};
+  font-weight: 500;
   cursor: pointer;
 `;
 
