@@ -1,29 +1,28 @@
+import { useEffect, useState } from "react";
+
 import styled from "styled-components";
 import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "@/shared/constants";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-export type PaginationType = {
-  page: number;
-  setPage: Dispatch<SetStateAction<number>>;
-  totalPage: number;
-  limit: number;
-};
+import { sliceArrayByLimit } from "@/shared/components/pagination/utils/pagination.utils";
+import { type PaginationType } from "@/shared/components/pagination/types/pagination";
 
-function Pagination({ page, setPage, totalPage, limit }: PaginationType) {
+function Pagination({ page, setPage, totalPage, size }: PaginationType) {
   const [currPageArray, setCurrPageArray] = useState<number[]>([]);
   const [totalPageArray, setTotalPageArray] = useState<number[][]>([]);
 
   useEffect(() => {
-    const slicedPageArray = sliceArrayByLimit(totalPage, limit);
-    setTotalPageArray(slicedPageArray);
-    setCurrPageArray(slicedPageArray[0]);
-  }, [totalPage]);
+    if (totalPageArray.length === 0) {
+      const slicedPageArray: number[][] = sliceArrayByLimit(totalPage, size);
+      setTotalPageArray(slicedPageArray);
+      setCurrPageArray(slicedPageArray[0]);
+    }
+  }, [totalPage, size]);
 
   useEffect(() => {
-    if (page % limit === 1) {
-      setCurrPageArray(totalPageArray[Math.floor(page / limit)]);
-    } else if (page % limit === 0) {
-      setCurrPageArray(totalPageArray[Math.floor(page / limit) - 1]);
+    if ((page + 1) % size === 1 && totalPageArray.length > 0) {
+      setCurrPageArray(totalPageArray[Math.floor((page + 1) / size)]);
+    } else if ((page + 1) % size === 0 && totalPageArray.length > 0) {
+      setCurrPageArray(totalPageArray[Math.floor((page + 1) / size) - 1]);
     }
   }, [page]);
 
@@ -47,17 +46,6 @@ function Pagination({ page, setPage, totalPage, limit }: PaginationType) {
     setPage(key);
   };
 
-  const sliceArrayByLimit = (totalPage: number, limit: number) => {
-    const totalPageArray = Array.from({ length: totalPage }, (_, i) => i);
-    const result: number[][] = [];
-
-    while (totalPageArray.length > 0) {
-      result.push(totalPageArray.splice(0, limit));
-    }
-
-    return result;
-  };
-
   return (
     <Wrapper>
       <PaginationContainer>
@@ -66,14 +54,14 @@ function Pagination({ page, setPage, totalPage, limit }: PaginationType) {
           alt="left-arrow"
           onClick={onClickPrev}
         />
-        {currPageArray?.map((_, key) => {
+        {currPageArray?.map((value) => {
           return (
             <PaginationNumber
-              key={key}
-              onClick={() => onClickNumber(key)}
-              isClicked={key === page}
+              key={value}
+              onClick={() => onClickNumber(value)}
+              isClicked={value === page}
             >
-              {key + 1}
+              {value + 1}
             </PaginationNumber>
           );
         })}
