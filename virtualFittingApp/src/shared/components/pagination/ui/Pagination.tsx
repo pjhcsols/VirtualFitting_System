@@ -1,25 +1,61 @@
 import styled from "styled-components";
-import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "../../../constants";
-import { PaginationType } from "../types/pagination";
-import { useNavigate } from "react-router-dom";
+import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "@/shared/constants";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-function Pagination({ currIdx, totalIdx }: PaginationType) {
-  const router = useNavigate();
+export type PaginationType = {
+  page: number;
+  setPage: Dispatch<SetStateAction<number>>;
+  totalPage: number;
+  limit: number;
+};
+
+function Pagination({ page, setPage, totalPage, limit }: PaginationType) {
+  const [currPageArray, setCurrPageArray] = useState<number[]>([]);
+  const [totalPageArray, setTotalPageArray] = useState<number[][]>([]);
+
+  useEffect(() => {
+    const slicedPageArray = sliceArrayByLimit(totalPage, limit);
+    setTotalPageArray(slicedPageArray);
+    setCurrPageArray(slicedPageArray[0]);
+  }, [totalPage]);
+
+  useEffect(() => {
+    if (page % limit === 1) {
+      setCurrPageArray(totalPageArray[Math.floor(page / limit)]);
+    } else if (page % limit === 0) {
+      setCurrPageArray(totalPageArray[Math.floor(page / limit) - 1]);
+    }
+  }, [page]);
 
   const onClickPrev = () => {
-    if (currIdx === 1) {
+    if (page === 0) {
       return;
     } else {
-      router("/admin?page=1&size=10");
+      setPage(page - 1);
     }
   };
 
   const onClickNext = () => {
-    if (currIdx >= totalIdx) {
+    if (page >= totalPage) {
       return;
     } else {
-      router("/adin?page=2&size=10");
+      setPage(page + 1);
     }
+  };
+
+  const onClickNumber = (key: number) => {
+    setPage(key);
+  };
+
+  const sliceArrayByLimit = (totalPage: number, limit: number) => {
+    const totalPageArray = Array.from({ length: totalPage }, (_, i) => i);
+    const result: number[][] = [];
+
+    while (totalPageArray.length > 0) {
+      result.push(totalPageArray.splice(0, limit));
+    }
+
+    return result;
   };
 
   return (
@@ -30,8 +66,16 @@ function Pagination({ currIdx, totalIdx }: PaginationType) {
           alt="left-arrow"
           onClick={onClickPrev}
         />
-        {Array.from({ length: totalIdx }).map((_, key) => {
-          return <PaginationNumber key={key}>{key + 1}</PaginationNumber>;
+        {currPageArray?.map((_, key) => {
+          return (
+            <PaginationNumber
+              key={key}
+              onClick={() => onClickNumber(key)}
+              isClicked={key === page}
+            >
+              {key + 1}
+            </PaginationNumber>
+          );
         })}
         <ArrowIcon
           src={ICON_RIGHT_ARROW}
@@ -67,9 +111,10 @@ const ArrowIcon = styled.img`
   cursor: pointer;
 `;
 
-const PaginationNumber = styled.span`
+const PaginationNumber = styled.span<{ isClicked: boolean }>`
   font-size: 0.8em;
-  color: black;
+  color: ${(props) => (props.isClicked ? "#00aff0" : "black")};
+  font-weight: 500;
   cursor: pointer;
 `;
 
