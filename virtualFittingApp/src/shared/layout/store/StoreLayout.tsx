@@ -24,6 +24,14 @@ const Wrapper = styled.main`
   background-color: #fffafa;
 `;
 
+const BREAKPOINT = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+};
+
 const ContentWrapper = styled.article`
   box-sizing: border-box;
   padding: 70px 50px;
@@ -31,6 +39,11 @@ const ContentWrapper = styled.article`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+
+  @media (max-width: ${BREAKPOINT.sm}px) {
+    padding: 70px 16px;
+  }
+
 `;
 
 export { StoreLayout };

@@ -8,15 +8,18 @@ function ProductContainer({ product }: { product: any }) {
 
   return (
     <ProductBox>
-      <ProductImageBox>
+      
       <ProductSmallImagesContainer>
-          <ProductSmallCard src={IMG_TEST_CLOTHES} />
-          <ProductSmallCard src={IMG_TEST_CLOTHES} />
-          <ProductSmallCard src={IMG_TEST_CLOTHES} />
+          <ProductSmallCard />
+          <ProductSmallCard />
+          <ProductSmallCard />
+          <ProductSmallCard />
+          <ProductSmallCard />
+          <ProductSmallCard />
+          <ProductSmallCard />
         </ProductSmallImagesContainer>
       <ProductImage src={product.image} alt={product.name} />
 
-      </ProductImageBox>
       <ProductInfoBox>
         <TopRow>
           <Brand>BASILIUM</Brand>
@@ -45,25 +48,40 @@ function ProductContainer({ product }: { product: any }) {
   );
 }
 
+const BREAKPOINT = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+};
+
 const ProductBox = styled.section`
   display: flex;
-  gap: 24px;
+  gap: 32px;
   width: 100%;
   max-width: 1400px;
-  padding: 64px 64px;
-`;
+  flex-direction: row;
 
-const ProductImageBox = styled.div`
-  width: 50%;
-  display: flex;
-  margin-left: 128px;
+  @media (max-width: ${BREAKPOINT.md}px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const ProductImage = styled.img`
-  flex: 1;
+  width: 50%;
+  // min-width: 300px;
+  max-width: 510px;
+  // max-height: 650px;
   aspect-ratio: 4 / 5;
-  padding: 0 24px;
   object-fit: cover;
+  order: 0;
+
+  @media (max-width: ${BREAKPOINT.md}px) {
+    width: 100%;
+    max-width: 510px;
+  }
 `;
 
 const ProductSmallImagesContainer = styled.div`
@@ -71,21 +89,31 @@ const ProductSmallImagesContainer = styled.div`
   display: flex;
   gap: 8px;
   flex-flow: column nowrap;
+
+  @media (max-width: ${BREAKPOINT.md}px) {
+    flex-direction: row;
+    justify-content: center;
+    width: auto;
+    order: 2;
+  }
 `;
 
 const ProductInfoBox = styled.div`
   width: 50%;
   display: flex;
-  margin-right: 128px;
   flex-direction: column;
   gap: 8px;
+  order: 3;
+
+  @media (max-width: ${BREAKPOINT.md}px) {
+    width: 100%;
+  }
 `;
 
 const TopRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  // border: 1px solid black;
 `;
 
 const Brand = styled.div`
@@ -100,27 +128,24 @@ const IconImage = styled.img`
   cursor: pointer;
 `;
 
-const DescriptionBox = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 4px;
-`;
-
 const ProductName = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
-  font-size: 2vw;
-  font-weight: 300;
+  font-weight: 30;
   color: black;
+  font-size: 1.5rem;
+  @media (max-width: ${BREAKPOINT.md}px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const Price = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
-  font-size: 2vw;
   font-weight: 300;
   color: black;
+  font-size: 1.5rem;
+  @media (max-width: ${BREAKPOINT.md}px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const ColorSwatches = styled.div`
@@ -129,11 +154,11 @@ const ColorSwatches = styled.div`
 `;
 
 const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
-  border: ${(props) => (props.$selected ? "2px" : "1px")} solid black;
+  border: ${(props) => (props.$selected ? "1px" : "1px")} solid gray;
   cursor: pointer;
 `;
 
@@ -147,7 +172,7 @@ const Description = styled.p`
 
 const SelectedColorText = styled.div`
   display: flex;
-  font-size: 0.75vw;
+  font-size: 12px;
   font-family: 'HelveticaNeueLight', sans-serif;
   color: black;
 `;
