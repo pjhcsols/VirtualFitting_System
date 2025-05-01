@@ -18,6 +18,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 
@@ -46,6 +47,14 @@ public class PaymentController {
             @RequestParam Color productColor) throws Exception {
 
         UUID taskId = UUID.randomUUID();
+        // 요청 정보를 PaymentService에 저장
+        RequestTaskInfo info = new RequestTaskInfo(userId, productId, count, productSize, productColor);
+        //paymentService.addRequestTask(taskId, info);
+        // 2) 중복 검사 + 요청 저장
+        Optional<PaymentInventoryResponse> duplicatePayment = paymentService.addRequestTask(taskId, info);
+        if (duplicatePayment.isPresent()) {
+            return ResponseEntity.ok(duplicatePayment.get());
+        }
 
         // Kafka 메시지 전송
         ProductUpdateMessage message = new ProductUpdateMessage(userId, productId, count, taskId, productSize, productColor);
@@ -56,11 +65,9 @@ public class PaymentController {
         log.info("taskId {}: userId={}, productId={}, count={}, productSize={}, productColor={}",
                 taskId, userId, productId, count, productSize, productColor);
 
-        // 요청 정보를 PaymentService에 저장
-        RequestTaskInfo info = new RequestTaskInfo(userId, productId, count, productSize, productColor);
-        paymentService.addRequestTask(taskId, info);
 
         // 예약 복구 작업 등록 및 PaymentInventoryResponse 반환
+        //밑에 중복 요청 카프카 +컨트롤러 상황 수정하기
         PaymentInventoryResponse response = paymentService.scheduleRestoration(userId, productId, count, taskId, productSize, productColor);
         return ResponseEntity.ok(response);
     }

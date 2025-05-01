@@ -7,22 +7,22 @@ import java.util.UUID;
 
 //클라이언트 request시에 스케줄러 delay와 requestId를 함께 전송하기 위한 DTO
 public class PaymentInventoryResponse {
-    private UUID requestId;
+    private UUID taskId;
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private LocalDateTime delayTime;
     //private long delay;
 
-    public PaymentInventoryResponse(UUID requestId, LocalDateTime delayTime) {
-        this.requestId = requestId;
+    public PaymentInventoryResponse(UUID taskId, LocalDateTime delayTime) {
+        this.taskId = taskId;
         this.delayTime = delayTime;
     }
 
-    public UUID getRequestId() {
-        return requestId;
+    public UUID getTaskId() {
+        return taskId;
     }
 
-    public void setRequestId(UUID requestId) {
-        this.requestId = requestId;
+    public void setTaskId(UUID requestId) {
+        this.taskId = requestId;
     }
 
     public LocalDateTime getDelayTime() {

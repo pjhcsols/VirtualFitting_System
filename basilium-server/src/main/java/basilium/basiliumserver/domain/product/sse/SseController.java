@@ -13,7 +13,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 // 구독한 product의 재고가 변경될 때마다 즉시 전송하는 SSE 컨트롤러
-
+// product 규격에 맞춰서 수정
 @RestController
 @RequestMapping("/inventory")
 public class SseController {
