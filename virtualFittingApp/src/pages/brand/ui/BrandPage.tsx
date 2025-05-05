@@ -15,16 +15,9 @@ function BrandPage() {
   const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        markers: true,
-      },
-    });
-
-    tl.fromTo(
+    gsap.fromTo(
       ".carpet",
       {
-        scrollTrigger: ".container",
         y: 200,
         opacity: 0,
       },
@@ -35,30 +28,72 @@ function BrandPage() {
         ease: "power4.out",
       },
     );
-    tl.fromTo(
-      [".fitting-title", ".fitting-text"],
+    gsap.fromTo(
+      ".fitting-title",
       {
-        scrollTrigger: ".fitting-sys",
-        start: "top end",
         y: 50,
         opacity: 0,
       },
       {
+        scrollTrigger: {
+          trigger: ".fitting-title",
+          start: "top center",
+          markers: true,
+        },
         stagger: 0.25,
         y: 0,
         opacity: 1,
         ease: "power3.out",
       },
     );
-    tl.fromTo(
-      [".interface-title", ".interface-text"],
+    gsap.fromTo(
+      ".fitting-text",
       {
-        scrollTrigger: ".interface-sys",
-        start: "top end",
         y: 50,
         opacity: 0,
       },
       {
+        scrollTrigger: {
+          trigger: ".fitting-text",
+          start: "top center",
+          markers: true,
+        },
+        stagger: 0.25,
+        y: 0,
+        opacity: 1,
+        ease: "power3.out",
+      },
+    );
+    gsap.fromTo(
+      ".interface-title",
+      {
+        y: 50,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: {
+          trigger: ".interface-title",
+          start: "top center",
+          markers: true,
+        },
+        stagger: 0.25,
+        y: 0,
+        opacity: 1,
+        ease: "power3.out",
+      },
+    );
+    gsap.fromTo(
+      ".interface-text",
+      {
+        y: 50,
+        opacity: 0,
+      },
+      {
+        scrollTrigger: {
+          trigger: ".interface-text",
+          start: "top center",
+          markers: true,
+        },
         stagger: 0.25,
         y: 0,
         opacity: 1,

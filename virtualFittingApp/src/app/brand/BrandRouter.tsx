@@ -15,7 +15,7 @@ function BrandRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="brand" element={<BrandPage />} />
+        <Route path="brand" index element={<BrandPage />} />
         <Route path="brand" element={<BrandLayout />}>
           <Route path="dashboard" index element={<BrandDashboard />} />
           <Route path="list" element={<BrandProductList />} />
