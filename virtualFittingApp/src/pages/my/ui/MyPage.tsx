@@ -16,7 +16,7 @@ function MyPage() {
 
       <ContentWrapper>
         <UserInfoSection>
-          <UserInfo onClick={() => navigate("/mypage/detail")}> 
+          <UserInfo onClick={() => navigate("/mypage/detail")}>
             <Avatar src={MYUSER_ICON} alt="유저 이미지" />
             <UserName>{userName}</UserName>
             <ArrowImg2 src={arrowImg} alt=">" />
@@ -34,15 +34,27 @@ function MyPage() {
         <MenuList>
           <MenuItem>
             주문내역
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/order")} alt=">" />
+            <ArrowImg
+              src={arrowImg}
+              onClick={() => navigate("/myPage/order")}
+              alt=">"
+            />
           </MenuItem>
           <MenuItem>
             취소/반품/교환 내역
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/cancel")} alt=">" />
+            <ArrowImg
+              src={arrowImg}
+              onClick={() => navigate("/myPage/cancel")}
+              alt=">"
+            />
           </MenuItem>
           <MenuItem>
             좋아요
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
+            <ArrowImg
+              src={arrowImg}
+              onClick={() => navigate("/myPage/like")}
+              alt=">"
+            />
           </MenuItem>
         </MenuList>
       </ContentWrapper>
@@ -62,13 +74,13 @@ const PageWrapper = styled.div`
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;   // 
+  align-items: center; //
   padding: 70px 0;
   width: 100%;
 `;
@@ -139,7 +151,7 @@ const MenuList = styled.div`
 `;
 
 const MenuItem = styled.div`
-  display: flex;  
+  display: flex;
   justify-content: space-between;
   padding: 13px 5px;
   font-size: 12px;
@@ -153,7 +165,7 @@ const ArrowImg = styled.img`
   width: 20px;
   height: 20px;
   opacity: 0.6;
-`
+`;
 
 const ArrowImg2 = styled.img`
   width: 28px;
@@ -161,4 +173,4 @@ const ArrowImg2 = styled.img`
   opacity: 0.6;
   margin-left: -15px;
   margin-top: 2.8px;
-`
+`;
