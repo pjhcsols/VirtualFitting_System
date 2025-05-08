@@ -26,10 +26,23 @@ function ProductCard({ product, onClick }: ProductCardProps) {
           </ColorSwatches>
         </ImageBox>
           <InfoBox>
+            <Brand>{product.brand}</Brand>
             <Name>{product.name}</Name>
-            <ColorPriceRow>
-              <Price>￦{product.price}</Price>
-            </ColorPriceRow>
+            <PriceBox>
+              {product.discountRate && (
+                <DiscountRate>{product.discountRate}%</DiscountRate>
+              )}
+              <PriceRow>
+                {product.discountRate ? (
+                  <>
+                    <OriginalPrice>￦{product.price}</OriginalPrice>
+                    <DiscountedPrice>￦{product.discountedPrice}</DiscountedPrice>
+                  </>
+                ) : (
+                  <Price>￦{product.price}</Price>
+                )}
+              </PriceRow>
+            </PriceBox>
           </InfoBox>
         </Card>
       </>
@@ -94,7 +107,6 @@ const Card = styled.div`
   }
 `;
 
-
 const ImageBox = styled.div`
   width: 100%;
   aspect-ratio: 4 / 5;
@@ -111,7 +123,17 @@ const ImageBox = styled.div`
 `;
 
 const InfoBox = styled.div`
-  padding: 0.75em 0.5em;
+  padding: 0.5em 0.5em;
+`;
+
+const Brand = styled.div`
+  display: flex;
+  font-size: 0.7em;
+  font-weight: 400;
+  color: black;
+  font-family: 'Inter', sans-serif;
+  text-decoration: underline;
+  cursor: pointer;
 `;
 
 const Name = styled.div`
@@ -122,11 +144,45 @@ const Name = styled.div`
   font-family: 'Inter', sans-serif;
 `;
 
-const ColorPriceRow = styled.div`
+const PriceBox = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.2em;
+`;
+
+const PriceRow = styled.div`
+  display: flex;
   align-items: center;
-  margin-top: 0.5em;
+  gap: 0.2em;
+`;
+
+const DiscountRate = styled.div`
+  font-size: 0.5em;
+  background-color: red;
+  color: white;
+  padding: 0em 0.4em;
+`;
+
+const OriginalPrice = styled.div`
+  font-size: 0.8em;
+  color: black;
+  text-decoration: line-through;
+  text-decoration-color: red;
+  font-family: 'HelveticaNeueLight', sans-serif;
+`;
+
+const DiscountedPrice = styled.div`
+  font-size: 0.8em;
+  color: red;
+  font-weight: 600;
+  font-family: 'HelveticaNeueLight', sans-serif;
+`;
+
+const Price = styled.div`
+  font-size: 0.8em;
+  color: black;
+  font-family: 'HelveticaNeueLight', sans-serif;
 `;
 
 const ColorSwatches = styled.div`
@@ -135,13 +191,12 @@ const ColorSwatches = styled.div`
   left: 8px;
   display: flex;
   gap: 4px;
-  z-index: 2; // 이미지보다 위
+  z-index: 2;
 `;
 
-
 const ColorCircle = styled.div<{ $color: string }>`
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
   border: 1px solid black;
@@ -152,10 +207,5 @@ const ExtraText = styled.div`
   color: black;
 `;
 
-const Price = styled.div`
-  font-size: 0.8em;
-  color: black;
-  font-family: 'HelveticaNeueLight', sans-serif;
-`;
 
 export { ProductCard };
