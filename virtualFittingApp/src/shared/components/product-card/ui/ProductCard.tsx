@@ -14,20 +14,20 @@ function ProductCard({ product, onClick }: ProductCardProps) {
     <>
       <FontStyle />
       <Card onClick={onClick}>
-          <ImageBox>
-            <img src={product.image} alt={product.name} />
-          </ImageBox>
+        <ImageBox>
+          <img src={product.image} alt={product.name} />
+          <ColorSwatches>
+            {visibleColors.map((color: string, index: number) => (
+              <ColorCircle key={index} $color={color} />
+            ))}
+            {remainingColors > 0 && (
+              <ExtraText>+{remainingColors}</ExtraText>
+            )}
+          </ColorSwatches>
+        </ImageBox>
           <InfoBox>
             <Name>{product.name}</Name>
             <ColorPriceRow>
-              <ColorSwatches>
-                {visibleColors.map((color: string, index: number) => (
-                  <ColorCircle key={index} $color={color} />
-                ))}
-                {remainingColors > 0 && (
-                  <ExtraText>+{remainingColors}</ExtraText>
-                )}
-              </ColorSwatches>
               <Price>￦{product.price}</Price>
             </ColorPriceRow>
           </InfoBox>
@@ -100,6 +100,7 @@ const ImageBox = styled.div`
   aspect-ratio: 4 / 5;
   overflow: hidden;
   border-bottom: 1px solid black;
+  position: relative;
 
   img {
     width: 100%;
@@ -129,9 +130,14 @@ const ColorPriceRow = styled.div`
 `;
 
 const ColorSwatches = styled.div`
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
   display: flex;
   gap: 4px;
+  z-index: 2; // 이미지보다 위
 `;
+
 
 const ColorCircle = styled.div<{ $color: string }>`
   width: 16px;
