@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
+import { getMaskedUserName } from "@/shared";
 import arrowImg from "./arrow.png";
 
 function MyPage() {
@@ -18,7 +19,7 @@ function MyPage() {
         <UserInfoSection>
           <UserInfo onClick={() => navigate("/mypage/detail")}> 
             <Avatar src={MYUSER_ICON} alt="유저 이미지" />
-            <UserName>{userName}</UserName>
+            <UserName>{getMaskedUserName(userName)}</UserName>
             <ArrowImg2 src={arrowImg} alt=">" />
           </UserInfo>
         </UserInfoSection>
@@ -33,16 +34,16 @@ function MyPage() {
 
         <MenuList>
           <MenuItem>
+            좋아요
+            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
+          </MenuItem>
+          <MenuItem>
             주문내역
             <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/order")} alt=">" />
           </MenuItem>
           <MenuItem>
             취소/반품/교환 내역
             <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/cancel")} alt=">" />
-          </MenuItem>
-          <MenuItem>
-            좋아요
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
           </MenuItem>
         </MenuList>
       </ContentWrapper>
