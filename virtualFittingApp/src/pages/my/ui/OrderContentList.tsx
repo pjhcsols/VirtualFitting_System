@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import { OrderItem } from "../types/order";
 import { OrderInfo } from "../api/order.action";
 import { useNavigate } from "react-router-dom";
-import { formatDate } from "@/shared/components/product/utils/date.util";
+import { formatSimpleDate } from "@/shared";
+import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
 import styled from "styled-components";
 import alertImg from "@/pages/my/ui/alert.png";
 
@@ -10,18 +11,22 @@ function OrderListContent() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const navigate = useNavigate();
 
+  // useEffect(() => {
+  //   const fetchOrderList = async () => {
+  //     try {
+  //       const userId = localStorage.getItem("userId");
+  //       if (!userId) return;
+  //       const data = await OrderInfo(userId);
+  //       setOrders(data);
+  //     } catch (error) {
+  //       console.error("주문 정보를 불러오는 데 실패했습니다.", error);
+  //     }
+  //   };
+  //   fetchOrderList();
+  // }, []);
+
   useEffect(() => {
-    const fetchOrderList = async () => {
-      try {
-        const userId = localStorage.getItem("userId");
-        if (!userId) return;
-        const data = await OrderInfo(userId);
-        setOrders(data);
-      } catch (error) {
-        console.error("주문 정보를 불러오는 데 실패했습니다.", error);
-      }
-    };
-    fetchOrderList();
+    setOrders(orderDummyData);
   }, []);
 
   if (!orders.length) {
@@ -37,9 +42,9 @@ function OrderListContent() {
     <>
       {orders.map((order) => (
         <React.Fragment key={order.id}>
-          <DateText>{formatDate(order.date)}</DateText>
+          <DateText>{formatSimpleDate(order.date)}</DateText>
           <OrderCard>
-            <ImageBox />
+            <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지지"/>
             <RightSection>
               <TitleLine>
                 <Brand>{order.brand}</Brand>
@@ -55,8 +60,8 @@ function OrderListContent() {
             </RightSection>
           </OrderCard>
           <ButtonWrapper>
-            <ActionButton>리뷰 작성</ActionButton>
-            <ActionButton>환불 신청</ActionButton>
+            <ActionButton>배송 조회</ActionButton>
+            <ActionButton>재구매</ActionButton>
           </ButtonWrapper>
           <Divider />
         </React.Fragment>
@@ -73,6 +78,9 @@ const DateText = styled.p`
   font-size: 16px;
   margin-bottom: 12px;
   margin-right: 500px;
+  text-align: left:
+  disply: inline-block;
+  white-space: nowrap;
 `;
 
 const OrderCard = styled.div`
@@ -82,11 +90,13 @@ const OrderCard = styled.div`
   width: 550px;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.img<{src?:string}>`
   width: 100px;
   height: 110px;
   background-color: #d9d9d9;
   border-radius: 10px;
+  object-fit: cover;
+  background-position: center;
 `;
 
 const RightSection = styled.div`

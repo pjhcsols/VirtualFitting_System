@@ -28,7 +28,7 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background: #fff;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 const HeaderWrapper = styled.div`
@@ -43,6 +43,7 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  flex-grow: 1;
 `;
 
 const InnerContent = styled.div`
