@@ -113,7 +113,7 @@ function MypageDetail() {
             <FormField>
                 <Label>성별</Label>
                 <GenderGroup>
-                    <GenderButton
+                    <GenderButton 
                         type="button"
                         selected={formData.gender === "남자"}
                         onClick={() => setFormData({ ...formData, gender: "남자" })}

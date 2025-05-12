@@ -1,5 +1,5 @@
 export interface OrderItem {
-    id: number;
+    id: string;
     date: string; 
     brand: string;
     productName: string;
@@ -10,4 +10,5 @@ export interface OrderItem {
     };
     price: number;
     productImageUrl: string;
+    category: string;
   }
