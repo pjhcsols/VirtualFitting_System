@@ -1,9 +1,9 @@
-import * as S from "@/widgets/admin/ui/css/ProductEditor.css";
+import * as S from "@/widgets/brand/ui/css/ProductEditor.css";
 import { type MouseEvent, useEffect, useRef, useState } from "react";
 import type { ClientProductDto, ProductCategory } from "@/shared";
-import { UPLOAD_PRODUCT } from "@/widgets/admin/api/admin.action";
-import ProductPreview from "@/widgets/admin/ui/ProductPreview";
-import ProductInputTag from "@/widgets/admin/ui/ProductInputTag";
+import { UPLOAD_PRODUCT } from "@/widgets/brand/api/brand.action";
+import ProductPreview from "@/widgets/brand/ui/ProductPreview";
+import ProductInputTag from "@/widgets/brand/ui/ProductInputTag";
 import { JudgeStandard } from "./JudgeStandard";
 
 function ProductEditor() {

@@ -11,7 +11,7 @@ import {
   XMarkAnimation,
 } from "@/shared";
 import { CheckOptions, ICON_LOADING } from "@/shared/constants";
-import * as S from "@/widgets/admin/ui/css/JudgeStandard.css";
+import * as S from "@/widgets/brand/ui/css/JudgeStandard.css";
 import gsap from "gsap";
 import { type Dispatch, type SetStateAction, useEffect, useState } from "react";
 
