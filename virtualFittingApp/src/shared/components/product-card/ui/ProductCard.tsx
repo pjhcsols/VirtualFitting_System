@@ -1,4 +1,6 @@
 import styled, { createGlobalStyle } from "styled-components";
+import { useState } from "react";
+import { ColorPopup } from "./ColorPopUp";
 
 type ProductCardProps = {
   product: any;
@@ -6,6 +8,7 @@ type ProductCardProps = {
 };
 
 function ProductCard({ product, onClick }: ProductCardProps) {
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const maxVisibleColors = 3;
   const visibleColors = product.colors.slice(0, maxVisibleColors);
   const remainingColors = product.colors.length - maxVisibleColors;
@@ -21,9 +24,19 @@ function ProductCard({ product, onClick }: ProductCardProps) {
               <ColorCircle key={index} $color={color} />
             ))}
             {remainingColors > 0 && (
-              <ExtraText>+{remainingColors}</ExtraText>
+              <ExtraIcon
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsPopupOpen(true);
+                }}
+              >
+                +more
+              </ExtraIcon>
             )}
           </ColorSwatches>
+          {isPopupOpen && (
+          <ColorPopup colors={product.colors} onClose={() => setIsPopupOpen(false)}/>
+          )}
         </ImageBox>
           <InfoBox>
             <Brand>{product.brand}</Brand>
@@ -68,7 +81,7 @@ const Card = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid black;
-  cursor: pointer;
+  // cursor: pointer;
 
   @media (max-width: ${sm - 1}px) {
     &:not(:first-child) {
@@ -200,6 +213,21 @@ const ColorCircle = styled.div<{ $color: string }>`
   border-radius: 50%;
   background-color: ${(props) => props.$color};
   border: 1px solid black;
+`;
+
+const ExtraIcon = styled.div`
+  width: 32px;
+  height: 20px;
+  border-radius: 50%;
+  // border: 2px solid black;
+  font-size: 0.5em;
+  display: flex;
+  // background-color: white;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Inter', sans-serif;
+  color: black;
+  cursor: pointer;
 `;
 
 const ExtraText = styled.div`
