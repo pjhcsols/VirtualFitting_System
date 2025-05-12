@@ -1,4 +1,4 @@
-import * as T from "@/widgets/admin/ui/css/ProductInputTag.css";
+import * as T from "@/widgets/brand/ui/css/ProductInputTag.css";
 import {
   type Dispatch,
   type MouseEvent,

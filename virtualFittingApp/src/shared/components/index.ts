@@ -43,3 +43,5 @@ export * from "@/shared/components/precaution";
 export * from "@/shared/components/input";
 
 export * from "@/shared/components/checkMark";
+
+export * from "@/shared/components/column";

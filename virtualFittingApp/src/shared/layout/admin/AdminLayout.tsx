@@ -1,9 +1,11 @@
 import styled from "styled-components";
 import { Outlet } from "react-router-dom";
+import { AdminHeader } from "@/shared/components";
 
 function AdminLayout() {
   return (
     <Wrapper>
+      <AdminHeader />
       <AdminContentContainer>
         <Outlet />
       </AdminContentContainer>
@@ -17,12 +19,15 @@ const Wrapper = styled.main`
   min-height: 100vh;
   background-color: #fffafa;
   overflow: hidden;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
 `;
 
 const AdminContentContainer = styled.article`
   box-sizing: border-box;
-  padding: 0 10rem;
-  width: calc(100%-10rem);
+  padding: 2rem 10rem;
+  width: 100%;
 
   @media (max-width: 1280px) {
     padding: 0 9rem;
