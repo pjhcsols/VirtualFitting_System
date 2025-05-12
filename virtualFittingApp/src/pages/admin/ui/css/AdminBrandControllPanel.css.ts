@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  gap: 32px;
 `;
 
 export const TitleContainer = styled.div`

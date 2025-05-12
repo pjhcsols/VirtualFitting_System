@@ -7,12 +7,6 @@ import { useGSAP } from "@gsap/react";
 
 function AdminBrandUserList() {
   const { contextSafe } = useGSAP();
-  useEffect(() => {
-    /*
-     * Brand User 정보들을 가져올 수 있도록하는
-     * API 로직 해당시키기
-     */
-  }, []);
 
   useEffect(() => {
     gsap.fromTo(

@@ -2,7 +2,11 @@ import { Route, Routes, useLocation } from "react-router-dom";
 
 import { AdminLayout } from "@/shared";
 
-import { AdminBrandControllPanel, AdminLogin } from "@/pages";
+import {
+  AdminBrandControllPanel,
+  AdminLogin,
+  AdminTotalUserList,
+} from "@/pages";
 
 function AdminRouter() {
   const location = useLocation();
@@ -10,7 +14,8 @@ function AdminRouter() {
     <Routes location={location} key={location.pathname}>
       <Route path="admin/login" element={<AdminLogin />} />
       <Route path="admin" element={<AdminLayout />}>
-        <Route path=":id" element={<AdminBrandControllPanel />} />
+        <Route path="branduser" element={<AdminBrandControllPanel />} />
+        <Route path="all" element={<AdminTotalUserList />} />
       </Route>
     </Routes>
   );
