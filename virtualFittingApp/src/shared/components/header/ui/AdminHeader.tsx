@@ -1,10 +1,12 @@
 import gsap from "gsap";
-import { useEffect } from "react";
+import { MouseEvent, useEffect } from "react";
 import styled from "styled-components";
 import { AdminHeaderOptions } from "@/shared/components/header/constants";
 import { ICON_BASILIUM_LOGO } from "@/shared/constants";
+import { useNavigate } from "react-router-dom";
 
 function AdminHeader() {
+  const router = useNavigate();
   useEffect(() => {
     gsap.fromTo(".header-wrapper", {}, {});
     gsap.fromTo(
@@ -21,6 +23,11 @@ function AdminHeader() {
       },
     );
   }, []);
+
+  const onClickOptionBox = (href: string) => {
+    router(`${href}`);
+  };
+
   return (
     <Wrapper className="header-wrapper">
       <LogoContainer>
@@ -30,7 +37,11 @@ function AdminHeader() {
       <ContentContainer>
         {AdminHeaderOptions.map((item, key) => {
           return (
-            <ContentBox className="content-box" key={key}>
+            <ContentBox
+              className="content-box"
+              key={key}
+              onClick={() => onClickOptionBox(item.href)}
+            >
               <ContentText className="content-text">{item.title}</ContentText>
             </ContentBox>
           );
