@@ -13,6 +13,7 @@ import Plus from "/svg/plus.svg";
 import Like from "/svg/like.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
+import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import type {
   CategoryType,
   Color,
@@ -37,6 +38,8 @@ export const ICON_PLUS = Plus;
 export const ICON_LIKE = Like;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
+
+export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 
 export const AnimationProps = {
   initial: {

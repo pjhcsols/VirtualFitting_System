@@ -1,8 +1,8 @@
-export const CART_ICON = "/svg/cart.svg"
-export const BAG_ICON = "/svg/bag.svg"
-export const USER_ICON = "/svg/user.svg"
-export const MENU_ICON = "/svg/menu.svg"
-export const BACK_ICON = "/svg/back.svg"
+export const CART_ICON = "/svg/cart.svg";
+export const BAG_ICON = "/svg/bag.svg";
+export const USER_ICON = "/svg/user.svg";
+export const MENU_ICON = "/svg/menu.svg";
+export const BACK_ICON = "/svg/back.svg";
 
 export const AdminHeaderContent = [
   {
@@ -24,5 +24,24 @@ export const AdminHeaderContent = [
     id: 3,
     title: "로그아웃",
     href: "logout",
+  },
+];
+
+export const AdminHeaderOptions = [
+  {
+    id: 0,
+    title: "Brand User List",
+  },
+  {
+    id: 2,
+    title: "Total User List",
+  },
+  {
+    id: 3,
+    title: "Product Manage",
+  },
+  {
+    id: 4,
+    title: "Logout",
   },
 ];
