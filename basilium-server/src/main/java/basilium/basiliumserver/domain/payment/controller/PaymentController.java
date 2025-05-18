@@ -1,5 +1,6 @@
 package basilium.basiliumserver.domain.payment.controller;
 
+import basilium.basiliumserver.domain.payment.controller.apiDocs.PaymentApiDocs;
 import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.RequestTaskInfo;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Size;
@@ -24,18 +25,16 @@ import java.util.UUID;
 
 // 결제 시 재고 실시간 관리 카프카 mq + 스케줄링
 @RestController
-@RequestMapping("/payment")
+@RequestMapping("/b1/payment")
 @RequiredArgsConstructor //오토와이어 제거한 버전
 @Slf4j
-public class PaymentController {
+public class PaymentController implements PaymentApiDocs {
 
     private final PaymentService paymentService;
     private final NormalUserService normalUserService;
 
-
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper = new ObjectMapper();
-    //private static final ConcurrentHashMap<UUID, String> requestTaskMaps = new ConcurrentHashMap<>();
 
 
     @PostMapping("/request")
@@ -77,14 +76,6 @@ public class PaymentController {
         paymentService.processPaymentResponse(taskId, success);
         return ResponseEntity.ok(success ? "결제 성공" : "결제 실패");
     }
-/*
-    public static void removeControllerMap(UUID taskId) {
-        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
-        requestTaskMaps.remove(taskId);
-        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
-    }
-
- */
 
     @GetMapping("/order/history")
     public ResponseEntity<List<?>> userOrderInfos(@AuthUser String userId){
