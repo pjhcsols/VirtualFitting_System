@@ -1,5 +1,6 @@
 import {  ProductSmallCard,} from "@/shared";
-import { IMG_TEST_CLOTHES, ICON_LIKE, ICON_SHARE } from "@/shared/constants";
+import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared/constants";
+import { LikeButton } from "@/shared/components/button/ui/LikeButton";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -26,7 +27,7 @@ function ProductContainer({ product }: { product: any }) {
         </TopRow>
         <TopRow>
           <ProductName>클래식 루즈핏 티셔츠</ProductName>
-          <IconImage src={ICON_LIKE} alt="like icon" />
+          <LikeButton />
         </TopRow>
         <TopRow>
           <Price>￦50,000</Price>
