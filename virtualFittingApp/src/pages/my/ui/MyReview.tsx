@@ -1,14 +1,12 @@
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
-import { useParams } from "react-router-dom";
 
-function MyOrderListDetail() {
-    const {id} = useParams();
+function MyReview() {
     
     return (
         <PageWrapper>
             <HeaderWrapper>
-                <MyHeader title="주문 상세" />
+                <MyHeader title="후기 작성" />
             </HeaderWrapper>
 
             <ContentWrapper>
@@ -19,7 +17,7 @@ function MyOrderListDetail() {
     );
 }
 
-export { MyOrderListDetail };
+export { MyReview };
 
 
 const PageWrapper = styled.div`

@@ -12,7 +12,7 @@ function MyHeader({ title }: HeaderProps) {
   return (
     <Container1>
       <Container2>
-        <Left onClick={() => navigate("/myPage")}>
+        <Left onClick={() => navigate(-1)}>
           <BackIcon src={BACK_ICON} alt="뒤로가기" />
         </Left>
         <Center>

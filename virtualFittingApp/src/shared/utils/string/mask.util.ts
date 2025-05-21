@@ -1,6 +1,6 @@
 export const getMaskedUserName = (name: string): string => {
-  if (name.length <= 2) {
-    return "*".repeat(name.length);
+  if (name.length <= 3) {
+    return name;
   }
-  return `${name[0]}${"*".repeat(name.length - 2)}${name[name.length - 1]}`;
+  return `${name.slice(0, 3)}${"*".repeat(name.length - 3)}`;
 };
