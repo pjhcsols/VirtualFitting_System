@@ -12,7 +12,7 @@ function AdminRouter() {
   const location = useLocation();
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="admin/login" element={<AdminLogin />} />
+      <Route path="login/admin" element={<AdminLogin />} />
       <Route path="admin" element={<AdminLayout />}>
         <Route path="branduser" element={<AdminBrandControllPanel />} />
         <Route path="all" element={<AdminTotalUserList />} />
