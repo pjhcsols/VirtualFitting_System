@@ -29,7 +29,7 @@ function MyPage() {
         <StatsWrapper>
           <Stat>포인트</Stat>
           <Stat>쿠폰</Stat>
-          <Stat>후기 작성</Stat>
+          <Stat onClick={() => navigate("/myPage/review")}>후기 작성</Stat>
         </StatsWrapper>
 
         <MenuList>
@@ -137,6 +137,7 @@ const Stat = styled.div`
   text-align: center;
   font-size: 14px;
   color: #999;
+  cursor: pointer;
 `;
 
 const MenuList = styled.div`
