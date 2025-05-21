@@ -53,16 +53,6 @@ function MyPage() {
               alt=">"
             />
           </MenuItem>
-
-          <MenuItem>
-            좋아요
-            <ArrowImg
-              src={arrowImg}
-              onClick={() => navigate("/myPage/like")}
-              alt=">"
-            />
-          </MenuItem>
-
         </MenuList>
       </ContentWrapper>
     </PageWrapper>

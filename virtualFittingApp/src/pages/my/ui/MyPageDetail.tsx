@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
 import { MyHeader } from "@/shared/components/header";
@@ -6,10 +6,13 @@ import penIcon from "./pen.png";
 import { UserFormData } from "../types/user";
 import { submitUserInfo } from "../api/submit.action";
 import { handleImageFileChange } from "@/pages/my";
+import { sendEmailLink, completeEmailLinkSignin } from "@/shared/utils/firebase/firebase";
 
 function MypageDetail() {
     const profileInputRef = useRef<HTMLInputElement | null>(null);
     const photoInputRef = useRef<HTMLInputElement | null>(null);  
+    const [loading, setLoading] = useState<boolean>(false);
+    const [emailVerified, setEmailVerified] = useState<boolean>(false);
     const [formData, setFormData] = useState<UserFormData>({
           id: "",
           name: "",
@@ -31,6 +34,20 @@ function MypageDetail() {
     const [photoPreviewImage, setPhotoPreviewImage] = useState<string | null>(null);
     const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
 
+    useEffect(() => {
+      const checkLink = async () => {
+        try {
+          const user = await completeEmailLinkSignin();
+          setEmailVerified(true);
+          setFormData((prev) => ({ ...prev, email: user.email ?? "" }));
+        } catch (err) {
+          console.error("인증 실패:", err);
+        }
+      };
+
+      checkLink();
+    }, []);
+
     const handleSubmit = async () => {
       try {
         await submitUserInfo(formData, profileImageFile ?? undefined, photoImageFile ?? undefined);
@@ -47,7 +64,19 @@ function MypageDetail() {
     const handleUpPhotoButton = () => {
       photoInputRef.current?.click();
     }; 
-       
+    
+    const handleSendVerification = async () => {
+      try {
+        setLoading(true);
+        await sendEmailLink(formData.email);
+        alert("이메일로 인증 링크를 전송했습니다. 메일함을 확인해주세요.");
+      } catch (error: any) {
+        alert("인증 메일 전송 실패: " + error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     return (
         <PageWrapper>
         <HeaderWrapper>
@@ -76,11 +105,11 @@ function MypageDetail() {
                 />
             </FormField>
             <FormField>
-                <Label>이메일</Label>
+                <Label>휴대폰 번호</Label>
                 <Input 
-                    placeholder="이메일을 입력해주세요." 
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value})}
+                    placeholder="- 없이 입력" 
+                    value={formData.phoneNumber}
+                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value})}
                 />
             </FormField>
             <FormField>
@@ -92,15 +121,20 @@ function MypageDetail() {
                 />
             </FormField>
             <FormField>
-                <Label>휴대폰 번호</Label>
-                <TelForm>
-                <PhoneInput 
-                    placeholder="- 없이 입력" 
-                    value={formData.phoneNumber}
-                    onChange={(e) => setFormData({ ...formData, phoneNumber: e.target.value})}
-                />
-                <AuthButton>인증</AuthButton>
-                </TelForm>
+                <Label>이메일</Label>
+                <EmailFieldWrapper>
+                  <TelForm>
+                    <PhoneInput 
+                      placeholder="이메일을 입력해주세요." 
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    />
+                    <AuthButton type="button" onClick={handleSendVerification} disabled={loading}>
+                      인증
+                    </AuthButton>
+                  </TelForm>
+                  {emailVerified && <VerifiedMessage>인증되었습니다.</VerifiedMessage>}
+                </EmailFieldWrapper>
             </FormField>
             <FormField>
                 <Label>생년월일</Label>
@@ -392,4 +426,19 @@ const PreviewImg = styled.img`
     width: 100%;
     height: 100%;
     object-fit: cover;
+`;
+
+const EmailFieldWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  min-height: 45px; /* 인증 메시지를 위한 공간 확보 */
+  justify-content: space-between;
+`;
+
+const VerifiedMessage = styled.p`
+  color: #007bff;
+  font-size: 10px;
+  margin-top: 4px;
+  margin-left: 2px;
 `;
