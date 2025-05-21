@@ -1,6 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 
-import { LogInPage } from "@/pages";
+import { AdminLogin, BrandLogin, LogInPage } from "@/pages";
 import { LogInLayout } from "@/shared";
 
 import { AnimatePresence } from "motion/react";
@@ -11,8 +11,10 @@ function LogInRouter() {
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/login" element={<LogInLayout />}>
+        <Route path="login" element={<LogInLayout />}>
           <Route index element={<LogInPage />} />
+          <Route path="admin" element={<AdminLogin />} />
+          <Route path="brand" element={<BrandLogin />} />
         </Route>
       </Routes>
     </AnimatePresence>

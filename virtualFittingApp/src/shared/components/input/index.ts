@@ -5,3 +5,4 @@ export * from "@/shared/components/input/ui/Profile";
 export * from "@/shared/components/input/ui/ProductInfo";
 export * from "@/shared/components/input/ui/ProductOptionUploader";
 export * from "@/shared/components/input/ui/CategorySelector";
+export * from "@/shared/components/input/ui/LoginInput";
