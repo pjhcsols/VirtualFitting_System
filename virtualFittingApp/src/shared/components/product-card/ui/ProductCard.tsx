@@ -1,6 +1,7 @@
 import styled, { createGlobalStyle } from "styled-components";
 import { useState } from "react";
 import { ColorPopup } from "./ColorPopUp";
+import { LikeButton } from "@/shared";
 
 type ProductCardProps = {
   product: any;
@@ -19,6 +20,9 @@ function ProductCard({ product, onClick }: ProductCardProps) {
       <Card onClick={onClick}>
         <ImageBox>
           <img src={product.image} alt={product.name} />
+          <LikeButtonWrapper >
+            <LikeButton />
+          </LikeButtonWrapper>
           <ColorSwatches>
             {visibleColors.map((color: string, index: number) => (
               <ColorCircle key={index} $color={color} />
@@ -215,14 +219,21 @@ const ColorCircle = styled.div<{ $color: string }>`
   border: 1px solid black;
 `;
 
+const LikeButtonWrapper = styled.div`
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  z-index: 2;
+  width: 24px;
+  height: 24px;
+`;
+
 const ExtraIcon = styled.div`
   width: 32px;
   height: 20px;
   border-radius: 50%;
-  // border: 2px solid black;
   font-size: 0.5em;
   display: flex;
-  // background-color: white;
   align-items: center;
   justify-content: center;
   font-family: 'Inter', sans-serif;

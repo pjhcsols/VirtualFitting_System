@@ -36,7 +36,7 @@ const Wrapper = styled.div`
   align-items: center;
 
   @media (max-width: ${BREAKPOINT.md}px) {
-    padding: 16px 5px;
+    padding: 16px 0px;
   }
 `;
 

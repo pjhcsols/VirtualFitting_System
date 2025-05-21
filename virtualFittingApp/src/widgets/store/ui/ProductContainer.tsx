@@ -1,5 +1,6 @@
 import {  ProductSmallCard,} from "@/shared";
-import { IMG_TEST_CLOTHES, ICON_LIKE, ICON_SHARE } from "@/shared/constants";
+import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared/constants";
+import { LikeButton } from "@/shared/components/button/ui/LikeButton";
 import styled from "styled-components";
 import { useState } from "react";
 
@@ -8,28 +9,28 @@ function ProductContainer({ product }: { product: any }) {
 
   return (
     <ProductBox>
-      
-      <ProductSmallImagesContainer>
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-        </ProductSmallImagesContainer>
-      <ProductImage src={product.image} alt={product.name} />
-
+      {/* <ProductImageGroup> */}
+        <ProductSmallImagesContainer>
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+          </ProductSmallImagesContainer>
+        <ProductImage src={product.image} alt={product.name} />
+      {/* </ProductImageGroup> */}
       <ProductInfoBox>
         <TopRow>
-          <Brand>BASILIUM</Brand>
+          <Brand> {product.brand} </Brand>
         </TopRow>
         <TopRow>
-          <ProductName>클래식 루즈핏 티셔츠</ProductName>
-          <IconImage src={ICON_LIKE} alt="like icon" />
+          <ProductName> {product.name} </ProductName>
+          <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>￦50,000</Price>
+          <Price>￦{product.price}</Price>
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
         <ColorSwatches>
@@ -42,7 +43,16 @@ function ProductContainer({ product }: { product: any }) {
             />
           ))}
         </ColorSwatches>
-        <SelectedColorText>{selectedColor} | 폴리에스터</SelectedColorText>
+        <SelectedColorText> {product.materials.join(", ")} | {selectedColor} </SelectedColorText>
+        <Description>
+          클래식한 오버핏 티셔츠{'\n'}
+          한겨울에도 착용하기 좋습니다
+        </Description>
+        <SizeBox>
+          {product.availableSizes.map((size: string) => (
+            <SizeItem key={size}>{size}</SizeItem>
+          ))}
+        </SizeBox>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -58,25 +68,40 @@ const BREAKPOINT = {
 
 const ProductBox = styled.section`
   display: flex;
-  gap: 32px;
+  gap: 4px;
   width: 100%;
   max-width: 1400px;
   flex-direction: row;
-
+  
   @media (max-width: ${BREAKPOINT.md}px) {
     flex-direction: column;
     align-items: center;
+    gap: 32px;
   }
 `;
 
+// const ProductImageGroup = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   gap: 16px;
+
+//   @media (max-width: ${BREAKPOINT.md}px) {
+//     flex-direction: column;
+//     align-items: center;
+//   }
+// `;
+
 const ProductImage = styled.img`
-  width: 50%;
-  // min-width: 300px;
+  width: 100%;
   max-width: 510px;
-  // max-height: 650px;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  height: auto;
   order: 0;
+
+  @media (max-width: ${BREAKPOINT.lg}px) {
+    max-width: 300px;
+  }
 
   @media (max-width: ${BREAKPOINT.md}px) {
     width: 100%;
@@ -85,7 +110,7 @@ const ProductImage = styled.img`
 `;
 
 const ProductSmallImagesContainer = styled.div`
-  width: 100px;
+  width: 80px;
   display: flex;
   gap: 8px;
   flex-flow: column nowrap;
@@ -104,6 +129,11 @@ const ProductInfoBox = styled.div`
   flex-direction: column;
   gap: 8px;
   order: 3;
+  margin: 0px 16px;
+
+  // @media (max-width: ${BREAKPOINT.lg}px) {
+  //   width: 300px;
+  // }
 
   @media (max-width: ${BREAKPOINT.md}px) {
     width: 100%;
@@ -130,7 +160,7 @@ const IconImage = styled.img`
 
 const ProductName = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
-  font-weight: 30;
+  font-weight: 300;
   color: black;
   font-size: 1.5rem;
   @media (max-width: ${BREAKPOINT.md}px) {
@@ -150,31 +180,72 @@ const Price = styled.div`
 
 const ColorSwatches = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 5px;
+  align-items: center;
 `;
 
 const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
-  width: 16px;
-  height: 16px;
+  position: relative;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
-  border: ${(props) => (props.$selected ? "1px" : "1px")} solid gray;
-  cursor: pointer;
-`;
+  border: 1px solid gray;
+  box-sizing: border-box;
 
-const Description = styled.p`
-  font-family: "Prata-Regular";
-  font-size: 1vw;
-  font-weight: 500;
-  color: black;
-  border: 1px solid black;
+  ${(props) =>
+    props.$selected &&
+    `
+    &::after {
+      content: "";
+      align-items: center;
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #ccc; 
+      box-sizing: border-box;
+    }
+  `}
 `;
 
 const SelectedColorText = styled.div`
   display: flex;
-  font-size: 12px;
+  font-size: 14px;
   font-family: 'HelveticaNeueLight', sans-serif;
   color: black;
+  padding: 4px 0px
+`;
+
+const Description = styled.p`
+  white-space: pre-line;
+  display: flex;
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 14px;
+  color: black;
+  text-align: left;
+  padding: 16px 0px;
+`;
+
+const SizeBox = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 16px 0px;
+`;
+
+const SizeItem = styled.div`
+  width: 80px;
+  height: 40px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  color: black
 `;
 
 export { ProductContainer };
