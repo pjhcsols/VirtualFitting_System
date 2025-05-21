@@ -23,14 +23,14 @@ function ProductContainer({ product }: { product: any }) {
       {/* </ProductImageGroup> */}
       <ProductInfoBox>
         <TopRow>
-          <Brand>BASILIUM</Brand>
+          <Brand> {product.brand} </Brand>
         </TopRow>
         <TopRow>
-          <ProductName>클래식 루즈핏 티셔츠</ProductName>
+          <ProductName> {product.name} </ProductName>
           <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>￦50,000</Price>
+          <Price>￦{product.price}</Price>
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
         <ColorSwatches>
@@ -43,7 +43,16 @@ function ProductContainer({ product }: { product: any }) {
             />
           ))}
         </ColorSwatches>
-        <SelectedColorText>{selectedColor} | 폴리에스터</SelectedColorText>
+        <SelectedColorText> {product.materials.join(", ")} | {selectedColor} </SelectedColorText>
+        <Description>
+          클래식한 오버핏 티셔츠{'\n'}
+          한겨울에도 착용하기 좋습니다
+        </Description>
+        <SizeBox>
+          {product.availableSizes.map((size: string) => (
+            <SizeItem key={size}>{size}</SizeItem>
+          ))}
+        </SizeBox>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -100,7 +109,6 @@ const ProductImage = styled.img`
   }
 `;
 
-
 const ProductSmallImagesContainer = styled.div`
   width: 80px;
   display: flex;
@@ -152,7 +160,7 @@ const IconImage = styled.img`
 
 const ProductName = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
-  font-weight: 30;
+  font-weight: 300;
   color: black;
   font-size: 1.5rem;
   @media (max-width: ${BREAKPOINT.md}px) {
@@ -203,19 +211,41 @@ const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
   `}
 `;
 
-const Description = styled.p`
-  font-family: "Prata-Regular";
-  font-size: 1vw;
-  font-weight: 500;
-  color: black;
-  border: 1px solid black;
-`;
-
 const SelectedColorText = styled.div`
   display: flex;
-  font-size: 12px;
+  font-size: 14px;
   font-family: 'HelveticaNeueLight', sans-serif;
   color: black;
+  padding: 4px 0px
+`;
+
+const Description = styled.p`
+  white-space: pre-line;
+  display: flex;
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 14px;
+  color: black;
+  text-align: left;
+  padding: 16px 0px;
+`;
+
+const SizeBox = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 16px 0px;
+`;
+
+const SizeItem = styled.div`
+  width: 80px;
+  height: 40px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 14px;
+  cursor: pointer;
+  color: black
 `;
 
 export { ProductContainer };
