@@ -9,18 +9,18 @@ function ProductContainer({ product }: { product: any }) {
 
   return (
     <ProductBox>
-      
-      <ProductSmallImagesContainer>
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-          <ProductSmallCard />
-        </ProductSmallImagesContainer>
-      <ProductImage src={product.image} alt={product.name} />
-
+      {/* <ProductImageGroup> */}
+        <ProductSmallImagesContainer>
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
+          </ProductSmallImagesContainer>
+        <ProductImage src={product.image} alt={product.name} />
+      {/* </ProductImageGroup> */}
       <ProductInfoBox>
         <TopRow>
           <Brand>BASILIUM</Brand>
@@ -59,25 +59,40 @@ const BREAKPOINT = {
 
 const ProductBox = styled.section`
   display: flex;
-  gap: 32px;
+  gap: 4px;
   width: 100%;
   max-width: 1400px;
   flex-direction: row;
-
+  
   @media (max-width: ${BREAKPOINT.md}px) {
     flex-direction: column;
     align-items: center;
+    gap: 32px;
   }
 `;
 
+// const ProductImageGroup = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   gap: 16px;
+
+//   @media (max-width: ${BREAKPOINT.md}px) {
+//     flex-direction: column;
+//     align-items: center;
+//   }
+// `;
+
 const ProductImage = styled.img`
-  width: 50%;
-  // min-width: 300px;
+  width: 100%;
   max-width: 510px;
-  // max-height: 650px;
   aspect-ratio: 4 / 5;
   object-fit: cover;
+  height: auto;
   order: 0;
+
+  @media (max-width: ${BREAKPOINT.lg}px) {
+    max-width: 300px;
+  }
 
   @media (max-width: ${BREAKPOINT.md}px) {
     width: 100%;
@@ -85,8 +100,9 @@ const ProductImage = styled.img`
   }
 `;
 
+
 const ProductSmallImagesContainer = styled.div`
-  width: 100px;
+  width: 80px;
   display: flex;
   gap: 8px;
   flex-flow: column nowrap;
@@ -105,6 +121,11 @@ const ProductInfoBox = styled.div`
   flex-direction: column;
   gap: 8px;
   order: 3;
+  margin: 0px 16px;
+
+  // @media (max-width: ${BREAKPOINT.lg}px) {
+  //   width: 300px;
+  // }
 
   @media (max-width: ${BREAKPOINT.md}px) {
     width: 100%;
@@ -151,16 +172,35 @@ const Price = styled.div`
 
 const ColorSwatches = styled.div`
   display: flex;
-  gap: 4px;
+  gap: 5px;
+  align-items: center;
 `;
 
 const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
-  width: 16px;
-  height: 16px;
+  position: relative;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
-  border: ${(props) => (props.$selected ? "1px" : "1px")} solid gray;
-  cursor: pointer;
+  border: 1px solid gray;
+  box-sizing: border-box;
+
+  ${(props) =>
+    props.$selected &&
+    `
+    &::after {
+      content: "";
+      align-items: center;
+      position: absolute;
+      top: -4px;
+      left: -4px;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      border: 2px solid #ccc; 
+      box-sizing: border-box;
+    }
+  `}
 `;
 
 const Description = styled.p`
