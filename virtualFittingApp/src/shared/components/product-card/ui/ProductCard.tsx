@@ -224,8 +224,8 @@ const LikeButtonWrapper = styled.div`
   top: 8px;
   right: 8px;
   z-index: 2;
-  width: 36px;
-  height: 36px;
+  width: 24px;
+  height: 24px;
 `;
 
 const ExtraIcon = styled.div`
