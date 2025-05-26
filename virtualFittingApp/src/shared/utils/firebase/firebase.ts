@@ -1,5 +1,11 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider, isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink } from "firebase/auth";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  isSignInWithEmailLink,
+  sendSignInLinkToEmail,
+  signInWithEmailLink,
+} from "firebase/auth";
 
 console.log("API 키 확인:", import.meta.env.VITE_FIREBASE_API_KEY);
 
@@ -28,7 +34,11 @@ export const completeEmailLinkSignin = async () => {
   const email = window.localStorage.getItem("emailForSignIn") || "";
 
   if (isSignInWithEmailLink(firebaseAuth, window.location.href)) {
-    const result = await signInWithEmailLink(firebaseAuth, email, window.location.href);
+    const result = await signInWithEmailLink(
+      firebaseAuth,
+      email,
+      window.location.href,
+    );
     window.localStorage.removeItem("emailForSignIn");
 
     window.history.replaceState({}, document.title, "/myPage/Detail");
