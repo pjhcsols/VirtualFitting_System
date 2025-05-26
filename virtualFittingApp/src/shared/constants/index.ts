@@ -10,7 +10,9 @@ import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Plus from "/svg/plus.svg";
-import Like from "/svg/like.svg";
+import UnLiked from "/svg/like.svg";
+import Liked from "/svg/liked.svg";
+import AI from "/svg/ai.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
 import type {
@@ -34,9 +36,11 @@ export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_PLUS = Plus;
-export const ICON_LIKE = Like;
+export const ICON_UNLIKED = UnLiked;
+export const ICON_LIKED = Liked;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
+export const ICON_AI = AI;
 
 export const AnimationProps = {
   initial: {

@@ -39,6 +39,7 @@ const ContentWrapper = styled.article`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
+  background: white;
 
   @media (max-width: ${BREAKPOINT.sm}px) {
     padding: 70px 16px;

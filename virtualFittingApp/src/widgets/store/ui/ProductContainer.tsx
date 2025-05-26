@@ -4,6 +4,7 @@ import { LikeButton } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { AIButton } from "@/shared";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -52,6 +53,10 @@ function ProductContainer({ product }: { product: any }) {
             <SizeItem key={size}>{size}</SizeItem>
           ))}
         </SizeBox>
+        <SizeBox>
+          <AIButton></AIButton>
+          <AddButton>ADD</AddButton>
+        </SizeBox>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -63,7 +68,7 @@ const ProductBox = styled.section`
   width: 100%;
   max-width: 1200px;
   flex-direction: row;
-  justify-content: space-between;
+  // justify-content: space-between;
   align-items: flex-start;
 
   @media (max-width: ${md}px) {
@@ -111,7 +116,11 @@ const ProductInfoBox = styled.div`
   flex-direction: column;
   gap: 8px;
   order: 3;
-  margin: 0px 16px;
+  margin: 0px 32px;
+
+  @media (max-width: ${lg}px) {
+    margin: 0px 16px;
+  }
 
   @media (max-width: ${md}px) {
     width: 100%;
@@ -205,7 +214,7 @@ const SizeBox = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0px;
-`;
+`; 
 
 const SizeItem = styled.div`
   width: 80px;
@@ -219,5 +228,18 @@ const SizeItem = styled.div`
   cursor: pointer;
   color: black
 `;
+
+const AddButton = styled.div`
+  width: 200px;
+  height: 50px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  background: black
+`
 
 export { ProductContainer };
