@@ -1,7 +1,10 @@
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
+import { useParams } from "react-router-dom";
 
 function MyOrderListDetail() {
+    const {id} = useParams();
+    
     return (
         <PageWrapper>
             <HeaderWrapper>

@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
+import { getMaskedUserName } from "@/shared";
 import arrowImg from "./arrow.png";
 
 function MyPage() {
@@ -16,9 +17,9 @@ function MyPage() {
 
       <ContentWrapper>
         <UserInfoSection>
-          <UserInfo onClick={() => navigate("/mypage/detail")}> 
+          <UserInfo onClick={() => navigate("/mypage/detail")}>
             <Avatar src={MYUSER_ICON} alt="유저 이미지" />
-            <UserName>{userName}</UserName>
+            <UserName>{getMaskedUserName(userName)}</UserName>
             <ArrowImg2 src={arrowImg} alt=">" />
           </UserInfo>
         </UserInfoSection>
@@ -28,21 +29,29 @@ function MyPage() {
         <StatsWrapper>
           <Stat>포인트</Stat>
           <Stat>쿠폰</Stat>
-          <Stat>후기 작성</Stat>
+          <Stat onClick={() => navigate("/myPage/review")}>후기 작성</Stat>
         </StatsWrapper>
 
         <MenuList>
           <MenuItem>
+            좋아요
+            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
+          </MenuItem>
+          <MenuItem>
             주문내역
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/order")} alt=">" />
+            <ArrowImg
+              src={arrowImg}
+              onClick={() => navigate("/myPage/order")}
+              alt=">"
+            />
           </MenuItem>
           <MenuItem>
             취소/반품/교환 내역
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/cancel")} alt=">" />
-          </MenuItem>
-          <MenuItem>
-            좋아요
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
+            <ArrowImg
+              src={arrowImg}
+              onClick={() => navigate("/myPage/cancel")}
+              alt=">"
+            />
           </MenuItem>
         </MenuList>
       </ContentWrapper>
@@ -62,13 +71,13 @@ const PageWrapper = styled.div`
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center;   // 
+  align-items: center; //
   padding: 70px 0;
   width: 100%;
 `;
@@ -128,6 +137,7 @@ const Stat = styled.div`
   text-align: center;
   font-size: 14px;
   color: #999;
+  cursor: pointer;
 `;
 
 const MenuList = styled.div`
@@ -139,7 +149,7 @@ const MenuList = styled.div`
 `;
 
 const MenuItem = styled.div`
-  display: flex;  
+  display: flex;
   justify-content: space-between;
   padding: 13px 5px;
   font-size: 12px;
@@ -153,7 +163,7 @@ const ArrowImg = styled.img`
   width: 20px;
   height: 20px;
   opacity: 0.6;
-`
+`;
 
 const ArrowImg2 = styled.img`
   width: 28px;
@@ -161,4 +171,4 @@ const ArrowImg2 = styled.img`
   opacity: 0.6;
   margin-left: -15px;
   margin-top: 2.8px;
-`
+`;

@@ -4,3 +4,8 @@ export type BrandUserType = {
   businessRegistration: string;
   firmWebUrl: string;
 };
+
+export type BrandSigninUserType = {
+  email: string;
+  password: string;
+};

@@ -10,8 +10,11 @@ function BrandProfile() {
   // if the mode is true, EDIT MODE
   // mode is false, VIEW MODE
   const [mode, setMode] = useState<boolean>(false);
+
+  // 로고 이미지는 User 에 포함되어있음.
   const [profile, setProfile] = useState<File | null>(null);
 
+  // 회사 정보 가져오는 Method
   const [brandInfo, setBrandInfo] = useState<BrandUserType>({
     firmName: "",
     firmAddress: "",

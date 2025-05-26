@@ -2,7 +2,7 @@
  * Product Preview Component
  */
 
-import * as P from "@/widgets/admin/ui/css/ProductPreview.css";
+import * as P from "@/widgets/brand/ui/css/ProductPreview.css";
 
 import {
   blackColorCode,
