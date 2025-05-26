@@ -4,11 +4,14 @@ function ProductSmallCard() {
   return <Wrapper />;
 }
 
-const Wrapper = styled.div`
+const Wrapper = styled.img`
   width: 72px;
   height: 86px;
-  background-color: #e0e0e0; /* 연한 회색 */
+  aspect-ratio: 4 / 5;
+  height: auto;
+  background-color: #e0e0e0;
   cursor: pointer;
+  object-fit: contain;
 `;
 
 export { ProductSmallCard };
