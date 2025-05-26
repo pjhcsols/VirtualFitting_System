@@ -1,15 +1,15 @@
 import {  ProductSmallCard,} from "@/shared";
 import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared/constants";
-import { LikeButton } from "@/shared/components/button/ui/LikeButton";
+import { LikeButton } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
 
   return (
     <ProductBox>
-      {/* <ProductImageGroup> */}
         <ProductSmallImagesContainer>
             <ProductSmallCard />
             <ProductSmallCard />
@@ -20,7 +20,6 @@ function ProductContainer({ product }: { product: any }) {
             <ProductSmallCard />
           </ProductSmallImagesContainer>
         <ProductImage src={product.image} alt={product.name} />
-      {/* </ProductImageGroup> */}
       <ProductInfoBox>
         <TopRow>
           <Brand> {product.brand} </Brand>
@@ -58,64 +57,46 @@ function ProductContainer({ product }: { product: any }) {
   );
 }
 
-const BREAKPOINT = {
-  xlDouble: 1536,
-  xl: 1280,
-  lg: 1024,
-  md: 768,
-  sm: 640,
-};
-
 const ProductBox = styled.section`
   display: flex;
   gap: 4px;
   width: 100%;
-  max-width: 1400px;
+  max-width: 1200px;
   flex-direction: row;
-  
-  @media (max-width: ${BREAKPOINT.md}px) {
+  justify-content: space-between;
+  align-items: flex-start;
+
+  @media (max-width: ${md}px) {
     flex-direction: column;
     align-items: center;
     gap: 32px;
   }
 `;
 
-// const ProductImageGroup = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   gap: 16px;
-
-//   @media (max-width: ${BREAKPOINT.md}px) {
-//     flex-direction: column;
-//     align-items: center;
-//   }
-// `;
-
 const ProductImage = styled.img`
-  width: 100%;
+  width: 510px;
   max-width: 510px;
   aspect-ratio: 4 / 5;
-  object-fit: cover;
+  object-fit: contain;
   height: auto;
   order: 0;
 
-  @media (max-width: ${BREAKPOINT.lg}px) {
-    max-width: 300px;
-  }
-
-  @media (max-width: ${BREAKPOINT.md}px) {
+  @media (max-width: ${md}px) {
     width: 100%;
     max-width: 510px;
   }
 `;
 
 const ProductSmallImagesContainer = styled.div`
-  width: 80px;
+  // width: 80px;
   display: flex;
   gap: 8px;
+  height: 100%;
+  object-fit: cover;
   flex-flow: column nowrap;
+  margin: 0px 4px;
 
-  @media (max-width: ${BREAKPOINT.md}px) {
+  @media (max-width: ${md}px) {
     flex-direction: row;
     justify-content: center;
     width: auto;
@@ -124,18 +105,15 @@ const ProductSmallImagesContainer = styled.div`
 `;
 
 const ProductInfoBox = styled.div`
-  width: 50%;
+  width: 500px;
+  min-width: 300px;
   display: flex;
   flex-direction: column;
   gap: 8px;
   order: 3;
   margin: 0px 16px;
 
-  // @media (max-width: ${BREAKPOINT.lg}px) {
-  //   width: 300px;
-  // }
-
-  @media (max-width: ${BREAKPOINT.md}px) {
+  @media (max-width: ${md}px) {
     width: 100%;
   }
 `;
@@ -148,7 +126,7 @@ const TopRow = styled.div`
 
 const Brand = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
-  font-size: 1rem;
+  font-size: 16px;
   color: black;
 `;
 
@@ -160,22 +138,16 @@ const IconImage = styled.img`
 
 const ProductName = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
+  font-size: 24px;
   font-weight: 300;
   color: black;
-  font-size: 1.5rem;
-  @media (max-width: ${BREAKPOINT.md}px) {
-    font-size: 1.25rem;
-  }
 `;
 
 const Price = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
   font-weight: 300;
   color: black;
-  font-size: 1.5rem;
-  @media (max-width: ${BREAKPOINT.md}px) {
-    font-size: 1.25rem;
-  }
+  font-size: 24px;
 `;
 
 const ColorSwatches = styled.div`

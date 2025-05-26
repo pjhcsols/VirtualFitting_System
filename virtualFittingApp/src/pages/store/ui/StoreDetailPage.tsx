@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { DetailDescription, ProductContainer, ReviewContent } from "@/widgets";
 import { products } from "../constants/dummy";
 import { useParams } from "react-router-dom";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function StoreDetailPage() {
   const { id } = useParams();
@@ -18,25 +19,17 @@ function StoreDetailPage() {
   );
 }
 
-const BREAKPOINT = {
-  xlDouble: 1536,
-  xl: 1280,
-  lg: 1024,
-  md: 768,
-  sm: 640,
-};
-
 const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 16px 48px;
+  padding: 16px 0px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${BREAKPOINT.md}px) {
-    padding: 16px 0px;
+  @media (max-width: ${md}px) {
+    padding: 16px 16px;
   }
 `;
 
