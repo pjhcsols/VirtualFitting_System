@@ -1,4 +1,4 @@
-  import { useState, useRef} from "react";
+  import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
   import axios from "axios";
   import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
@@ -10,6 +10,7 @@
   import { sendVerificationEmail } from "@/shared/utils/email/sendVerificationEmail";
   import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
   import { EmailVerificationInput } from "./EmailVerificationInput";
+  import { formatTime } from "@/shared/utils/time/time.util";
 
   function MypageDetail() {
       const profileInputRef = useRef<HTMLInputElement | null>(null);
@@ -19,6 +20,8 @@
       const [authCode, setAuthCode] = useState<string>("");
       const [sentCode, setSentCode] = useState<string>("");
       const [showCodeInput, setShowCodeInput] = useState<boolean>(false);
+      const [timer, setTimer] = useState<number>(0); 
+      const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
       const [formData, setFormData] = useState<UserFormData>({
             id: "",
             name: "",
@@ -39,6 +42,24 @@
       const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
       const [photoPreviewImage, setPhotoPreviewImage] = useState<string | null>(null);
       const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
+      
+      useEffect(() => {
+        if (!isTimerActive || timer <= 0) return;
+
+        const interval = setInterval(() => {
+          setTimer((prev) => {
+            if (prev <= 1) {
+              clearInterval(interval);
+              setIsTimerActive(false);
+              alert("인증 시간이 만료되었습니다.");
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+
+        return () => clearInterval(interval);
+      }, [isTimerActive, timer]);
 
       const handleSubmit = async () => {
         try {
@@ -66,6 +87,8 @@
         if (success) {
           alert("이메일로 인증번호가 전송되었습니다.");
           setShowCodeInput(true);
+          setIsTimerActive(true);
+          setTimer(180);
         } else {
           alert("메일 전송 실패");
         }
@@ -78,6 +101,7 @@
           alert("이메일 인증 성공!");
           setEmailVerified(true);
           setShowCodeInput(false);
+          setIsTimerActive(false);
         } else {
           alert("인증번호가 일치하지 않습니다.");
         }
@@ -145,11 +169,16 @@
               </FormField>
 
               {showCodeInput && (
-                <EmailVerificationInput
-                  authCode={authCode}
-                  onChange={setAuthCode}
-                  onVerify={handleVerifyCode}
-                />
+                <>
+                  <EmailVerificationInput
+                    authCode={authCode}
+                    onChange={setAuthCode}
+                    onVerify={handleVerifyCode}
+                  />
+                  {isTimerActive && (
+                    <TimerText>남은 시간: {formatTime(timer)}</TimerText>
+                  )}
+                </>
               )}
 
               <FormField>
@@ -466,3 +495,10 @@
     margin-top: 4px;
     margin-left: 2px;
   `;
+
+  const TimerText = styled.p`
+    color: #007bff;
+    font-size: 12px;
+    margin-top: 5px;
+    margin-left: 2px;
+`;
