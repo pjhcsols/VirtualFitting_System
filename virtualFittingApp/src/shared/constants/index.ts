@@ -1,8 +1,8 @@
 import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
-
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
+
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
 import RightArrow from "/svg/RightArrow.svg";
@@ -14,11 +14,11 @@ import UnLiked from "/svg/like.svg";
 import Liked from "/svg/liked.svg";
 import AI from "/svg/ai.svg";
 import Like from "/svg/like.svg";
-import Liked from "/svg/liked.svg";
-import UnLiked from "/svg/liked.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
+import UploadSVGLogo from "/svg/UploadIcon.svg";
+
 import type {
   CategoryType,
   Color,
@@ -40,14 +40,13 @@ export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_PLUS = Plus;
-export const ICON_UNLIKED = UnLiked;
-export const ICON_LIKED = Liked;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
 export const ICON_AI = AI;
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
+export const ICON_UPLOAD_ICON = UploadSVGLogo;
 
 export const AnimationProps = {
   initial: {

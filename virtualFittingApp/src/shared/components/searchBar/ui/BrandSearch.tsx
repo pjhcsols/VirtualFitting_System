@@ -2,7 +2,11 @@ import { type ChangeEvent, useState } from "react";
 import styled from "styled-components";
 import { ICON_SEARCH } from "@/shared/constants";
 
-function BrandSearch() {
+type BrandSearchType = {
+  placeholder?: string;
+};
+
+function BrandSearch({ placeholder }: BrandSearchType) {
   const [searchText, setSearchText] = useState<string>("");
 
   const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
@@ -15,7 +19,7 @@ function BrandSearch() {
       <SearchBar
         value={searchText}
         onChange={onChangeText}
-        placeholder="Ex) 바실리움 회색 후드티..."
+        placeholder={placeholder ?? "Ex) 바실리움 회색 후드티..."}
       />
       <SearchIcon />
       <SearchBtn>검색</SearchBtn>

@@ -40,11 +40,16 @@ export const AdminHeaderOptions = [
   },
   {
     id: 3,
-    title: "Product Manage",
+    title: "Banner Manage",
     href: "/admin/product?page=0&size=20",
   },
   {
     id: 4,
+    title: "Product Manage",
+    href: "/admin/product?page=0&size=20",
+  },
+  {
+    id: 5,
     title: "Logout",
     href: "",
   },
