@@ -2,7 +2,12 @@ import { Route, Routes, useLocation } from "react-router-dom";
 
 import { AdminLayout } from "@/shared";
 
-import { AdminBrandControllPanel, AdminTotalUserList } from "@/pages";
+import {
+  AdminBannerManager,
+  AdminBrandControllPanel,
+  AdminTotalUserList,
+  AdminTotalProduct,
+} from "@/pages";
 
 function AdminRouter() {
   const location = useLocation();
@@ -11,6 +16,8 @@ function AdminRouter() {
       <Route path="admin" element={<AdminLayout />}>
         <Route path="branduser" element={<AdminBrandControllPanel />} />
         <Route path="all" element={<AdminTotalUserList />} />
+        <Route path="product" element={<AdminTotalProduct />} />
+        <Route path="banner" element={<AdminBannerManager />} />
       </Route>
     </Routes>
   );
