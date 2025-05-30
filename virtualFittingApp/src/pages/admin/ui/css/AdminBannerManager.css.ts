@@ -14,21 +14,15 @@ export const TitleContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  span {
-    font-size: 1rem;
-    font-weight: 700;
-    color: black;
-  }
+`;
+
+export const Title = styled.h1`
+  font-family: "Prata-Regular";
+  font-size: 1.5rem;
+  color: black;
 `;
 
 export const SliderContainer = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-export const ProductContainer = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;

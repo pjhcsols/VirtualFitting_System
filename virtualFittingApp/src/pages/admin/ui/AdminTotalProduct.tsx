@@ -1,5 +1,5 @@
 import * as S from "@/pages/admin/ui/css/AdminTotalProduct.css";
-import { AdminSliderEditor } from "@/widgets";
+import { AdminProductSearch, AdminSliderEditor } from "@/widgets";
 
 function AdminTotalProduct() {
   return (
@@ -10,7 +10,9 @@ function AdminTotalProduct() {
       <S.SliderContainer>
         <AdminSliderEditor />
       </S.SliderContainer>
-      <S.ProductContainer></S.ProductContainer>
+      <S.ProductContainer>
+        <AdminProductSearch />
+      </S.ProductContainer>
     </S.Wrapper>
   );
 }
