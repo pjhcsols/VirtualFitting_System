@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  gap: 32px;
 `;
 
 export const ButtonContainer = styled.div`
@@ -23,6 +24,9 @@ export const Button = styled.div`
   background-color: transparent;
   border-radius: 4px;
   border: 1px solid #121212;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 0.75rem;
   font-weight: 800;
   color: black;
@@ -30,6 +34,7 @@ export const Button = styled.div`
 
 export const ImageSliderComponent = styled.div`
   width: 100%;
+  height: 400px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -40,31 +45,31 @@ export const SliderContainer = styled.div<{ photoCount: number }>`
   width: ${(props) => {
     return props.photoCount === 1 ? "100%" : `${100 * props.photoCount}%`;
   }};
+  height: 100%;
   transition: 0.3s all ease-in-out;
 `;
 
 export const PhotoUploader = styled.div`
   position: relative;
   width: 100%;
+  height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  background-color: #d9d9d9;
-  cursor: pointer;
-`;
-
-export const IconContainer = styled.div`
-  position: absolute;
-  padding: 10px 80px;
+  border: 1px solid #121212;
+  background-color: #fffafa;
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 16px;
+  cursor: pointer;
 `;
 
-export const Icon = styled.div`
+export const PhotoUploaderInput = styled.input`
+  display: none;
+`;
+
+export const Icon = styled.img`
   width: 50px;
   height: 50px;
-  border-radius: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -76,7 +81,7 @@ export const ImageViewer = styled.img`
   object-fit: contain;
   border-radius: 8px;
   overflow: hidden;
-  transition: 0.4s all ease-out;
+  transition: 0.2s all ease-out;
   &:hover {
     transform: scale(1.05);
   }
@@ -88,9 +93,15 @@ export const DotContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 32px;
-  .dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 100%;
+`;
+
+export const Dot = styled.div<{ isClicked: boolean }>`
+  width: 8px;
+  height: 8px;
+  border-radius: 100%;
+  background: ${(props) => (props.isClicked ? "#243b55" : "#d9d9d9")};
+  transition: 0.2s all ease-in-out;
+  &:hover {
+    background: #243b55;
   }
 `;
