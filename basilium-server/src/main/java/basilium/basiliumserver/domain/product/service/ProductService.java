@@ -5,6 +5,7 @@ import basilium.basiliumserver.domain.product.entity.*;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.product.sse.SseController;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
+import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ import java.util.HashSet;
 public class ProductService {
 
     private final ProductRepository productRepository;
+    private final BrandUserRepository brandUserRepository;
 
     // 헬퍼 메서드: 로깅과 예외 전달 (메시지를 한국어로 출력)
     private <T> T executeWithLogging(Supplier<T> supplier, String errorMessage) {
@@ -370,24 +372,6 @@ public class ProductService {
     }
 
     /**
-     * 스케줄러용: 전체 상품의 이미지 URL 목록 조회 (productColorOptions 사용)
-     */
-    @Transactional
-    public List<String> getAllProductImageUrls() {
-        return executeWithLogging(() -> {
-            List<Product> products = productRepository.findAll();
-            List<String> allImageUrls = new ArrayList<>();
-            products.forEach(product ->
-                    product.getProductColorOptions().forEach(colorOption -> {
-                        allImageUrls.addAll(colorOption.getProductPhotoUrls());
-                        allImageUrls.addAll(colorOption.getProductSubPhotoUrls());
-                    })
-            );
-            return allImageUrls;
-        }, "전체 상품 이미지 URL 조회 중 오류 발생: ");
-    }
-
-    /**
      * 결제 처리: 특정 옵션의 재고 차감 및 전체 재고 업데이트
      */
     @Transactional
@@ -428,6 +412,24 @@ public class ProductService {
     }
 
     /**
+     * 스케줄러용: 전체 상품의 이미지 URL 목록 조회 (productColorOptions 사용)
+     */
+    @Transactional
+    public List<String> getAllProductImageUrls() {
+        return executeWithLogging(() -> {
+            List<Product> products = productRepository.findAll();
+            List<String> allImageUrls = new ArrayList<>();
+            products.forEach(product ->
+                    product.getProductColorOptions().forEach(colorOption -> {
+                        allImageUrls.addAll(colorOption.getProductPhotoUrls());
+                        allImageUrls.addAll(colorOption.getProductSubPhotoUrls());
+                    })
+            );
+            return allImageUrls;
+        }, "전체 상품 이미지 URL 조회 중 오류 발생: ");
+    }
+
+    /**
      * SSE: 현재 상품 재고 조회
      */
     public Long getProductQuantity(Long productId) {
@@ -450,4 +452,192 @@ public class ProductService {
             return new ProductInfoDTO(brandUserId, productId, totalQuantity);
         }, "상품 정보 조회 중 오류 발생 (상품 ID: " + productId + "): ");
     }
+
+    /**
+     * 브랜드 유저가 올린 상품 전체를
+     * Fetch Join(Category) + 페이징으로 가져와서
+     * ProductEditSummaryDTO로 매핑
+     */
+    // 1) 브랜드 유저 전체 리스트
+    @Transactional
+    public Page<ProductEditSummaryDTO> getBrandProducts(String authUserId, Pageable pageable) {
+        // 1) 브랜드 유저 검증
+        BrandUser me = brandUserRepository.findById(authUserId)
+                .orElseThrow(() -> new IllegalArgumentException("브랜드 유저가 아닙니다."));
+
+        // 2) 상품 + Category Fetch Join 페이징
+        Page<Product> page = productRepository
+                .findAllByBrandUserWithCategory(me.getUserNumber(), pageable);
+
+        // 3) 매핑
+        return page.map(p -> {
+            String categoryName = Optional.ofNullable(p.getProductCategory())
+                    .map(cat -> cat.getCategoryName())
+                    .orElse("");
+
+            var colorOptions = p.getProductColorOptions(); // 이미 초기화
+            List<String> colors = colorOptions.stream()
+                    .map(co -> co.getId().getProductColor().name())
+                    .distinct()
+                    .sorted()
+                    .toList();
+
+            List<String> photoUrls = colorOptions.stream()
+                    .flatMap(co -> co.getProductPhotoUrls().stream())
+                    .sorted()
+                    .toList();
+
+            return new ProductEditSummaryDTO(
+                    p.getProductId(),
+                    p.getProductName(),
+                    p.getProductPrice(),
+                    p.getTotalQuantity(),
+                    categoryName,
+                    colors,
+                    photoUrls,
+                    p.getStatus()
+            );
+        });
+    }
+
+    // 2) 브랜드 유저 단건 상세
+    // id 9 직렬화 문제
+    @Transactional
+    public ProductEditDTO getBrandProductDetail(String authUserId, Long productId) {
+        // 1) 브랜드 유저 검증
+        BrandUser me = brandUserRepository.findById(authUserId)
+                .orElseThrow(() -> new IllegalArgumentException("브랜드 유저가 아닙니다."));
+
+        // 2) 1차 쿼리: 기본 필드 + photoUrls
+        Product p = productRepository
+                .findOneWithPhotoUrls(me.getUserNumber(), productId)
+                .orElseThrow(() -> new IllegalArgumentException("상품이 없거나 권한이 없습니다."));
+
+        // 3) 2차 쿼리: subPhotoUrls 만 로드
+        productRepository.findSubPhotoUrlsByProductId(productId)
+                .forEach(co -> co.getProductSubPhotoUrls()); // 초기화
+
+        // 4) 모든 Lazy 컬렉션을 순수한 List로 복사
+        List<Material> materials = new ArrayList<>(
+                Optional.ofNullable(p.getProductMaterial()).orElse(List.of())
+        );
+
+        List<ProductSizeOptionDTO> sizeDtos = p.getProductSizeOptions().stream()
+                .map(sz -> new ProductSizeOptionDTO(
+                        sz.getId().getProductSize().name(),
+                        sz.getTotalLength(),
+                        sz.getChest(),
+                        sz.getShoulder(),
+                        sz.getArm()))
+                .toList();
+
+        List<ProductOptionDTO> optionDtos = p.getProductOptions().stream()
+                .map(opt -> new ProductOptionDTO(
+                        opt.getId().getProductSize().name(),
+                        opt.getId().getProductColor().name(),
+                        opt.getOptionQuantity()))
+                .toList();
+
+        // 5) 중복 제거된 photoUrls, subPhotoUrls 로 DTO 생성
+        List<ProductColorOptionDTO> colorDtos = p.getProductColorOptions().stream()
+                .map(co -> {
+                    // photoUrls 중복 제거
+                    List<String> photos = co.getProductPhotoUrls().stream()
+                            .distinct()
+                            .toList();
+
+                    // subPhotoUrls 중복 제거 (보통 중복은 없지만 안전 차원)
+                    List<String> subs = co.getProductSubPhotoUrls().stream()
+                            .distinct()
+                            .toList();
+
+                    return new ProductColorOptionDTO(
+                            co.getId().getProductColor().name(),
+                            new ArrayList<>(photos),
+                            new ArrayList<>(subs)
+                    );
+                })
+                .toList();
+
+        // 6) 최종 DTO 반환
+        return new ProductEditDTO(
+                p.getProductId(),
+                p.getProductName(),
+                p.getProductPrice(),
+                p.getProductDesc(),
+                p.getStatus(),
+                p.getProductCategory().getCategoryId(),
+                materials,
+                sizeDtos,
+                optionDtos,
+                colorDtos
+        );
+    }
+
+    // 3) 슈퍼유저: ID 또는 이름으로 검색/상세조회
+    /*
+    @Transactional
+    public Object getAdminProducts(Long productId, String productName) {
+        if (productId == null && (productName == null || productName.isBlank())) {
+            throw new IllegalArgumentException("productId 또는 productName을 하나 전달하세요.");
+        }
+        var list = productRepository.findForAdmin(productId, productName);
+        if (productId != null) {
+            // 단건 상세
+            var p = list.stream().findFirst()
+                    .orElseThrow(() -> new IllegalArgumentException("상품이 없습니다. ID=" + productId));
+            return assembleEditDTO(p);
+        } else {
+            // 이름 검색 → summary 리스트
+            return list.stream()
+                    .map(p -> new ProductEditSummaryDTO(p.getProductId(), p.getProductName(), p.getStatus()))
+                    .toList();
+        }
+    }
+     */
+
+    // 4) 상태 변경 (브랜드 유저 전용)
+    @Transactional
+    public void changeStatus(String authUserId, Long productId, ProductStatus status) {
+        var me = brandUserRepository.findById(authUserId)
+                .orElseThrow(() -> new IllegalArgumentException("브랜드 유저가 아닙니다."));
+        var p = productRepository.findByBrandUserAndId(me.getUserNumber(), productId)
+                .orElseThrow(() -> new IllegalArgumentException("권한이 없거나 상품이 없습니다."));
+        p.changeStatus(status);
+    }
+
+    /**
+     * 판매중인 상품만 페이지네이션으로 조회
+     */
+    @Transactional
+    public Page<ProductAllRetrieveDTO> getOnSaleProducts(Pageable pageable) {
+        return productRepository.findByStatus(ProductStatus.ON_SALE, pageable)
+                .map(product -> {
+                    // 카테고리명
+                    String categoryName = Optional.ofNullable(product.getProductCategory())
+                            .map(cat -> cat.getCategoryName())
+                            .orElse("");
+
+                    // 색상 리스트
+                    List<String> colors = product.getProductColorOptions().stream()
+                            .map(co -> co.getId().getProductColor().name())
+                            .distinct().sorted()
+                            .toList();
+                    // 이미지 URL 리스트
+                    List<String> photoUrls = product.getProductColorOptions().stream()
+                            .flatMap(co -> co.getProductPhotoUrls().stream())
+                            .sorted()
+                            .toList();
+                    return new ProductAllRetrieveDTO(
+                            product.getProductId(),
+                            product.getProductName(),
+                            product.getProductPrice(),
+                            product.getTotalQuantity(),
+                            categoryName,
+                            colors,
+                            photoUrls
+                    );
+                });
+    }
+
 }

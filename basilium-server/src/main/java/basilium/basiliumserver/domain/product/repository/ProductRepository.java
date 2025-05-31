@@ -5,6 +5,7 @@ import basilium.basiliumserver.domain.product.dto.ProductImageDTO;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.entity.ProductColorOption;
+import basilium.basiliumserver.domain.product.entity.ProductStatus;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -81,4 +82,75 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
      * 카테고리 아이디로 제품 목록 조회 (내부 관계 필드 사용).
      */
     List<Product> findByProductCategory_CategoryId(Long categoryId);
+
+    /**
+     * 브랜드 유저가 등록한 상품만
+     * Category는 Fetch Join, 페이징용 COUNT 별도 처리
+     */
+    @Query(
+            value = """
+        SELECT DISTINCT p
+          FROM Product p
+    LEFT JOIN FETCH p.productCategory
+         WHERE p.brandUser.userNumber = :brandUserNumber
+    """,
+            countQuery = """
+        SELECT COUNT(p)
+          FROM Product p
+         WHERE p.brandUser.userNumber = :brandUserNumber
+        """
+    )
+    Page<Product> findAllByBrandUserWithCategory(@Param("brandUserNumber") Long brandUserNumber, Pageable pageable);
+
+    /**
+     * 브랜드 유저가 등록한 단건 상품의 전체 속성(카테고리·옵션·사이즈·색상·이미지·총수량)을
+     * 두개의 쿼리로 모두 조회합니다.
+     */
+    /**
+     * (A) Product + Category + productOptions(Set) + productSizeOptions(Set)
+     *     + productColorOptions(Set) + productPhotoUrls(List)
+     *   → 1차 쿼리: photoUrls 만 fetch join
+     */
+    @Query("""
+        SELECT DISTINCT p
+          FROM Product p
+    LEFT JOIN FETCH p.productCategory
+    LEFT JOIN FETCH p.productOptions
+    LEFT JOIN FETCH p.productSizeOptions
+    LEFT JOIN FETCH p.productColorOptions co
+    LEFT JOIN FETCH co.productPhotoUrls
+         WHERE p.brandUser.userNumber = :brandUserNumber
+           AND p.productId               = :productId
+        """)
+    Optional<Product> findOneWithPhotoUrls(
+            @Param("brandUserNumber") Long brandUserNumber,
+            @Param("productId")        Long productId
+    );
+
+    /**
+     * (B) productSubPhotoUrls(List) 만 fetch join
+     *   → 2차 쿼리: subPhotoUrls 만
+     */
+    @Query("""
+        SELECT co
+          FROM ProductColorOption co
+    LEFT JOIN FETCH co.productSubPhotoUrls
+         WHERE co.product.productId = :productId
+        """)
+    List<ProductColorOption> findSubPhotoUrlsByProductId(
+            @Param("productId") Long productId
+    );
+
+    // 상태 변경을 위한 검증
+    @Query("""
+        SELECT p 
+          FROM Product p 
+         WHERE p.brandUser.userNumber = :brandUserNumber 
+           AND p.productId = :productId
+        """)
+    Optional<Product> findByBrandUserAndId(@Param("brandUserNumber") Long brandUserNumber,
+                                           @Param("productId")       Long productId);
+
+    //  판매중(ON_SALE) 상태인 상품만 조회
+    Page<Product> findByStatus(ProductStatus status, Pageable pageable);
 }

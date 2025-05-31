@@ -48,9 +48,9 @@ VALUES (1, 1, 10000);
 
 -- Product 1: 바실리움 로고 반팔티(블랙)
 INSERT INTO product
-(product_id, category_id, product_name, product_price, product_desc, brand_user_number, total_quantity)
+(product_id, status, category_id, product_name, product_price, product_desc, brand_user_number, total_quantity)
 VALUES
-    (1, 1, '바실리움 로고 반팔티(블랙)', 53000, '반팔 모찌모찌함', 1, 100);
+    (1, 'EXHIBITION_STOPPED', 1, '바실리움 로고 반팔티(블랙)', 53000, '반팔 모찌모찌함', 1, 100);
 
 -- 사이즈 옵션 (ProductSizeOption) for product 1, sizes M and L
 INSERT INTO product_size_option

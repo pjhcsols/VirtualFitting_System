@@ -36,6 +36,11 @@ public class Product {
     @Column(name = "product_id", nullable = false)
     private Long productId;
 
+    @Builder.Default
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, columnDefinition = "varchar(20) default 'ON_SALE'")
+    private ProductStatus status = ProductStatus.ON_SALE;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category productCategory;
@@ -120,6 +125,10 @@ public class Product {
                 colorUpdate -> t -> t.getId().getProductColor().name().equals(colorUpdate.getProductColor()),
                 (existingColorOption, colorUpdate) -> existingColorOption.updateFrom(colorUpdate)
         );
+    }
+
+    public void changeStatus(ProductStatus newStatus) {
+        this.status = newStatus;
     }
 
     private <T, U> void updateCollection(Optional<List<U>> updateList, Collection<T> targetCollection,

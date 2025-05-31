@@ -1,14 +1,13 @@
 package basilium.basiliumserver.domain.product.controller;
 
 import basilium.basiliumserver.domain.product.controller.apiDocs.ProductApiDocs;
-import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
-import basilium.basiliumserver.domain.product.dto.ProductDetailDTO;
-import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
-import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.*;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
+import basilium.basiliumserver.domain.product.entity.ProductStatus;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.product.service.ProductService;
+import basilium.basiliumserver.global.auth.support.AuthUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +31,7 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok("상품 정보 등록 성공");
     }
 
+    // updateFrom 내부의 updateCollection 로직은 기존에 있던 항목만 업데이트하고, 업데이트 요청에 없는 항목은 그대로 남겨두기 때문에 기존 이미지 list 만큼 교체되는 문제
     // 상품 수정 (PATCH /api/products/{id})
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
@@ -131,4 +131,61 @@ public class ProductController implements ProductApiDocs {
     public ResponseEntity<List<String>> getAllProductImageUrls() {
         return ResponseEntity.ok(productService.getAllProductImageUrls());
     }
+
+    // 상품 수정용 조회 기능 상품의 id를 받아서 해당 상품의 상세 정보를 전부 전달해주는 기능
+
+    // 브랜드 유저에 해당되는 상품 전체 페이지네이션 조회
+    /** 1) 브랜드 유저: 전체 수정용 리스트 */
+    @GetMapping("/brand")
+    public ResponseEntity<List<ProductEditSummaryDTO>> getMyProducts(
+            @AuthUser String userId,
+            Pageable pageable) {
+        return ResponseEntity.ok(productService.getBrandProducts(userId, pageable).getContent());
+    }
+
+    //fetch multiple bags 문제
+    // 브랜드 유저가 수정하기 위해 해당되는 상품에 해당하는 모든 컬럼 상세 검색
+    /** 2) 브랜드 유저: 단건 수정용 조회 */
+    @GetMapping("/brand/{productId}")
+    public ResponseEntity<ProductEditDTO> getMyProductDetail(
+            @AuthUser String userId,
+            @PathVariable Long productId) {
+        return ResponseEntity.ok(productService.getBrandProductDetail(userId, productId));
+    }
+
+    //test 해야됨
+    // super user는 상품 이름 or 상품 id로 검색해서 일치하는 상품의 id, name, 상품에 해당되는 모든 색상정보와 수량 리스트를 받음
+    /** 3) 슈퍼유저: ?productId= 또는 ?productName= */
+    /*
+    @GetMapping("/admin")
+    public ResponseEntity<?> adminSearchOrDetail(
+            @RequestParam(required = false) Long   productId,
+            @RequestParam(required = false) String productName
+    ) {
+        return ResponseEntity.ok(productService.getAdminProducts(productId, productName));
+    }
+
+     */
+
+    //브랜드 유저의 id와 상품id를 받아서 판매중 (On Sale) 전시중지 (Exhibition Stopped) 상태 변경
+    /** 4) 브랜드 유저: 상태 변경 */
+    @PatchMapping("/brand/{productId}/status")
+    public ResponseEntity<Void> changeStatus(
+            @AuthUser String userId,
+            @PathVariable Long productId,
+            @RequestParam ProductStatus status
+    ) {
+        productService.changeStatus(userId, productId, status);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * 판매중인 상품만 페이지네이션으로 조회
+     * GET /b1/products/on-sale?page=0&size=10&sort=productId,desc
+     */
+    @GetMapping("/on-sale")
+    public ResponseEntity<List<ProductAllRetrieveDTO>> getOnSaleProducts(Pageable pageable) {
+        return ResponseEntity.ok(productService.getOnSaleProducts(pageable).getContent());
+    }
+
 }
