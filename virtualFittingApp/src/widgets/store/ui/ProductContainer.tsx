@@ -48,15 +48,15 @@ function ProductContainer({ product }: { product: any }) {
           클래식한 오버핏 티셔츠{'\n'}
           한겨울에도 착용하기 좋습니다
         </Description>
-        <SizeBox>
+        <SizeBoxMiddle>
           {product.availableSizes.map((size: string) => (
             <SizeItem key={size}>{size}</SizeItem>
           ))}
-        </SizeBox>
-        <SizeBox>
+        </SizeBoxMiddle>
+        <SizeBoxBottom>
           <AIButton></AIButton>
           <AddButton>ADD</AddButton>
-        </SizeBox>
+        </SizeBoxBottom>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -210,10 +210,21 @@ const Description = styled.p`
   padding: 16px 0px;
 `;
 
-const SizeBox = styled.div`
+const SizeBoxMiddle = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0px;
+`; 
+
+const SizeBoxBottom = styled.div`
+  display: flex;
+  gap: 8px;
+  padding: 8px 0px;
+
+  @media (max-width: ${md}px) {
+    justify-content: center;
+    align-items: center;
+  }
 `; 
 
 const SizeItem = styled.div`
@@ -239,7 +250,11 @@ const AddButton = styled.div`
   font-family: 'HelveticaNeueLight', sans-serif;
   font-size: 16px;
   cursor: pointer;
-  background: black
+  background: black;
+  
+  @media (max-width: ${md}px) {
+    width: 50%;
+  }
 `
 
 export { ProductContainer };

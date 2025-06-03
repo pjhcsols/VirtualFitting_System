@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { ICON_AI } from "@/shared/constants";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function AIButton() {
   return <AIBtn>
@@ -21,6 +22,10 @@ const AIBtn = styled.button`
   color: black;
   background: white;
   flex-direction: row;
+
+  @media (max-width: ${md}px) {
+      width: 50%;
+    }
 `;
 
 const IconImage = styled.img`
