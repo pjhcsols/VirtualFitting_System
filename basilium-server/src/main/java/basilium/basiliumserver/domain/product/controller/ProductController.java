@@ -131,10 +131,9 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(productService.getAllProductImageUrls());
     }
 
-    // 브랜드 유저에 해당되는 상품 전체 페이지네이션 조회
     /**
      * brandUser
-     * 1) 브랜드 유저: 전체 수정용 리스트
+     * 1) 브랜드 유저: 브랜드 유저에 해당되는 상품 전체 페이지네이션 조회/전체 수정용 리스트
      * */
     @GetMapping("/brand")
     public ResponseEntity<List<ProductEditSummaryDTO>> getMyProducts(
@@ -153,22 +152,8 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(productService.getBrandProductDetail(userId, productId));
     }
 
-    //test 해야됨
-    // super user는 상품 이름 or 상품 id로 검색해서 일치하는 상품의 id, name, 상품에 해당되는 모든 색상정보와 수량 리스트를 받음
-    /** 3) 슈퍼유저: ?productId= 또는 ?productName= */
-    /*
-    @GetMapping("/admin")
-    public ResponseEntity<?> adminSearchOrDetail(
-            @RequestParam(required = false) Long   productId,
-            @RequestParam(required = false) String productName
-    ) {
-        return ResponseEntity.ok(productService.getAdminProducts(productId, productName));
-    }
-
-     */
-
     //브랜드 유저의 id와 상품id를 받아서 판매중 (On Sale) 전시중지 (Exhibition Stopped) 상태 변경
-    /** 4) 브랜드 유저: 상태 변경 */
+    /** 3) 브랜드 유저: 상태 변경 */
     @PatchMapping("/brand/{productId}/status")
     public ResponseEntity<Void> changeStatus(
             @AuthUser String userId,
@@ -188,5 +173,19 @@ public class ProductController implements ProductApiDocs {
     public ResponseEntity<List<ProductAllRetrieveDTO>> getOnSaleProducts(Pageable pageable) {
         return ResponseEntity.ok(productService.getOnSaleProducts(pageable).getContent());
     }
+
+    //test 해야됨
+    // super user는 상품 이름 or 상품 id로 검색해서 일치하는 상품의 id, name, 상품에 해당되는 모든 색상정보와 수량 리스트를 받음
+    /** 3) 슈퍼유저: ?productId= 또는 ?productName= */
+    /*
+    @GetMapping("/admin")
+    public ResponseEntity<?> adminSearchOrDetail(
+            @RequestParam(required = false) Long   productId,
+            @RequestParam(required = false) String productName
+    ) {
+        return ResponseEntity.ok(productService.getAdminProducts(productId, productName));
+    }
+
+     */
 
 }

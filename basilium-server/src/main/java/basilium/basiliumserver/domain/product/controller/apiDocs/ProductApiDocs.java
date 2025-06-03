@@ -1,11 +1,10 @@
 package basilium.basiliumserver.domain.product.controller.apiDocs;
 
-import basilium.basiliumserver.domain.product.dto.ProductAllRetrieveDTO;
-import basilium.basiliumserver.domain.product.dto.ProductDetailDTO;
-import basilium.basiliumserver.domain.product.dto.ProductOptionDTO;
-import basilium.basiliumserver.domain.product.dto.ProductUpdateRequest;
+import basilium.basiliumserver.domain.product.dto.*;
 import basilium.basiliumserver.domain.product.entity.Color;
 import basilium.basiliumserver.domain.product.entity.Product;
+import basilium.basiliumserver.domain.product.entity.ProductStatus;
+import basilium.basiliumserver.global.auth.support.AuthUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.data.domain.Pageable;
@@ -34,7 +33,7 @@ public interface ProductApiDocs {
     @GetMapping("/{productId}")
     ResponseEntity<ProductDetailDTO> getProductDetails(@PathVariable Long productId, @RequestParam Color color);
 
-    @Operation(summary = "전체 상품 조회", description = "페이징 처리가 적용된 전체 상품 목록을 조회합니다.")
+    @Operation(summary = "Admin: 전체 상품 조회", description = "페이징 처리가 적용된 전체 상품 목록을 조회합니다.")
     @GetMapping
     ResponseEntity<?> getAllProducts(Pageable pageable);
 
@@ -77,4 +76,26 @@ public interface ProductApiDocs {
     @Operation(summary = "전체 상품 이미지 URL 조회", description = "모든 상품의 대표 이미지 URL 목록을 조회합니다.")
     @GetMapping("/imageUrls")
     ResponseEntity<?> getAllProductImageUrls();
+
+    @Operation(summary = "BrandUser: 등록한 모든 상품 목록 조회",
+            description = "인증된 BrandUser가 등록한 상품을 페이징 처리하여 반환합니다.")
+    @GetMapping("/brand")
+    ResponseEntity<List<ProductEditSummaryDTO>> getMyProducts(@AuthUser String userId, Pageable pageable);
+
+    @Operation(summary = "BrandUser의 단건 상품 조회",
+            description = "인증된 BrandUser가 등록한 특정 상품의 수정용 상세 데이터를 반환합니다.")
+    @GetMapping("/brand/{productId}")
+    ResponseEntity<ProductEditDTO> getMyProductDetail(@AuthUser String userId, @PathVariable Long productId);
+
+    @Operation(summary = "BrandUser: 상품 상태 변경",
+            description = "인증된 BrandUser가 자신의 상품을 ON_SALE 또는 EXHIBITION_STOPPED 상태로 변경합니다.")
+    @PatchMapping("/brand/{productId}/status")
+    ResponseEntity<Void> changeStatus(@AuthUser String userId,
+                                      @PathVariable Long productId,
+                                      @RequestParam ProductStatus status);
+
+    @Operation(summary = "NormalUser: 판매중인 모든 상품 목록 조회",
+            description = "ON_SALE 상태인 상품을 페이징 처리하여 반환합니다.")
+    @GetMapping("/on-sale")
+    ResponseEntity<List<ProductAllRetrieveDTO>> getOnSaleProducts(Pageable pageable);
 }
