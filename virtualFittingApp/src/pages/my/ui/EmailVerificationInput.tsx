@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { EmailVerificationInputProps } from "@/pages/my/types/email";
+import { type EmailVerificationInputProps } from "@/pages/my/types/email";
 
 
 export const EmailVerificationInput = ({ authCode, onChange, onVerify }: EmailVerificationInputProps) => {
@@ -24,7 +24,6 @@ export const EmailVerificationInput = ({ authCode, onChange, onVerify }: EmailVe
 const FormField = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
 `;
 
 const Label = styled.label`

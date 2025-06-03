@@ -11,4 +11,5 @@ export interface OrderItem {
     price: number;
     productImageUrl: string;
     category: string;
+    isReviewed: boolean;
   }

@@ -14,8 +14,6 @@ import UnLiked from "/svg/like.svg";
 import Liked from "/svg/liked.svg";
 import AI from "/svg/ai.svg";
 import Like from "/svg/like.svg";
-import Liked from "/svg/liked.svg";
-import UnLiked from "/svg/liked.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
@@ -45,8 +43,6 @@ export const ICON_LIKED = Liked;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
 export const ICON_AI = AI;
-export const ICON_LIKED = Liked;
-export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 
 export const AnimationProps = {
