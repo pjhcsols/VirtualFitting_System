@@ -9,6 +9,20 @@ export const Wrapper = styled.div`
   gap: 32px;
 `;
 
+export const OptionWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const SearchBarBox = styled.div`
+  width: 75%;
+  display: flex;
+  align-items: center;
+`;
+
 export const TitleContainer = styled.div`
   width: 100%;
   display: flex;

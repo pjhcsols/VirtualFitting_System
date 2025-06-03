@@ -1,5 +1,5 @@
 import * as S from "@/pages/admin/ui/css/AdminBrandControllPanel.css";
-import { Pagination } from "@/shared";
+import { AdminModal, BrandSearch, Pagination } from "@/shared";
 import { AdminBrandUserList } from "@/widgets";
 import { useEffect, useState } from "react";
 
@@ -19,8 +19,14 @@ function AdminBrandControllPanel() {
       <S.TitleContainer>
         <S.Title>Brand User List</S.Title>
       </S.TitleContainer>
-      <AdminBrandUserList />
-      <Pagination page={page} size={10} totalPage={10} setPage={setPage} />
+      <S.OptionWrapper>
+        <S.SearchBarBox>
+          <BrandSearch placeholder="Ex) 회원 번호를 입력해주세요. 1, 2, 3 ..." />
+        </S.SearchBarBox>
+        <AdminModal>
+          <AdminBrandUserList />
+        </AdminModal>
+      </S.OptionWrapper>
     </S.Wrapper>
   );
 }

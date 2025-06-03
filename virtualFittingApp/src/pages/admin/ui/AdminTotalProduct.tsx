@@ -1,16 +1,15 @@
 import * as S from "@/pages/admin/ui/css/AdminTotalProduct.css";
-import { AdminSliderEditor } from "@/widgets";
+import { AdminProductSearch } from "@/widgets";
 
 function AdminTotalProduct() {
   return (
     <S.Wrapper>
       <S.TitleContainer>
-        <span>전체 품목 관리</span>
+        <S.Title>Product Management</S.Title>
       </S.TitleContainer>
-      <S.SliderContainer>
-        <AdminSliderEditor />
-      </S.SliderContainer>
-      <S.ProductContainer></S.ProductContainer>
+      <S.ProductContainer>
+        <AdminProductSearch />
+      </S.ProductContainer>
     </S.Wrapper>
   );
 }
