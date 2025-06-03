@@ -5,10 +5,11 @@ import { OrderItem } from "../types/order";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
 import { formatSimpleDate } from "@/shared";
 import alertImg from "@/pages/my/ui/alert.png";
+import { ReviewCard } from "@/widgets";
 
-function CancelContentList() {
-    const navigate = useNavigate();
-    const [activeTab, setActiveTab] = useState<string>("전체");
+function ReviewContentList() {
+    const navigate = useNavigate(); 
+    const [activeTab, setActiveTab] = useState<string>("작성가능");
     const [orders, setOrders] = useState<OrderItem[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<OrderItem[]>([]);
 
@@ -21,20 +22,20 @@ function CancelContentList() {
     }, []);
     
     useEffect(() => {
-        if (activeTab === "전체") {
-            setFilteredOrders(orders);
+        if (activeTab === "작성가능") {
+            setFilteredOrders(orders.filter((order) => !order.isReviewed));
+        } else if (activeTab === "작성완료") {
+            setFilteredOrders(orders.filter((order) => order.isReviewed));
         } else {
-            setFilteredOrders(
-                orders.filter((order) => order.category === activeTab)
-            );
+            setFilteredOrders(orders);
         }
-    }, [activeTab, orders]);
+    }, [activeTab, orders]);;
 
     if (!filteredOrders.length) {
         return (
         <EmptyWrapper>
             <AlertImage src={alertImg} alt="알림 아이콘" />
-            <Message>구매하신 상품이 없습니다.</Message>
+            <Message>리뷰가능한 상품이 없습니다.</Message>
         </EmptyWrapper>
         );
     } 
@@ -42,7 +43,7 @@ function CancelContentList() {
     return (
         <>
             <TabWrapper>
-                {["전체", "취소/반품", "교환"].map((tab) => (
+                {["작성가능", "작성완료"].map((tab) => (
                 <TabText
                     key={tab}
                     onClick={() => handleTabClick(tab)}
@@ -55,49 +56,38 @@ function CancelContentList() {
   
             {filteredOrders.map((order) => (
                  <React.Fragment key={order.id}>
-                   <DateText>{formatSimpleDate(order.date)}</DateText>
-                   <CateogryText>{order.category} 요청</CateogryText>
-                   <OrderCard>
-                     <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지"/>
-                     <RightSection>
-                       <TitleLine>
-                         <Brand>{order.brand}</Brand>
-                         <OrderDetail>
-                           주문 상세
-                         </OrderDetail>
-                       </TitleLine>
-                       <ProductName>{order.productName}</ProductName>
-                       <OptionText>
-                         {order.options.color} / {order.options.size} / {order.options.quantity}개
-                       </OptionText>
-                       <Price>{order.price.toLocaleString()}원</Price>
-                     </RightSection>
-                   </OrderCard>
-                   
-                   <ButtonWrapper>
-                        {order.category === "교환" ? (
-                            <>
-                                <ActionButton>교환 상세</ActionButton>
-                                <ActionButton>교환 배송 조회</ActionButton>
-                                <ActionButton>회수 배송 조회</ActionButton>
-                            </>
-                        ) : (
-                            <>
-                                <ActionButton>A</ActionButton>
-                                <ActionButton>B</ActionButton>
-                                <ActionButton>C</ActionButton>
-                            </>
-                        )}
-                    </ButtonWrapper>
+                   {activeTab === "작성완료" ? (
+                      <ReviewCard order={order} />
+                    ) : (
+                      <>
+                        <OrderCard>
+                          <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
+                          <RightSection>
+                          <TitleLine>
+                            <Brand>{order.brand}</Brand>
+                          </TitleLine>
+                          <ProductName>{order.productName}</ProductName>
+                          <OptionText>
+                            {order.options.color} / {order.options.size} / {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
+                          </OptionText>
+                          </RightSection>
+                        </OrderCard>
 
-                   <Divider />
+                        <ButtonWrapper>
+                          <ActionButton>일반 후기</ActionButton>
+                          <ActionButton>스타일 후기</ActionButton>
+                          <ActionButton>?</ActionButton>
+                        </ButtonWrapper>
+                      </>
+                    )}
+                  <Divider />
                  </React.Fragment>
             ))}
         </>
     );
 }
 
-export { CancelContentList };
+export { ReviewContentList };
 
 const TabWrapper = styled.div`
     display: flex;
@@ -138,19 +128,6 @@ const TabText = styled.span<{ active: boolean }>`
   }
 `;
 
-const DateText = styled.p`
-  font-weight: 800;
-  font-size: 16px;
-  margin-bottom: 12px;
-  text-align: left;
-`;
-
-const CateogryText = styled.p`
-    font-size: 15px;
-    color: #333333;
-    text-align: left;
-`
-
 const OrderCard = styled.div`   
   display: flex;
   gap: 16px;
@@ -159,8 +136,8 @@ const OrderCard = styled.div`
 `;
 
 const ImageBox = styled.img`
-  width: 100px;
-  height: 110px;
+  width: 78px;
+  height: 90px;
   background-color: #d9d9d9;
   border-radius: 10px;
   object-fit: cover;
@@ -184,13 +161,6 @@ const TitleLine = styled.div`
 const Brand = styled.div`
   font-weight: bold;
   font-size: 14px;
-`;
-
-const OrderDetail = styled.div`
-  font-size: 12px;
-  color: #888;
-  text-decoration: underline;
-  cursor: pointer;
 `;
 
 const ProductName = styled.div`
