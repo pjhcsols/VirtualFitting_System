@@ -5,7 +5,6 @@ import { AdminLayout } from "@/shared";
 import {
   AdminBannerManager,
   AdminBrandControllPanel,
-  AdminTotalUserList,
   AdminTotalProduct,
 } from "@/pages";
 
@@ -14,8 +13,7 @@ function AdminRouter() {
   return (
     <Routes location={location} key={location.pathname}>
       <Route path="admin" element={<AdminLayout />}>
-        <Route path="branduser" element={<AdminBrandControllPanel />} />
-        <Route path="all" element={<AdminTotalUserList />} />
+        <Route path="user" element={<AdminBrandControllPanel />} />
         <Route path="product" element={<AdminTotalProduct />} />
         <Route path="banner" element={<AdminBannerManager />} />
       </Route>
