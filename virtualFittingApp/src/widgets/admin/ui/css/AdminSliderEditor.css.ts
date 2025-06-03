@@ -30,22 +30,43 @@ export const Button = styled.div`
   font-size: 0.75rem;
   font-weight: 800;
   color: black;
+  cursor: pointer;
 `;
 
 export const ImageSliderComponent = styled.div`
+  position: relative;
   width: 100%;
   height: 400px;
   display: flex;
+  border-radius: 8px;
   justify-content: center;
   align-items: center;
   overflow: hidden;
+  transition: 0.3s all ease-out;
+`;
+
+export const ArrowContainer = styled.div`
+  position: absolute;
+  width: 95%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const Arrow = styled.div`
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
 `;
 
 export const SliderContainer = styled.div<{ photoCount: number }>`
   width: ${(props) => {
-    return props.photoCount === 1 ? "100%" : `${100 * props.photoCount}%`;
+    return props.photoCount === 1 ? "99%" : `${100 * props.photoCount}%`;
   }};
-  height: 100%;
+  height: 99%;
   transition: 0.3s all ease-in-out;
 `;
 
@@ -55,7 +76,6 @@ export const PhotoUploader = styled.div`
   height: 100%;
   object-fit: contain;
   border-radius: 8px;
-  border: 1px solid #121212;
   background-color: #fffafa;
   display: flex;
   justify-content: center;

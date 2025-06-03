@@ -1,28 +1,44 @@
 import * as S from "@/widgets/admin/ui/css/AdminSliderEditor.css";
 import { useBanner } from "@/widgets/admin/hooks/useBanner";
 import { ICON_UPLOAD_ICON } from "@/shared/constants";
-import { ChangeEvent, useRef } from "react";
+import { ChangeEvent, useEffect, useRef } from "react";
+import { LeftArrow, RightArrow } from "@/shared";
 
 function AdminSliderEditor() {
   const {
+    containerRef,
     currIdx,
     photoCount,
     photoList,
+    setSlideContainerWidth,
     onClickBanner,
     onAddPhotoCount,
     onSubPhotoCount,
+    onMoveBanner,
     onChangePhotos,
     onSubmitBanner,
   } = useBanner();
+
+  useEffect(() => {
+    if (containerRef.current) {
+      setSlideContainerWidth(
+        containerRef.current.getBoundingClientRect().width,
+      );
+    }
+  }, []);
 
   return (
     <S.Wrapper>
       <S.ButtonContainer>
         <S.Button onClick={onAddPhotoCount}>배너 추가</S.Button>
-        <S.Button onClick={() => onSubPhotoCount(currIdx)}>배너 삭제</S.Button>
+        <S.Button onClick={onSubPhotoCount}>배너 삭제</S.Button>
       </S.ButtonContainer>
       <S.ImageSliderComponent>
-        <S.SliderContainer photoCount={photoCount}>
+        <S.ArrowContainer>
+          <LeftArrow onClick={() => onMoveBanner(false)} />
+          <RightArrow onClick={() => onMoveBanner(true)} />
+        </S.ArrowContainer>
+        <S.SliderContainer photoCount={photoCount} ref={containerRef}>
           {Array.from({ length: photoCount }).map((_, key) => {
             const photoSrc = photoList[key] ?? undefined;
             return (

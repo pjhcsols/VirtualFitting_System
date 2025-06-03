@@ -63,35 +63,68 @@ function AdminBrandUserList() {
 
   return (
     <S.UserListContainer>
-      <AdminBrandUserColumn
-        title="Test용입니다."
-        address="경상남도 어딘가에 있는 곳"
-        isAuthenticate={true}
-        className="user-column"
-        id={`brand-user-${1}`}
-        onDelete={() => onDelete(1)}
-      />
-      <AdminBrandUserColumn
-        title="Test용입니다."
-        address="경상남도 어딘가에 있는 곳"
-        isAuthenticate={true}
-        className="user-column"
-        onDelete={() => onDelete(1)}
-      />
-      <AdminBrandUserColumn
-        title="Test용입니다."
-        address="경상남도 어딘가에 있는 곳"
-        isAuthenticate={true}
-        className="user-column"
-        onDelete={() => onDelete(1)}
-      />
-      <AdminBrandUserColumn
-        title="Test용입니다."
-        address="경상남도 어딘가에 있는 곳"
-        isAuthenticate={true}
-        className="user-column"
-        onDelete={() => onDelete(1)}
-      />
+      <S.TitleContainer>
+        <S.Title>BrandUser 관리 목록</S.Title>
+      </S.TitleContainer>
+      <S.Divider />
+      <S.ContentContainer>
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+        <AdminBrandUserColumn
+          title="Test용입니다."
+          address="경상남도 어딘가에 있는 곳"
+          isAuthenticate={true}
+          className="user-column"
+          onAgree={() => onDelete(1)}
+          onDelete={() => onDelete(1)}
+        />
+      </S.ContentContainer>
     </S.UserListContainer>
   );
 }
