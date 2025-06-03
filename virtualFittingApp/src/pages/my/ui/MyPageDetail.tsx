@@ -163,7 +163,7 @@
                         disabled={emailVerified}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                       />
-                      <AuthButton type="button" onClick={handleSendVerification} disabled={loading}>
+                      <AuthButton type="button" onClick={handleSendVerification} disabled={loading || emailVerified}>
                         인증
                       </AuthButton>
                     </TelForm>
