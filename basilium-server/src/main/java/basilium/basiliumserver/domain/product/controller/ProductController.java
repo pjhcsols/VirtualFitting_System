@@ -31,7 +31,6 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok("상품 정보 등록 성공");
     }
 
-    // updateFrom 내부의 updateCollection 로직은 기존에 있던 항목만 업데이트하고, 업데이트 요청에 없는 항목은 그대로 남겨두기 때문에 기존 이미지 list 만큼 교체되는 문제
     // 상품 수정 (PATCH /api/products/{id})
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
@@ -55,7 +54,7 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(detailDTO);
     }
 
-
+    //superUser
     // 전체 상품 조회 (GET /api/products?...)
     @GetMapping
     public ResponseEntity<List<ProductAllRetrieveDTO>> getAllProducts(Pageable pageable) {
@@ -132,10 +131,11 @@ public class ProductController implements ProductApiDocs {
         return ResponseEntity.ok(productService.getAllProductImageUrls());
     }
 
-    // 상품 수정용 조회 기능 상품의 id를 받아서 해당 상품의 상세 정보를 전부 전달해주는 기능
-
     // 브랜드 유저에 해당되는 상품 전체 페이지네이션 조회
-    /** 1) 브랜드 유저: 전체 수정용 리스트 */
+    /**
+     * brandUser
+     * 1) 브랜드 유저: 전체 수정용 리스트
+     * */
     @GetMapping("/brand")
     public ResponseEntity<List<ProductEditSummaryDTO>> getMyProducts(
             @AuthUser String userId,
@@ -180,6 +180,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     /**
+     * normalUser
      * 판매중인 상품만 페이지네이션으로 조회
      * GET /b1/products/on-sale?page=0&size=10&sort=productId,desc
      */

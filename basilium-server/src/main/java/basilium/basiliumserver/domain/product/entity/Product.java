@@ -96,54 +96,151 @@ public class Product {
      * 업데이트 (PATCH) 도메인 메서드.
      * productId, brandUser, 총수량은 업데이트 대상에서 제외합니다.
      */
-    public void updateFrom(ProductUpdateRequest updateRequest) {
-        this.productCategory = updateRequest.getProductCategory().orElse(this.productCategory);
-        this.productName = updateRequest.getProductName().orElse(this.productName);
-        this.productPrice = updateRequest.getProductPrice().orElse(this.productPrice);
-        this.productMaterial = updateRequest.getProductMaterial().orElse(this.productMaterial);
-        this.productDesc = updateRequest.getProductDesc().orElse(this.productDesc);
+    //===========================
+    // (1) updateFrom: 기본 필드 Optional 업데이트 + 컬렉션 증분 동기화
+    //===========================
+    public void updateFrom(ProductUpdateRequest req) {
+        // — 기본 필드만 Optional 업데이트 —
+        this.productCategory = req.getProductCategory().orElse(this.productCategory);
+        this.productName     = req.getProductName().orElse(this.productName);
+        this.productPrice    = req.getProductPrice().orElse(this.productPrice);
+        this.productMaterial = req.getProductMaterial().orElse(this.productMaterial);
+        this.productDesc     = req.getProductDesc().orElse(this.productDesc);
         // totalQuantity는 @PrePersist/@PreUpdate에서 자동 계산됨
 
-        updateCollection(
-                updateRequest.getProductOptions(),
-                this.productOptions,
-                optUpdate -> t -> t.getId().getProductSize().name().equals(optUpdate.getProductSize())
-                        && t.getId().getProductColor().name().equals(optUpdate.getProductColor()),
-                (existingOption, optUpdate) -> existingOption.updateFrom(optUpdate)
+        // — 옵션 컬렉션 증분 동기화 —
+        syncCollection(
+                req.getProductOptions(),        // Optional<List<ProductOptionDTO>>
+                this.productOptions,            // 기존 Set<ProductOption>
+                dto -> existing ->
+                        existing.getId().getProductSize().name().equals(dto.getProductSize()) &&
+                                existing.getId().getProductColor().name().equals(dto.getProductColor()),  // 매칭 조건
+                (existingOpt, dto) -> { // updater: “같은 엔티티”일 경우
+                    if (!Objects.equals(existingOpt.getOptionQuantity(), dto.getOptionQuantity())) {
+                        existingOpt.updateQuantity(dto.getOptionQuantity());
+                    }
+                },
+                dto -> { // entityFactory: “새로운 DTO → 신규 엔티티 생성”
+                    ProductOption newOpt = ProductOption.builder()
+                            .id(new ProductOptionId(
+                                    this.productId,
+                                    Size.valueOf(dto.getProductSize()),
+                                    Color.valueOf(dto.getProductColor())
+                            ))
+                            .optionQuantity(dto.getOptionQuantity())
+                            .build();
+                    newOpt.assignProduct(this);
+                    return newOpt;
+                }
         );
 
-        updateCollection(
-                updateRequest.getProductSizeOptions(),
-                this.productSizeOptions,
-                sizeUpdate -> t -> t.getId().getProductSize().name().equals(sizeUpdate.getProductSize()),
-                (existingSizeOption, sizeUpdate) -> existingSizeOption.updateFrom(sizeUpdate)
+        // — 사이즈 옵션 컬렉션 증분 동기화 —
+        syncCollection(
+                req.getProductSizeOptions(),     // Optional<List<ProductSizeOptionDTO>>
+                this.productSizeOptions,         // 기존 Set<ProductSizeOption>
+                dto -> existing ->
+                        existing.getId().getProductSize().name().equals(dto.getProductSize()),
+                (existingSz, dto) -> { // updater
+                    if (!Objects.equals(existingSz.getTotalLength(), dto.getTotalLength()) ||
+                            !Objects.equals(existingSz.getChest(), dto.getChest()) ||
+                            !Objects.equals(existingSz.getShoulder(), dto.getShoulder()) ||
+                            !Objects.equals(existingSz.getArm(), dto.getArm())) {
+                        existingSz.updateFrom(dto);
+                    }
+                },
+                dto -> { // entityFactory
+                    ProductSizeOption newSz = ProductSizeOption.builder()
+                            .id(new ProductSizeOptionId(
+                                    this.productId,
+                                    Size.valueOf(dto.getProductSize())
+                            ))
+                            .totalLength(dto.getTotalLength())
+                            .chest(dto.getChest())
+                            .shoulder(dto.getShoulder())
+                            .arm(dto.getArm())
+                            .build();
+                    newSz.assignProduct(this);
+                    return newSz;
+                }
         );
 
-        updateCollection(
-                updateRequest.getProductColorOptions(),
-                this.productColorOptions,
-                colorUpdate -> t -> t.getId().getProductColor().name().equals(colorUpdate.getProductColor()),
-                (existingColorOption, colorUpdate) -> existingColorOption.updateFrom(colorUpdate)
+        // — 색상 옵션 + 이미지 컬렉션 증분 동기화 —
+        syncCollection(
+                req.getProductColorOptions(),    // Optional<List<ProductColorOptionDTO>>
+                this.productColorOptions,        // 기존 Set<ProductColorOption>
+                dto -> existing ->
+                        existing.getId().getProductColor().name().equals(dto.getProductColor()),
+                (existingCol, dto) -> { // updater
+                    if (!existingCol.getProductPhotoUrls().equals(dto.getProductPhotoUrls()) ||
+                            !existingCol.getProductSubPhotoUrls().equals(dto.getProductSubPhotoUrls())) {
+                        existingCol.updateFrom(dto);
+                    }
+                },
+                dto -> { // entityFactory
+                    ProductColorOption newCol = ProductColorOption.builder()
+                            .id(new ProductColorOptionId(
+                                    this.productId,
+                                    Color.valueOf(dto.getProductColor())
+                            ))
+                            .productPhotoUrls(new ArrayList<>(dto.getProductPhotoUrls()))
+                            .productSubPhotoUrls(new ArrayList<>(dto.getProductSubPhotoUrls()))
+                            .build();
+                    newCol.assignProduct(this);
+                    return newCol;
+                }
+        );
+    }
+
+    //===================================================
+    // (2) syncCollection: “증분 동기화”를 수행하는 제네릭 헬퍼 메서드
+    //===================================================
+    /**
+     * @param dtoListOpt          Optional<List<U>>: 들어온 전체 DTO 리스트(예: ProductOptionDTO 등)
+     * @param existingEntities    현재 엔티티의 컬렉션(Set<T> 등)
+     * @param matcher             (U → Predicate<T>): “DTO와 매칭되는 엔티티인가?”
+     * @param updater             (T,U) → void: “같은 엔티티로 판명되었을 때 수정할 로직”
+     * @param entityFactory       (U → T): “신규 DTO인 경우 새로운 엔티티 인스턴스를 생성하는 로직”
+     */
+    private <T, U> void syncCollection(
+            Optional<List<U>> dtoListOpt,
+            Collection<T> existingEntities,
+            Function<U, Predicate<T>> matcher,
+            BiConsumer<T, U> updater,
+            Function<U, T> entityFactory
+    ) {
+        if (dtoListOpt.isEmpty()) {
+            // 요청에 해당 DTO 리스트가 아예 없으면(즉, Optional.empty()) 아무 작업도 하지 않음
+            return;
+        }
+
+        List<U> dtoList = dtoListOpt.get();
+
+        // 1) 들어온 DTO 하나하나를 보면서,
+        //    - 기존 엔티티에 매칭되는 게 있으면 updater 실행
+        //    - 매칭되는 게 없으면 entityFactory로 신규 엔티티 생성 후 추가
+        for (U dto : dtoList) {
+            Predicate<T> predicate = matcher.apply(dto);
+            Optional<T> existing = existingEntities.stream().filter(predicate).findFirst();
+
+            if (existing.isPresent()) {
+                // 이미 있는 엔티티 → 값이 변경되었으면 update
+                updater.accept(existing.get(), dto);
+            } else {
+                // 없는 엔티티 → 새로 생성해서 컬렉션에 추가
+                existingEntities.add(entityFactory.apply(dto));
+            }
+        }
+
+        // 2) “요청 리스트에 없는 기존 엔티티”는 컬렉션에서 제거(DELETE)
+        existingEntities.removeIf(entity ->
+                dtoList.stream()
+                        .map(matcher)          // 각 DTO → 그 DTO와 매칭되는 조건(Predicate<T>)
+                        .noneMatch(pred -> pred.test(entity))
         );
     }
 
     public void changeStatus(ProductStatus newStatus) {
         this.status = newStatus;
-    }
-
-    private <T, U> void updateCollection(Optional<List<U>> updateList, Collection<T> targetCollection,
-                                         Function<U, Predicate<T>> matcher, BiConsumer<T, U> updater) {
-        updateList.ifPresent(list ->
-                list.forEach(u -> targetCollection.stream()
-                        .filter(matcher.apply(u))
-                        .findFirst()
-                        .ifPresentOrElse(
-                                t -> updater.accept(t, u),
-                                () -> {
-                                    // 신규 추가 로직 구현 가능 (현재는 생략)
-                                }
-                        ))
-        );
     }
 
     public void addProductOption(ProductOption option) {
