@@ -18,6 +18,7 @@ import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
+import EmailSVGLogo from "/svg/Email.svg";
 
 import type {
   CategoryType,
@@ -47,6 +48,7 @@ export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
+export const ICON_EMAIL = EmailSVGLogo;
 
 export const AnimationProps = {
   initial: {
