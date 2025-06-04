@@ -1,5 +1,5 @@
 import {  ProductSmallCard,} from "@/shared";
-import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared/constants";
+import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared";
 import { LikeButton } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";

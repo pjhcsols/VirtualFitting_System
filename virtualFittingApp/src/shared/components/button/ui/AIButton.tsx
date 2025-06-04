@@ -1,6 +1,6 @@
 import styled from "styled-components";
-import { ICON_AI } from "@/shared/constants";
-import { xlDouble, xl, lg, md, sm } from "@/shared/constants";
+import { ICON_AI } from "@/shared";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function AIButton() {
   return <AIBtn>
