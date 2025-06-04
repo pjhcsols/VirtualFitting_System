@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { Header } from "@/shared/components/header/ui/Header";
+import { Header } from "@/shared";
+import { sm } from "@/shared"
 
 function StoreLayout() {
   return (
@@ -24,14 +25,6 @@ const Wrapper = styled.main`
   background-color: #fffafa;
 `;
 
-const BREAKPOINT = {
-  xlDouble: 1536,
-  xl: 1280,
-  lg: 1024,
-  md: 768,
-  sm: 640,
-};
-
 const ContentWrapper = styled.article`
   box-sizing: border-box;
   padding: 70px 50px;
@@ -41,7 +34,7 @@ const ContentWrapper = styled.article`
   align-items: flex-start;
   background: white;
 
-  @media (max-width: ${BREAKPOINT.sm}px) {
+  @media (max-width: ${sm}px) {
     padding: 70px 16px;
   }
 
