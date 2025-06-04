@@ -2,6 +2,13 @@ import styled from "styled-components";
 import { reviews } from "../constants/dummy";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
 
+function renderStars(rating: number) {
+  const maxStars = 5;
+  const filled = "★".repeat(rating);
+  const empty = "☆".repeat(maxStars - rating);
+  return filled + empty;
+}
+
 function Review() {
   return (
     <>
@@ -9,7 +16,7 @@ function Review() {
         <Wrapper key={review.id}>
           <ReviewContainer>
             <ReviewContentContainer>
-              <ReviewRatingInfo>⭐ {review.rating}점 | {review.userId}</ReviewRatingInfo>
+              <ReviewRatingInfo>{renderStars(review.rating)} | {review.userId}</ReviewRatingInfo>
               <ReviewOption>옵션 : {review.option}</ReviewOption>
               <ReviewBodySize>체형 : {review.height}cm, {review.weight}kg</ReviewBodySize>
               <ReviewSized>사이즈 : {review.size}</ReviewSized>
