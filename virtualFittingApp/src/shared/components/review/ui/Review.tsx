@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { reviews } from "../constants/dummy";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function Review() {
   return (
@@ -87,6 +88,10 @@ const ImageContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${sm}px) {
+    display: none;
+  }
 `;
 
 const Image = styled.img`
