@@ -8,8 +8,6 @@ function ReviewContent() {
         <ReviewTitle>리뷰</ReviewTitle>
       </ReviewContainer>
       <Review></Review>
-      <Review></Review>
-      <Review></Review>
     </Wrapper>
   );
 }
@@ -23,7 +21,6 @@ const Wrapper = styled.div`
 `;
 
 const ReviewContainer = styled.div`
-  padding: 100px 0px;
   display: flex;
   flex-flow: column nowrap;
   align-items: flex-start;
@@ -35,7 +32,6 @@ const ReviewTitle = styled.h1`
   font-weight: 600;
   color: black;
   display: block;
-  width: 100%;
 `;
 
 export { ReviewContent };
