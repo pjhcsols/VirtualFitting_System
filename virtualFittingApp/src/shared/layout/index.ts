@@ -10,4 +10,6 @@ export * from "@/shared/layout/main/MainLayout";
 
 export * from "@/shared/layout/store/StoreLayout";
 
+export * from "@/shared/layout/shopping-cart/ShoppingCartLayout";
+
 export * from "@/shared/layout/brand/BrandLayout";

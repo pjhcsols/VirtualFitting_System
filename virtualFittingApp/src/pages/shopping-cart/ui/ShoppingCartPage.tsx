@@ -1,16 +1,19 @@
-import { Header, ShoppingCart, LikedCarousel } from "@/shared";
-import { useShoppingCartData } from "@/pages/shopping-cart/utils/items.util";
+import { Shopping } from "@/shared";
+import { useShoppingCartData } from "@/pages";
+import styled from "styled-components";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
-const ShoppingCartPage = () => {
-  const { shoppingData, likedItems } = useShoppingCartData();
-
+function ShoppingCartPage() {
+  // const navigate = useNavigate();
   return (
-    <div>
-      <Header />
-      <ShoppingCart shoppingData={shoppingData} />
-      <LikedCarousel likedItems={likedItems} />
-    </div>
+    <Wrapper>
+    </Wrapper>
   );
-};
+}
+
+const Wrapper = styled.div`
+  width: 100%;
+  min-height: 100vh;
+`;
 
 export { ShoppingCartPage };
