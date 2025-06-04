@@ -1,9 +1,9 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/shared";
-import { sm } from "@/shared"
+import { sm } from "@/shared";
 
-function StoreLayout() {
+function ShoppingCartLayout() {
   return (
     <Wrapper>
       <Header />
@@ -40,4 +40,4 @@ const ContentWrapper = styled.article`
 
 `;
 
-export { StoreLayout };
+export { ShoppingCartLayout };

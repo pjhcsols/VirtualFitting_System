@@ -1,5 +1,5 @@
 import { useState } from "react";
-// import { ICON_LIKE, ICON_UNLIKED } from "@/shared/constants";
+import { ICON_LIKED, ICON_UNLIKED } from "@/shared/constants";
 import styled from "styled-components";
 
 type LikeButtonProps = {
@@ -22,7 +22,7 @@ export const LikeButton = ({
 
   return (
     <IconImage
-      // src={liked ? ICON_LIKE : ICON_UNLIKED}
+      src={liked ? ICON_LIKED : ICON_UNLIKED}
       alt={liked ? "좋아요 취소" : "좋아요"}
       onClick={handleClick}
     />

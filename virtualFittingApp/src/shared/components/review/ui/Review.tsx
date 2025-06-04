@@ -1,70 +1,110 @@
-import { IMG_TEST_CLOTHES } from "@/shared/constants";
 import styled from "styled-components";
+import { reviews } from "../constants/dummy";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
+
+function renderStars(rating: number) {
+  const maxStars = 5;
+  const filled = "★".repeat(rating);
+  const empty = "☆".repeat(maxStars - rating);
+  return filled + empty;
+}
 
 function Review() {
   return (
-    <Wrapper>
-      <ImageContainer>
-        <Image src={IMG_TEST_CLOTHES} alt="test-clothes" />
-      </ImageContainer>
-      <ReviewContentContainer>
-        <ReviewTitle>정말 싸게 잘 산 것 같네요!</ReviewTitle>
-        <ReviewContent>
-          기대 많이 안했는데, 생각보다 잘 산 것 같아서 뿌듯했어요.
-        </ReviewContent>
-      </ReviewContentContainer>
-    </Wrapper>
+    <>
+      {reviews.map((review) => (
+        <Wrapper key={review.id}>
+          <ReviewContainer>
+            <ReviewContentContainer>
+              <ReviewRatingInfo>{renderStars(review.rating)} | {review.userId}</ReviewRatingInfo>
+              <ReviewOption>옵션 : {review.option}</ReviewOption>
+              <ReviewBodySize>정보 : {review.height}cm · {review.weight}kg</ReviewBodySize>
+              <ReviewSized>사이즈 : {review.size}</ReviewSized>
+              <ReviewContent>{review.content}</ReviewContent>
+            </ReviewContentContainer>
+            <ImageContainer>
+              {review.images?.[0] && <Image src={review.images[0]} alt="리뷰 이미지" />}
+            </ImageContainer>
+          </ReviewContainer>
+        </Wrapper>
+      ))}
+    </>
   );
 }
 
 const Wrapper = styled.div`
-  box-sizing: border-box;
-  padding: 10px 20px;
   width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 16px;
-  border-bottom: 0.5px solid #121212;
-`;
-
-const ImageContainer = styled.div`
-  height: 100%;
-  display: flex;
-  justify-content: center;
   align-items: center;
+  border-bottom: 1px solid #e4e4e4;
 `;
 
-const Image = styled.img`
-  width: 6vw;
-  height: 9vw;
-  object-fit: contain;
+const ReviewContainer = styled.div`
+  width: 100%;
+  padding: 4px;
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
 `;
 
 const ReviewContentContainer = styled.div`
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
-  gap: 8px;
-  white-space: nowrap;
   overflow: hidden;
-  text-overflow: ellipsis;
 `;
 
-const ReviewTitle = styled.p`
+const ReviewRatingInfo = styled.div`
   font-family: "pretendard";
-  font-size: 1.2vw;
-  font-weight: 700;
-  color: black;
-`;
-
-const ReviewContent = styled.span`
-  font-family: "pretendard";
-  font-size: 0.8vw;
+  font-size: 11px;
   font-weight: 500;
   color: black;
+`
+const ReviewOption = styled.div`
+  font-family: "pretendard";
+  font-size: 12px;
+  font-weight: 500;
+  color: gray;
+`
+const ReviewBodySize = styled.div`
+  font-family: "pretendard";
+  font-size: 12px;
+  font-weight: 500;
+  color: gray;
+`
+const ReviewSized = styled.div`
+  font-family: "pretendard";
+  font-size: 12px;
+  font-weight: 500;
+  color: gray;
+`
+const ReviewContent = styled.span`
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+`;
+
+const ImageContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: ${sm}px) {
+    display: none;
+  }
+`;
+
+const Image = styled.img`
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 `;
 
 export { Review };

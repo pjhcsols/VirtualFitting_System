@@ -1,13 +1,13 @@
 import styled from "styled-components";
 
-function DetailDescription() {
+function SizeInfo() {
   return (
     <Wrapper>
-      <DetailContainer>
-        <DetailTitle>
-          상품설명
-        </DetailTitle>
-      </DetailContainer>
+      <SizeInfoContainer>
+        <SizeTitle>
+          사이즈표
+        </SizeTitle>
+      </SizeInfoContainer>
     </Wrapper>
   );
 }
@@ -20,13 +20,13 @@ const Wrapper = styled.div`
   align-items: flex-start;
 `;
 
-const DetailContainer = styled.div`
+const SizeInfoContainer = styled.div`
   padding: 100px 0px;
   display: flex;
   flex-flow: column nowrap;
 `;
 
-const DetailTitle = styled.span`
+const SizeTitle = styled.span`
   font-family: "pretendard";
   font-size: 22px;
   font-weight: 600;
@@ -35,4 +35,5 @@ const DetailTitle = styled.span`
   width: 100%;
 `;
 
-export { DetailDescription };
+
+export { SizeInfo };

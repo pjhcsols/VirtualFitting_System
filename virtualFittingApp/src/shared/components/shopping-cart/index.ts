@@ -1,1 +1,1 @@
-export * from "@/shared/components/shopping-cart/ui/ShoppingCart";
+export * from "@/shared/components/shopping-cart/ui/Shopping";

@@ -1,10 +1,10 @@
 import styled from "styled-components";
 
 function ProductSmallCard() {
-  return <Wrapper />;
+  return <ProductSmallCardContainer />;
 }
 
-const Wrapper = styled.img`
+const ProductSmallCardContainer = styled.img`
   width: 72px;
   height: 86px;
   aspect-ratio: 4 / 5;

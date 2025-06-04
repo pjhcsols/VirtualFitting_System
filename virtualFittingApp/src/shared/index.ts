@@ -15,3 +15,5 @@ export * from "@/shared/types";
 
 // * utils
 export * from "@/shared/utils";
+
+export * from "@/shared/constants";

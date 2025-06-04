@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { DetailDescription, ProductContainer, ReviewContent } from "@/widgets";
+import { DetailDescription, SizeInfo, ProductContainer, ReviewContent } from "@/widgets";
 import { products } from "../constants/dummy";
 import { useParams } from "react-router-dom";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
@@ -11,9 +11,9 @@ function StoreDetailPage() {
   return (
     <Wrapper>
       <ProductContainer product={product} />
-      <Divider />
+      <Divider></Divider>
       <DetailDescription />
-      <Divider />
+      <SizeInfo />
       <ReviewContent />
     </Wrapper>
   );
@@ -34,9 +34,10 @@ const Wrapper = styled.div`
 `;
 
 const Divider = styled.div`
+  margin-top: 64px;
   width: 100%;
   height: 1px;
-  background: #f0f0f0;
+  background: #e4e4e4;
   border-radius: 1000px;
 `;
 

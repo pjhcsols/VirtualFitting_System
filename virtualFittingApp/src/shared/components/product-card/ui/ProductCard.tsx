@@ -2,6 +2,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import { useState } from "react";
 import { ColorPopup } from "./ColorPopUp";
 import { LikeButton } from "@/shared";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
+
 
 type ProductCardProps = {
   product: any;
@@ -66,11 +68,11 @@ function ProductCard({ product, onClick }: ProductCardProps) {
     );
   }
 
-export const xlDouble = 1536;
-export const xl = 1280;
-export const lg = 1024;
-export const md = 768;
-export const sm = 640;
+// export const xlDouble = 1536;
+// export const xl = 1280;
+// export const lg = 1024;
+// export const md = 768;
+// export const sm = 640;
 
 const FontStyle = createGlobalStyle`
   @font-face {
