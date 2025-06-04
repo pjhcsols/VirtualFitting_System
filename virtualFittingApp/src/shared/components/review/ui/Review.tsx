@@ -18,7 +18,7 @@ function Review() {
             <ReviewContentContainer>
               <ReviewRatingInfo>{renderStars(review.rating)} | {review.userId}</ReviewRatingInfo>
               <ReviewOption>옵션 : {review.option}</ReviewOption>
-              <ReviewBodySize>체형 : {review.height}cm, {review.weight}kg</ReviewBodySize>
+              <ReviewBodySize>정보 : {review.height}cm · {review.weight}kg</ReviewBodySize>
               <ReviewSized>사이즈 : {review.size}</ReviewSized>
               <ReviewContent>{review.content}</ReviewContent>
             </ReviewContentContainer>
