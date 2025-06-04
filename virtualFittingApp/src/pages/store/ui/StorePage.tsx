@@ -3,6 +3,7 @@ import { Banner, Carousel } from "@/widgets";
 import { products } from "../constants/dummy";
 import { ProductCard } from "@/shared/components/product-card";
 import { useNavigate } from "react-router-dom";
+import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function StorePage() {
   const navigate = useNavigate();
@@ -26,12 +27,6 @@ function StorePage() {
     </Wrapper>
   );
 }
-
-export const xlDouble = 1536;
-export const xl = 1280;
-export const lg = 1024;
-export const md = 768;
-export const sm = 640;
 
 const Wrapper = styled.div`
   width: 100%;
