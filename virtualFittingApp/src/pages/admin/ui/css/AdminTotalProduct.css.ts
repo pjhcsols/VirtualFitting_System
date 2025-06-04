@@ -6,6 +6,7 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  gap: 32px;
 `;
 
 export const TitleContainer = styled.div`
@@ -13,11 +14,13 @@ export const TitleContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  span {
-    font-size: 1rem;
-    font-weight: 700;
-    color: black;
-  }
+`;
+
+export const Title = styled.span`
+  font-family: "Prata-Regular";
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: black;
 `;
 
 export const SliderContainer = styled.div`

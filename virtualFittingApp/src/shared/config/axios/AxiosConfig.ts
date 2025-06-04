@@ -38,7 +38,7 @@ API_BASILIUM.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 API_BASILIUM.interceptors.response.use(
@@ -59,9 +59,8 @@ API_BASILIUM.interceptors.response.use(
         Cookies.set("access-token", accessToken);
         Cookies.set("refresh-token", newRefreshToken);
 
-        API_BASILIUM.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
+        API_BASILIUM.defaults.headers.common["Authorization"] =
+          `Bearer ${accessToken}`;
 
         return API_BASILIUM(originalRequest);
       } catch (refreshError) {
@@ -77,7 +76,7 @@ API_BASILIUM.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
 
 // * AI Server
@@ -106,7 +105,7 @@ API_BASILIUM_AI.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 API_BASILIUM_AI.interceptors.response.use(
@@ -127,9 +126,8 @@ API_BASILIUM_AI.interceptors.response.use(
         Cookies.set("access-token", accessToken);
         Cookies.set("refresh-token", newRefreshToken);
 
-        API_BASILIUM_AI.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${accessToken}`;
+        API_BASILIUM_AI.defaults.headers.common["Authorization"] =
+          `Bearer ${accessToken}`;
 
         return API_BASILIUM_AI(originalRequest);
       } catch (refreshError) {
@@ -145,5 +143,20 @@ API_BASILIUM_AI.interceptors.response.use(
       }
     }
     return Promise.reject(error);
-  }
+  },
 );
+
+// * Redis Server
+
+const BASE_REDIS_URL = import.meta.env
+  .VITE_APPLICATION_BASILIUM_REDIS_SERVER as string;
+
+export const API_BASILIUM_REDIS = axios.create({
+  baseURL: BASE_REDIS_URL,
+  withCredentials: true,
+});
+
+API_BASILIUM_REDIS.defaults.headers = {
+  "Content-Type": "application/json;",
+  Accept: "application/json",
+} as headers & HeadersDefaults;

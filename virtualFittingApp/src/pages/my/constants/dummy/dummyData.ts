@@ -15,13 +15,13 @@ export const orderDummyData: OrderItem[] = [
     price: 42000,
     productImageUrl: "https://image.msscdn.net/thumbnails/images/goods_img/20250429/5075611/5075611_17459941111610_big.jpg?w=1200",
     category: "교환",
-    
+    isReviewed: false,
   },
   {
     id: "2", 
     date: "2025-01-18",
     brand: "NIKE",
-    productName: "에어포스 1",
+    productName: "에어포스1",
     options: {
       color: "white",
       size: "270",
@@ -30,6 +30,7 @@ export const orderDummyData: OrderItem[] = [
     price: 129000,
     productImageUrl: "https://image.msscdn.net/thumbnails/images/goods_img/20240321/3976350/3976350_17115804993997_big.jpg?w=1200",
     category: "교환",
+    isReviewed: true,
 
   },
   {
@@ -45,5 +46,6 @@ export const orderDummyData: OrderItem[] = [
     price: 200000,
     productImageUrl: "https://image.msscdn.net/thumbnails/images/goods_img/20200924/1622069/1622069_1_big.jpg?w=1200",
     category: "취소/반품",
+    isReviewed: false,
   },
 ];

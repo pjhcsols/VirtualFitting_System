@@ -31,20 +31,20 @@ export const AdminHeaderOptions = [
   {
     id: 0,
     title: "Brand User List",
-    href: "/admin/branduser?page=0&size=20",
+    href: "/admin/user",
+  },
+  {
+    id: 1,
+    title: "Banner Manage",
+    href: "/admin/banner",
   },
   {
     id: 2,
-    title: "Total User List",
-    href: "/admin/all?page=0&size=20",
+    title: "Product Manage",
+    href: "/admin/product",
   },
   {
     id: 3,
-    title: "Product Manage",
-    href: "/admin/product?page=0&size=20",
-  },
-  {
-    id: 4,
     title: "Logout",
     href: "",
   },

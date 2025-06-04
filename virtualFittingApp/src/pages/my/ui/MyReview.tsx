@@ -1,5 +1,7 @@
+import React, { Suspense } from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
+import { ReviewContentList } from "@/pages/my/ui/ReviewContentList";
 
 function MyReview() {
     
@@ -11,6 +13,9 @@ function MyReview() {
 
             <ContentWrapper>
                 <InnerContent>
+                  <Suspense fallback={<div>불러오는 중...</div>}>
+                    <ReviewContentList />
+                  </Suspense>
                 </InnerContent>
             </ContentWrapper>
         </PageWrapper>
@@ -24,7 +29,7 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   background: #fff;
-  height: 100vh;
+  min-height: 100vh;
 `;
 
 const HeaderWrapper = styled.div`
@@ -34,16 +39,17 @@ const HeaderWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  margin-top: 70px;
+  margin-top: 60px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
+  flex-grow: 1;
 `;
 
 const InnerContent = styled.div`
   width: 100%;
   max-width: 600px;
-  padding: 30px 30px;
+  padding: 10px 30px;
   box-sizing: border-box;
 `;

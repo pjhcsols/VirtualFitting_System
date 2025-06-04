@@ -1,25 +1,35 @@
 export const moveRight = ({
-  element,
-  idx,
+  elementWidth,
   currIdx,
+  idx,
 }: {
-  element: HTMLElement;
-  idx: number;
+  elementWidth: number;
   currIdx: number;
+  idx: number;
 }) => {
-  const width = element.getBoundingClientRect().width;
-  return (idx - currIdx) * width;
+  console.info(
+    "[Info] moveRight Util function (elementWidth, currIdx, Idx):",
+    elementWidth,
+    idx,
+    currIdx,
+  );
+  return (idx - currIdx) * elementWidth;
 };
 
 export const moveLeft = ({
-  element,
-  idx,
+  elementWidth,
   currIdx,
+  idx,
 }: {
-  element: HTMLElement;
-  idx: number;
+  elementWidth: number;
   currIdx: number;
+  idx: number;
 }) => {
-  const width = element.getBoundingClientRect().width;
-  return (currIdx - idx) * width;
+  console.info(
+    "[Info] moveRight Util function (elementWidth, currIdx, Idx):",
+    elementWidth,
+    idx,
+    currIdx,
+  );
+  return (currIdx - idx) * elementWidth;
 };

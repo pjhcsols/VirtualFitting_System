@@ -45,3 +45,7 @@ export * from "@/shared/components/input";
 export * from "@/shared/components/checkMark";
 
 export * from "@/shared/components/column";
+
+export * from "@/shared/components/arrow";
+
+export * from "@/shared/components/modal";

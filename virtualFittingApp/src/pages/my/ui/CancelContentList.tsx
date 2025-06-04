@@ -97,7 +97,7 @@ function CancelContentList() {
     );
 }
 
-export default CancelContentList;
+export { CancelContentList };
 
 const TabWrapper = styled.div`
     display: flex;
@@ -158,7 +158,7 @@ const OrderCard = styled.div`
   width: 550px;
 `;
 
-const ImageBox = styled.img<{src?:string}>`
+const ImageBox = styled.img`
   width: 100px;
   height: 110px;
   background-color: #d9d9d9;

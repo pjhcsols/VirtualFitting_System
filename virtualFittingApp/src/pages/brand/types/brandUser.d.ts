@@ -9,3 +9,9 @@ export type BrandSigninUserType = {
   email: string;
   password: string;
 };
+
+export type RedisProductDto = {
+  productName: string;
+  productDesc: string;
+  productPrice: number;
+};

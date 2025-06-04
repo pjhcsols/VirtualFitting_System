@@ -1,7 +1,7 @@
 import React, { Suspense } from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
-import CancelContentList from "@/pages/my/ui/CancelContentList";
+import { CancelContentList } from "@/pages/my/ui/CancelContentList";
 
 function MyCancel() {
   return (

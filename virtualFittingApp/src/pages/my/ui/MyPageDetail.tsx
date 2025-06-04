@@ -52,6 +52,9 @@
               clearInterval(interval);
               setIsTimerActive(false);
               alert("인증 시간이 만료되었습니다.");
+              setSentCode("");
+              setAuthCode("");
+              setShowCodeInput(false);
               return 0;
             }
             return prev - 1;
@@ -88,7 +91,7 @@
           alert("이메일로 인증번호가 전송되었습니다.");
           setShowCodeInput(true);
           setIsTimerActive(true);
-          setTimer(180);
+          setTimer(600);
         } else {
           alert("메일 전송 실패");
         }
@@ -160,7 +163,7 @@
                         disabled={emailVerified}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
                       />
-                      <AuthButton type="button" onClick={handleSendVerification} disabled={loading}>
+                      <AuthButton type="button" onClick={handleSendVerification} disabled={loading || emailVerified}>
                         인증
                       </AuthButton>
                     </TelForm>
@@ -334,14 +337,16 @@
 
   const FormField = styled.div`
     display: flex;
-    align-items: center;
-    margin-bottom: 16px;
+    align-items: flex-start;
+    margin-bottom: 15px;
   `;
 
   const Label = styled.label`
     flex: 0 0 120px;
     font-size: 14px;
     color: #202429;
+    margin-bottom: 15px;
+    margin-top: 9px;
   `;
 
   const Label1 = styled.label`
@@ -485,20 +490,19 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    min-height: 40px; /* 인증 메시지를 위한 공간 확보 */
     justify-content: space-between;
   `;
 
   const VerifiedMessage = styled.p`
     color: #007bff;
-    font-size: 10px;
+    font-size: 12px;
     margin-top: 4px;
-    margin-left: 2px;
+    margin-left: 4px;
+    margin-bottom: 1px;
   `;
 
   const TimerText = styled.p`
     color: #007bff;
     font-size: 12px;
-    margin-top: 5px;
-    margin-left: 2px;
+    margin-right: 160px;
 `;
