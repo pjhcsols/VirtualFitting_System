@@ -4,9 +4,9 @@ import styled from "styled-components";
 function ReviewContent() {
   return (
     <Wrapper>
-      <TitleContainer>
-        <ReviewTitle>REVIEW</ReviewTitle>
-      </TitleContainer>
+      <ReviewContainer>
+        <ReviewTitle>리뷰</ReviewTitle>
+      </ReviewContainer>
       <Review></Review>
       <Review></Review>
       <Review></Review>
@@ -15,28 +15,27 @@ function ReviewContent() {
 }
 
 const Wrapper = styled.div`
-  box-sizing: border-box;
-  padding: 20px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: flex-start;
 `;
 
-const TitleContainer = styled.div`
-  width: 100%;
+const ReviewContainer = styled.div`
+  padding: 100px 0px;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  flex-flow: column nowrap;
+  align-items: flex-start;
 `;
 
 const ReviewTitle = styled.h1`
-  padding: 15px 0;
   font-family: "pretendard";
-  font-size: 2.5vw;
-  font-weight: 700;
+  font-size: 22px;
+  font-weight: 600;
   color: black;
+  display: block;
+  width: 100%;
 `;
 
 export { ReviewContent };

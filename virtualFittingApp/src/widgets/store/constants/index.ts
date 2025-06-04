@@ -1,4 +1,4 @@
-import { IMG_BASILIUM_3D_LOGO } from "../../../shared/constants";
+import { IMG_BASILIUM_3D_LOGO } from "@/shared";
 
 export const images = [
   "/svg/store_test.svg",
