@@ -1,9 +1,6 @@
 package basilium.basiliumserver.global.auth.exception;
 
 
-import basilium.basiliumserver.global.error.exception.ExceptionType;
-import basilium.basiliumserver.global.error.exception.Status;
-
 public enum AuthExceptionType implements ExceptionType {
 
     USER_NOT_FOUND(Status.UNAUTHORIZED, 1001, "존재하지 않는 사용자입니다"),

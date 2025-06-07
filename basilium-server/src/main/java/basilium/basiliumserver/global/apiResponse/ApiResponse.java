@@ -1,28 +1,56 @@
 package basilium.basiliumserver.global.apiResponse;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
+import java.util.Optional;
 
 @Getter
 @AllArgsConstructor
-@RequiredArgsConstructor
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ApiResponse<T> {
+    private final String    timestamp;
+    private final int       status;
+    private final String    code;
+    private final String    message;
+    private final Optional<T> data;
 
-    private final int code;
-    private final String message;
-    private T data;
-
-    public static<T> ApiResponse<T> success(SuccessCode successCode, T data) {
-        return new ApiResponse<T>(successCode.getCode(), successCode.getMessage(),data);
+    private static String now() {
+        return ZonedDateTime.now(ZoneId.of("Asia/Seoul"))
+                .toOffsetDateTime()
+                .toString();
     }
 
-    public static ApiResponse<Void> success(SuccessCode successCode) {
-        return new ApiResponse<>(successCode.getCode(), successCode.getMessage(),null);
+    public static <T> ApiResponse<T> success(T data) {
+        return new ApiResponse<>(
+                now(),
+                ErrorCode.SUCCESS.getStatus(),
+                ErrorCode.SUCCESS.getCode(),
+                ErrorCode.SUCCESS.getMessage(),
+                Optional.ofNullable(data)
+        );
     }
 
-    public static ApiResponse<Void> error(HttpStatus errorCode, String message) {
-        return new ApiResponse<>(errorCode.value(), message,null);
+    public static <T> ApiResponse<T> error(ErrorCode errorCode) {
+        return new ApiResponse<>(
+                now(),
+                errorCode.getStatus(),
+                errorCode.getCode(),
+                errorCode.getMessage(),
+                Optional.empty()
+        );
+    }
+
+    public static <T> ApiResponse<T> error(ErrorCode errorCode, String detailMessage) {
+        return new ApiResponse<>(
+                now(),
+                errorCode.getStatus(),
+                errorCode.getCode(),
+                detailMessage,
+                Optional.empty()
+        );
     }
 }

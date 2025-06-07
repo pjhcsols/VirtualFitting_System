@@ -20,8 +20,11 @@ public class ImageProperties {
 
     private String uploadDir;
     private String profileDir;
+    private String reviewDir;
+
     private String fullUploadDir;
     private String fullProfileDir;
+    private String fullReviewDir;
 
     @PostConstruct
     private void init() {
@@ -29,9 +32,11 @@ public class ImageProperties {
             // 파일 시스템 경로로 절대 경로 변환
             this.fullUploadDir = ensureTrailingSlash(new File(uploadDir).getAbsolutePath());
             this.fullProfileDir = ensureTrailingSlash(new File(profileDir).getAbsolutePath());
+            this.fullReviewDir  = ensureTrailingSlash(new File(reviewDir).getAbsolutePath());
 
             logger.info("Full Upload Dir: {}", fullUploadDir);
             logger.info("Full Profile Dir: {}", fullProfileDir);
+            logger.info("Full Review Dir: {}", fullReviewDir);
         } catch (Exception e) {
             logger.error("리소스를 찾을 수 없습니다: {}", e.getMessage());
             throw new RuntimeException("리소스를 찾을 수 없습니다", e);
@@ -45,7 +50,6 @@ public class ImageProperties {
     public String getUploadDir() {
         return uploadDir;
     }
-
     public void setUploadDir(String uploadDir) {
         this.uploadDir = ensureTrailingSlash(uploadDir);
     }
@@ -53,9 +57,13 @@ public class ImageProperties {
     public String getProfileDir() {
         return profileDir;
     }
-
     public void setProfileDir(String profileDir) {
         this.profileDir = ensureTrailingSlash(profileDir);
+    }
+
+    public String getReviewDir() { return reviewDir; }
+    public void setReviewDir(String reviewDir) {
+        this.reviewDir = reviewDir.endsWith(File.separator) ? reviewDir : reviewDir + File.separator;
     }
 
     public String getFullUploadDir() {
@@ -65,4 +73,6 @@ public class ImageProperties {
     public String getFullProfileDir() {
         return fullProfileDir;
     }
+
+    public String getFullReviewDir()  { return fullReviewDir; }
 }

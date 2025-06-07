@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
-@Tag(name = "결제 관리 기능", description = "결제 관리 및 재고 차감 및 조회와 관련된 API")
+@Tag(name = "결제 관리 기능", description = "결제 카드 정보 저장 및 결제 관리 및 재고 차감 및 조회와 관련된 API")
 @RequestMapping("/b1/payment")
 public interface PaymentApiDocs {
 
