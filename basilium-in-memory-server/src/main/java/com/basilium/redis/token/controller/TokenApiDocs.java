@@ -5,6 +5,6 @@ import org.springframework.http.ResponseEntity;
 
 public interface TokenApiDocs {
 
-    ResponseEntity<?> getTokenByBrandUser(RequestTokenDto brandUserId);
+    ResponseEntity<?> getTokenByBrandUser(String brandUserId);
     ResponseEntity<?> saveToken(RequestTokenDto requestTokenDto);
 }
