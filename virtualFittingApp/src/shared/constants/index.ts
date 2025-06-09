@@ -47,6 +47,8 @@ export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
+export const ICON_LIKED = Liked;
+export const ICON_UNLIKED = UnLiked;
 
 export const AnimationProps = {
   initial: {
