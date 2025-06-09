@@ -13,7 +13,6 @@ import Plus from "/svg/plus.svg";
 import AI from "/svg/ai.svg";
 import UnLiked from "/svg/like.svg";
 import Liked from "/svg/liked.svg";
-import Like from "/svg/like.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
@@ -33,6 +32,8 @@ export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
 
+export const ICON_LIKED = Liked;
+export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
