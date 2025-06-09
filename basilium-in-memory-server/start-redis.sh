@@ -1,0 +1,1 @@
+docker run -d --name basilium-in-memory-server -p 6379:6379 basilium-in-memory-server
