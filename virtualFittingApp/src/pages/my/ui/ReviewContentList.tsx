@@ -74,9 +74,8 @@ function ReviewContentList() {
                         </OrderCard>
 
                         <ButtonWrapper>
-                          <ActionButton>일반 후기</ActionButton>
-                          <ActionButton>스타일 후기</ActionButton>
-                          <ActionButton>?</ActionButton>
+                          <ActionButton onClick={() => navigate(`/myPage/review/${order.id}`)}>스타일 리뷰</ActionButton>
+                          <ActionButton>리뷰 확인</ActionButton>
                         </ButtonWrapper>
                       </>
                     )}
@@ -175,13 +174,6 @@ const OptionText = styled.div`
   text-align: left;
 `;
 
-const Price = styled.div`
-  font-weight: bold;
-  font-size: 16px;
-  margin-top: 4px;
-  text-align: left;
-`;
-
 const ButtonWrapper = styled.div`
   display: flex;
   gap: 8px;
@@ -190,14 +182,14 @@ const ButtonWrapper = styled.div`
 `;
 
 const ActionButton = styled.button`
-  width: 200px;
-  height: 40px;
-  text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  background-color: #fff;
-  font-size: 14px;
-  cursor: pointer;
+    width: 300px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
 `;
 
 const Divider = styled.hr`
