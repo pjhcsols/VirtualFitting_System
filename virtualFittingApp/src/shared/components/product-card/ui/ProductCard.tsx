@@ -18,7 +18,6 @@ function ProductCard({ product, onClick }: ProductCardProps) {
 
   return (
     <>
-      <FontStyle />
       <Card onClick={onClick}>
         <ImageBox>
           <img src={product.image} alt={product.name} />
@@ -68,26 +67,10 @@ function ProductCard({ product, onClick }: ProductCardProps) {
     );
   }
 
-// export const xlDouble = 1536;
-// export const xl = 1280;
-// export const lg = 1024;
-// export const md = 768;
-// export const sm = 640;
-
-const FontStyle = createGlobalStyle`
-  @font-face {
-    font-family: 'Inter';
-    src: url('/font/Inter-VariableFont_opsz,wght.ttf') format('truetype');
-    font-weight: 100 900;
-    font-style: normal;
-  }
-`;
-
 const Card = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid black;
-  // cursor: pointer;
 
   @media (max-width: ${sm - 1}px) {
     &:not(:first-child) {
@@ -147,20 +130,20 @@ const InfoBox = styled.div`
 
 const Brand = styled.div`
   display: flex;
-  font-size: 0.7em;
+  font-family: "pretendard";
+  font-size: 0.75em;
   font-weight: 400;
   color: black;
-  font-family: 'Inter', sans-serif;
   text-decoration: underline;
   cursor: pointer;
 `;
 
 const Name = styled.div`
   display: flex;
+  font-family: "pretendard";
   font-size: 0.8em;
   font-weight: 400;
   color: black;
-  font-family: 'Inter', sans-serif;
 `;
 
 const PriceBox = styled.div`
@@ -188,20 +171,21 @@ const OriginalPrice = styled.div`
   color: black;
   text-decoration: line-through;
   text-decoration-color: red;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
 `;
 
 const DiscountedPrice = styled.div`
   font-size: 0.8em;
   color: red;
-  font-weight: 600;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-weight: 400;
+  font-family: "pretendard";
 `;
 
 const Price = styled.div`
   font-size: 0.8em;
   color: black;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+
 `;
 
 const ColorSwatches = styled.div`
@@ -238,7 +222,7 @@ const ExtraIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Inter', sans-serif;
+  font-family: "pretendard";
   color: black;
   cursor: pointer;
 `;
