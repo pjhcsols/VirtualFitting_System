@@ -16,7 +16,8 @@ const AIBtn = styled.button`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+  font-weight: 400;
   font-size: 16px;
   cursor: pointer;
   color: black;

@@ -19,6 +19,8 @@ function ProductContainer({ product }: { product: any }) {
             <ProductSmallCard />
             <ProductSmallCard />
             <ProductSmallCard />
+            <ProductSmallCard />
+            <ProductSmallCard />
           </ProductSmallImagesContainer>
         <ProductImage src={product.image} alt={product.name} />
       <ProductInfoBox>
@@ -81,6 +83,7 @@ const ProductBox = styled.section`
 const ProductImage = styled.img`
   width: 510px;
   max-width: 510px;
+  min-height: 430px;
   aspect-ratio: 4 / 5;
   object-fit: contain;
   height: auto;
@@ -93,7 +96,6 @@ const ProductImage = styled.img`
 `;
 
 const ProductSmallImagesContainer = styled.div`
-  // width: 80px;
   display: flex;
   gap: 8px;
   height: 100%;
@@ -103,11 +105,21 @@ const ProductSmallImagesContainer = styled.div`
 
   @media (max-width: ${md}px) {
     flex-direction: row;
-    justify-content: center;
-    width: auto;
+    justify-content: flex-start; // 스크롤할 수 있도록 좌측 정렬
+    width: 100%;
     order: 2;
+    overflow-x: auto;
+    overflow-y: hidden;
+    -webkit-overflow-scrolling: touch; // 모바일에서 부드러운 스크롤
+    scroll-snap-type: x mandatory; // 선택적으로 snap 추가
+  }
+
+  &::-webkit-scrollbar {
+    display: none; // 스크롤바 숨기기 (선택 사항)
   }
 `;
+
+
 
 const ProductInfoBox = styled.div`
   width: 500px;
@@ -134,7 +146,8 @@ const TopRow = styled.div`
 `;
 
 const Brand = styled.div`
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+  font-weight: 500;
   font-size: 16px;
   color: black;
 `;
@@ -146,15 +159,15 @@ const IconImage = styled.img`
 `;
 
 const ProductName = styled.div`
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+  font-weight: 200;
   font-size: 24px;
-  font-weight: 300;
   color: black;
 `;
 
 const Price = styled.div`
-  font-family: 'HelveticaNeueLight', sans-serif;
-  font-weight: 300;
+  font-family: "pretendard";
+  font-weight: 200;
   color: black;
   font-size: 24px;
 `;
@@ -195,7 +208,7 @@ const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
 const SelectedColorText = styled.div`
   display: flex;
   font-size: 14px;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
   color: black;
   padding: 4px 0px
 `;
@@ -203,23 +216,27 @@ const SelectedColorText = styled.div`
 const Description = styled.p`
   white-space: pre-line;
   display: flex;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
   font-size: 14px;
+  font-weight: 500;
   color: black;
   text-align: left;
-  padding: 16px 0px;
+  padding: 8px 0px;
 `;
 
 const SizeBoxMiddle = styled.div`
+  max-width: 408px;
+  min-width: 350px;
   display: flex;
   gap: 8px;
   padding: 16px 0px;
 `; 
 
 const SizeBoxBottom = styled.div`
+  min-width: 350px;
   display: flex;
   gap: 8px;
-  padding: 8px 0px;
+  padding: 16px 0px;
 
   @media (max-width: ${md}px) {
     justify-content: center;
@@ -234,10 +251,15 @@ const SizeItem = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+  font-weight: 400;
   font-size: 14px;
   cursor: pointer;
-  color: black
+  color: black;
+    @media (max-width: ${md}px) {
+    min-width: 78px;
+    color: black;
+  }
 `;
 
 const AddButton = styled.div`
@@ -247,7 +269,8 @@ const AddButton = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: 'HelveticaNeueLight', sans-serif;
+  font-family: "pretendard";
+  font-weight: 400;
   font-size: 16px;
   cursor: pointer;
   background: black;
