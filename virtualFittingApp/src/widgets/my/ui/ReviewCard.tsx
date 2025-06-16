@@ -4,7 +4,7 @@ import { OrderItem } from "@/pages/my/types/order";
 import alertImg from "@/pages/my/ui/alert.png";
 import { formatSimpleDate } from "@/shared";
 import type { ReviewData } from "@/pages/my/types/review";
-import { ELLIPSIS_ICON, STAR_FILLED_ICON } from "@/pages/my/constants";
+import { ELLIPSIS_ICON, STAR_FILLED_ICON, STAR_EMPTY_ICON } from "@/pages/my/constants";
 
 type ReviewCardProps = {
   order: OrderItem;
@@ -36,8 +36,8 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
       </Header>
 
       <RatingSection>
-        {Array.from({ length: reviewData.rating }).map((_, index) => (
-          <StarImg key={index} src={STAR_FILLED_ICON} alt="star" />
+        {Array.from({ length: 5 }).map((_, index) => (
+          <StarImg key={index} src={index < reviewData.rating ? STAR_FILLED_ICON : STAR_EMPTY_ICON} alt="star" />
         ))}
         <DateText>{formatSimpleDate(reviewData.date)}</DateText>
       </RatingSection>
@@ -95,13 +95,12 @@ const RatingSection = styled.div`
   text-align: left;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
 `;
 
 const StarImg = styled.img`
   width: 20px;
   height: 20px;
-  margin-right: 2px;
 `;
 
 const DateText = styled.span``;
@@ -149,12 +148,12 @@ const ReviewText = styled.p`
   line-height: 1.4;
   width: 100%;
   text-align: left;
+  margin-top: 1px;
 `;
 
 const PhotoWrapper = styled.div`
   display: flex;
-  gap: 8px;
-  margin: 8px 0;
+  gap: 8px; 
 `;
 
 const ReviewImg = styled.img`
@@ -169,6 +168,9 @@ const EllipsisButton = styled.div`
   margin-left: auto;
   cursor: pointer;
   position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 `;
 
 const EllipsisImg = styled.img`
@@ -178,10 +180,10 @@ const EllipsisImg = styled.img`
 
 const MenuBox = styled.div`
   position: absolute;
-  top: 28px;
-  right: 0;
+  top: 170px;
+  right: 100px;
   width: 100px;
-  padding: 10px;
+  padding: 5px;
   background: white;
   border: 1px solid #ddd;
   border-radius: 6px;
@@ -190,8 +192,8 @@ const MenuBox = styled.div`
 `;
 
 const MenuItem = styled.div`
-  padding: 8px 0;
-  font-size: 14px;
+  padding: 8px;
+  font-size: 12px;
   color: #555;
   cursor: pointer;
   &:hover {
