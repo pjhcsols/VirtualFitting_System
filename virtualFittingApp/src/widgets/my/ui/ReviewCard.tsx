@@ -1,39 +1,66 @@
-import React from "react";
+import {useState} from "react";
 import styled from "styled-components";
 import { OrderItem } from "@/pages/my/types/order";
 import alertImg from "@/pages/my/ui/alert.png";
 import { formatSimpleDate } from "@/shared";
+import type { ReviewData } from "@/pages/my/types/review";
+import { ELLIPSIS_ICON, STAR_FILLED_ICON } from "@/pages/my/constants";
 
 type ReviewCardProps = {
   order: OrderItem;
+  reviewData: ReviewData;
+  onDelete: (id: string) => void;
 };
 
-const ReviewCard = ({ order }: ReviewCardProps) => {
+const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete(reviewData.id);
+  };
   return (
     <CardWrapper>
       <Header>
-        <StatusText>일반 후기</StatusText>
-        <ApprovalBadge>승인</ApprovalBadge>
+        <StatusText>스타일 후기</StatusText>
+
+        <EllipsisButton onClick={() => setMenuOpen(!menuOpen)}>
+          <EllipsisImg src={ELLIPSIS_ICON} alt="menu" />
+        </EllipsisButton>
+
+        {menuOpen && (
+          <MenuBox>
+            <MenuItem>수정하기</MenuItem>
+            <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
+          </MenuBox>
+        )}
       </Header>
 
-      <Rating>
-        <DateText>{formatSimpleDate(order.date)}</DateText>
-      </Rating>
+      <RatingSection>
+        {Array.from({ length: reviewData.rating }).map((_, index) => (
+          <StarImg key={index} src={STAR_FILLED_ICON} alt="star" />
+        ))}
+        <DateText>{formatSimpleDate(reviewData.date)}</DateText>
+      </RatingSection>
 
       <ProductInfo>
         <ProductImg src={order.productImageUrl || alertImg} />
         <Details>
           <Brand>{order.brand}</Brand>
-          <ProductName>{order.productName}  {order.options.color}</ProductName>
-          <OptionText>
-            {order.options.size} 구매
-          </OptionText>
+          <ProductName>{order.productName} {order.options.color}</ProductName>
+          <OptionText>{order.options.size} 구매</OptionText>
         </Details>
       </ProductInfo>
 
-      <ReviewText>
-        색깔도 딱 마음에 들고 착용감이 너무 편해요. 
-      </ReviewText>
+      {/* 사진 출력 */}
+      {reviewData.photos?.length > 0 && (
+        <PhotoWrapper>
+          {reviewData.photos.map((photo, idx) => (
+            <ReviewImg key={idx} src={photo} alt={`review-${idx}`} />
+          ))}
+        </PhotoWrapper>
+      )}
+
+      <ReviewText>{reviewData.reviewText}</ReviewText>
     </CardWrapper>
   );
 };
@@ -61,19 +88,20 @@ const StatusText = styled.span`
   font-weight: bold;
 `;
 
-const ApprovalBadge = styled.span`
-  font-size: 12px;
-  background-color: #007bff;
-  color: white;
-  padding: 2px 6px;
-  border-radius: 3px;
-`;
-
-const Rating = styled.div`
+const RatingSection = styled.div`
   font-size: 13px;
   color: #777;
   width: 100%;
   text-align: left;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const StarImg = styled.img`
+  width: 20px;
+  height: 20px;
+  margin-right: 2px;
 `;
 
 const DateText = styled.span``;
@@ -121,4 +149,52 @@ const ReviewText = styled.p`
   line-height: 1.4;
   width: 100%;
   text-align: left;
+`;
+
+const PhotoWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+`;
+
+const ReviewImg = styled.img`
+  width: 100px;
+  height: 130px;
+  border-radius: 4px;
+  object-fit: cover;
+  border: 1px solid #eee;
+`;
+
+const EllipsisButton = styled.div`
+  margin-left: auto;
+  cursor: pointer;
+  position: relative;
+`;
+
+const EllipsisImg = styled.img`
+  width: 20px;
+  height: 20px;
+`;
+
+const MenuBox = styled.div`
+  position: absolute;
+  top: 28px;
+  right: 0;
+  width: 100px;
+  padding: 10px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  z-index: 10;
+`;
+
+const MenuItem = styled.div`
+  padding: 8px 0;
+  font-size: 14px;
+  color: #555;
+  cursor: pointer;
+  &:hover {
+    color: #000;
+  }
 `;

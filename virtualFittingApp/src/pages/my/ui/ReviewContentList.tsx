@@ -1,24 +1,38 @@
 import React, { useState,useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { OrderItem } from "../types/order";
+import type { ReviewData } from "../types/review";
+import type { OrderItemWithReview } from "../types/orderWithReview";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
 import { formatSimpleDate } from "@/shared";
 import alertImg from "@/pages/my/ui/alert.png";
 import { ReviewCard } from "@/widgets";
 
+
 function ReviewContentList() {
     const navigate = useNavigate(); 
     const [activeTab, setActiveTab] = useState<string>("작성가능");
-    const [orders, setOrders] = useState<OrderItem[]>([]);
-    const [filteredOrders, setFilteredOrders] = useState<OrderItem[]>([]);
+    const [orders, setOrders] = useState<OrderItemWithReview[]>([]);
+    const [filteredOrders, setFilteredOrders] = useState<OrderItemWithReview[]>([]);
 
     const handleTabClick = (tabName: string) => {
         setActiveTab(tabName);
     };
 
     useEffect(() => {
-        setOrders(orderDummyData);
+      const dummyOrders = orderDummyData;
+      const savedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+
+      const updatedOrders = dummyOrders.map(order => {
+        const matchedReview = savedReviews.find((review: ReviewData) => review.id === order.id);
+          return {
+            ...order,
+            isReviewed: matchedReview ? true : false,
+            reviewData: matchedReview || null
+          };
+      });
+
+      setOrders(updatedOrders);
     }, []);
     
     useEffect(() => {
@@ -31,58 +45,72 @@ function ReviewContentList() {
         }
     }, [activeTab, orders]);;
 
-    if (!filteredOrders.length) {
-        return (
-        <EmptyWrapper>
-            <AlertImage src={alertImg} alt="알림 아이콘" />
-            <Message>리뷰가능한 상품이 없습니다.</Message>
-        </EmptyWrapper>
-        );
-    } 
+    const handleDeleteReview = (id: string) => {
+      const savedReviews: ReviewData[] = JSON.parse(localStorage.getItem("reviews") || "[]");
+      const updatedReviews = savedReviews.filter((review) => review.id !== id);
+      localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+      window.location.reload(); 
+    };
+
 
     return (
-        <>
-            <TabWrapper>
-                {["작성가능", "작성완료"].map((tab) => (
-                <TabText
-                    key={tab}
-                    onClick={() => handleTabClick(tab)}
-                    active={activeTab === tab}
-                >
-                    {tab}
-                </TabText>
-                ))}
-            </TabWrapper>
-  
-            {filteredOrders.map((order) => (
-                 <React.Fragment key={order.id}>
-                   {activeTab === "작성완료" ? (
-                      <ReviewCard order={order} />
-                    ) : (
-                      <>
-                        <OrderCard>
-                          <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
-                          <RightSection>
-                          <TitleLine>
-                            <Brand>{order.brand}</Brand>
-                          </TitleLine>
-                          <ProductName>{order.productName}</ProductName>
-                          <OptionText>
-                            {order.options.color} / {order.options.size} / {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
-                          </OptionText>
-                          </RightSection>
-                        </OrderCard>
+      <>
+        <TabWrapper>
+          {["작성가능", "작성완료"].map((tab) => (
+            <TabText
+              key={tab}
+              onClick={() => handleTabClick(tab)}
+              $active={activeTab === tab}
+            >
+              {tab}
+            </TabText>
+          ))}
+        </TabWrapper>
 
-                        <ButtonWrapper>
-                          <ActionButton onClick={() => navigate(`/myPage/review/${order.id}`)}>스타일 리뷰</ActionButton>
-                          <ActionButton>리뷰 확인</ActionButton>
-                        </ButtonWrapper>
-                      </>
-                    )}
-                  <Divider />
-                 </React.Fragment>
-            ))}
-        </>
+        {filteredOrders.length === 0 ? (
+          <EmptyWrapper>
+            <AlertImage src={alertImg} alt="알림 아이콘" />
+            <Message>
+              {activeTab === "작성완료"
+                ? "작성완료한 리뷰가 없습니다."
+                : "리뷰가능한 상품이 없습니다."}
+            </Message>
+          </EmptyWrapper>
+        ) : (
+          filteredOrders.map((order) => (
+            <React.Fragment key={order.id}>
+              {activeTab === "작성완료" ? (
+                order.reviewData && (
+                  <ReviewCard order={order} reviewData={order.reviewData} onDelete={handleDeleteReview} />
+                )
+              ) : (
+                <>
+                  <OrderCard>
+                    <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
+                    <RightSection>
+                      <TitleLine>
+                        <Brand>{order.brand}</Brand>
+                      </TitleLine>
+                      <ProductName>{order.productName}</ProductName>
+                      <OptionText>
+                        {order.options.color} / {order.options.size} / {order.options.quantity}개 |{" "}
+                        {formatSimpleDate(order.date)} 구매
+                      </OptionText>
+                    </RightSection>
+                  </OrderCard>
+
+                  <ButtonWrapper>
+                    <ActionButton onClick={() => navigate(`/myPage/review/${order.id}`)}>
+                      스타일 리뷰
+                    </ActionButton>
+                  </ButtonWrapper>
+                </>
+              )}
+              <Divider />
+            </React.Fragment>
+          ))
+        )}
+      </>
     );
 }
 
@@ -103,10 +131,10 @@ const TabWrapper = styled.div`
     overflow: hidden;
 `;
 
-const TabText = styled.span<{ active: boolean }>`
+const TabText = styled.span<{ $active: boolean }>`
   font-size: 14px;
-  font-weight: ${(props) => (props.active ? "bold" : "normal")};
-  color: ${(props) => (props.active ? "#000" : "#969696")};
+  font-weight: ${(props) => (props.$active ? "bold" : "normal")};
+  color: ${(props) => (props.$active ? "#000" : "#969696")};
   cursor: pointer;
   position: relative;
   padding-bottom: 4px;
@@ -116,7 +144,7 @@ const TabText = styled.span<{ active: boolean }>`
     position: absolute;
     bottom: 0;
     left: 0;
-    width: ${(props) => (props.active ? "100%" : "0")};
+    width: ${(props) => (props.$active ? "100%" : "0")};
     height: 2px;
     background-color: #000;
     transition: width 0.3s ease;
@@ -182,7 +210,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const ActionButton = styled.button`
-    width: 300px;
+    width: 540px;
     height: 40px;
     text-align: center;
     border: 1px solid #ccc;
