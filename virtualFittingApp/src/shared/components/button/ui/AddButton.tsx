@@ -1,9 +1,10 @@
 import styled from "styled-components";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { ICON_BAG } from "@/shared";
 
 function AddButton() {
   return <AddBtn>
-    장바구니
+    ADD
     </AddBtn>;
 }
 
@@ -25,4 +26,5 @@ const AddBtn = styled.div`
     width: 50%;
   }
 `
+
 export { AddButton };

@@ -3,7 +3,7 @@ import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function PurchaseButton() {
   return <PurchaseBtn>
-    BUY
+    BUY NOW
     </PurchaseBtn>;
 }
 

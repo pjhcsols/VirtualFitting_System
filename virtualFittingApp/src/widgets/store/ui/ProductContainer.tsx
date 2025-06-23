@@ -68,7 +68,6 @@ function ProductContainer({ product }: { product: any }) {
           ))}
         </SizeBoxMiddle>
         <SizeBoxButton>
-          {/* <AIButton></AIButton> */}
           <AddButton></AddButton>
           <PurchaseButton></PurchaseButton>
         </SizeBoxButton>
@@ -243,7 +242,7 @@ const SizeBoxMiddle = styled.div`
   min-width: 350px;
   display: flex;
   gap: 8px;
-  padding: 16px 0px;
+  padding: 32px 0px;
 `; 
 
 const SizeBoxButton = styled.div`
@@ -287,7 +286,6 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
       box-sizing: border-box;
       z-index: 0;
     }
-    /* 내부는 위에 떠있도록 */
     position: relative;
     z-index: 1;
   `}
