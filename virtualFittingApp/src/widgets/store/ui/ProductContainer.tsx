@@ -4,7 +4,7 @@ import { LikeButton } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
-import { AIButton } from "@/shared";
+import { AddButton, AIButton, PurchaseButton } from "@/shared";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -55,10 +55,14 @@ function ProductContainer({ product }: { product: any }) {
             <SizeItem key={size}>{size}</SizeItem>
           ))}
         </SizeBoxMiddle>
-        <SizeBoxBottom>
+        <SizeBoxButton>
+          {/* <AIButton></AIButton> */}
+          <AddButton></AddButton>
+          <PurchaseButton></PurchaseButton>
+        </SizeBoxButton>
+        <SizeBoxButton>
           <AIButton></AIButton>
-          <AddButton>ADD</AddButton>
-        </SizeBoxBottom>
+        </SizeBoxButton>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -118,8 +122,6 @@ const ProductSmallImagesContainer = styled.div`
     display: none; // 스크롤바 숨기기 (선택 사항)
   }
 `;
-
-
 
 const ProductInfoBox = styled.div`
   width: 500px;
@@ -232,11 +234,11 @@ const SizeBoxMiddle = styled.div`
   padding: 16px 0px;
 `; 
 
-const SizeBoxBottom = styled.div`
+const SizeBoxButton = styled.div`
   min-width: 350px;
   display: flex;
   gap: 8px;
-  padding: 16px 0px;
+  padding: 2px 0px;
 
   @media (max-width: ${md}px) {
     justify-content: center;
@@ -261,23 +263,5 @@ const SizeItem = styled.div`
     color: black;
   }
 `;
-
-const AddButton = styled.div`
-  width: 200px;
-  height: 50px;
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "pretendard";
-  font-weight: 400;
-  font-size: 16px;
-  cursor: pointer;
-  background: black;
-  
-  @media (max-width: ${md}px) {
-    width: 50%;
-  }
-`
 
 export { ProductContainer };

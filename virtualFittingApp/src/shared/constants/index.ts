@@ -2,6 +2,7 @@ import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
+import Gradient from "/img/aibutton/gradient.png";
 
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
@@ -31,6 +32,7 @@ export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
+export const IMG_GRADIENT = Gradient;
 
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
