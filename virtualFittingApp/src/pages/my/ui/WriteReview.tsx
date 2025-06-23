@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import type { OrderItem } from "../types/order";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
@@ -10,6 +10,9 @@ import { ReviewData } from "../types/review";
 
 function StyleReview() {
     const navigate = useNavigate();
+    const location = useLocation();
+    const editReview: ReviewData | undefined = location.state?.reviewData;
+
     const { id } = useParams();
     const [order, setOrder] = useState<OrderItem | null>(null);
     const [rating, setRating] = useState<number>(0);
@@ -18,9 +21,15 @@ function StyleReview() {
     const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
 
     useEffect(() => {
-        const found = orderDummyData.find((item) => item.id === id);
-        setOrder(found || null);
-    }, [id]);
+        const foundOrder = orderDummyData.find((item) => item.id === id);
+        setOrder(foundOrder || null);
+
+        if (editReview) {
+            setRating(editReview.rating);
+            setReviewText(editReview.reviewText);
+            setPhotoPreviewImages(editReview.photos || []);
+        }
+    }, [id, editReview]);
 
     const handleUpPhotoButton = () => {
         photoInputRef.current?.click();
@@ -66,9 +75,14 @@ function StyleReview() {
             photos: photoPreviewImages,
             date: new Date().toISOString()
         };
-        localStorage.setItem("reviews", JSON.stringify([...existingReviews, newReview]));
-        alert("리뷰가 등록되었습니다!");
 
+        const updatedReviews = editReview
+            ? existingReviews.map((r: ReviewData) =>
+                r.id === editReview.id ? newReview : r
+              )
+            : [...existingReviews, newReview];
+        localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+        alert(editReview ? "리뷰가 수정되었습니다!" : "리뷰가 등록되었습니다!");
         navigate("/myPage/review");
     };
 

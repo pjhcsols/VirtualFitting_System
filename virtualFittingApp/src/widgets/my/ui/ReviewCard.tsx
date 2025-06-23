@@ -1,4 +1,5 @@
-import {useState} from "react";
+import {useState, useEffect, useRef} from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { OrderItem } from "@/pages/my/types/order";
 import alertImg from "@/pages/my/ui/alert.png";
@@ -13,11 +14,32 @@ type ReviewCardProps = {
 };
 
 const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
+  const navigate = useNavigate();
   const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
 
   const handleDelete = () => {
     onDelete(reviewData.id);
   };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+
+    if (menuOpen) {
+      document.addEventListener("mousedown", handleClickOutside);
+    } else {
+      document.removeEventListener("mousedown", handleClickOutside);
+    }
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuOpen]);
+
   return (
     <CardWrapper>
       <Header>
@@ -28,8 +50,8 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
         </EllipsisButton>
 
         {menuOpen && (
-          <MenuBox>
-            <MenuItem>수정하기</MenuItem>
+          <MenuBox ref={menuRef}>
+            <MenuItem onClick={() => navigate(`/myPage/review/${order.id}`, { state: { reviewData } })}>수정하기</MenuItem>
             <MenuItem onClick={handleDelete}>삭제하기</MenuItem>
           </MenuBox>
         )}
@@ -61,6 +83,12 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
       )}
 
       <ReviewText>{reviewData.reviewText}</ReviewText>
+
+      <ButtonWrapper>
+        <ActionButton>
+          리뷰 확인
+        </ActionButton>
+      </ButtonWrapper>
     </CardWrapper>
   );
 };
@@ -145,10 +173,11 @@ const OptionText = styled.div`
 
 const ReviewText = styled.p`
   font-size: 14px;
-  line-height: 1.4;
+  line-height: 1;
   width: 100%;
   text-align: left;
   margin-top: 1px;
+  margin-bottom: 1px;
 `;
 
 const PhotoWrapper = styled.div`
@@ -181,8 +210,8 @@ const EllipsisImg = styled.img`
 const MenuBox = styled.div`
   position: absolute;
   top: 170px;
-  right: 100px;
-  width: 100px;
+  margin-left: 440px;
+  min-width: 100px;
   padding: 5px;
   background: white;
   border: 1px solid #ddd;
@@ -199,4 +228,22 @@ const MenuItem = styled.div`
   &:hover {
     color: #000;
   }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+  justify-content: flex-start;
+`;
+
+const ActionButton = styled.button`
+    width: 540px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    background-color: #fff;
+    font-size: 14px;
+    cursor: pointer;
 `;
