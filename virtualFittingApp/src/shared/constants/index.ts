@@ -18,22 +18,13 @@ import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
-
-import type {
-  CategoryType,
-  Color,
-  Material,
-  Size,
-  SizeTable,
-} from "@/shared/types";
+import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
 
-export const ICON_LIKED = Liked;
-export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
@@ -50,6 +41,7 @@ export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
+export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
 
 export const AnimationProps = {
   initial: {
@@ -80,144 +72,6 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
-
-export const CategoryIndex = [
-  {
-    name: "Top",
-    innerCategory: [1, 2, 3, 4, 5, 13],
-  },
-  {
-    name: "Outer",
-    innerCategory: [10, 11, 12],
-  },
-  {
-    name: "Bottom",
-    innerCategory: [6, 7, 8, 9],
-  },
-  {
-    name: "Bag & Acc",
-    innerCategory: [19],
-  },
-  {
-    name: "T-Shirts",
-    innerCategory: [1],
-  },
-  {
-    name: "Long Sleeves",
-    innerCategory: [2],
-  },
-  {
-    name: "blouse",
-    innerCategory: [3],
-  },
-  {
-    name: "knitwear",
-    innerCategory: [4],
-  },
-  {
-    name: "hood",
-    innerCategory: [5],
-  },
-  {
-    name: "vest",
-    innerCategory: [13],
-  },
-  {
-    name: "jacket",
-    innerCategory: [10],
-  },
-  {
-    name: "cardigan",
-    innerCategory: [11],
-  },
-  {
-    name: "padding",
-    innerCategory: [12],
-  },
-  {
-    name: "jeans",
-    innerCategory: [6],
-  },
-  {
-    name: "slacks",
-    innerCategory: [7],
-  },
-  {
-    name: "shorts",
-    innerCategory: [8],
-  },
-  {
-    name: "skirt",
-    innerCategory: [9],
-  },
-  {
-    name: "accessories",
-    innerCategory: [19],
-  },
-];
-
-export const CategoryMapping: Record<number, CategoryType> = {
-  1: "티셔츠",
-  2: "긴팔",
-  3: "블라우스",
-  4: "니트",
-  5: "후드티",
-  6: "청바지",
-  7: "슬랙스",
-  8: "반바지",
-  9: "스커트",
-  10: "자켓",
-  11: "가디건",
-  12: "패딩",
-  13: "베스트",
-  14: "드레스",
-  15: "정장",
-  16: "한복",
-  17: "속옷",
-  18: "수영복",
-  19: "악세서리",
-};
-
-export const palleteList: Color[] = [
-  "BLACK",
-  "WHITE",
-  "GRAY",
-  "BLUE",
-  "RED",
-  "YELLOW",
-  "GREEN",
-  "ORANGE",
-];
-
-export const materialList: Material[] = [
-  "COTTON",
-  "POLYESTER",
-  "WOOL",
-  "FABRIC",
-  "SILK",
-];
-
-export const SizeTableTitles: (keyof SizeTable)[] = [
-  "productTotalLength",
-  "productChest",
-  "productShoulder",
-  "productArm",
-];
-
-export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];
-
-export const Sizes: Size[] = ["S", "M", "L", "XL", "XX"];
-
-export const CheckOptions: string[] = [
-  "사진이 올바르게 업로드 되어있습니다.",
-  "상품의 제목, 가격, 설명이 되어있습니다.",
-  "상품의 색감이 설정되어 있습니다.",
-  "상품의 소재가 설정되어 있습니다.",
-  "상품의 사이즈별 표기가 제대로 되어있습니다.",
-  "상품의 카테고리가 올바르게 표기되어 있습니다.",
-  "상품의 옵션사진이 제대로 업로드 되어있습니다.",
-];
-
 /*
  * responsible Design GuideLine
  */
@@ -236,3 +90,11 @@ export const md = 768;
 
 // sm
 export const sm = 640;
+
+export * from "@/shared/constants/color/Colors";
+
+export * from "@/shared/constants/category/Category";
+
+export * from "@/shared/constants/product/Product";
+
+export * from "@/shared/constants/icon/Icon";

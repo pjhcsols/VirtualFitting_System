@@ -1,3 +1,11 @@
+import {
+  CardIcon,
+  GraphIcon,
+  HomeIcon,
+  SettingIcon,
+  ShopIcon,
+} from "../../icon";
+
 export const CART_ICON = "/svg/cart.svg";
 export const BAG_ICON = "/svg/bag.svg";
 export const USER_ICON = "/svg/user.svg";
@@ -47,5 +55,33 @@ export const AdminHeaderOptions = [
     id: 3,
     title: "Logout",
     href: "",
+  },
+];
+
+export const BrandHeaderOptions = [
+  {
+    id: 0,
+    title: "Home",
+    href: "/brand/dashboard",
+  },
+  {
+    id: 1,
+    title: "Account Settings",
+    href: "/brand/dashboard",
+  },
+  {
+    id: 2,
+    title: "Payment",
+    href: "/brand/dashboard",
+  },
+  {
+    id: 3,
+    title: "Product",
+    href: "/brand/product",
+  },
+  {
+    id: 4,
+    title: "Analytics",
+    href: "/brand/dashboard",
   },
 ];
