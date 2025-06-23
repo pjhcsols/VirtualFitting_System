@@ -8,6 +8,7 @@ import { AddButton, AIButton, PurchaseButton } from "@/shared";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+  const [selectedSize, setSelectedSize] = useState(product.availableSizes[0]);
 
   return (
     <ProductBox>
@@ -40,7 +41,7 @@ function ProductContainer({ product }: { product: any }) {
             <ColorCircle
               key={index}
               $color={color}
-              $selected={selectedColor === color}
+              $selectedColor={selectedColor === color}
               onClick={() => setSelectedColor(color)}
             />
           ))}
@@ -50,9 +51,20 @@ function ProductContainer({ product }: { product: any }) {
           클래식한 오버핏 티셔츠{'\n'}
           한겨울에도 착용하기 좋습니다
         </Description>
-        <SizeBoxMiddle>
+        {/* <SizeBoxMiddle>
           {product.availableSizes.map((size: string) => (
             <SizeItem key={size}>{size}</SizeItem>
+          ))}
+        </SizeBoxMiddle> */}
+        <SizeBoxMiddle>
+          {product.availableSizes.map((size: string) => (
+            <SizeItem
+              key={size}
+              $selectedSize={selectedSize === size}
+              onClick={() => setSelectedSize(size)}
+            >
+              {size}
+            </SizeItem>
           ))}
         </SizeBoxMiddle>
         <SizeBoxButton>
@@ -180,7 +192,7 @@ const ColorSwatches = styled.div`
   align-items: center;
 `;
 
-const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
+const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean }>`
   position: relative;
   width: 20px;
   height: 20px;
@@ -190,7 +202,7 @@ const ColorCircle = styled.div<{ $color: string; $selected?: boolean }>`
   box-sizing: border-box;
 
   ${(props) =>
-    props.$selected &&
+    props.$selectedColor &&
     `
     &::after {
       content: "";
@@ -246,7 +258,8 @@ const SizeBoxButton = styled.div`
   }
 `; 
 
-const SizeItem = styled.div`
+const SizeItem = styled.div<{ $selectedSize?: boolean }>`
+  position: relative; /* 추가 */
   width: 80px;
   height: 40px;
   border: 1px solid black;
@@ -258,10 +271,33 @@ const SizeItem = styled.div`
   font-size: 14px;
   cursor: pointer;
   color: black;
-    @media (max-width: ${md}px) {
+
+  ${(props) =>
+    props.$selectedSize &&
+    `
+    &::before {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: -5px;
+      right: -5px;
+      bottom: -5px;
+      border: 2px solid #dfdfdf;
+      pointer-events: none;
+      box-sizing: border-box;
+      z-index: 0;
+    }
+    /* 내부는 위에 떠있도록 */
+    position: relative;
+    z-index: 1;
+  `}
+
+  @media (max-width: ${md}px) {
     min-width: 78px;
     color: black;
   }
 `;
+
+
 
 export { ProductContainer };
