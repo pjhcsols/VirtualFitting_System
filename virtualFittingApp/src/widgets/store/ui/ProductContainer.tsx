@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { useState } from "react";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
 import { AddButton, AIButton, PurchaseButton } from "@/shared";
+import { Divider } from "@/widgets/admin/ui/css/AdminBrandUserList.css";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -36,44 +37,45 @@ function ProductContainer({ product }: { product: any }) {
           <Price>￦{product.price}</Price>
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
-        <ColorSwatches>
-          {product.colors.map((color: string, index: number) => (
-            <ColorCircle
-              key={index}
-              $color={color}
-              $selectedColor={selectedColor === color}
-              onClick={() => setSelectedColor(color)}
-            />
-          ))}
-        </ColorSwatches>
-        <SelectedColorText> {product.materials.join(", ")} | {selectedColor} </SelectedColorText>
         <Description>
           클래식한 오버핏 티셔츠{'\n'}
           한겨울에도 착용하기 좋습니다
         </Description>
-        {/* <SizeBoxMiddle>
-          {product.availableSizes.map((size: string) => (
-            <SizeItem key={size}>{size}</SizeItem>
-          ))}
-        </SizeBoxMiddle> */}
-        <SizeBoxMiddle>
-          {product.availableSizes.map((size: string) => (
-            <SizeItem
-              key={size}
-              $selectedSize={selectedSize === size}
-              onClick={() => setSelectedSize(size)}
-            >
-              {size}
-            </SizeItem>
-          ))}
-        </SizeBoxMiddle>
-        <SizeBoxButton>
+        <ColorBoxContainer>
+        {/* <MaterialsText> {product.materials.join(", ")} | {selectedColor} </MaterialsText> */}
+          <SelectedColorText> {product.materials.join(", ")}  | {selectedColor} </SelectedColorText>
+          <ColorSwatches>
+            {product.colors.map((color: string, index: number) => (
+              <ColorCircle
+                key={index}
+                $color={color}
+                $selectedColor={selectedColor === color}
+                onClick={() => setSelectedColor(color)}
+              />
+            ))}
+          </ColorSwatches>
+        </ColorBoxContainer>
+        <SizeBoxContainer>
+          {/* <SizeText> 사이즈 | {selectedSize} </SizeText> */}
+          <SizeBox>
+            {product.availableSizes.map((size: string) => (
+              <SizeItem
+                key={size}
+                $selectedSize={selectedSize === size}
+                onClick={() => setSelectedSize(size)}
+              >
+                {size}
+              </SizeItem>
+            ))}
+          </SizeBox>
+        </SizeBoxContainer>
+        <ButtonBox>
           <AddButton></AddButton>
           <PurchaseButton></PurchaseButton>
-        </SizeBoxButton>
-        <SizeBoxButton>
+        </ButtonBox>
+        <ButtonBox>
           <AIButton></AIButton>
-        </SizeBoxButton>
+        </ButtonBox>
       </ProductInfoBox>
     </ProductBox>
   );
@@ -185,16 +187,48 @@ const Price = styled.div`
   font-size: 24px;
 `;
 
+// const MaterialsText = styled.div`
+//   display: flex;
+//   font-size: 12px;
+//   font-family: "pretendard";
+//   color: black;
+// `;
+
+const Description = styled.p`
+  white-space: pre-line;
+  display: flex;
+  font-family: "pretendard";
+  font-size: 14px;
+  font-weight: 500;
+  color: black;
+  text-align: left;
+  padding: 16px 0px;
+`;
+
+const ColorBoxContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  flex-direction: column;
+  padding: 16px 0px;
+`; 
+
+const SelectedColorText = styled.div`
+  display: flex;
+  font-size: 12px;
+  font-family: "pretendard";
+  color: black;
+`;
+
 const ColorSwatches = styled.div`
   display: flex;
-  gap: 5px;
+  gap: 6px;
   align-items: center;
 `;
 
 const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean }>`
   position: relative;
-  width: 20px;
-  height: 20px;
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
   border: 1px solid gray;
@@ -207,10 +241,10 @@ const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean }>`
       content: "";
       align-items: center;
       position: absolute;
-      top: -4px;
-      left: -4px;
-      width: 26px;
-      height: 26px;
+      top: -5px;
+      left: -5px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       border: 2px solid #ccc; 
       box-sizing: border-box;
@@ -218,43 +252,27 @@ const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean }>`
   `}
 `;
 
-const SelectedColorText = styled.div`
-  display: flex;
-  font-size: 14px;
-  font-family: "pretendard";
-  color: black;
-  padding: 4px 0px
-`;
-
-const Description = styled.p`
-  white-space: pre-line;
-  display: flex;
-  font-family: "pretendard";
-  font-size: 14px;
-  font-weight: 500;
-  color: black;
-  text-align: left;
-  padding: 8px 0px;
-`;
-
-const SizeBoxMiddle = styled.div`
+const SizeBoxContainer = styled.div`
   max-width: 408px;
   min-width: 350px;
   display: flex;
   gap: 8px;
-  padding: 32px 0px;
+  flex-direction: column;
+  padding: 16px 0px 32px 0px;
 `; 
 
-const SizeBoxButton = styled.div`
+const SizeText = styled.div`
+  display: flex;
+  font-size: 12px;
+  font-family: "pretendard";
+  color: black;
+`;
+
+const SizeBox = styled.div`
+  max-width: 408px;
   min-width: 350px;
   display: flex;
   gap: 8px;
-  padding: 2px 0px;
-
-  @media (max-width: ${md}px) {
-    justify-content: center;
-    align-items: center;
-  }
 `; 
 
 const SizeItem = styled.div<{ $selectedSize?: boolean }>`
@@ -295,6 +313,19 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
     color: black;
   }
 `;
+
+const ButtonBox = styled.div`
+  min-width: 350px;
+  display: flex;
+  gap: 8px;
+  padding: 2px 0px;
+
+  @media (max-width: ${md}px) {
+    justify-content: center;
+    align-items: center;
+  }
+`; 
+
 
 
 
