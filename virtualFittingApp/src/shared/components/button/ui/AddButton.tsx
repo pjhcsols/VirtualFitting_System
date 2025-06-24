@@ -1,11 +1,22 @@
+import { useState } from "react";
 import styled from "styled-components";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
-import { ICON_BAG } from "@/shared";
+import { PopUpBottom } from "@/shared";
 
 function AddButton() {
-  return <AddBtn>
-    ADD
-    </AddBtn>;
+  const [showPopup, setShowPopup] = useState(false);
+
+  const handleClick = () => {
+    setShowPopup(true);
+    setTimeout(() => setShowPopup(false), 2000);
+  };
+
+  return (
+    <>
+      <AddBtn onClick={handleClick}>ADD</AddBtn>
+      {showPopup && <PopUpBottom message="장바구니에 상품을 담았습니다." />}
+    </>
+  );
 }
 
 const AddBtn = styled.div`
@@ -21,10 +32,10 @@ const AddBtn = styled.div`
   cursor: pointer;
   background: white;
   color: black;
-  
+
   @media (max-width: ${md}px) {
     width: 50%;
   }
-`
+`;
 
 export { AddButton };
