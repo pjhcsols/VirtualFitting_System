@@ -248,6 +248,16 @@ export const CheckOptions: string[] = [
  * responsible Design GuideLine
  */
 
+export const BREAKPOINTS = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+} as const;
+
+export type BreakpointKey = keyof typeof BREAKPOINTS;
+
 // 2XL
 export const xlDouble = 1536;
 

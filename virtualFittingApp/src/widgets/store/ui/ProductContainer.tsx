@@ -1,10 +1,23 @@
-import { ProductSmallCard,} from "@/shared";
-import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
-import { LikeButton, AddButton, AIButton, PurchaseButton } from "@/shared";
-import { COLOR_MAP } from "@/shared";
+
+import {
+  ProductSmallCard,
+  LikeButton,
+  AddButton,
+  AIButton,
+  PurchaseButton,
+  BREAKPOINTS,
+  COLOR_MAP,
+} from "@/shared";
+
+import {
+  IMG_TEST_CLOTHES,
+  ICON_LIKED,
+  ICON_UNLIKED,
+  ICON_SHARE,
+} from "@/shared";
+
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -89,7 +102,7 @@ const ProductBox = styled.section`
   // justify-content: space-between;
   align-items: flex-start;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
     align-items: center;
     gap: 32px;
@@ -105,7 +118,7 @@ const ProductImage = styled.img`
   height: auto;
   order: 0;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;
     max-width: 510px;
   }
@@ -119,7 +132,7 @@ const ProductSmallImagesContainer = styled.div`
   flex-flow: column nowrap;
   margin: 0px 4px;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: row;
     justify-content: flex-start; // 스크롤할 수 있도록 좌측 정렬
     width: 100%;
@@ -144,11 +157,11 @@ const ProductInfoBox = styled.div`
   order: 3;
   margin: 0px 32px;
 
-  @media (max-width: ${lg}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     margin: 0px 16px;
   }
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;
   }
 `;
@@ -307,7 +320,7 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
     z-index: 1;
   `}
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     min-width: 78px;
     color: black;
   }
@@ -319,13 +332,10 @@ const ButtonBox = styled.div`
   gap: 8px;
   padding: 2px 0px;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     justify-content: center;
     align-items: center;
   }
 `; 
-
-
-
 
 export { ProductContainer };
