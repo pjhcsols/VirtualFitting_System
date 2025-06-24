@@ -1,5 +1,5 @@
 import * as S from "@/shared/components/header/ui/css/BrandHeader.css";
-import { MENU_ICON } from "@/shared/components/header/constants";
+import { ICON_MENU } from "@/shared";
 import { useScrollDetector } from "@/shared/hooks";
 import { useNavigate } from "react-router-dom";
 
@@ -14,7 +14,7 @@ function BrandHeader() {
   return (
     <S.Wrapper isScrolled={isScrolled}>
       <S.MenuContainer>
-        <S.MENU_ICON src={MENU_ICON} alt="menu-icon" />
+        <S.ICON_MENU src={ICON_MENU} alt="menu-icon" />
       </S.MenuContainer>
       <S.LogoContainer>
         <S.Logo onClick={onClickBrandHomepage}>Basilium</S.Logo>
