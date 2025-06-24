@@ -1,11 +1,10 @@
-import {  ProductSmallCard,} from "@/shared";
+import { ProductSmallCard,} from "@/shared";
 import { IMG_TEST_CLOTHES, ICON_LIKED, ICON_UNLIKED, ICON_SHARE } from "@/shared";
-import { LikeButton } from "@/shared";
 import styled from "styled-components";
 import { useState } from "react";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
-import { AddButton, AIButton, PurchaseButton } from "@/shared";
-import { Divider } from "@/widgets/admin/ui/css/AdminBrandUserList.css";
+import { LikeButton, AddButton, AIButton, PurchaseButton } from "@/shared";
+import { COLOR_MAP } from "@/shared";
 
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
@@ -48,7 +47,7 @@ function ProductContainer({ product }: { product: any }) {
             {product.colors.map((color: string, index: number) => (
               <ColorCircle
                 key={index}
-                $color={color}
+                $color={COLOR_MAP[color] ?? "transparent"} 
                 $selectedColor={selectedColor === color}
                 onClick={() => setSelectedColor(color)}
               />

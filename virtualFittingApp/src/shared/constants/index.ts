@@ -195,6 +195,26 @@ export const palleteList: Color[] = [
   "ORANGE",
 ];
 
+export const COLOR_MAP: Record<string, string> = {
+  BLACK: "#000000",
+  WHITE: "#FFFFFF",
+  RED: "#FF0000",
+  GREEN: "#06923E",
+  BLUE: "#00B8FF",
+  YELLOW: "#FFEE58",
+  MAGENTA: "#FF00FF",
+  CYAN: "#00FFFF",
+  GRAY: "#808080",
+  MAROON: "#800000",
+  DARKGREEN: "#008000",
+  NAVY: "#000080",
+  ORANGE: "#FF4F0F",
+  BROWN: "#A52A2A",
+  PINK: "#F564A9",
+  GOLD: "#FFD700",
+};
+
+
 export const materialList: Material[] = [
   "COTTON",
   "POLYESTER",

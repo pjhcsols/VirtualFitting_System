@@ -1,24 +1,23 @@
 import styled from "styled-components";
+import { COLOR_MAP } from "@/shared";
 
 type ColorPopupProps = {
-  colors: any;
+  colors: string[];
   onClose: () => void;
 };
 
 export const ColorPopup = ({ colors, onClose }: ColorPopupProps) => {
   return (
     <PopupContainer onClick={(e) => {
-        e.stopPropagation();
-        onClose();
-      }}>
-        <Popup
-        //   onClick={(e) => e.stopPropagation()}
-        >
+      e.stopPropagation();
+      onClose();
+    }}>
+      <Popup onClick={(e) => e.stopPropagation()}>
         <ColorList>
           {colors.map((color: string, index: number) => (
             <ColorItem key={index}>
-              <ColorCircle $color={color} />
-              <ColorName>black</ColorName>
+              <ColorCircle $color={COLOR_MAP[color] ?? "transparent"} />
+              <ColorName>{color}</ColorName>
             </ColorItem>
           ))}
         </ColorList>
@@ -29,6 +28,7 @@ export const ColorPopup = ({ colors, onClose }: ColorPopupProps) => {
 
 const PopupContainer = styled.div`
   position: absolute;
+  width: 80px;
   bottom: 8px;
   right: 16px;
   background: white;
@@ -36,7 +36,6 @@ const PopupContainer = styled.div`
   flex-direction: column;
   z-index: 10;
   cursor: pointer;
-  background-color: white;
 `;
 
 const Popup = styled.div`
@@ -58,15 +57,15 @@ const ColorItem = styled.div`
 `;
 
 const ColorCircle = styled.div<{ $color: string }>`
-  width: 0.75em;
-  height: 0.75em;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
   border: 1px solid black;
 `;
 
 const ColorName = styled.span`
-  font-size: 0.75em;
+  font-size: 12px;
   font-family: 'Inter', sans-serif;
   color: black;
 `;

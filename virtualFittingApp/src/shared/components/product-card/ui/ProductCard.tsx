@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ColorPopup } from "./ColorPopUp";
 import { LikeButton } from "@/shared";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
-
+import { COLOR_MAP } from "@/shared";
 
 type ProductCardProps = {
   product: any;
@@ -26,7 +26,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
           </LikeButtonWrapper>
           <ColorSwatches>
             {visibleColors.map((color: string, index: number) => (
-              <ColorCircle key={index} $color={color} />
+              <ColorCircle key={index} $color={COLOR_MAP[color] ?? "transparent"}  />
             ))}
             {remainingColors > 0 && (
               <ExtraIcon
