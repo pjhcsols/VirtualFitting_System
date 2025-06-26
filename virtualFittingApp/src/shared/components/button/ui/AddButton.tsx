@@ -1,12 +1,33 @@
 import { useState } from "react";
 import styled from "styled-components";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { md } from "@/shared";
 import { PopUpBottom } from "@/shared";
+import type { CartItem } from "@/shared";
 
-function AddButton() {
+function AddButton({ product }: { product: CartItem }) {
   const [showPopup, setShowPopup] = useState(false);
 
   const handleClick = () => {
+    const storedCart = localStorage.getItem("cart");
+    const cart: CartItem[] = storedCart ? JSON.parse(storedCart).filter((item: CartItem | null) => item !== null): [];
+
+    const productToAdd = { ...product, quantity: product.quantity ?? 1 };
+
+    const existingIndex = cart.findIndex(
+      (item) =>
+        item.id === productToAdd.id &&
+        item.color === productToAdd.color &&
+        item.size === productToAdd.size
+    );
+
+    if (existingIndex !== -1) {
+      cart[existingIndex].quantity += productToAdd.quantity;
+    } else {
+      cart.push(productToAdd);
+    }
+
+    localStorage.setItem("cart", JSON.stringify(cart));
+
     setShowPopup(true);
     setTimeout(() => setShowPopup(false), 2000);
   };
@@ -18,6 +39,7 @@ function AddButton() {
     </>
   );
 }
+
 
 const AddBtn = styled.div`
   width: 200px;

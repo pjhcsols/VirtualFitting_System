@@ -82,7 +82,18 @@ function ProductContainer({ product }: { product: any }) {
           </SizeBox>
         </SizeBoxContainer>
         <ButtonBox>
-          <AddButton></AddButton>
+          <AddButton
+            product={{
+              id: product.id,
+              name: product.name,
+              brand: product.brand,
+              image: product.image,
+              price: product.price,
+              color: selectedColor,
+              size: selectedSize,
+              quantity: 1,
+            }}
+          />
           <PurchaseButton></PurchaseButton>
         </ButtonBox>
         <ButtonBox>
