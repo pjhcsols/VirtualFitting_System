@@ -61,7 +61,7 @@ const Divider = styled.div`
 
 
 const CartItemListWrapper = styled.div`
-  flex: 3;
+  width : 500px;
 `;
 
 const CartSummaryWrapper = styled.div`

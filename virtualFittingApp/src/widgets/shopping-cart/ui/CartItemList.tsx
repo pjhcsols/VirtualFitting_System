@@ -12,20 +12,28 @@ function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
       <ItemContainer>
         <ItemTitle>장바구니</ItemTitle>
       </ItemContainer>
-        {cartItems.length === 0 ? (
-          <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
-        ) : (
-          cartItems
-            .filter((item): item is CartItem => item != null)
-            .map((item) => (
-              <Item key={item.id}>
+      {cartItems.length === 0 ? (
+        <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
+      ) : (
+        cartItems
+          .filter((item): item is CartItem => item != null)
+          .map((item) => (
+            <CartItemRow key={`${item.id}-${item.color}-${item.size}`}>
+              <CartItemImageContainer>
+                <CartItemImage src={item.image} alt={item.name} />
+              </CartItemImageContainer>
+              <CartItemContent>
                 <ItemName>{item.name}</ItemName>
-                <ItemDetails>
-                  색상: {item.color}, 사이즈: {item.size}, 수량: {item.quantity}
-                </ItemDetails>
-              </Item>
-            ))
-        )}
+                <ItemInfo>
+                  {item.color} · {item.size} / {item.quantity}개
+                </ItemInfo>
+                <ItemPrice>
+                  {item.price}원
+                </ItemPrice>
+              </CartItemContent>
+            </CartItemRow>
+          ))
+      )}
     </Wrapper>
   );
 }
@@ -33,14 +41,12 @@ function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
 `;
 
 const ItemContainer = styled.div`
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column;
   align-items: flex-start;
   margin-bottom: 1rem;
 `;
@@ -50,7 +56,6 @@ const ItemTitle = styled.h1`
   font-size: 22px;
   font-weight: 600;
   color: black;
-  display: block;
 `;
 
 const EmptyMessage = styled.div`
@@ -60,21 +65,54 @@ const EmptyMessage = styled.div`
   margin-top: 1rem;
 `;
 
-const Item = styled.div`
-  margin-bottom: 1rem;
-  border-bottom: 1px solid #ddd;
-  padding-bottom: 0.5rem;
+const CartItemRow = styled.div`
   width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  border-bottom: 1px solid #e4e4e4;
+  padding: 0.5rem 0;
+`;
+
+const CartItemContent = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+`;
+
+const CartItemImageContainer = styled.div`
+  width: 100px;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const CartItemImage = styled.img`
+  width: 80px;
+  height: 80px;
+  object-fit: contain;
 `;
 
 const ItemName = styled.div`
-  font-weight: 600;
-  font-size: 18px;
+  font-size: 14px;
+  font-family: "pretendard";
+  color: black;
 `;
 
-const ItemDetails = styled.div`
+const ItemInfo = styled.div`
   font-size: 14px;
   color: #444;
+  font-family: "pretendard";
+`;
+
+const ItemPrice = styled.div`
+  font-size: 14px;
+  font-weight: 600;
+  color: black;
+  font-family: "pretendard";
 `;
 
 export { CartItemList };

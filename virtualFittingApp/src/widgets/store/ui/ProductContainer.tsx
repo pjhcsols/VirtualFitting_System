@@ -88,7 +88,7 @@ function ProductContainer({ product }: { product: any }) {
               name: product.name,
               brand: product.brand,
               image: product.image,
-              price: product.price,
+              price: Number(product.discountedPrice.replace(/,/g, "")),
               color: selectedColor,
               size: selectedSize,
               quantity: 1,
