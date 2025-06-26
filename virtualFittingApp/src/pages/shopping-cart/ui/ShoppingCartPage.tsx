@@ -1,19 +1,28 @@
-import { Shopping } from "@/shared";
-import { useShoppingCartData } from "@/pages";
+import { useState, useEffect } from "react";
+import type { CartItem } from "@/shared";
 import styled from "styled-components";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 import { CartPurchaseSummary, CartItemList } from "@/widgets";
 
 function ShoppingCartPage() {
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
+  useEffect(() => {
+    const storedCart = localStorage.getItem("cart");
+    if (storedCart) {
+      setCartItems(JSON.parse(storedCart));
+    }
+  }, []);
+
   return (
     <Wrapper>
       <Content>
         <CartItemListWrapper>
-          <CartItemList />
+          <CartItemList cartItems={cartItems} setCartItems={setCartItems} />
         </CartItemListWrapper>
         <Divider />
         <CartSummaryWrapper>
-          <CartPurchaseSummary />
+          <CartPurchaseSummary cartItems={cartItems} />
         </CartSummaryWrapper>
       </Content>
     </Wrapper>
@@ -33,7 +42,7 @@ const Content = styled.div`
   gap: 2rem;
   width: 100%;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
   }
 `;
@@ -43,7 +52,7 @@ const Divider = styled.div`
   background: #e4e4e4;
   height: 500px;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;
     background: #e4e4e4;
     height: 1px;
@@ -52,7 +61,7 @@ const Divider = styled.div`
 
 
 const CartItemListWrapper = styled.div`
-  flex: 3;
+  width : 500px;
 `;
 
 const CartSummaryWrapper = styled.div`

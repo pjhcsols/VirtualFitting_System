@@ -2,6 +2,7 @@ import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
+import Gradient from "/img/aibutton/gradient.png";
 
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
@@ -18,6 +19,9 @@ import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
+import Bag from "/svg/bag.svg";
+import User from '/svg/user.svg';
+import Menu from '/svg/menu.svg';
 
 import type {
   CategoryType,
@@ -31,6 +35,7 @@ export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
+export const IMG_GRADIENT = Gradient;
 
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
@@ -48,6 +53,17 @@ export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
+<<<<<<< FE_mj
+=======
+<<<<<<< FE_seah
+export const ICON_BAG = Bag;
+export const ICON_USER = User;
+export const ICON_MENU = Menu;
+=======
+export const ICON_LIKED = Liked;
+export const ICON_UNLIKED = UnLiked;
+>>>>>>> FE
+>>>>>>> FE
 
 export const AnimationProps = {
   initial: {
@@ -187,6 +203,26 @@ export const palleteList: Color[] = [
   "ORANGE",
 ];
 
+export const COLOR_MAP: Record<string, string> = {
+  BLACK: "#000000",
+  WHITE: "#FFFFFF",
+  RED: "#FF0000",
+  GREEN: "#06923E",
+  BLUE: "#00B8FF",
+  YELLOW: "#FFEE58",
+  MAGENTA: "#FF00FF",
+  CYAN: "#00FFFF",
+  GRAY: "#808080",
+  MAROON: "#800000",
+  DARKGREEN: "#008000",
+  NAVY: "#000080",
+  ORANGE: "#FF4F0F",
+  BROWN: "#A52A2A",
+  PINK: "#F564A9",
+  GOLD: "#FFD700",
+};
+
+
 export const materialList: Material[] = [
   "COTTON",
   "POLYESTER",
@@ -219,6 +255,16 @@ export const CheckOptions: string[] = [
 /*
  * responsible Design GuideLine
  */
+
+export const BREAKPOINTS = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+} as const;
+
+export type BreakpointKey = keyof typeof BREAKPOINTS;
 
 // 2XL
 export const xlDouble = 1536;

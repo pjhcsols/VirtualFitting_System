@@ -2,8 +2,8 @@ import styled, { createGlobalStyle } from "styled-components";
 import { useState } from "react";
 import { ColorPopup } from "./ColorPopUp";
 import { LikeButton } from "@/shared";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
-
+import { BREAKPOINTS } from "@/shared";
+import { COLOR_MAP } from "@/shared";
 
 type ProductCardProps = {
   product: any;
@@ -26,7 +26,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
           </LikeButtonWrapper>
           <ColorSwatches>
             {visibleColors.map((color: string, index: number) => (
-              <ColorCircle key={index} $color={color} />
+              <ColorCircle key={index} $color={COLOR_MAP[color] ?? "transparent"}  />
             ))}
             {remainingColors > 0 && (
               <ExtraIcon
@@ -72,13 +72,13 @@ const Card = styled.div`
   flex-direction: column;
   border: 1px solid black;
 
-  @media (max-width: ${sm - 1}px) {
+  @media (max-width: ${BREAKPOINTS.sm - 1}px) {
     &:not(:first-child) {
       border-top: none;
     }
   }
 
-  @media (min-width: ${sm}px) and (max-width: ${md - 1}px) {
+  @media (min-width: ${BREAKPOINTS.sm}px) and (max-width: ${BREAKPOINTS.md - 1}px) {
     &:nth-child(even) {
       border-left: none;
     }
@@ -88,7 +88,7 @@ const Card = styled.div`
     }
   }
 
-  @media (min-width: ${md}px) and (max-width: ${xl - 1}px) {
+  @media (min-width: ${BREAKPOINTS.md}px) and (max-width: ${BREAKPOINTS.xl - 1}px) {
     &:not(:nth-child(3n - 2)) {
       border-left: none;
     }
@@ -98,7 +98,7 @@ const Card = styled.div`
     }
   }
 
-  @media (min-width: ${xl}px) {
+  @media (min-width: ${BREAKPOINTS.xl}px) {
     &:not(:nth-child(4n - 3)) {
       border-left: none;
     }

@@ -1,90 +1,34 @@
-import { useState, useRef, useEffect, MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
-type PopUpBottomType = {
-  logout: () => void;
+type PopUpBottomProps = {
+  message: string;
 };
 
-const PopUpBottom = ({ logout }: PopUpBottomType) => {
-  const [isOpen, setIsOpen] = useState(true);
-  const [profileImageUrl, setProfileImageUrl] = useState<string>(userImg);
-  const popupRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
-  const storedUserInfo = localStorage.getItem("user_info") ?? "";
-  const userInfo = JSON.parse(storedUserInfo);
-  const loginType = userInfo.loginType;
-  const userId = userInfo.userId;
+function PopUpBottom({ message }: PopUpBottomProps) {
+  return <StyledPopup>{message}</StyledPopup>;
+}
 
-  const handleClick = (path: string) => {
-    console.log("클릭됨");
-    navigate(path);
-  };
+const StyledPopup = styled.div`
+  width: 300px;
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #202020;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-size: 14px;
+  text-align: left;
+  z-index: 9999;
+  animation: fadeInOut 2s ease-in-out forwards;
 
-  useEffect(() => {
-    // e : what is this type????
-    //
-    // const handleOutsideClick = (e) => {
-    //   if (popupRef.current && !popupRef.current.contains(e.target)) {
-    //     setIsOpen(false);
-    //   }
-    // };
-    // document.addEventListener("mousedown", handleOutsideClick);
-    // return () => {
-    //   document.removeEventListener("mousedown", handleOutsideClick);
-    // };
-  }, []);
-
-  useEffect(() => {
-    const fetchProfileImage = async () => {
-      try {
-        const response = await fetch(
-          `http://218.233.221.147:8080/User/getProfileImage?userId=${userId}`,
-        );
-        if (response.ok) {
-          const blob = await response.blob();
-          if (blob.size > 0) {
-            const imageUrl = URL.createObjectURL(blob);
-            setProfileImageUrl(imageUrl);
-          }
-        }
-      } catch (error) {
-        console.error("Error fetching profile image:", error);
-      }
-    };
-
-    fetchProfileImage();
-  }, [userId]);
-
-  const handleLogout = () => {
-    console.log("클릭");
-    logout();
-    setIsOpen(false);
-    localStorage.removeItem("login-token");
-    navigate("/");
-  };
-
-  return (
-    <>
-      {isOpen && (
-        <div className="popup-container-bottom" ref={popupRef}>
-          <div className="user-bottom-container">
-            <img
-              src={profileImageUrl}
-              alt="user"
-              onClick={() => handleClick("/MyPage")}
-            />
-            <span className="userId-bottom">
-              {userId}님<br />
-              {loginType}
-            </span>
-          </div>
-          <button className="logoutButton" onClick={handleLogout}>
-            logout
-          </button>
-        </div>
-      )}
-    </>
-  );
-};
+  @keyframes fadeInOut {
+    0% { opacity: 0; transform: translate(-50%, 20px); }
+    10% { opacity: 1; transform: translate(-50%, 0); }
+    90% { opacity: 1; transform: translate(-50%, 0); }
+    100% { opacity: 0; transform: translate(-50%, 20px); }
+  }
+`;
 
 export { PopUpBottom };
