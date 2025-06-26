@@ -2,14 +2,16 @@ export type ServerProductDto = {};
 
 export type ClientProductDto = {
   productName: string;
-  productDescription: string;
+  productDesc: string;
   productPrice: number | string;
-  productMainPhotos: (File | null)[] | null;
-  productQuantity: number;
   productMaterial: Material;
   productColor: Color;
+  productMainPhotos: File[] | null;
   productSubPhotos: File[] | null;
-  productSizeTable: SizeTable[];
+  productSizeTable: SizeTable[] | "F";
+  productOptions: productOptionType[];
+  productColorOptions: productColorOptionType[];
+  productCategory: ProductCategory;
 };
 
 export type Color =
@@ -22,7 +24,7 @@ export type Color =
   | "GREEN"
   | "ORANGE";
 
-export type Size = "XX" | "S" | "M" | "L" | "XL" | "F";
+export type Size = "XX" | "S" | "M" | "L" | "XL";
 
 export type Material = "COTTON" | "POLYESTER" | "WOOL" | "FABRIC" | "SILK";
 
@@ -37,4 +39,16 @@ export type SizeTable = {
 export type ProductCategory = {
   categoryId: number;
   categoryName: string;
+};
+
+type productOptionType = {
+  productSize: Size;
+  productColor: Color;
+  optionQuantity: number;
+};
+
+type productColorOptionType = {
+  productColor: Color;
+  productPhotoUrls: string[];
+  productSubPhotoUrls: string[];
 };

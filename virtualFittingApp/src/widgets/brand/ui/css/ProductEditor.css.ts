@@ -6,24 +6,75 @@ export const Wrapper = styled.div`
   padding: 2rem 3rem;
   width: 100%;
   display: flex;
-  flex-flow: row;
+  flex-flow: row wrap;
   justify-content: center;
   align-items: flex-start;
   gap: 32px;
 `;
 
-export const ButtonContainer = styled.div<{ step: number }>`
-  position: absolute;
+export const InfoWrapper = styled.section`
   width: 100%;
-  height: 100%;
-  top: -6vh;
-  left: 0;
   display: flex;
-  justify-content: ${({ step }) => (step === 0 ? "flex-end" : "space-between")};
+  justify-content: center;
+  align-items: flex-start;
+  gap: 32px;
+`;
+
+export const PhotoContainer = styled.div`
+  width: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const InfoContainer = styled.div`
+  position: relative;
+  width: 50%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 32px;
+`;
+
+export const SizeContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
   align-items: flex-start;
 `;
 
-export const NextBtn = styled.div`
+export const SizeBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const MaterialContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+export const MaterialBox = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const ButtonContainer = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const SubmitButton = styled.div`
   appearance: none;
   background-color: transparent;
   border: 2px solid #1a1a1a;
@@ -38,9 +89,9 @@ export const NextBtn = styled.div`
   color: black;
   line-height: normal;
   margin: 0;
-  width: 140px;
+  width: 40%;
   min-height: 45px;
-  min-width: 0;
+  min-width: 140px;
   outline: none;
   padding: 16px 24px;
   text-align: center;
@@ -65,9 +116,53 @@ export const NextBtn = styled.div`
   }
 `;
 
-export const Divider = styled.div<{ hv: string }>`
-  width: 1.5px;
-  height: ${(props) => props.hv ?? "100vh"};
+export const Divider = styled.div`
+  width: 100%;
+  height: 2px;
   border-radius: 1000px;
-  background-color: gray;
+  background: #d9d9d9 5%;
+`;
+
+export const SizeTableContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const ColorContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+export const ColorBox = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+export const SubPhotoContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: center;
+  align-items: flex-start;
+`;
+
+export const SizeText = styled.h1`
+  font-size: 2rem;
+  font-weight: 700;
+  color: black;
+`;
+
+export const DescriptionText = styled.h3`
+  font-size: 1rem;
+  font-weight: 600;
+  color: black;
 `;

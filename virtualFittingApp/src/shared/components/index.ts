@@ -36,16 +36,18 @@ export * from "@/shared/components/logo3D";
 
 export * from "@/shared/components/product-card";
 
-// export * from "@/shared/components/progress";
-
 export * from "@/shared/components/precaution";
 
 export * from "@/shared/components/input";
-
-export * from "@/shared/components/checkMark";
 
 export * from "@/shared/components/column";
 
 export * from "@/shared/components/arrow";
 
 export * from "@/shared/components/modal";
+
+export * from "@/shared/components/text";
+
+export * from "@/shared/components/draggable";
+
+export * from "@/shared/components/table";
