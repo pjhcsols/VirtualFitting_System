@@ -4,3 +4,6 @@ export const MALE_ICON = "/svg/male.svg";
 export const FEMALE_ICON = "/svg/female.svg";
 export const STAR_FILLED_ICON = "/svg/starFilled.svg";
 export const STAR_EMPTY_ICON = "/svg/starEmpty.svg";
+export const ADD_ICON = "/svg/add.svg";
+export const CANCEL_ICON = "/svg/cancel.svg";
+export const ELLIPSIS_ICON = "/svg/ellipsis.svg"

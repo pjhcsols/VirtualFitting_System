@@ -53,6 +53,8 @@ export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
+<<<<<<< FE_mj
+=======
 <<<<<<< FE_seah
 export const ICON_BAG = Bag;
 export const ICON_USER = User;
@@ -60,6 +62,7 @@ export const ICON_MENU = Menu;
 =======
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
+>>>>>>> FE
 >>>>>>> FE
 
 export const AnimationProps = {
