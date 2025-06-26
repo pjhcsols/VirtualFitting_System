@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { reviews } from "../constants/dummy";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function renderStars(rating: number) {
   const maxStars = 5;
@@ -96,7 +96,7 @@ const ImageContainer = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${sm}px) {
+  @media (max-width: ${BREAKPOINTS.sm}px) {
     display: none;
   }
 `;

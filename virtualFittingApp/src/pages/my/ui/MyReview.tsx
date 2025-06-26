@@ -8,7 +8,7 @@ function MyReview() {
     return (
         <PageWrapper>
             <HeaderWrapper>
-                <MyHeader title="후기 작성" />
+                <MyHeader title="후기 작성" backPath="/myPage" />
             </HeaderWrapper>
 
             <ContentWrapper>

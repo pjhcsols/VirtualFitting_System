@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { md } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function ProductSmallCard() {
   return <ProductSmallCardContainer />;
@@ -13,7 +13,7 @@ const ProductSmallCardContainer = styled.img`
   cursor: pointer;
   object-fit: contain;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     width: 60px;
   }
 `;

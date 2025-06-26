@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
@@ -8,11 +9,17 @@ import arrowImg from "./arrow.png";
 function MyPage() {
   const navigate = useNavigate();
   const userName = "user1";
+  const [reviewCount, setReviewCount] = useState(0);
+
+  useEffect(() => {
+      const storedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+      setReviewCount(storedReviews.length);
+  }, []);
 
   return (
     <PageWrapper>
       <HeaderWrapper>
-        <MyHeader title="마이페이지" />
+        <MyHeader title="마이페이지" backPath="/"/>
       </HeaderWrapper>
 
       <ContentWrapper>
@@ -27,9 +34,18 @@ function MyPage() {
         <Divider />
 
         <StatsWrapper>
-          <Stat>포인트</Stat>
-          <Stat>쿠폰</Stat>
-          <Stat onClick={() => navigate("/myPage/review")}>후기 작성</Stat>
+          <Stat>
+            포인트
+            <ReviewCount>0원</ReviewCount>
+          </Stat>
+          <Stat>
+            쿠폰
+            <ReviewCount>0개</ReviewCount>
+          </Stat>
+          <Stat onClick={() => navigate("/myPage/review")}>
+            후기작성
+            <ReviewCount>{reviewCount}개</ReviewCount>
+          </Stat>
         </StatsWrapper>
 
         <MenuList>
@@ -138,6 +154,16 @@ const Stat = styled.div`
   font-size: 14px;
   color: #999;
   cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+`;
+
+const ReviewCount = styled.span`
+  font-size: 12px;
+  font-weight: bold;
+  color: #555;
 `;
 
 const MenuList = styled.div`

@@ -1,9 +1,11 @@
 import styled from "styled-components";
-import { Banner, Carousel } from "@/widgets";
-import { products } from "../constants/dummy";
-import { ProductCard } from "@/shared/components/product-card";
 import { useNavigate } from "react-router-dom";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+
+import { products } from "../constants/dummy";
+
+import { BREAKPOINTS } from "@/shared";
+import { ProductCard } from "@/shared/components/product-card";
+import { Banner, Carousel } from "@/widgets";
 
 function StorePage() {
   const navigate = useNavigate();
@@ -51,20 +53,20 @@ const ProductGrid = styled.div`
   margin: 0 auto;
   max-width: 1000px;
 
-  @media (min-width: ${sm}px) {
+  @media (min-width: ${BREAKPOINTS.sm}px) {
     grid-template-columns: repeat(2, 1fr);
   }
 
-  @media (min-width: ${md}px) {
+  @media (min-width: ${BREAKPOINTS.md}px) {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media (min-width: ${xl}px) {
+  @media (min-width: ${BREAKPOINTS.xl}px) {
     grid-template-columns: repeat(4, 1fr);
     padding: 5em 10em;
   }
 
-  @media (min-width: ${xlDouble}px) {
+  @media (min-width: ${BREAKPOINTS.xlDouble}px) {
     max-width: 1400px;
     padding: 5em 15em;
   }
