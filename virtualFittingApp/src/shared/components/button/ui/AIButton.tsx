@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { ICON_AI } from "@/shared";
+import { ICON_AI, IMG_GRADIENT } from "@/shared";
 import { xlDouble, xl, lg, md, sm } from "@/shared";
 
 function AIButton() {
@@ -10,9 +10,10 @@ function AIButton() {
 }
 
 const AIBtn = styled.button`
-  width: 200px;
+  width: 408px;
   height: 52px;
-  border: 1px solid black;
+  border: 1px solid;
+  border-image: url(${IMG_GRADIENT}) 50 stretch;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -25,7 +26,7 @@ const AIBtn = styled.button`
   flex-direction: row;
 
   @media (max-width: ${md}px) {
-      width: 50%;
+      width: 100%;
     }
 `;
 
