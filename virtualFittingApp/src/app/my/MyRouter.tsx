@@ -7,6 +7,7 @@ import { MyCancel } from "@/pages/my/ui/MyCancel";
 import { MyLike } from "@/pages/my/ui/MyLike";
 import { MyOrderListDetail } from "@/pages/my/ui/MyOrderListDetail";
 import { MyReview } from "@/pages/my";
+import { StyleReview } from "@/pages/my";
 
 function MyRouter() {
   const location = useLocation();
@@ -21,6 +22,7 @@ function MyRouter() {
         <Route path="/myPage/cancel" element={<MyCancel />} />
         <Route path="/myPage/like" element={<MyLike />} />
         <Route path="/myPage/review" element={<MyReview />} />
+        <Route path="/myPage/review/:id" element={<StyleReview />} />
       </Routes>
     </AnimatePresence>
   );

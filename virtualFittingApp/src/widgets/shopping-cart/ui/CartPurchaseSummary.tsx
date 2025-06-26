@@ -15,6 +15,8 @@ function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) 
   const shipping = 3000; // 예시: 배송비
   const total = productTotal - discount + shipping;
 
+import { xlDouble, xl, lg, md, sm } from "@/shared";
+
   return (
     <Wrapper>
       <CartSummaryContainer>
@@ -38,9 +40,13 @@ function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) 
             <Value>{total.toLocaleString()}원</Value>
           </PriceRow>
         </PriceInfoList>
-
         <SizeBoxBottom>
           <PayButton />
+        <CartSummaryTitle>
+          구매정보
+        </CartSummaryTitle>
+        <SizeBoxBottom>
+          <PayButton></PayButton>
         </SizeBoxBottom>
       </CartSummaryContainer>
     </Wrapper>
@@ -78,7 +84,9 @@ const SizeBoxBottom = styled.div`
   gap: 8px;
   padding: 16px 0px;
 
+
   @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${md}px) {
     justify-content: center;
     align-items: center;
   }
@@ -107,7 +115,6 @@ const PriceRow = styled.div`
 `;
 
 const Label = styled.span``;
-
 const Value = styled.span``;
 
 export { CartPurchaseSummary };
