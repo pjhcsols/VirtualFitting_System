@@ -1,8 +1,14 @@
 import { PayButton } from "@/shared";
 import styled from "styled-components";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
+import type { CartItem } from "@/shared";
 
-function CartPurchaseSummary() {
+type CartItemListProps = {
+  cartItems: CartItem[];
+  setCartItems?: React.Dispatch<React.SetStateAction<CartItem[]>>; // <- optional
+};
+
+function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) {
   return (
     <Wrapper>
       <CartSummaryContainer>
@@ -47,7 +53,7 @@ const SizeBoxBottom = styled.div`
   gap: 8px;
   padding: 16px 0px;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     justify-content: center;
     align-items: center;
   }

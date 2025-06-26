@@ -22,7 +22,7 @@ function ShoppingCartPage() {
         </CartItemListWrapper>
         <Divider />
         <CartSummaryWrapper>
-          {/* <CartPurchaseSummary cartItems={cartItems} /> */}
+          <CartPurchaseSummary cartItems={cartItems} />
         </CartSummaryWrapper>
       </Content>
     </Wrapper>
