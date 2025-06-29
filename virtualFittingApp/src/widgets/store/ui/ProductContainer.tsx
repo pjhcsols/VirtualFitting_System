@@ -7,6 +7,7 @@ import {
   AddButton,
   AIButton,
   PurchaseButton,
+  QuantityBox,
   BREAKPOINTS,
   COLOR_MAP,
 } from "@/shared";
@@ -46,7 +47,7 @@ function ProductContainer({ product }: { product: any }) {
           <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>￦{product.price}</Price>
+          <Price>￦{product.price.toLocaleString()}</Price>
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
         <Description>
@@ -81,6 +82,14 @@ function ProductContainer({ product }: { product: any }) {
             ))}
           </SizeBox>
         </SizeBoxContainer>
+        <OptionBox>
+          <OptionTop>
+            <OptionText>
+              {selectedColor} · {selectedSize}
+            </OptionText>
+          </OptionTop>
+          <QuantityBox unitPrice={product.price} />
+        </OptionBox>
         <ButtonBox>
           <AddButton
             product={{
@@ -160,7 +169,7 @@ const ProductSmallImagesContainer = styled.div`
 `;
 
 const ProductInfoBox = styled.div`
-  width: 500px;
+  width: 408px;
   min-width: 300px;
   display: flex;
   flex-direction: column;
@@ -179,6 +188,7 @@ const ProductInfoBox = styled.div`
 
 const TopRow = styled.div`
   display: flex;
+  min-width: 350px;
   justify-content: space-between;
   align-items: center;
 `;
@@ -209,13 +219,6 @@ const Price = styled.div`
   color: black;
   font-size: 24px;
 `;
-
-// const MaterialsText = styled.div`
-//   display: flex;
-//   font-size: 12px;
-//   font-family: "pretendard";
-//   color: black;
-// `;
 
 const Description = styled.p`
   white-space: pre-line;
@@ -281,7 +284,7 @@ const SizeBoxContainer = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
-  padding: 16px 0px 32px 0px;
+  padding: 16px 0px 16px 0px;
 `; 
 
 const SizeText = styled.div`
@@ -335,6 +338,31 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
     min-width: 78px;
     color: black;
   }
+`;
+
+const OptionTop = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const OptionText = styled.div`
+  display: flex;
+  font-size: 12px;
+  font-family: "pretendard";
+  color: black;
+`;
+
+const OptionBox = styled.div`
+  min-width: 350px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  padding: 12px 16px;
+  box-sizing: border-box;
 `;
 
 const ButtonBox = styled.div`

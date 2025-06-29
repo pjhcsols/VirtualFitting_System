@@ -11,6 +11,7 @@ import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Plus from "/svg/plus.svg";
+import Minus from "/svg/minus.svg";
 import AI from "/svg/ai.svg";
 import UnLiked from "/svg/like.svg";
 import Liked from "/svg/liked.svg";
@@ -22,6 +23,7 @@ import EmailSVGLogo from "/svg/Email.svg";
 import Bag from "/svg/bag.svg";
 import User from '/svg/user.svg';
 import Menu from '/svg/menu.svg';
+
 
 import type {
   CategoryType,
@@ -47,6 +49,7 @@ export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_PLUS = Plus;
+export const ICON_MINUS = Minus;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
 export const ICON_AI = AI;
@@ -259,7 +262,7 @@ export const BREAKPOINTS = {
   lg: 1024,
   md: 768,
   sm: 640,
-} as const;
+};
 
 export type BreakpointKey = keyof typeof BREAKPOINTS;
 
