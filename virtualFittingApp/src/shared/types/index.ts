@@ -6,3 +6,5 @@ export * from "@/shared/types/product/category.d";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
+
+export * from "@/shared/types/cart/cart.d";

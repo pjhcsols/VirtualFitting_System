@@ -9,13 +9,10 @@ type CartItemListProps = {
 };
 
 function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) {
-  // 계산 예시 (임시 하드코딩 or 실제 cartItems 사용 가능)
   const productTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const discount = 0; // 향후 로직 반영
-  const shipping = 3000; // 예시: 배송비
+  const discount = 0;
+  const shipping = 3000; 
   const total = productTotal - discount + shipping;
-
-import { xlDouble, xl, lg, md, sm } from "@/shared";
 
   return (
     <Wrapper>
@@ -42,16 +39,12 @@ import { xlDouble, xl, lg, md, sm } from "@/shared";
         </PriceInfoList>
         <SizeBoxBottom>
           <PayButton />
-        <CartSummaryTitle>
-          구매정보
-        </CartSummaryTitle>
-        <SizeBoxBottom>
-          <PayButton></PayButton>
         </SizeBoxBottom>
       </CartSummaryContainer>
     </Wrapper>
   );
 }
+
 
 
 const Wrapper = styled.div`
@@ -84,9 +77,7 @@ const SizeBoxBottom = styled.div`
   gap: 8px;
   padding: 16px 0px;
 
-
   @media (max-width: ${BREAKPOINTS.md}px) {
-  @media (max-width: ${md}px) {
     justify-content: center;
     align-items: center;
   }
