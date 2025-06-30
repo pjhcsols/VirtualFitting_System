@@ -46,8 +46,11 @@ export * from "@/shared/components/arrow";
 
 export * from "@/shared/components/modal";
 
+export * from "@/shared/components/option-box";
+
 export * from "@/shared/components/text";
 
 export * from "@/shared/components/draggable";
 
 export * from "@/shared/components/table";
+

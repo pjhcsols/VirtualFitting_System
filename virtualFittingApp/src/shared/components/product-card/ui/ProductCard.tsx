@@ -53,11 +53,11 @@ function ProductCard({ product, onClick }: ProductCardProps) {
               <PriceRow>
                 {product.discountRate ? (
                   <>
-                    <OriginalPrice>￦{product.price}</OriginalPrice>
-                    <DiscountedPrice>￦{product.discountedPrice}</DiscountedPrice>
+                    <OriginalPrice>￦{product.price.toLocaleString()}</OriginalPrice>
+                    <DiscountedPrice>￦{product.discountedPrice.toLocaleString()}</DiscountedPrice>
                   </>
                 ) : (
-                  <Price>￦{product.price}</Price>
+                  <Price>￦{product.price.toLocaleString()}</Price>
                 )}
               </PriceRow>
             </PriceBox>

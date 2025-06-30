@@ -2,9 +2,9 @@ export const products = [
   {
     id: 1,
     name: "Crown Silver Hoodie",
-    price: '72,000',
+    price: 72000,
     discountRate: 20,
-    discountedPrice: '57,600',
+    discountedPrice: 57600,
     brand : "바실리움",
     image: "/img/product/product_sample_1.png",
     availableSizes: ["XS", "S", "M", "L", "XL"],
@@ -14,7 +14,7 @@ export const products = [
   {
     id: 2,
     name: "크라운 실버 후디",
-    price: '72,000',
+    price: 72000,
     discountRate: 0,
     brand : "BASILIUM",
     image: "/img/product/product_sample_2.png",
@@ -25,7 +25,7 @@ export const products = [
   {
     id: 3,
     name: "아이어워즈",
-    price: '72,000',
+    price: 72000,
     discountRate: 0,
     brand : "i-awards",
     image: "/img/product/product_sample_3.png",
@@ -36,9 +36,9 @@ export const products = [
   {
     id: 4,
     name: "테스트입니다",
-    price: '2,000,000',
+    price: 2000000,
     discountRate: 50,
-    discountedPrice: '1,000,000',
+    discountedPrice: 1000000,
     brand : "TEST",
     image: "/img/product/product_sample_1.png",
     availableSizes: ["M", "L"],
@@ -48,9 +48,9 @@ export const products = [
   {
     id: 5,
     name: "Crown Silver Hoodie",
-    price: '72,000',
+    price: 72000,
     discountRate: 10,
-    discountedPrice: '64,800',
+    discountedPrice: 64800,
     brand : "BASILIUM",
     image: "/img/product/product_sample_2.png",
     availableSizes: ["M", "L"],
