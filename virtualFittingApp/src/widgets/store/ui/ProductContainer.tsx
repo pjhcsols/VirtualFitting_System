@@ -23,7 +23,8 @@ import {
 function ProductContainer({ product }: { product: any }) {
   const [selectedColor, setSelectedColor] = useState(product.colors[0]);
   const [selectedSize, setSelectedSize] = useState(product.availableSizes[0]);
-
+  const [quantity, setQuantity] = useState(1);
+  
   return (
     <ProductBox>
         <ProductSmallImagesContainer>
@@ -47,9 +48,22 @@ function ProductContainer({ product }: { product: any }) {
           <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>￦{product.price.toLocaleString()}</Price>
+          {product.discountedPrice ? (
+            <PriceGroup>
+              <DiscountPrice>{product.discountedPrice.toLocaleString()}원</DiscountPrice>
+              <OriginalPriceBox>
+                <OriginalPrice>{product.price.toLocaleString()}원</OriginalPrice>
+                <DiscountRate>
+                  {product.discountRate}%
+                </DiscountRate>
+              </OriginalPriceBox>
+            </PriceGroup>
+          ) : (
+            <Price>￦{product.price.toLocaleString()}</Price>
+          )}
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
+
         <Description>
           클래식한 오버핏 티셔츠{'\n'}
           한겨울에도 착용하기 좋습니다
@@ -88,7 +102,11 @@ function ProductContainer({ product }: { product: any }) {
               {selectedColor} · {selectedSize}
             </OptionText>
           </OptionTop>
-          <QuantityBox unitPrice={product.price} />
+          <QuantityBox
+            unitPrice={product.discountedPrice ?? product.price}
+            quantity={quantity}
+            setQuantity={setQuantity}
+          />
         </OptionBox>
         <ButtonBox>
           <AddButton
@@ -98,9 +116,11 @@ function ProductContainer({ product }: { product: any }) {
               brand: product.brand,
               image: product.image,
               price: product.price,
+              discountedPrice: product.discountedPrice,
+              discountRate: product.discountRate,
               color: selectedColor,
               size: selectedSize,
-              quantity: 1,
+              quantity: quantity,
             }}
           />
           <PurchaseButton></PurchaseButton>
@@ -130,8 +150,8 @@ const ProductBox = styled.section`
 `;
 
 const ProductImage = styled.img`
-  width: 510px;
-  max-width: 510px;
+  width: 600px;
+  max-width: 600px;
   min-height: 430px;
   aspect-ratio: 4 / 5;
   object-fit: contain;
@@ -154,13 +174,13 @@ const ProductSmallImagesContainer = styled.div`
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: row;
-    justify-content: flex-start; // 스크롤할 수 있도록 좌측 정렬
+    justify-content: flex-start;
     width: 100%;
     order: 2;
     overflow-x: auto;
     overflow-y: hidden;
-    -webkit-overflow-scrolling: touch; // 모바일에서 부드러운 스크롤
-    scroll-snap-type: x mandatory; // 선택적으로 snap 추가
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
   }
 
   &::-webkit-scrollbar {
@@ -218,6 +238,41 @@ const Price = styled.div`
   font-weight: 200;
   color: black;
   font-size: 24px;
+`;
+
+const PriceGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const DiscountPrice = styled.div`
+  font-family: "pretendard";
+  font-size: 24px;
+  font-weight: 200;
+  color: black;
+`;
+
+const OriginalPriceBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const OriginalPrice = styled.div`
+  font-family: "pretendard";
+  font-size: 14px;
+  color: gray;
+  text-decoration: line-through;
+`;
+
+const DiscountRate = styled.div`
+  font-family: "pretendard";
+  font-size: 12px;
+  color: white;
+  background-color: black;
+  padding: 0px 2px;
+  background-color: red;
 `;
 
 const Description = styled.p`

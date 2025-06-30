@@ -1,15 +1,13 @@
-import { useState } from "react";
 import styled from "styled-components";
 import { ICON_MINUS, ICON_PLUS } from "@/shared";
 
 type QuantityBoxProps = {
-  initialQuantity?: number;
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>; // ✅ 이렇게 하면 OK
   unitPrice: number;
 };
 
-function QuantityBox({ initialQuantity = 1, unitPrice }: QuantityBoxProps) {
-  const [quantity, setQuantity] = useState(initialQuantity);
-
+function QuantityBox({ quantity, setQuantity, unitPrice }: QuantityBoxProps) {
   const increase = () => setQuantity((q) => q + 1);
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
@@ -30,6 +28,7 @@ function QuantityBox({ initialQuantity = 1, unitPrice }: QuantityBoxProps) {
     </QuantityBoxWrapper>
   );
 }
+
 
 const QuantityBoxWrapper = styled.div`
   display: flex;
