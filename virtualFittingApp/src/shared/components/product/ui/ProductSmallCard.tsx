@@ -6,7 +6,7 @@ function ProductSmallCard() {
 }
 
 const ProductSmallCardContainer = styled.img`
-  width: 64px;
+  width: 48px;
   aspect-ratio: 4 / 5;
   height: auto;
   background-color: #e0e0e0;
