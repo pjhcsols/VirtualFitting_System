@@ -62,11 +62,12 @@ const ItemContainer = styled.div`
   align-items: flex-start;
 `;
 
-const ItemTitle = styled.h1`
+const ItemTitle = styled.div`
   font-family: "pretendard";
   font-size: 22px;
   font-weight: 600;
   color: black;
+  padding: 0px 16px;
 `;
 
 const EmptyMessage = styled.div`

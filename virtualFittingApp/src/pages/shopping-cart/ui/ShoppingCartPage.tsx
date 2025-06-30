@@ -67,15 +67,22 @@ const Divider = styled.div`
 `;
 
 const CartItemListWrapper = styled.div`
-  min-width : 500px;
+  width: 100%;
+  max-width: 500px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 450px;
+  }
 `;
 
 const CartSummaryWrapper = styled.div`
-  min-width: 300px;
+  width: 100%;
+  max-width: 350px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    min-width : 400px;
+    max-width: 400px;
   }
 `;
+
 
 export { ShoppingCartPage };

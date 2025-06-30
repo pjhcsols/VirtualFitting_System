@@ -79,14 +79,22 @@ const SizeBoxBottom = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    min-width : 400px;
+  }
 `; 
 
 const PriceInfoList = styled.div`
-  width: 100%;
+  min-width: 350px;
   margin-top: 16px;
   font-family: "pretendard";
   font-size: 16px;
   color: #333;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    min-width : 400px;
+  }
 `;
 
 const PriceRow = styled.div`

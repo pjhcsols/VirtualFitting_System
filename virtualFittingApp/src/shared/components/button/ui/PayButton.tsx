@@ -8,7 +8,7 @@ function PayButton() {
 }
 
 const PayBtn = styled.button`
-  width: 200px;
+  width: 100%;
   height: 52px;
   border: 1px solid black;
   display: flex;
@@ -22,9 +22,9 @@ const PayBtn = styled.button`
   background: black;
   flex-direction: row;
 
-  @media (max-width: ${md}px) {
-      width: 50%;
-    }
+  // @media (max-width: ${md}px) {
+  //     width: 50%;
+  //   }
 `;
 
 export { PayButton };
