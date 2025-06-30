@@ -9,31 +9,41 @@ type CartItemListProps = {
 };
 
 function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) {
-  const productTotal = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-  const discount = 0;
-  const shipping = 3000; 
-  const total = productTotal - discount + shipping;
+  const productTotal = cartItems.reduce((acc, item) => {
+    const actualPrice = item.discountedPrice ?? item.price;
+    return acc + actualPrice * item.quantity;
+  }, 0);
+
+  const totalDiscount = cartItems.reduce((acc, item) => {
+    if (item.discountedPrice !== undefined) {
+      const discount = item.price - item.discountedPrice;
+      return acc + discount * item.quantity;
+    }
+    return acc;
+  }, 0);
+
+  const shipping = 3000;
+  const total = productTotal + shipping;
 
   return (
     <Wrapper>
       <CartSummaryContainer>
-        <CartSummaryTitle>구매정보</CartSummaryTitle>
-        
+        <CartSummaryTitle>구매 정보</CartSummaryTitle>
         <PriceInfoList>
           <PriceRow>
-            <Label>상품금액</Label>
-            <Value>{productTotal.toLocaleString()}원</Value>
+            <Label>상품 금액</Label>
+            <Value>{(productTotal + totalDiscount).toLocaleString()}원</Value>
           </PriceRow>
           <PriceRow>
-            <Label>할인금액</Label>
-            <Value>{discount.toLocaleString()}원</Value>
+            <Label>할인 금액</Label>
+            <Value>-{totalDiscount.toLocaleString()}원</Value>
           </PriceRow>
           <PriceRow>
             <Label>배송비</Label>
             <Value>{shipping.toLocaleString()}원</Value>
           </PriceRow>
           <PriceRow className="total">
-            <Label>총구매금액</Label>
+            <Label>총 구매 금액</Label>
             <Value>{total.toLocaleString()}원</Value>
           </PriceRow>
         </PriceInfoList>
@@ -45,20 +55,16 @@ function CartPurchaseSummary({ cartItems, setCartItems: _ }: CartItemListProps) 
   );
 }
 
-
-
 const Wrapper = styled.div`
   width: 100%;
   display: flex;
-  
-  flex-flow: column nowrap;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
 `;
 
 const CartSummaryContainer = styled.div`
   display: flex;
-  flex-flow: column nowrap;
+  flex-direction: column;
+  align-items: flex-start;
 `;
 
 const CartSummaryTitle = styled.span`
@@ -66,9 +72,6 @@ const CartSummaryTitle = styled.span`
   font-size: 22px;
   font-weight: 600;
   color: black;
-  display: block;
-  width: 100%;
-  text-align: left; 
 `;
 
 const SizeBoxBottom = styled.div`
@@ -76,11 +79,6 @@ const SizeBoxBottom = styled.div`
   display: flex;
   gap: 8px;
   padding: 16px 0px;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    justify-content: center;
-    align-items: center;
-  }
 `; 
 
 const PriceInfoList = styled.div`

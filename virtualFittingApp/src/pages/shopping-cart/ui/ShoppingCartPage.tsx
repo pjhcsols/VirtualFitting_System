@@ -32,25 +32,32 @@ function ShoppingCartPage() {
 const Wrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-  padding: 2rem 1rem;
+  padding: 16px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 16px 16px;
+  }
 `;
 
 const Content = styled.div`
   display: flex;
   flex-direction: row;
-  justify-content: space-between;
   gap: 2rem;
   width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+  align-items: flex-start;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
+    align-items: center;
   }
 `;
 
 const Divider = styled.div`
   width: 1px;
   background: #e4e4e4;
-  height: 500px;
+  height: auto;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;
@@ -59,14 +66,16 @@ const Divider = styled.div`
   }
 `;
 
-
 const CartItemListWrapper = styled.div`
-  width : 500px;
+  min-width : 500px;
 `;
 
 const CartSummaryWrapper = styled.div`
-  flex: 2;
-  min-width: 280px;
+  min-width: 300px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    min-width : 400px;
+  }
 `;
 
 export { ShoppingCartPage };

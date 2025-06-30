@@ -28,7 +28,19 @@ function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
                   {item.color} · {item.size} / {item.quantity}개
                 </ItemInfo>
                 <ItemPrice>
-                  {item.price}원
+                  {item.discountedPrice ? (
+                    <PriceGroup>
+                      <DiscountPrice>{(item.discountedPrice * item.quantity).toLocaleString()}원</DiscountPrice>
+                      <OriginalPriceBox>
+                        <OriginalPrice>{(item.price * item.quantity).toLocaleString()}원</OriginalPrice>
+                        <DiscountRate>
+                          {item.discountRate}%
+                        </DiscountRate>
+                      </OriginalPriceBox>
+                    </PriceGroup>
+                  ) : (
+                    <Price>{(item.price * item.quantity).toLocaleString()}원</Price>
+                  )}
                 </ItemPrice>
               </CartItemContent>
             </CartItemRow>
@@ -48,7 +60,6 @@ const ItemContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin-bottom: 1rem;
 `;
 
 const ItemTitle = styled.h1`
@@ -110,9 +121,47 @@ const ItemInfo = styled.div`
 
 const ItemPrice = styled.div`
   font-size: 14px;
-  font-weight: 600;
   color: black;
   font-family: "pretendard";
+`;
+
+const Price = styled.div`
+  font-family: "pretendard";
+  color: black;
+  font-size: 14px;
+`;
+
+const PriceGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const DiscountPrice = styled.div`
+  font-family: "pretendard";
+  font-size: 14px;
+  color: black;
+`;
+
+const OriginalPriceBox = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+`;
+
+const OriginalPrice = styled.div`
+  font-family: "pretendard";
+  font-size: 14px;
+  color: gray;
+  text-decoration: line-through;
+`;
+
+const DiscountRate = styled.div`
+  font-family: "pretendard";
+  font-size: 12px;
+  color: white;
+  padding: 0px 2px;
+  background-color: red;
 `;
 
 export { CartItemList };
