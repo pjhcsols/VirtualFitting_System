@@ -6,18 +6,39 @@ type CartItemListProps = {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 };
 
+function groupByBrand(items: CartItem[]) {
+  const brandMap = new Map<string, CartItem[]>();
+  items.forEach((item) => {
+    if (!brandMap.has(item.brand)) {
+      brandMap.set(item.brand, []);
+    }
+    brandMap.get(item.brand)!.push(item);
+  });
+  return brandMap;
+}
+
 function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
+  const groupedItems = groupByBrand(cartItems);
+  const entries = [...groupedItems.entries()];
+
+  if (cartItems.length === 0) {
+    return (
+      <Wrapper>
+        <ItemTitle>장바구니</ItemTitle>
+        <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
+      </Wrapper>
+    );
+  }
+  
   return (
     <Wrapper>
       <ItemContainer>
         <ItemTitle>장바구니</ItemTitle>
       </ItemContainer>
-      {cartItems.length === 0 ? (
-        <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
-      ) : (
-        cartItems
-          .filter((item): item is CartItem => item != null)
-          .map((item) => (
+      {entries.map(([brand, items], brandIndex, brandArr) => (
+        <BrandSection key={brand}>
+          <BrandTitle>{brand}</BrandTitle>
+          {items.map((item) => (
             <CartItemRow key={`${item.id}-${item.color}-${item.size}`}>
               <CartItemImageContainer>
                 <CartItemImage src={item.image} alt={item.name} />
@@ -30,12 +51,14 @@ function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
                 <ItemPrice>
                   {item.discountedPrice ? (
                     <PriceGroup>
-                      <DiscountPrice>{(item.discountedPrice * item.quantity).toLocaleString()}원</DiscountPrice>
+                      <DiscountPrice>
+                        {(item.discountedPrice * item.quantity).toLocaleString()}원
+                      </DiscountPrice>
                       <OriginalPriceBox>
-                        <OriginalPrice>{(item.price * item.quantity).toLocaleString()}원</OriginalPrice>
-                        <DiscountRate>
-                          {item.discountRate}%
-                        </DiscountRate>
+                        <OriginalPrice>
+                          {(item.price * item.quantity).toLocaleString()}원
+                        </OriginalPrice>
+                        <DiscountRate>{item.discountRate}%</DiscountRate>
                       </OriginalPriceBox>
                     </PriceGroup>
                   ) : (
@@ -44,11 +67,14 @@ function CartItemList({ cartItems, setCartItems }: CartItemListProps) {
                 </ItemPrice>
               </CartItemContent>
             </CartItemRow>
-          ))
-      )}
+          ))}
+          {brandIndex !== brandArr.length - 1 && <BrandDivider />}
+        </BrandSection>
+      ))}
     </Wrapper>
   );
 }
+
 
 const Wrapper = styled.div`
   width: 100%;
@@ -67,14 +93,7 @@ const ItemTitle = styled.div`
   font-size: 22px;
   font-weight: 600;
   color: black;
-  padding: 0px 16px;
-`;
-
-const EmptyMessage = styled.div`
-  font-family: "pretendard";
-  font-size: 16px;
-  color: #666;
-  margin-top: 1rem;
+  padding-bottom: 16px;
 `;
 
 const CartItemRow = styled.div`
@@ -82,8 +101,34 @@ const CartItemRow = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  border-bottom: 1px solid #e4e4e4;
-  padding: 0.5rem 0;
+  gap: 8px;
+  padding-bottom: 24px;
+`;
+
+const BrandSection = styled.div`
+  padding-top: 4px;
+`;
+
+const BrandTitle = styled.h2`
+  font-family: "pretendard";
+  font-size: 16px;
+  font-weight: 700;
+  color: #222;
+  text-align: left;
+`;
+
+const BrandDivider = styled.div`
+  width: 100%;
+  height: 1px;
+  background-color: #e4e4e4;
+  margin: 4px 0;
+`;
+
+const EmptyMessage = styled.div`
+  font-family: "pretendard";
+  font-size: 16px;
+  color: #666;
+  margin-top: 16px;
 `;
 
 const CartItemContent = styled.div`
@@ -95,11 +140,13 @@ const CartItemContent = styled.div`
 `;
 
 const CartItemImageContainer = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 80px;
+  height: 80px;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
+  padding-left: 0;
+  margin-left: 0;
 `;
 
 const CartItemImage = styled.img`
