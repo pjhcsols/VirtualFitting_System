@@ -1,18 +1,23 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { BACK_ICON } from "@/shared/components/header/constants";
+import type { HeaderProps } from "@/shared/components/header/types/header";
 
-interface HeaderProps {
-  title: string;
-}
-
-function MyHeader({ title }: HeaderProps) {
+function MyHeader({ title, backPath }: HeaderProps) {
   const navigate = useNavigate();
+
+  const handleBack = () => {
+    if (backPath) {
+      navigate(backPath); 
+    } else {
+      navigate(-1);  
+    }
+  };
 
   return (
     <Container1>
       <Container2>
-        <Left onClick={() => navigate(-1)}>
+        <Left onClick={handleBack}>
           <BackIcon src={BACK_ICON} alt="뒤로가기" />
         </Left>
         <Center>

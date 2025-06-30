@@ -20,6 +20,7 @@ import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
+import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 import Bag from "/svg/bag.svg";
 import User from '/svg/user.svg';
 import Menu from '/svg/menu.svg';
@@ -33,14 +34,13 @@ import type {
   SizeTable,
 } from "@/shared/types";
 
+
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
 export const IMG_GRADIENT = Gradient;
 
-export const ICON_LIKED = Liked;
-export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
@@ -56,9 +56,22 @@ export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
+
 export const ICON_BAG = Bag;
 export const ICON_USER = User;
 export const ICON_MENU = Menu;
+
+
+export const ICON_BAG = Bag;
+export const ICON_USER = User;
+export const ICON_MENU = Menu;
+
+export const ICON_LIKED = Liked;
+export const ICON_UNLIKED = UnLiked;
+
+export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
+
+
 
 export const AnimationProps = {
   initial: {
@@ -89,6 +102,7 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
+
 
 export const CategoryIndex = [
   {
@@ -247,6 +261,7 @@ export const CheckOptions: string[] = [
   "상품의 옵션사진이 제대로 업로드 되어있습니다.",
 ];
 
+
 /*
  * responsible Design GuideLine
  */
@@ -275,3 +290,11 @@ export const md = 768;
 
 // sm
 export const sm = 640;
+
+export * from "@/shared/constants/color/Colors";
+
+export * from "@/shared/constants/category/Category";
+
+export * from "@/shared/constants/product/Product";
+
+export * from "@/shared/constants/icon/Icon";

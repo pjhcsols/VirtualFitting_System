@@ -224,10 +224,10 @@
               <FormField>
                   <Label>신체사이즈</Label>
                   <TelForm>
-                  <SizeInput placeholder="키   cm" />
-                  <SizeInput placeholder="몸무게 kg" />
-                  <SizeInput placeholder="총장  cm" />
-                  <SizeInput placeholder="어깨  cm" />
+                    <SizeInput placeholder="키   cm" />
+                    <SizeInput placeholder="몸무게 kg" />
+                    <SizeInput placeholder="총장  cm" />
+                    <SizeInput placeholder="어깨  cm" />
                   </TelForm>
               </FormField>
               <FormField>
