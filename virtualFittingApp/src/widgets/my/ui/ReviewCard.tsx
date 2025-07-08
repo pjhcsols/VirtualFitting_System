@@ -1,6 +1,7 @@
-import {useState, useEffect, useRef} from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { BREAKPOINTS } from "@/shared";
 import { OrderItem } from "@/pages/my/types/order";
 import alertImg from "@/pages/my/ui/alert.png";
 import { formatSimpleDate } from "@/shared";
@@ -73,7 +74,6 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
         </Details>
       </ProductInfo>
 
-      {/* 사진 출력 */}
       {reviewData.photos?.length > 0 && (
         <PhotoWrapper>
           {reviewData.photos.map((photo, idx) => (
@@ -85,9 +85,7 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
       <ReviewText>{reviewData.reviewText}</ReviewText>
 
       <ButtonWrapper>
-        <ActionButton>
-          리뷰 확인
-        </ActionButton>
+        <ActionButton>리뷰 확인</ActionButton>
       </ButtonWrapper>
     </CardWrapper>
   );
@@ -95,16 +93,20 @@ const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => {
 
 export { ReviewCard };
 
-
 const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 550px;
+  width: 800px;
   align-items: flex-start;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 100%;
+  }
 `;
 
 const Header = styled.div`
+  position: relative;
   display: flex;
   gap: 8px;
   align-items: center;
@@ -183,6 +185,7 @@ const ReviewText = styled.p`
 const PhotoWrapper = styled.div`
   display: flex;
   gap: 8px; 
+  flex-wrap: wrap;
 `;
 
 const ReviewImg = styled.img`
@@ -209,8 +212,8 @@ const EllipsisImg = styled.img`
 
 const MenuBox = styled.div`
   position: absolute;
-  top: 170px;
-  margin-left: 440px;
+  top: 36px;
+  right: 0;
   min-width: 100px;
   padding: 5px;
   background: white;
@@ -235,15 +238,16 @@ const ButtonWrapper = styled.div`
   gap: 8px;
   margin-top: 12px;
   justify-content: flex-start;
+  width: 100%;
 `;
 
 const ActionButton = styled.button`
-    width: 540px;
-    height: 40px;
-    text-align: center;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    background-color: #fff;
-    font-size: 14px;
-    cursor: pointer;
+  width: 100%;
+  height: 40px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #fff;
+  font-size: 14px;
+  cursor: pointer;
 `;
