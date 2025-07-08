@@ -54,3 +54,4 @@ export * from "@/shared/components/draggable";
 
 export * from "@/shared/components/table";
 
+export * from "@/shared/components/icon";

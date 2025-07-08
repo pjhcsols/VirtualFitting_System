@@ -1,5 +1,8 @@
-import { API_BASILIUM } from "@/shared";
+"use server";
+
+import { API_BASILIUM, ProductServerResponseType } from "@/shared";
 import { BrandUserType } from "@/pages/brand/types/brandUser";
+import axios from "axios";
 
 export const MODIFY_BRAND_INFO = async (request: BrandUserType) => {
   try {
@@ -21,7 +24,9 @@ type GetBrandInfoType = {
 
 export const GET_BRAND_INFO = async ({ page, size }: GetBrandInfoType) => {
   try {
-    const res = await API_BASILIUM.get(`/brand?page=${page}&size=${size}`);
+    const res = await API_BASILIUM.get(
+      `/b1/products/?page=${page}&size=${size}`,
+    );
     if (res.status === 200) {
       return res.data;
     } else {
@@ -29,5 +34,29 @@ export const GET_BRAND_INFO = async ({ page, size }: GetBrandInfoType) => {
     }
   } catch (err) {
     return err;
+  }
+};
+
+type PaginationBrandProductListType = {
+  size: number;
+  page: number;
+};
+
+export const GET_BRAND_PRODUCT_LIST = async ({
+  size,
+  page,
+}: PaginationBrandProductListType) => {
+  try {
+    const res = await API_BASILIUM.get<ProductServerResponseType[]>(
+      `/b1/products?page=${page}&size=${size}`,
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+  } catch (err: any) {
+    // Axios 의 Typeguard 를 이용해 Error Handling
+    if (axios.isAxiosError(err)) {
+      console.error(err.message);
+    }
   }
 };

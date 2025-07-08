@@ -62,6 +62,49 @@ export const InfoTitle = styled.p`
   color: #d9d9d9;
 `;
 
+export const DropdownContainer = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 16px;
+`;
+
+export const DropdownBox = styled.div<{ clicked: boolean }>`
+  box-sizing: border-box;
+  padding: 10px;
+  width: 100%;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  transition: 0.15s all ease-out;
+  background: ${(props) =>
+    props.clicked ? "rgb(237, 237, 237)" : "transparent"};
+  span {
+    color: black;
+  }
+  div {
+    width: 75%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 8px;
+  }
+  &:hover {
+    background: ${(props) => !props.clicked && "#d9d9d9"};
+  }
+`;
+
+export const DropdownNavigation = styled(NavLink)<{ clicked: boolean }>`
+  width: 100%;
+  display: ${(props) => (props.clicked ? "block" : "none")};
+  transition: 0.15s all ease;
+`;
+
 export const Navigation = styled(NavLink)`
   width: 100%;
 `;

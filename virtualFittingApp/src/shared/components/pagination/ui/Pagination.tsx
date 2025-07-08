@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { ICON_LEFT_ARROW, ICON_RIGHT_ARROW } from "@/shared/constants";
 
 import { sliceArrayByLimit } from "@/shared/components/pagination/utils/pagination.utils";
-import { type PaginationType } from "@/shared/components/pagination/types/pagination";
+import { type PaginationType } from "@/shared/components/pagination/types/Pagination";
 
 function Pagination({ page, setPage, totalPage, size }: PaginationType) {
   const [currPageArray, setCurrPageArray] = useState<number[]>([]);

@@ -29,6 +29,7 @@ const ProductCreateButtonWrapper = styled.div.attrs({
   transition: 0.15s all ease;
   &:hover {
     background-color: #72c9eb;
+    transform: scale(1.02);
   }
   &:active {
     background-color: #43b6e3;
