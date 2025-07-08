@@ -1,0 +1,37 @@
+[
+  {
+    "productSize": "XX",
+    "productTotalLength": 72,
+    "productChest": 54,
+    "productShoulder": 50,
+    "productArm": 22
+  },
+  {
+    "productSize": "S",
+    "productTotalLength": 72,
+    "productChest": 54,
+    "productShoulder": 50,
+    "productArm": 22
+  },
+  {
+    "productSize": "M",
+    "productTotalLength": 72,
+    "productChest": 54,
+    "productShoulder": 50,
+    "productArm": 22
+  },
+  {
+    "productSize": "L",
+    "productTotalLength": 72,
+    "productChest": 54,
+    "productShoulder": 50,
+    "productArm": 22
+  },
+  {
+    "productSize": "XL",
+    "productTotalLength": 72,
+    "productChest": 54,
+    "productShoulder": 50,
+    "productArm": 22
+  }
+]

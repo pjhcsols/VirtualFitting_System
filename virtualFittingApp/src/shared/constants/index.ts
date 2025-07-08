@@ -2,6 +2,7 @@ import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
+import Gradient from "/img/aibutton/gradient.png";
 
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
@@ -10,6 +11,7 @@ import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Plus from "/svg/plus.svg";
+import Minus from "/svg/minus.svg";
 import AI from "/svg/ai.svg";
 import UnLiked from "/svg/like.svg";
 import Liked from "/svg/liked.svg";
@@ -18,6 +20,11 @@ import Loading from "/svg/loading.svg";
 import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
+import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
+import Bag from "/svg/bag.svg";
+import User from '/svg/user.svg';
+import Menu from '/svg/menu.svg';
+
 
 import type {
   CategoryType,
@@ -27,13 +34,13 @@ import type {
   SizeTable,
 } from "@/shared/types";
 
+
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
+export const IMG_GRADIENT = Gradient;
 
-export const ICON_LIKED = Liked;
-export const ICON_UNLIKED = UnLiked;
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
@@ -42,12 +49,29 @@ export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_PLUS = Plus;
+export const ICON_MINUS = Minus;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
 export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
+
+export const ICON_BAG = Bag;
+export const ICON_USER = User;
+export const ICON_MENU = Menu;
+
+
+export const ICON_BAG = Bag;
+export const ICON_USER = User;
+export const ICON_MENU = Menu;
+
+export const ICON_LIKED = Liked;
+export const ICON_UNLIKED = UnLiked;
+
+export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
+
+
 
 export const AnimationProps = {
   initial: {
@@ -78,6 +102,7 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
+
 
 export const CategoryIndex = [
   {
@@ -187,6 +212,26 @@ export const palleteList: Color[] = [
   "ORANGE",
 ];
 
+export const COLOR_MAP: Record<string, string> = {
+  BLACK: "#000000",
+  WHITE: "#FFFFFF",
+  RED: "#FF0000",
+  GREEN: "#06923E",
+  BLUE: "#00B8FF",
+  YELLOW: "#FFEE58",
+  MAGENTA: "#FF00FF",
+  CYAN: "#00FFFF",
+  GRAY: "#808080",
+  MAROON: "#800000",
+  DARKGREEN: "#008000",
+  NAVY: "#000080",
+  ORANGE: "#FF4F0F",
+  BROWN: "#A52A2A",
+  PINK: "#F564A9",
+  GOLD: "#FFD700",
+};
+
+
 export const materialList: Material[] = [
   "COTTON",
   "POLYESTER",
@@ -216,9 +261,20 @@ export const CheckOptions: string[] = [
   "상품의 옵션사진이 제대로 업로드 되어있습니다.",
 ];
 
+
 /*
  * responsible Design GuideLine
  */
+
+export const BREAKPOINTS = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+};
+
+export type BreakpointKey = keyof typeof BREAKPOINTS;
 
 // 2XL
 export const xlDouble = 1536;
@@ -235,6 +291,7 @@ export const md = 768;
 // sm
 export const sm = 640;
 
+
 export const BREAKPOINTS = {
   xlDouble: 1536,
   xl: 1280,
@@ -242,3 +299,12 @@ export const BREAKPOINTS = {
   md: 768,
   sm: 640,
 };
+
+export * from "@/shared/constants/color/Colors";
+
+export * from "@/shared/constants/category/Category";
+
+export * from "@/shared/constants/product/Product";
+
+export * from "@/shared/constants/icon/Icon";
+

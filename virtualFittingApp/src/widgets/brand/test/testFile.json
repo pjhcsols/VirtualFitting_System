@@ -1,0 +1,65 @@
+{
+  "productCategory": {
+    "categoryId": 1,
+    "categoryName": "티셔츠"
+  },
+  "productName": "업데이트된 티셔츠",
+  "productPrice": 55000,
+  "productMaterial": ["COTTON", "POLYESTER", "FABRIC"],
+  "productDesc": "이 상품은 업데이트 되었습니다.",
+  "productOptions": [
+    {
+      "productSize": "M",
+      "productColor": "BLACK",
+      "optionQuantity": 70
+    },
+    {
+      "productSize": "L",
+      "productColor": "BLACK",
+      "optionQuantity": 80
+    },
+    {
+      "productSize": "L",
+      "productColor": "WHITE",
+      "optionQuantity": 80
+    }
+  ],
+  "productSizeOptions": [
+    {
+      "productSize": "M",
+      "totalLength": 72,
+      "chest": 54,
+      "shoulder": 50,
+      "arm": 22
+    },
+    {
+      "productSize": "L",
+      "totalLength": 72,
+      "chest": 54,
+      "shoulder": 50,
+      "arm": 22
+    }
+  ],
+  "productColorOptions": [
+    {
+      "productColor": "BLACK",
+      "productPhotoUrls": [
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_1.png"
+      ],
+      "productSubPhotoUrls": [
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png",
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png"
+      ]
+    },
+    {
+      "productColor": "WHITE",
+      "productPhotoUrls": [
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/main1_1.png"
+      ],
+      "productSubPhotoUrls": [
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub_1.png",
+        "https://s3.ap-northeast-2.amazonaws.com/basilium-product-bucket/sub2.png"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+export { CardIcon } from "@/shared/components/icon/ui/CardIcon";
+export { ShopIcon } from "@/shared/components/icon/ui/ShopIcon";
+export { SettingIcon } from "@/shared/components/icon/ui/SettingIcon";
+export { HomeIcon } from "@/shared/components/icon/ui/HomeIcon";
+export { GraphIcon } from "@/shared/components/icon/ui/GraphIcon";
+export { HeartIcon } from "@/shared/components/icon/ui/HeartIcon";
+export { CouponIcon } from "@/shared/components/icon/ui/CouponIcon";
+export { LogoutIcon } from "@/shared/components/icon/ui/LogoutIcon";
+export { MoneyIcon } from "@/shared/components/icon/ui/MoneyIcon";
+export { ClothesIcon } from "@/shared/components/icon/ui/ClothesIcon";

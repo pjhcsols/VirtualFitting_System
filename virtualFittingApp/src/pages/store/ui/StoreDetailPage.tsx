@@ -1,8 +1,16 @@
 import styled from "styled-components";
-import { DetailDescription, SizeInfo, ProductContainer, ReviewContent } from "@/widgets";
-import { products } from "../constants/dummy";
 import { useParams } from "react-router-dom";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+
+import { products } from "../constants/dummy";
+
+import { BREAKPOINTS } from "@/shared";
+import {
+  DetailDescription,
+  SizeInfo,
+  ProductContainer,
+  ReviewContent,
+} from "@/widgets";
+
 
 function StoreDetailPage() {
   const { id } = useParams();
@@ -28,7 +36,7 @@ const Wrapper = styled.div`
   justify-content: center;
   align-items: center;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 16px 16px;
   }
 `;

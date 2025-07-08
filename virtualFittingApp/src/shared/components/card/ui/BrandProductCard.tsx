@@ -1,55 +1,31 @@
-import * as S from "@/shared/components/card/ui/css/ProductCard.css";
-import { type MouseEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import styled from "styled-components";
 
-type ProductCardType = {
-  productId: number;
-  productName: string;
-  productPrice: number;
-  productPhotoUrl: string;
-  productPhotoColorOptions: string[];
-  className?: string;
-};
-
-function BrandProductCard({
-  productId,
-  productName,
-  productPrice,
-  productPhotoUrl,
-  productPhotoColorOptions,
-  className,
-}: ProductCardType) {
-  const router = useNavigate();
-
-  const onClickCard = (e: MouseEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    router(`/brand/product/${productId}`);
-  };
-
-  const showPrice = (input: number) => {
-    const inputStr = input.toString();
-    return inputStr.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
-
+function BrandProductCard() {
   return (
-    <S.Wrapper onClick={onClickCard} className={`${className}`}>
-      <S.ProductImg
-        src={productPhotoUrl ?? ""}
-        alt={`productPhotoUrl-${productId}`}
-      />
-      <S.ProductInfoContainer>
-        <S.ProductTitle>{productName}</S.ProductTitle>
-        <S.ProductSubOption>
-          <S.ProductColorPalleteBox>
-            {productPhotoColorOptions.map((item: string, key: number) => {
-              return <S.ProductColorPallete pallete={item} key={key} />;
-            })}
-          </S.ProductColorPalleteBox>
-          <S.ProductPrice>{`₩${showPrice(productPrice)}`}</S.ProductPrice>
-        </S.ProductSubOption>
-      </S.ProductInfoContainer>
-    </S.Wrapper>
+    <CardWrapper>
+      <Photo></Photo>
+    </CardWrapper>
   );
 }
 
 export { BrandProductCard };
+
+const CardWrapper = styled.div`
+  box-sizing: border-box;
+  padding: 2rem;
+  width: 100%;
+  min-width: 50rem;
+  min-height: 8rem;
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  border-bottom: 1px solid #d9d9d9;
+  cursor: pointer;
+`;
+
+const Photo = styled.img`
+  min-width: 5rem;
+  min-height: 6.25rem;
+  aspect-ratio: 4/5;
+  object-fit: contain;
+`;

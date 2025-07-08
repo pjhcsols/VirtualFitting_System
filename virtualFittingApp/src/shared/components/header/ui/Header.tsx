@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { BAG_ICON, USER_ICON, MENU_ICON } from "@/shared/components/header/constants";
+import { ICON_BAG, ICON_USER, ICON_MENU } from "@/shared";
 function Header() {
   const router = useNavigate();
 
   return (
     <Wrapper>
       <MenuContainer>
-        <img src={MENU_ICON} alt="Menu" width={24} height={24} />
+        <img src={ICON_MENU} alt="Menu" width={24} height={24} />
       </MenuContainer>
       <LogoContainer>
         <LogoTitle onClick={() => router("/")}>
@@ -17,10 +17,10 @@ function Header() {
 
       <RouterList>
         <HeaderContent>
-          <img src={BAG_ICON} alt="Cart" width={24} height={24} />
+          <img src={ICON_BAG} alt="Cart" width={24} height={24} />
         </HeaderContent>
         <HeaderContent>
-          <img src={USER_ICON} alt="User" width={40} height={40} />
+          <img src={ICON_USER} alt="User" width={40} height={40} />
         </HeaderContent>
       </RouterList>
     </Wrapper>

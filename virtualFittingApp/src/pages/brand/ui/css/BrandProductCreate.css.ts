@@ -8,14 +8,6 @@ export const Wrapper = styled.div`
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  .title-box {
-    .title {
-      font-family: "Pretendard";
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: black;
-    }
-  }
 `;
 
 export const ContentContainer = styled.div`
