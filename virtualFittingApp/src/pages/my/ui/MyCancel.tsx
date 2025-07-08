@@ -11,11 +11,9 @@ function MyCancel() {
       </HeaderWrapper>
 
       <ContentWrapper>
-        <InnerContent>
-          <Suspense fallback={<div>불러오는 중...</div>}>
-            <CancelContentList />
-          </Suspense>
-        </InnerContent>
+        <Suspense fallback={<div>불러오는 중...</div>}>
+          <CancelContentList />
+        </Suspense>
       </ContentWrapper>
     </PageWrapper>
   );
@@ -33,21 +31,13 @@ const PageWrapper = styled.div`
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
-  z-index: 100;
 `;
 
 const ContentWrapper = styled.div`
-  margin-top: 60px;
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   flex-grow: 1;
-`;
-
-const InnerContent = styled.div`
-  width: 100%;
-  max-width: 600px;
-  padding: 10px 30px;
-  box-sizing: border-box;
 `;

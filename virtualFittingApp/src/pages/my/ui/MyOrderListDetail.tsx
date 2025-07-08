@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useParams } from "react-router-dom";
+import { BREAKPOINTS } from "@/shared";
 
 function MyOrderListDetail() {
     const {id} = useParams();
@@ -45,7 +46,12 @@ const ContentWrapper = styled.div`
 
 const InnerContent = styled.div`
   width: 100%;
-  max-width: 600px;
-  padding: 30px 30px;
+  max-width: 800px;
+  padding: 30px;
   box-sizing: border-box;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 20px 16px;
+    max-width: 100%;
+  }
 `;

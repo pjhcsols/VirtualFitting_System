@@ -4,6 +4,7 @@ import { MyHeader } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
+import { BREAKPOINTS} from "@/shared";
 import arrowImg from "./arrow.png";
 
 function MyPage() {
@@ -78,10 +79,16 @@ function MyPage() {
 export { MyPage };
 
 const PageWrapper = styled.div`
+  width: 100%;
+  height: 100vh;
+  background: #fff;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
   display: flex;
   flex-direction: column;
-  background: #fff;
-  height: 100vh;
+  align-items: center;
 `;
 
 const HeaderWrapper = styled.div`
@@ -93,22 +100,34 @@ const HeaderWrapper = styled.div`
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  align-items: center; //
-  padding: 70px 0;
+  align-items: center;
+  justify-content: center;
+  flex: 1;
   width: 100%;
+  max-width: 1000px;
+  padding: 20px;
+  box-sizing: border-box;
+  overflow: hidden;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 10px;
+    max-width: 100%;
+  }
 `;
 
 const UserInfoSection = styled.div`
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 0;
   cursor: pointer;
-
   width: 100%;
-  max-width: 550px;
   justify-content: flex-start;
   margin-top: 30px;
+  max-width: 1000px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 100%;
+  }
 `;
 
 const UserInfo = styled.div`
@@ -126,6 +145,7 @@ const Avatar = styled.img`
 const UserName = styled.span`
   font-size: 16px;
   font-weight: 500;
+  font-family: "Prata-Regular";
 `;
 
 const Divider = styled.hr`
@@ -134,7 +154,6 @@ const Divider = styled.hr`
   height: 1px;
   background-color: #e5e5e5;
   width: 100%;
-  max-width: 550px;
 `;
 
 const StatsWrapper = styled.div`
@@ -145,13 +164,19 @@ const StatsWrapper = styled.div`
   border-radius: 8px;
   margin-bottom: 24px;
   width: 100%;
-  max-width: 530px;
+  max-width: 1000px;
+  box-sizing: border-box;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 100%;
+  }
 `;
 
 const Stat = styled.div`
   flex: 1;
   text-align: center;
   font-size: 14px;
+  font-family: "Prata-Regular";
   color: #999;
   cursor: pointer;
   display: flex;
@@ -161,8 +186,9 @@ const Stat = styled.div`
 `;
 
 const ReviewCount = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   font-weight: bold;
+  font-family: "Prata-Regular";
   color: #555;
 `;
 
@@ -171,14 +197,19 @@ const MenuList = styled.div`
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 550px;
+  max-width: 1000px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 100%;
+  }
 `;
 
 const MenuItem = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 13px 5px;
-  font-size: 12px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
   border-bottom: 1px solid #eee;
   cursor: pointer;
   text-align: left;

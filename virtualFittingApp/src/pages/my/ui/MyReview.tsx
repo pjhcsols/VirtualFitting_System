@@ -4,26 +4,22 @@ import { MyHeader } from "@/shared/components/header";
 import { ReviewContentList } from "@/pages/my/ui/ReviewContentList";
 
 function MyReview() {
-    
-    return (
-        <PageWrapper>
-            <HeaderWrapper>
-                <MyHeader title="후기 작성" backPath="/myPage" />
-            </HeaderWrapper>
+  return (
+    <PageWrapper>
+      <HeaderWrapper>
+        <MyHeader title="후기 작성" backPath="/myPage" />
+      </HeaderWrapper>
 
-            <ContentWrapper>
-                <InnerContent>
-                  <Suspense fallback={<div>불러오는 중...</div>}>
-                    <ReviewContentList />
-                  </Suspense>
-                </InnerContent>
-            </ContentWrapper>
-        </PageWrapper>
-    );
+      <ContentWrapper>
+        <Suspense fallback={<div>불러오는 중...</div>}>
+          <ReviewContentList />
+        </Suspense>
+      </ContentWrapper>
+    </PageWrapper>
+  );
 }
 
 export { MyReview };
-
 
 const PageWrapper = styled.div`
   display: flex;
@@ -39,17 +35,10 @@ const HeaderWrapper = styled.div`
 `;
 
 const ContentWrapper = styled.div`
-  margin-top: 60px;
+  margin-top: 70px;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   flex-grow: 1;
-`;
-
-const InnerContent = styled.div`
-  width: 100%;
-  max-width: 600px;
-  padding: 10px 30px;
-  box-sizing: border-box;
 `;

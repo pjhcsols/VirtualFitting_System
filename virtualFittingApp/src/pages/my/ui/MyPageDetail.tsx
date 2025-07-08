@@ -1,6 +1,5 @@
   import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
-  import axios from "axios";
   import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
   import { MyHeader } from "@/shared/components/header";
   import penIcon from "./pen.png";
@@ -11,6 +10,7 @@
   import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
   import { EmailVerificationInput } from "./EmailVerificationInput";
   import { formatTime } from "@/shared/utils/time/time.util";
+  import { BREAKPOINTS } from "@/shared";
 
   function MypageDetail() {
       const profileInputRef = useRef<HTMLInputElement | null>(null);
@@ -225,31 +225,34 @@
                   <Label>신체사이즈</Label>
                   <TelForm>
                     <SizeInput placeholder="키   cm" />
-                    <SizeInput placeholder="몸무게 kg" />
+                    <SizeInput placeholder="몸무게  kg" />
                     <SizeInput placeholder="총장  cm" />
                     <SizeInput placeholder="어깨  cm" />
                   </TelForm>
               </FormField>
               <FormField>
-                  <Label1>사진</Label1>
-                  <div>
+                <Label1>사진</Label1>
+                <ImageBoxWrapper>
                   <PictureBox htmlFor="imageUpload">
-                      {photoPreviewImage ? (
-                          <PreviewImg src={photoPreviewImage} alt="미리보기" />
-                  ) : (
-                          <CameraImg src={CAMERA_ICON} alt="카메라 아이콘" />
-                  )}
+                    {photoPreviewImage ? (
+                      <PreviewImg src={photoPreviewImage} alt="미리보기" />
+                    ) : (
+                      <CameraImg src={CAMERA_ICON} alt="카메라 아이콘" />
+                    )}
                   </PictureBox>
                   <HiddenInput 
                     type="file" 
                     id="photoUpload" 
                     accept="image/*" 
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleImageFileChange(e, setPhotoPreviewImage, setPhotoImageFile)}
-                    ref={photoInputRef} />
-                  <RegisterButton type="button" onClick={handleUpPhotoButton}>변경 / 등록</RegisterButton>
-                  </div>
+                    onChange={(e) => handleImageFileChange(e, setPhotoPreviewImage, setPhotoImageFile)}
+                    ref={photoInputRef}
+                  />
+                  <RegisterButton type="button" onClick={handleUpPhotoButton}>
+                    변경 / 등록
+                  </RegisterButton>
+                </ImageBoxWrapper>
               </FormField>
-              </Form>
+            </Form>
           </ContentWrapper>
 
           <FooterWrapper>
@@ -277,29 +280,38 @@
   `;
 
   const ContentWrapper = styled.div`
-    padding: 88px 88px;
+    padding: 88px 20px;
     background: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-left: 30px;
-  `;
+    margin: 0 auto;
+    width: 100%;
+    max-width: 700px;
+    box-sizing: border-box;
 
-  const FooterWrapper = styled.div`
-      flex-shrink: 0;
-      position: sticky;
-      bottom: 0;
-      background: #fff;
-      padding: 10px 0;
-      border-top: 1px solid #F2F3F5;
-      display: flex;
-      justify-content: center;
+    @media (max-width: ${BREAKPOINTS.md}px) {
+      max-width: 100%;
+    }
+`;
 
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      
-  `;
+const FooterWrapper = styled.div`
+  flex-shrink: 0;
+  position: sticky;
+  bottom: 0;
+  background: #fff;
+  padding: 10px 0;
+  border-top: 1px solid #F2F3F5;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 700px;
+  margin: 0 auto;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 100%;
+  }
+`;
 
   const AvatarIcon = styled.img`
     width: 100px;
@@ -323,57 +335,74 @@
   `;
 
   const Divider = styled.div`
-    width: 590px;
+    width: 100%;
+    max-width: 700px;
     height: 1px;
     background: #F2F3F5;
     margin: 20px 0;
-    margin-right: 4px;
-  `;
+`;
 
   const Form = styled.div`
-    width: 500px;
-    margin-left: 15px;
-  `;
-
-  const FormField = styled.div`
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
     display: flex;
-    align-items: flex-start;
-    margin-bottom: 15px;
-  `;
+    flex-direction: column;
+    gap: 15px;
+`;
 
-  const Label = styled.label`
-    flex: 0 0 120px;
-    font-size: 14px;
-    color: #202429;
-    margin-bottom: 15px;
-    margin-top: 9px;
-  `;
+const FormField = styled.div`
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  width: 100%;
+  padding: 5px 20px;
+  box-sizing: border-box;
+  gap: 10px;
+`;
 
-  const Label1 = styled.label`
-    flex: 0 0 120px;
-    font-size: 14px;
-    color: #202429;
-    margin-bottom: 35px;
-  `;
+const Label = styled.label`
+  width: 120px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  color: #202429;
+  display: flex;
+  align-items: center;
+`;
+
+const Label1 = styled.label`
+  width: 120px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  color: #202429;
+  display: flex;
+  align-items: flex-start;  
+  justify-content: flex-start;
+  align-self: start;
+`;
 
   const Input = styled.input`
-      width: 300px;
-      padding: 10px;
-      border: 1px solid rgb(228, 230, 233);
-      background: rgb(255, 255, 255);
-      border-radius: 6px;
-      font-size: 14px;
+    flex: 1;
+    min-width: 100px;
+    padding: 10px;
+    border: 1px solid rgb(228, 230, 233);
+    background: rgb(255, 255, 255);
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: "Prata-Regular";
 
-      &::placeholder {
-          color: rgb(150, 150, 150);  /* placeholder 텍스트 색상 */
-          font-weight: normal;
-      }
+    &::placeholder {
+        color: rgb(150, 150, 150); 
+    }
   `;
 
   const TelForm = styled.div`
     display: flex;
     gap: 10px;
-  `;
+    flex: 1;
+    justify-content: space-between;
+    flex-wrap: wrap;
+`;
 
   const AvatarContainer = styled.div`
     position: relative;
@@ -391,6 +420,7 @@
     border: none;
     border-radius: 6px;
     font-size: 14px;
+    font-family: "Prata-Regular";
     cursor: pointer;
 
     &:hover {
@@ -401,14 +431,15 @@
   const GenderGroup = styled.div`
     display: flex;
     gap: 8px;
+    flex: 1;
   `;
 
-  const GenderButton = styled.button<{ selected: boolean}>`
+ const GenderButton = styled.button<{ selected: boolean }>`
+    flex: 1;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    width: 156px;
     height: 40px;
     border: 1px solid #e4e6e9;
     border-radius: 6px;
@@ -416,9 +447,9 @@
     color: ${(props) => (props.selected ? "#000" : "#999")};
     background: #fff;
     font-size: 14px;
+    font-family: "Prata-Regular";
     cursor: pointer;
-  `;
-
+`;
   const GenderImg = styled.img<{ selected: boolean}>`
     width: 16px;
     height: 16px;
@@ -426,44 +457,63 @@
       props.selected ? "#e4e6e9" : "#000"};
   `;
 
-  const SizeInput = styled(Input)`
-    flex: none;
-    width: 50px;
+ const SizeInput = styled(Input)`
+    flex: 1;
+    min-width: 50px;
+    max-width: 120px;
     text-align: center;
-    font-size: 12px;
-  `;
+    font-family: "Prata-Regular";
+`;
 
-  const PhoneInput = styled.input`
-    width: 210px;
+ const PhoneInput = styled.input`
+    flex: 1;
     padding: 10px;
     border: 1px solid #e4e6e9;
     border-radius: 6px;
     font-size: 14px;
-  `;
+    font-family: "Prata-Regular";
+    min-width: 100px;
+`;
 
-  const PictureBox = styled.label`
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 120px;
-    height: 180px;
-    border: 1px solid #e4e6e9;
-    cursor: pointer;
-  `;
+const SharedBox = styled.div`
+  width: 120px;
+  box-sizing: border-box;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 100%;
+  }
+`;
+
+const PictureBox = styled(SharedBox).attrs({ as: 'label' })`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 180px;
+  border: 1px solid #e4e6e9;
+  cursor: pointer;
+`;
 
   const CameraImg = styled.img`
     width: 40px;
     height: 40px;
   `;
 
-  const RegisterButton = styled.button`
-    margin-top: 10px;
-    font-size: 12px;
-    border: 1px solid #e4e6e9;
-    border-radius: 6px;
-    background: #fff;
-    padding: 5px 10px;
-  `;
+const ImageBoxWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; 
+  gap: 10px;
+`;
+
+const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
+  margin-top: 10px;
+  font-size: 12px;
+  font-family: "Prata-Regular";
+  border: 1px solid #e4e6e9;
+  border-radius: 6px;
+  background: #fff;
+  padding: 5px 10px;
+`;
 
   const StoreButton = styled.button`
     width: 100%;
@@ -474,6 +524,7 @@
     border: none;
     border-radius: 6px;
     font-size: 16px;
+    font-family: "Prata-Regular";
 
     &:hover {
       background-color: #000000; 
@@ -487,15 +538,16 @@
   `;
 
   const EmailFieldWrapper = styled.div`
+    flex: 1;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-  `;
+    width: 100%;
+`;
 
   const VerifiedMessage = styled.p`
     color: #007bff;
     font-size: 12px;
+    font-family: "Prata-Regular";
     margin-top: 4px;
     margin-left: 4px;
     margin-bottom: 1px;
@@ -504,5 +556,6 @@
   const TimerText = styled.p`
     color: #007bff;
     font-size: 12px;
+    font-family: "Prata-Regular";
     margin-right: 160px;
 `;

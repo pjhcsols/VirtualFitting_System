@@ -2,6 +2,7 @@ import React, { Suspense } from "react";
 import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { LikeContentList } from "@/pages/my/ui/LikeContentList";
+import { BREAKPOINTS } from "@/shared";
 
 function MyLike() {
   return (
@@ -42,11 +43,17 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
+  flex-grow: 1;
 `;
 
 const InnerContent = styled.div`
   width: 100%;
-  max-width: 600px;
-  padding: 30px 30px;
+  max-width: 800px;
+  padding: 30px;
   box-sizing: border-box;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 20px 16px;
+    max-width: 100%;
+  }
 `;

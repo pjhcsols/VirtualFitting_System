@@ -1,5 +1,5 @@
 import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
-import { UserFormData } from "../types/user";
+import type { UserFormData } from "../types/user";
 
 export const submitUserInfo = async (
   formData: UserFormData,
@@ -31,7 +31,7 @@ export const submitUserInfo = async (
     data.append("photo", photoFile);
   }
 
-  const response = await API_BASILIUM.post("/b1/api/user/update", data, {
+  const response = await API_BASILIUM.post("/normalUser/userInfo", data, {
     headers: {
       "Content-Type": "multipart/form-data",
     },

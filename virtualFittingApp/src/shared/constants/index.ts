@@ -234,3 +234,11 @@ export const md = 768;
 
 // sm
 export const sm = 640;
+
+export const BREAKPOINTS = {
+  xlDouble: 1536,
+  xl: 1280,
+  lg: 1024,
+  md: 768,
+  sm: 640,
+};
