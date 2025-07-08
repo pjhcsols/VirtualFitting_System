@@ -1,5 +1,7 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import {
+  BrandAnalytics,
+  BrandCoupon,
   BrandDashboard,
   BrandPage,
   BrandPaymentPage,
@@ -23,7 +25,9 @@ function BrandRouter() {
             <Route path="create" element={<BrandProductCreate />} />
           </Route>
           <Route path="payment" element={<BrandPaymentPage />} />
+          <Route path="coupon" element={<BrandCoupon />} />
           <Route path="my" element={<BrandProfile />} />
+          <Route path="analytics" element={<BrandAnalytics />} />
         </Route>
       </Route>
     </Routes>

@@ -6,3 +6,5 @@ export * from "@/pages/brand/ui/BrandLogin";
 
 export { BrandProductListPage } from "@/pages/brand/ui/BrandProductListPage";
 export { BrandPaymentPage } from "@/pages/brand/ui/BrandPaymentPage";
+export { BrandAnalytics } from "@/pages/brand/ui/BrandAnalytics";
+export { BrandCoupon } from "@/pages/brand/ui/BrandCoupon";

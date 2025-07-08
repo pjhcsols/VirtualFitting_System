@@ -1,7 +1,15 @@
 export * from "@/shared/types/auth/authContext.d";
 
 export * from "@/shared/types/product/option.d";
-export * from "@/shared/types/product/product.d";
+export type {
+  ProductServerResponseType,
+  ClientProductDto,
+  Color,
+  Size,
+  SizeTable,
+  Material,
+  BrandProductSimpleType,
+} from "@/shared/types/product/product.d";
 export * from "@/shared/types/product/category.d";
 
 export * from "@/shared/types/user/grade.d";

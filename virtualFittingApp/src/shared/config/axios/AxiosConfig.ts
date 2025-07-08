@@ -12,7 +12,7 @@ const BASE_URL = import.meta.env.VITE_APPLICATION_BASILIUM_SERVER as string;
 
 export const API_BASILIUM = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true,
+  withCredentials: false,
 });
 
 type headers = {

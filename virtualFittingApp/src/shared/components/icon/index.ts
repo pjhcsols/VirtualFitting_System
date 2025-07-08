@@ -8,3 +8,4 @@ export { CouponIcon } from "@/shared/components/icon/ui/CouponIcon";
 export { LogoutIcon } from "@/shared/components/icon/ui/LogoutIcon";
 export { MoneyIcon } from "@/shared/components/icon/ui/MoneyIcon";
 export { ClothesIcon } from "@/shared/components/icon/ui/ClothesIcon";
+export { RightArrowIcon } from "@/shared/components/icon/ui/RightArrowIcon";

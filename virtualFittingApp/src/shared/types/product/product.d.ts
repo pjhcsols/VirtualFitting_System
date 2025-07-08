@@ -1,4 +1,12 @@
-export type ServerProductDto = {};
+export type ProductServerResponseType = {
+  productId: number;
+  productName: string;
+  productPrice: number;
+  totalQuantity: number;
+  categoryName: string[];
+  productColors: string[];
+  productPhotoUrls: string[];
+};
 
 export type ClientProductDto = {
   productName: string;
@@ -51,4 +59,11 @@ type productColorOptionType = {
   productColor: Color;
   productPhotoUrls: string[];
   productSubPhotoUrls: string[];
+};
+
+export type BrandProductSimpleType = {
+  productId: number;
+  photoUrl?: string;
+  productTitle: string;
+  productPrice: string;
 };

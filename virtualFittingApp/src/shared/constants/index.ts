@@ -22,9 +22,9 @@ import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 import Bag from "/svg/bag.svg";
-import User from '/svg/user.svg';
-import Menu from '/svg/menu.svg';
-
+import User from "/svg/user.svg";
+import Menu from "/svg/menu.svg";
+import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
 
 import type {
   CategoryType,
@@ -33,7 +33,6 @@ import type {
   Size,
   SizeTable,
 } from "@/shared/types";
-
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
@@ -61,17 +60,11 @@ export const ICON_BAG = Bag;
 export const ICON_USER = User;
 export const ICON_MENU = Menu;
 
-
-export const ICON_BAG = Bag;
-export const ICON_USER = User;
-export const ICON_MENU = Menu;
-
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
 
 export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
-
-
+export const ICON_BASILIUM_ASSET_2 = Basilium3DLogoIcon_2;
 
 export const AnimationProps = {
   initial: {
@@ -102,7 +95,6 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
-
 
 export const CategoryIndex = [
   {
@@ -231,7 +223,6 @@ export const COLOR_MAP: Record<string, string> = {
   GOLD: "#FFD700",
 };
 
-
 export const materialList: Material[] = [
   "COTTON",
   "POLYESTER",
@@ -260,7 +251,6 @@ export const CheckOptions: string[] = [
   "상품의 카테고리가 올바르게 표기되어 있습니다.",
   "상품의 옵션사진이 제대로 업로드 되어있습니다.",
 ];
-
 
 /*
  * responsible Design GuideLine
