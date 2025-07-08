@@ -1,28 +1,38 @@
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-import { products } from "../constants/dummy";
-
 import { BREAKPOINTS } from "@/shared";
 import { ProductCard } from "@/shared/components/product-card";
-import { Banner, Carousel } from "@/widgets";
+import { Carousel, NameCard } from "@/widgets";
+
+import { fetchOnSaleProducts } from "../api/products.action";
+import type { Product } from "@/shared";
 
 function StorePage() {
   const navigate = useNavigate();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const data = await fetchOnSaleProducts({ page: 0, size: 20, sort: "productId,desc" });
+      setProducts(data);
+      console.log(data);
+    };
+    loadProducts();
+  }, []);
+
   return (
     <Wrapper>
       <CarouselContainer>
         <Carousel />
       </CarouselContainer>
-      {/* <BannerContainer>
-        <Banner />
-      </BannerContainer> */}
       <ProductGrid>
         {products.map((product) => (
           <ProductCard
-            key={product.id}
+            key={product.productId}
             product={product}
-            onClick={() => navigate(`/store/${product.id}`)}
+            onClick={() => navigate(`/store/${product.productId}`)}
           />
         ))}
       </ProductGrid>
@@ -34,11 +44,6 @@ const Wrapper = styled.div`
   width: 100%;
   min-height: 100vh;
 `;
-
-// const BannerContainer = styled.div`
-//   width: 100%;
-//   height: 100vh;
-// `;
 
 const CarouselContainer = styled.div`
   width: 100%;
