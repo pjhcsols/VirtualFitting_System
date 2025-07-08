@@ -13,58 +13,50 @@ type ProductCardProps = {
 function ProductCard({ product, onClick }: ProductCardProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const maxVisibleColors = 3;
-  const visibleColors = product.colors.slice(0, maxVisibleColors);
-  const remainingColors = product.colors.length - maxVisibleColors;
+  const visibleColors = product.productColors?.slice(0, maxVisibleColors) || [];
+  const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
 
   return (
-    <>
-      <Card onClick={onClick}>
-        <ImageBox>
-          <img src={product.image} alt={product.name} />
-          <LikeButtonWrapper >
-            <LikeButton />
-          </LikeButtonWrapper>
-          <ColorSwatches>
-            {visibleColors.map((color: string, index: number) => (
-              <ColorCircle key={index} $color={COLOR_MAP[color] ?? "transparent"}  />
-            ))}
-            {remainingColors > 0 && (
-              <ExtraIcon
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsPopupOpen(true);
-                }}
-              >
-                +more
-              </ExtraIcon>
-            )}
-          </ColorSwatches>
-          {isPopupOpen && (
-          <ColorPopup colors={product.colors} onClose={() => setIsPopupOpen(false)}/>
+    <Card onClick={onClick}>
+      <ImageBox>
+        <img src={product.productPhotoUrls[0]} alt={product.productName} />
+        <LikeButtonWrapper>
+          <LikeButton />
+        </LikeButtonWrapper>
+        <ColorSwatches>
+          {visibleColors.map((color: string, index: number) => (
+            <ColorCircle key={index} $color={COLOR_MAP[color] ?? "transparent"} />
+          ))}
+          {remainingColors > 0 && (
+            <ExtraIcon
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsPopupOpen(true);
+              }}
+            >
+              +more
+            </ExtraIcon>
           )}
-        </ImageBox>
-          <InfoBox>
-            <Brand>{product.brand}</Brand>
-            <Name>{product.name}</Name>
-            <PriceBox>
-              {product.discountRate && (
-                <DiscountRate>{product.discountRate}%</DiscountRate>
-              )}
-              <PriceRow>
-                {product.discountRate ? (
-                  <>
-                    <OriginalPrice>￦{product.price.toLocaleString()}</OriginalPrice>
-                    <DiscountedPrice>￦{product.discountedPrice.toLocaleString()}</DiscountedPrice>
-                  </>
-                ) : (
-                  <Price>￦{product.price.toLocaleString()}</Price>
-                )}
-              </PriceRow>
-            </PriceBox>
-          </InfoBox>
-        </Card>
-      </>
-    );
+        </ColorSwatches>
+        {isPopupOpen && (
+          <ColorPopup colors={product.productColors} onClose={() => setIsPopupOpen(false)} />
+        )}
+      </ImageBox>
+      <InfoBox>
+        <Brand>{product.categoryName}</Brand> {/* 브랜드가 따로 없으면 카테고리로 대체 가능 */}
+        <Name>{product.productName}</Name>
+        <PriceBox>
+          {/* 할인율 없으면 안 보여주기, 할인율 계산은 API에서 하거나 여기서 */}
+          {/* 예시로 10% 할인율 적용 */}
+          <DiscountRate>10%</DiscountRate>
+          <PriceRow>
+            <OriginalPrice>{product.productPrice.toLocaleString()}원</OriginalPrice>
+            <DiscountedPrice>{Math.floor(product.productPrice * 0.9).toLocaleString()}원</DiscountedPrice>
+          </PriceRow>
+        </PriceBox>
+      </InfoBox>
+    </Card>
+  );
   }
 
 const Card = styled.div`

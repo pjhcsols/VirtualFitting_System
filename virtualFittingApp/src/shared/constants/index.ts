@@ -61,17 +61,12 @@ export const ICON_BAG = Bag;
 export const ICON_USER = User;
 export const ICON_MENU = Menu;
 
-
-export const ICON_BAG = Bag;
-export const ICON_USER = User;
-export const ICON_MENU = Menu;
-
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
 
 export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
 
-
+export const API_BASE_URL = "http://211.211.22.130:8080";
 
 export const AnimationProps = {
   initial: {

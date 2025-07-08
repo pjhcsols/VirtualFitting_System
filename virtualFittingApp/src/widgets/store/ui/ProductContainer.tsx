@@ -59,7 +59,7 @@ function ProductContainer({ product }: { product: any }) {
               </OriginalPriceBox>
             </PriceGroup>
           ) : (
-            <Price>￦{product.price.toLocaleString()}</Price>
+            <Price>{product.price.toLocaleString()}</Price>
           )}
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
