@@ -1,6 +1,7 @@
 package basilium.basiliumserver.global.auth;
 
 import basilium.basiliumserver.global.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -85,25 +86,13 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         //log.info(token);
-
         // UserName Token에서 꺼내기
-        String userName = jwtUtil.getUserId(token);
-        //String userType = JwtUtil.getUserType(token, secretKey);
-        log.info("userName:{}", userName);
         //log.info("userType:{}", userType);
 
-        // "host" 유저에만 권한 부여
         /*
-        // 실제 역할 추출
-        List<SimpleGrantedAuthority> authorities = jwtUtil.getUserRoles(token);
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userName, null, authorities);
-
-        public List<SimpleGrantedAuthority> getUserRoles(String token) {
-        List<String> roles = extractRolesFromToken(token); // JWT에서 역할 추출
-        return roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-    }
-         */
+        // 기존 로직
+        String userName = jwtUtil.getUserId(token);
+        log.info("userName:{}", userName);
 
         UsernamePasswordAuthenticationToken authenticationToken =
                 new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority("USER")));
@@ -111,7 +100,27 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
         filterChain.doFilter(request, response);
-    }
 
+         */
+
+        Claims claims = jwtUtil.getClaims(token);
+        String userId = claims.getSubject();
+        String role   = claims.get("role", String.class);
+        if (role == null) {
+            response.sendError(HttpStatus.FORBIDDEN.value(), "권한 정보가 없습니다.");
+            return;
+        }
+
+        // ROLE_ 접두사를 붙여 권한으로 등록
+        List<SimpleGrantedAuthority> auths =
+                List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
+
+        UsernamePasswordAuthenticationToken auth =
+                new UsernamePasswordAuthenticationToken(userId, null, auths);
+        auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        filterChain.doFilter(request, response);
+    }
 
 }

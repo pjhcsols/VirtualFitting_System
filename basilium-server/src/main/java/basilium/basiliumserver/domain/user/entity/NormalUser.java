@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -13,7 +14,8 @@ import java.util.Date;
 @NoArgsConstructor
 public class NormalUser extends User {
     private String name;
-    private Date birthDate;
+    // private Date birthDate;
+    private LocalDateTime birthDate;
     private String address;
 
 

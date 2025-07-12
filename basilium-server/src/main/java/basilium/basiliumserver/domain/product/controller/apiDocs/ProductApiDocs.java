@@ -20,9 +20,9 @@ public interface ProductApiDocs {
     @PostMapping
     ResponseEntity<?> createProduct(@RequestBody Product product);
 
-    @Operation(summary = "상품 수정", description = "상품 ID와 업데이트 정보를 기반으로 부분 수정합니다.")
+    @Operation(summary = "Brand: 상품 수정", description = "상품 ID와 업데이트 정보를 기반으로 부분 수정합니다.")
     @PatchMapping("/{id}")
-    ResponseEntity<?> updateProduct(@PathVariable("id") Long productId, @RequestBody ProductUpdateRequest updateRequest);
+    ResponseEntity<?> updateProduct(@PathVariable("id") Long productId, @AuthUser String userId, @RequestBody ProductUpdateRequest updateRequest);
 
     @Operation(summary = "상품 삭제", description = "상품 ID를 기반으로 상품을 삭제합니다.")
     @DeleteMapping("/{id}")

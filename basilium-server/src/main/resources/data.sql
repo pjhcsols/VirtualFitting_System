@@ -28,10 +28,10 @@ INSERT INTO brand_user (user_number, id, password, email_address, phone_number, 
 VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png','프로필지워짐2', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
 commit;
 INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, user_profile_image_url, name, birth_date, address)
-VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj','프로필지워짐3', '우정잉', null, '서울특별시 강남구');
+VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj','프로필지워짐3', '우정잉', '2000-12-20T03:23:18', '서울특별시 강남구');
 commit;
 INSERT INTO normal_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url, name, birth_date, address)
-VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', '2000-12-20', '서울특별시 강남구');
+VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', null, '서울특별시 강남구');
 commit;
 
 -- id 유저별 겹치는거 해결하기
@@ -490,7 +490,42 @@ COMMIT;
 
 
 
+-- ----------------------------------------------------------
 
+-- Review 테이블에 데이터 삽입
+INSERT INTO review
+(review_id, product_id, normal_user_number, purchase_size, purchase_color, rating, title, comment, created_at, updated_at)
+VALUES
+    (1, 1, 1, 'M', 'RED', 5, '정말 좋아요!', '제품 색상도 마음에 들고 퀄리티가 최고예요.', '2025-06-08T03:23:18', null);
+
+-- review_images 테이블에 이미지 URL 2건 삽입
+INSERT INTO review_images
+(review_id, image_url)
+VALUES
+    (1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png'),
+    (1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql1.png');
+
+-- 예시 2: review_id = 2 (이미지 3장)
+INSERT INTO review
+(review_id, product_id, normal_user_number, purchase_size, purchase_color, rating, title, comment, created_at, updated_at)
+VALUES
+    (2, 1, 2, 'S', 'GREEN', 3, '평범해요', '생각보다 얇아서 봄에만 입을 것 같아요.', '2025-06-07T14:12:05', NULL);
+
+INSERT INTO review_images (review_id, image_url) VALUES
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png');
+
+-- 예시 3: review_id = 3 (이미지 1장)
+INSERT INTO review
+(review_id, product_id, normal_user_number, purchase_size, purchase_color, rating, title, comment, created_at, updated_at)
+VALUES
+    (3, 3, 2, 'XL', 'BLACK', 4, '디자인 굿', '블랙 색상이 정말 멋집니다.', '2025-06-06T09:45:30', NULL);
+
+INSERT INTO review_images (review_id, image_url) VALUES
+    (3, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql.png');
 
 
 

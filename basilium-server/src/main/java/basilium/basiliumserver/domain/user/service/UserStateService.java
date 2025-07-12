@@ -1,9 +1,6 @@
 package basilium.basiliumserver.domain.user.service;
 
-import basilium.basiliumserver.domain.user.entity.BrandUser;
-import basilium.basiliumserver.domain.user.entity.NormalUser;
-import basilium.basiliumserver.domain.user.entity.SuperUser;
-import basilium.basiliumserver.domain.user.entity.User;
+import basilium.basiliumserver.domain.user.entity.*;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
 import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
@@ -70,11 +67,11 @@ public class UserStateService {
         Optional<SuperUser> superUser = superUserRepository.findById(userId);
 
         if (normalUser.isPresent() && normalUser.get().getPassword().equals(userPassword)) {
-            return generateTokens(userId, "normal");
+            return generateTokens(userId, Provider.NORMAL.name());
         } else if (brandUser.isPresent() && brandUser.get().getPassword().equals(userPassword)) {
-            return generateTokens(userId, "brand");
+            return generateTokens(userId, Provider.BRAND.name());
         } else if (superUser.isPresent() && superUser.get().getPassword().equals(userPassword)) {
-            return generateTokens(userId, "super");
+            return generateTokens(userId, Provider.SUPER.name());
         }
 
         return new LoginResponse();  // Return empty LoginResponse for failed login

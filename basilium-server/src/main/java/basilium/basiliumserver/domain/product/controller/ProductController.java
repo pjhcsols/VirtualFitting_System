@@ -7,9 +7,13 @@ import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.entity.ProductStatus;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.product.service.ProductService;
+import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
+import basilium.basiliumserver.global.apiResponse.ErrorCode;
 import basilium.basiliumserver.global.auth.support.AuthUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -32,9 +36,20 @@ public class ProductController implements ProductApiDocs {
     }
 
     // 상품 수정 (PATCH /api/products/{id})
+    // 브랜드 유저 자신 상품만 수정가능하게 수정 -> 검증 로직이 현재 없다.
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
+                                                @AuthUser String userId,
                                                 @RequestBody ProductUpdateRequest updateRequest) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        boolean isBrand = auth.getAuthorities().stream()
+                .anyMatch(a -> a.getAuthority().equals("ROLE_BRAND"));
+        if (!isBrand) {
+            throw new BasiliumCustomException(
+                    ErrorCode.ACCESS_DENIED,
+                    "브랜드유저만 수정할 수 있습니다."
+            );
+        }
         productService.updateProduct(productId, updateRequest);
         return ResponseEntity.ok("상품 정보 수정 성공");
     }
