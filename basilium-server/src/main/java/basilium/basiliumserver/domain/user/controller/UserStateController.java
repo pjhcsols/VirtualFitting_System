@@ -2,6 +2,8 @@ package basilium.basiliumserver.domain.user.controller;
 
 import basilium.basiliumserver.domain.user.dto.LoginRequest;
 import basilium.basiliumserver.domain.user.dto.LoginResponse;
+import basilium.basiliumserver.global.apiResponse.ApiResponse;
+import basilium.basiliumserver.global.auth.support.AuthUser;
 import basilium.basiliumserver.properties.ImageProperties;
 import basilium.basiliumserver.domain.user.dto.RefreshTokenResponse;
 import basilium.basiliumserver.domain.user.service.UserStateService;
@@ -24,7 +26,7 @@ import java.io.IOException;
 //user 통합 로그인
 @Slf4j
 @RestController
-@RequestMapping("/users")
+@RequestMapping("/b1/users")
 @PreAuthorize("isAuthenticated()")
 public class UserStateController {
 
@@ -55,6 +57,13 @@ public class UserStateController {
             //return new ResponseEntity<>("로그아웃 실패: " + e.getMessage(), HttpStatus.BAD_REQUEST);
             return new ResponseEntity<>("로그아웃 실패", HttpStatus.BAD_REQUEST);
         }
+    }
+
+    /** 회원 탈퇴 */
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<ApiResponse<Void>> withdraw(@AuthUser String userId) {
+        userStateService.deleteUser(userId);
+        return ResponseEntity.ok(ApiResponse.success(null));
     }
 
     @PostMapping("/refresh-token")

@@ -36,7 +36,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     // 상품 수정 (PATCH /api/products/{id})
-    // 브랜드 유저 자신 상품만 수정가능하게 수정 -> 검증 로직이 현재 없다.
+    // 브랜드 유저 자신 상품만 수정가능하게 수정 -> 검증 로직이 현재 없다. // userId로 product 검증하기 추가
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
                                                 @AuthUser String userId,

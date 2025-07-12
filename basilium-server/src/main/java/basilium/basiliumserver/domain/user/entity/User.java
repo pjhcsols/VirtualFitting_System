@@ -1,74 +1,61 @@
+// src/main/java/basilium/basiliumserver/domain/user/entity/User.java
 package basilium.basiliumserver.domain.user.entity;
 
-
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Getter
-@Setter
+@Getter @Setter
 @MappedSuperclass
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name="userNumber")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class User {
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "userNumber")
     private Long userNumber;
+
+    @Column(unique = true, nullable = false)
     private String id;
+
+    @Column(nullable = false)
     private String password;
+
+    @Column(nullable = false)
     private String emailAddress;
+
+    @Column(nullable = false)
     private String phoneNumber;
+
+    /** 0=BRONZE,1=SILVER… */
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false, columnDefinition = "TINYINT")
     private Grade userGrade;
+
+    /** 0=NORMAL,1=BRAND,2=SUPER… */
+    @Enumerated(EnumType.ORDINAL)
+    @Column(nullable = false, columnDefinition = "TINYINT")
     private Provider loginType;
-    String userImageUrl; //local 이미지 자체 저장
+
+    String userImageUrl;
+
     @Column(length = 1000)
-    String userProfileImageUrl; //이미지 byte array 인코딩된 이미지의 경로나 식별자
+    String userProfileImageUrl;
 
-    public User() {
-
-    }
-/*
-    public String getId() {
-        return id;
-    }
-
-
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getEmailAddress() {
-        return emailAddress;
-    }
-
-    public void setEmailAddress(String emailAddress) {
+    /**
+     * 신규 가입 전용 생성자: Grade·Provider 기본값 주입
+     */
+    protected User(String id,
+                   String password,
+                   String emailAddress,
+                   String phoneNumber,
+                   Grade defaultGrade,
+                   Provider defaultProvider) {
+        this.id           = id;
+        this.password     = password;
         this.emailAddress = emailAddress;
+        this.phoneNumber  = phoneNumber;
+        this.userGrade    = defaultGrade;
+        this.loginType    = defaultProvider;
     }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public Grade getUserGrade() {
-        return userGrade;
-    }
-
-    public void setUserGrade(Grade userGrade) {
-        this.userGrade = userGrade;
-    }
-
- */
 }

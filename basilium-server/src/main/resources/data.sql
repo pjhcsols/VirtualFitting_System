@@ -21,23 +21,69 @@ INSERT INTO basilium.category (category_id, category_name) VALUES (19, '액세�
 commit;
 
 
-INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url, firm_name, firm_address, business_registration, firm_web_url)
-VALUES (1,'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_1713958965868_mysql.png','프로필지워짐1', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
-commit;
-INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url,firm_name, firm_address, business_registration, firm_web_url)
-VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 0, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png','프로필지워짐2', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
-commit;
-INSERT INTO basilium.normal_user (user_number, id, password, email_address, phone_number, user_grade, user_image_url, user_profile_image_url, name, birth_date, address)
-VALUES (1, 'test', 'test', 'user01@example.com', '010-1234-5678', 0, 'https://yt3.googleusercontent.com/2ATPERKZIno-VMcNnzO_-SYM8fZqgkhFQ7LtUPlUTcFpUkOFdrcP1KFX4NNm8r4gQIqkPKRe=s176-c-k-c0x00ffffff-no-rj','프로필지워짐3', '우정잉', '2000-12-20T03:23:18', '서울특별시 강남구');
-commit;
-INSERT INTO normal_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url, name, birth_date, address)
-VALUES (2, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==', '우정잉', null, '서울특별시 강남구');
-commit;
+-- NormalUser: 필수 정보만 포함 (URL은 정확히 입력)
+INSERT INTO normal_user (
+    user_number, id, password, email_address, phone_number,
+    user_grade, login_type,
+    user_image_url, user_profile_image_url,
+    name, nickname, gender, birth_date, address
+) VALUES (
+             3, 'normal_mandatory', '1q2w3e4r!R', 'mandatory@example.com', '010-5555-6666',
+             0, 0,
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png',
+             'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==',
+             '홍길순', 'hongsun', 'FEMALE', '1992-02-02T10:00:00', '서울특별시 서초구'
+         );
+COMMIT;
 
--- id 유저별 겹치는거 해결하기
-INSERT INTO super_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url)
-VALUES (1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678', 0, 0,'/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png','L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1');
-commit;
+-- NormalUser: 모든 옵션 포함 (URL은 정확히 입력)
+INSERT INTO normal_user (
+    user_number, id, password, email_address, phone_number,
+    user_grade, login_type,
+    user_image_url, user_profile_image_url,
+    name, nickname, gender, birth_date, address,
+    total_length, chest, shoulder, arm,
+    pants_total_length, waist_width, hip_width, thigh_width, rise, hem_width,
+    height, weight
+) VALUES (
+             4, 'normal_full', '1q2w3e4r!R', 'full@example.com', '010-7777-8888',
+             0, 0,
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png',
+             'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==',
+             '김철수', 'chulsu', 'MALE', '1988-08-08T08:00:00', '서울특별시 마포구',
+             70, 90, 45, 60,
+             100, 28, 95, 55, 25, 20,
+             175, 68
+         );
+COMMIT;
+
+-- BrandUser (기본 Grade.BRAND=5, Provider.BRAND=1)
+INSERT INTO brand_user (
+    user_number, id, password, email_address, phone_number,
+    user_grade, login_type,
+    user_image_url, user_profile_image_url,
+    firm_name, firm_address, business_registration, firm_web_url
+) VALUES (
+             1, 'brand01', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678',
+             5, 1,
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_1713958965868_mysql.png',
+             '프로필지워짐1',
+             '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니'
+         );
+COMMIT;
+
+-- SuperUser (기본 Grade.ADMIN=6, Provider.SUPER=2)
+INSERT INTO super_user (
+    user_number, id, password, email_address, phone_number,
+    user_grade, login_type,
+    user_image_url, user_profile_image_url
+) VALUES (
+             1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678',
+             6, 2,
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png',
+             'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1'
+         );
+COMMIT;
 
 -- 포인트 테이블에 데이터 추가
 INSERT INTO points (id, user_number, amount)

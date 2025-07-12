@@ -4,6 +4,8 @@ import basilium.basiliumserver.domain.user.entity.*;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
 import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
+import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
+import basilium.basiliumserver.global.apiResponse.ErrorCode;
 import basilium.basiliumserver.properties.ImageProperties;
 import basilium.basiliumserver.domain.user.dto.LoginResponse;
 import basilium.basiliumserver.domain.user.dto.RefreshTokenResponse;
@@ -79,6 +81,7 @@ public class UserStateService {
 
 
     // 사용자 조회 메서드
+    /*
     private Optional<User> findUserById(String userId) {
         Optional<User> user = normalUserRepository.findById(userId)
                 .map(u -> (User) u);
@@ -90,6 +93,61 @@ public class UserStateService {
 
         return superUserRepository.findById(userId)
                 .map(u -> (User) u);
+    }
+
+     */
+
+    /**
+     * User(ID)로 Normal/Brand/Super 중 해당 엔티티 반환
+     */
+    private Optional<User> findUserById(String userId) {
+        return normalUserRepository.findById(userId).map(u -> (User) u)
+                .or(() -> brandUserRepository.findById(userId).map(u -> (User) u))
+                .or(() -> superUserRepository.findById(userId).map(u -> (User) u));
+    }
+
+    /**
+     * 회원 탈퇴: 이미지 파일 삭제 후 User 엔티티 제거
+     */
+    public void deleteUser(String userId) {
+        User user = findUserById(userId)
+                .orElseThrow(() -> new BasiliumCustomException(
+                        ErrorCode.MEMBER_NOT_FOUND,
+                        "유저가 없습니다: " + userId));
+
+        // 1) 일반 이미지 삭제
+        deleteFile(user.getUserImageUrl());
+
+        // 2) 프로필 이미지(Base64 인코딩) 삭제
+        String encodedProfile = user.getUserProfileImageUrl();
+        if (encodedProfile != null && !encodedProfile.isBlank()) {
+            String decodedPath = new String(Base64.getUrlDecoder().decode(encodedProfile));
+            deleteFile(decodedPath);
+        }
+
+        // 3) DB에서 User 제거
+        if (user instanceof NormalUser) {
+            normalUserRepository.delete((NormalUser) user);
+        } else if (user instanceof BrandUser) {
+            brandUserRepository.delete((BrandUser) user);
+        } else if (user instanceof SuperUser) {
+            superUserRepository.delete((SuperUser) user);
+        }
+
+        log.info("회원({}) 탈퇴 및 이미지 파일 삭제 완료", userId);
+    }
+
+    /** (재)사용: 파일이 존재하면 삭제, 실패해도 예외는 던지지 않음 */
+    private void deleteFile(String path) {
+        if (path == null || path.isBlank()) return;
+        try {
+            File f = new File(path);
+            if (f.exists() && !f.delete()) {
+                log.warn("파일 삭제 실패: {}", path);
+            }
+        } catch (Exception e) {
+            log.error("파일 삭제 중 예외 발생: {}", path, e);
+        }
     }
 
     // 사용자 타입을 확인하는 메서드

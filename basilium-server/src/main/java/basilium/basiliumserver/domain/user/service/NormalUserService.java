@@ -1,131 +1,114 @@
+// src/main/java/basilium/basiliumserver/domain/user/service/NormalUserService.java
 package basilium.basiliumserver.domain.user.service;
 
+import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
 import basilium.basiliumserver.domain.like.entity.Like;
+import basilium.basiliumserver.domain.like.repository.JpaLikeRepo;
+import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
+import basilium.basiliumserver.domain.user.dto.NormalUserSignupDTO;
+import basilium.basiliumserver.domain.user.dto.UserModifiedInfo;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
-import basilium.basiliumserver.domain.product.entity.Product;
-import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
-import basilium.basiliumserver.domain.like.repository.JpaLikeRepo;
+import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
+import basilium.basiliumserver.global.apiResponse.ErrorCode;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+import java.util.Optional;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class NormalUserService {
     private final NormalUserRepository normalUserRepository;
-    private final ProductRepository productRepository;
-    private final JpaLikeRepo likeRepo;
+    private final ProductRepository      productRepository;
+    private final JpaLikeRepo            likeRepo;
 
-    @Autowired
-    public NormalUserService(NormalUserRepository normalUserRepository, ProductRepository productRepository, JpaLikeRepo likeRepo) {
-        this.normalUserRepository = normalUserRepository;
-        this.productRepository = productRepository;
-        this.likeRepo = likeRepo;
-    }
-
+    /** 전체 사용자 조회 */
     public List<NormalUser> getAllNormalUsers() {
         return normalUserRepository.findAll();
     }
 
-    public void modify(NormalUser normalUser) {
-        normalUserRepository.save(normalUser);  // 이미 존재하는 사용자라면 업데이트
-    }
-
+    /** 단건 조회 (비즈니스 예외 던짐) */
     public NormalUser userInfoById(String userId) {
         return normalUserRepository.findById(userId)
-                .orElse(null);  // 사용자 정보가 없으면 null 반환
+                .orElseThrow(() -> new BasiliumCustomException(
+                        ErrorCode.MEMBER_NOT_FOUND,
+                        "유저가 없습니다: " + userId));
     }
 
-    public DeliveryInfo deliveryInfoByUserNumber(Long userNumber) {
-        return normalUserRepository.findDeliveryInfoByUserNumber(userNumber);
-    }
-    //회원가입
-    //동시성 락걸음
+    /**
+     * 회원가입
+     * - 비밀번호 검증
+     * - DTO→엔티티 변환 (생성자에서 Grade·Provider 기본 세팅)
+     */
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public JoinStatus join(NormalUser normalUser){
-        try{
-            validateDuplicateMember(normalUser);
-        }
-        catch (IllegalStateException e){
-            System.out.println(e);
-            return JoinStatus.DUPLICATE;
-        }
-        try{
-            checkPasswordLength(normalUser);
-        }
-        catch (IllegalStateException e){
-            System.out.println(e);
+    public JoinStatus join(NormalUserSignupDTO dto) {
+        // 중복 ID 검사
+        normalUserRepository.findById(dto.getId())
+                .ifPresent(u -> { throw new BasiliumCustomException(
+                        ErrorCode.DUPLICATE_RESOURCE,
+                        "이미 존재하는 회원입니다."); });
+
+        // 비밀번호 길이 & 강도 검증
+        String pw = dto.getPassword();
+        if (pw.length() < 8 || pw.length() > 16) {
             return JoinStatus.INVALID_PASSWORD_LENGTH;
         }
-        try{
-            checkStrongPassword(normalUser);
-        }
-        catch (IllegalStateException e)
-        {
-            System.out.println(e);
+        boolean hasU = pw.chars().anyMatch(Character::isUpperCase);
+        boolean hasL = pw.chars().anyMatch(Character::isLowerCase);
+        boolean hasS = pw.chars().anyMatch(c ->
+                "!@#$%^&*()-_=+[]{}|;:'\",.<>/?".indexOf(c) != -1);
+        if (!(hasU && hasL && hasS)) {
             return JoinStatus.INVALID_PASSWORD_STRENGTH;
         }
-        normalUserRepository.save(normalUser);
+
+        // DTO → Entity (생성자에서 Grade.BRONZE, Provider.NORMAL 설정)
+        NormalUser user = new NormalUser(dto);
+        normalUserRepository.save(user);
+
         return JoinStatus.SUCCESS;
     }
 
-    private void validateDuplicateMember(NormalUser normalUser) {
-        normalUserRepository.findById(normalUser.getId()).ifPresent(m->{
-            throw new IllegalStateException("이미 존재하는 회원입니다.");
-        });
-    }
-
-    private void checkPasswordLength(NormalUser normalUser) {
-        if (normalUser.getPassword().length() >= 8 && normalUser.getPassword().length() <= 16) return;
-        else throw new IllegalStateException("비밀번호는 8 ~ 16자 사이여야 합니다.");
-    }
-
-    private void checkStrongPassword(NormalUser normalUser){
-        String password = normalUser.getPassword();
-        boolean hasUpperCase = false;
-        boolean hasLowerCase = false;
-        boolean hasSpecialChar = false;
-        for (char c : password.toCharArray()){
-            if (Character.isUpperCase(c))
-                hasUpperCase = true;
-            else if (Character.isLowerCase(c))
-                hasLowerCase = true;
-            else if ("!@#$%^&*()-_=+[]{}|;:'\",.<>/?".indexOf(c) != -1)
-                hasSpecialChar = true;
-        }
-        if (!(hasUpperCase && hasLowerCase && hasSpecialChar))
-            throw new IllegalStateException("비밀번호는 영문 소문자, 대문자, 특수문자를 포함해야됩니다.");
-    }
-
-/*
+    /**
+     * 회원 정보 수정
+     * - DTO 내 변경된 필드만 엔티티에 반영(updateFrom)
+     * - save() 호출 없이 트랜잭션 커밋 시 JPA 더티체킹
+     */
     @Transactional
-    public String setLike(NormalUser normalUser, Long productId){
-        Product product = productRepository.findById(productId).get();
-        Like like = new Like();
-        like.setNormalUser(normalUser);
-        like.setProduct(product);
-        return likeRepo.save(like);
+    public void modify(String userId, UserModifiedInfo info) {
+        NormalUser existing = userInfoById(userId);
+        existing.updateFrom(info);
     }
 
- */
+//밑에 코드 이관 예정 LIKE / Delivery
 
+    /** 배송 정보 조회 (없으면 빈 객체) */
+    public DeliveryInfo deliveryInfoByUserNumber(Long userNumber) {
+        return Optional.ofNullable(
+                        normalUserRepository.findDeliveryInfoByUserNumber(userNumber))
+                .orElse(new DeliveryInfo());
+    }
+
+    /**
+     * 좋아요 등록 (기존 로직 유지)
+     */
     @Transactional
     public String setLike(NormalUser normalUser, Long productId) {
-        Product product = productRepository.findById(productId).orElseThrow(() -> new IllegalStateException("상품이 존재하지 않습니다."));
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new BasiliumCustomException(
+                        ErrorCode.RESOURCE_NOT_FOUND,
+                        "상품이 존재하지 않습니다."));
         Like like = new Like();
         like.setNormalUser(normalUser);
         like.setProduct(product);
         likeRepo.save(like);
         return "Like registered successfully";
     }
-
-
 }
