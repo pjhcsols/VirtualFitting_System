@@ -13,3 +13,5 @@ export * from "@/shared/layout/store/StoreLayout";
 export * from "@/shared/layout/shopping-cart/ShoppingCartLayout";
 
 export * from "@/shared/layout/brand/BrandLayout";
+
+export * from "@/shared/layout/order-list/OrderListLayout";

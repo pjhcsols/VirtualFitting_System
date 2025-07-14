@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/shared";
-import { sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function ShoppingCartLayout() {
   return (
@@ -34,7 +34,7 @@ const ContentWrapper = styled.article`
   align-items: flex-start;
   background: white;
 
-  @media (max-width: ${sm}px) {
+  @media (max-width: ${BREAKPOINTS.sm}px) {
     padding: 70px 16px;
   }
 
