@@ -1,4 +1,4 @@
-export interface OrderData {
+export type OrderData = {
     orderId: string;
     orderDate: string;
     productName: string;
