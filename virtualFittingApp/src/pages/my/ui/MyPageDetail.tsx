@@ -21,21 +21,30 @@
       const [sentCode, setSentCode] = useState<string>("");
       const [showCodeInput, setShowCodeInput] = useState<boolean>(false);
       const [timer, setTimer] = useState<number>(0); 
-      const [isTimerActive, setIsTimerActive] = useState<boolean>(false);
+      const [isTimerActive, setIsTimerActive] = useState<boolean>(false); 
       const [formData, setFormData] = useState<UserFormData>({
-            id: "",
             name: "",
-            email: "",
+            password: "",
+            emailAddress: "",
             phoneNumber: "",
-            birthdate: "",  
-            gender: "",
+            nickname: "",
+            birthDate: "",
+            address: {address: "", zonecode: "", detailAddress: ""},
             size: {
               height: 0,
               weight: 0,
-              length: 0,
+              totalLength: 0,
+              chest: 0,
               shoulder: 0,
+              arm: 0,
+              pantsTotalLength: 0,
+              waistWidth: 0,
+              hipWidth: 0,
+              rise: 0,
+              hemWidth: 0,
             },
-            photoUrl: "",
+            userProfileImageUrl: "",
+            userImageUrl: "",
         }); 
 
       const [profilePreviewImage, setProfilePreviewImage] = useState<string | null>(null);
@@ -70,6 +79,7 @@
           alert("회원정보 저장 완료!");
         } catch {
           alert("저장 실패");
+          console.log(formData);
         }
       };
 
@@ -86,7 +96,7 @@
         setSentCode(code);
         setLoading(true);
 
-        const success = await sendVerificationEmail(formData.email, code);
+        const success = await sendVerificationEmail(formData.emailAddress, code);
         if (success) {
           alert("이메일로 인증번호가 전송되었습니다.");
           setShowCodeInput(true);
@@ -110,6 +120,21 @@
         }
       };
 
+      const openDaumPostcode = () => {
+        new window.daum.Postcode({
+          oncomplete: (data: any) => {
+            setFormData((prev) => ({
+              ...prev,
+              address: {
+                ...prev.address,
+                address: data.roadAddress,
+                zonecode: data.zonecode,
+              },
+            }));
+          },
+        }).open();
+      };
+
       return (
           <PageWrapper>
           <HeaderWrapper>
@@ -130,11 +155,19 @@
               <Divider />
               <Form>
               <FormField> 
-                  <Label>아이디</Label>
+                  <Label>이름</Label>
                   <Input 
-                      placeholder="아이디를 입력해주세요." 
+                      placeholder="이름을 입력해주세요." 
                       value={formData.name}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
+                  />
+              </FormField>
+              <FormField> 
+                  <Label>비밀번호</Label>
+                  <Input 
+                      placeholder="비밀번호를 입력해주세요." 
+                      value={formData.password}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
                   />
               </FormField>
               <FormField>
@@ -146,29 +179,29 @@
                   />
               </FormField>
               <FormField>
-                  <Label>이름</Label>
+                  <Label>닉네임</Label>
                   <Input 
-                      placeholder="이름을 입력해주세요." 
-                      value={formData.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value})}
+                      placeholder="닉네임을 입력해주세요." 
+                      value={formData.nickname}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, nickname: e.target.value})}
                   />
               </FormField>
-              <FormField>
+              <FormField> 
                   <Label>이메일</Label>
-                  <EmailFieldWrapper>
+                  <FieldWrapper>
                     <TelForm>
                       <PhoneInput 
                         placeholder="이메일을 입력해주세요." 
-                        value={formData.email}
+                        value={formData.emailAddress}
                         disabled={emailVerified}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, email: e.target.value })}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, emailAddress: e.target.value })}
                       />
                       <AuthButton type="button" onClick={handleSendVerification} disabled={loading || emailVerified}>
                         인증
                       </AuthButton>
                     </TelForm>
                     {emailVerified && <VerifiedMessage>인증되었습니다.</VerifiedMessage>}
-                  </EmailFieldWrapper>
+                  </FieldWrapper>
               </FormField>
 
               {showCodeInput && (
@@ -188,11 +221,11 @@
                   <Label>생년월일</Label>
                   <Input 
                       placeholder="YYYY-MM-DD" 
-                      value={formData.birthdate}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, birthdate: e.target.value})}
+                      value={formData.birthDate}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, birthDate: e.target.value})}
                   />
               </FormField>
-              <FormField>
+              {/* <FormField>
                   <Label>성별</Label>
                   <GenderGroup>
                       <GenderButton 
@@ -220,14 +253,97 @@
                               여자
                           </GenderButton>
                   </GenderGroup>
+              </FormField> */}
+              <FormField>
+                  <Label>주소</Label>
+                  <FieldWrapper>
+                    <TelForm>
+                      <PhoneInput 
+                        placeholder="우편번호" 
+                        value={formData.address.zonecode || ""}
+                        readOnly
+                      />
+                      <AuthButton type="button" onClick={openDaumPostcode}>
+                        검색
+                      </AuthButton>
+                    </TelForm>
+                    <Input
+                      placeholder="주소"
+                      value={formData.address.address || ""}
+                      readOnly
+                      style={{ marginTop: "8px" }}
+                    />
+                    <Input
+                      placeholder="상세주소를 입력하세요"
+                      value={formData.address.detailAddress || ""}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                        setFormData((prev) => ({
+                          ...prev,
+                          address: { ...prev.address, detailAddress: e.target.value },
+                        }));
+                      }}
+                      style={{ marginTop: "8px" }}
+                    />
+                  </FieldWrapper>
               </FormField>
               <FormField>
                   <Label>신체사이즈</Label>
                   <TelForm>
-                    <SizeInput placeholder="키   cm" />
-                    <SizeInput placeholder="몸무게  kg" />
-                    <SizeInput placeholder="총장  cm" />
-                    <SizeInput placeholder="어깨  cm" />
+                    <SizeInput 
+                      placeholder="키   cm"
+                      value={formData.size.height === 0 ? "" : formData.size.height}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, height: Number(e.target.value)}})}
+                    />
+                    <SizeInput 
+                      placeholder="몸무게  kg" 
+                      value={formData.size.weight === 0 ? "" : formData.size.weight }
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, weight: Number(e.target.value)}})}
+                    />
+                    <SizeInput
+                      placeholder="총장  cm" 
+                      value={formData.size.totalLength === 0 ? "" : formData.size.totalLength}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, totalLength: Number(e.target.value)}})}
+                    />
+                    <SizeInput 
+                      placeholder="어깨  cm"
+                      value={formData.size.shoulder === 0 ? "" : formData.size.shoulder}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, shoulder: Number(e.target.value)}})} 
+                    />
+                    <SizeInput 
+                      placeholder="가슴둘레 cm"
+                      value={formData.size.chest === 0 ? "" : formData.size.chest}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, chest: Number(e.target.value)}})} 
+                    />
+                    <SizeInput 
+                      placeholder="팔길이  cm"
+                      value={formData.size.arm === 0 ? "" : formData.size.arm}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, arm: Number(e.target.value)}})} 
+                    />  
+                    <SizeInput 
+                      placeholder="바지총장  cm"
+                      value={formData.size.pantsTotalLength === 0 ? "" : formData.size.pantsTotalLength}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, pantsTotalLength: Number(e.target.value)}})} 
+                    /> 
+                    <SizeInput 
+                      placeholder="허리둘레  cm"
+                      value={formData.size.waistWidth === 0 ? "" : formData.size.waistWidth}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, waistWidth: Number(e.target.value)}})} 
+                    />
+                    <SizeInput 
+                      placeholder="엉덩이둘레  cm"
+                      value={formData.size.hipWidth === 0 ? "" : formData.size.hipWidth}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, hipWidth: Number(e.target.value)}})} 
+                    />
+                    <SizeInput 
+                      placeholder="밑위길이  cm"
+                      value={formData.size.rise === 0 ? "" : formData.size.rise}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, rise: Number(e.target.value)}})} 
+                    />
+                    <SizeInput 
+                      placeholder="밑단너비  cm"
+                      value={formData.size.hemWidth === 0 ? "" : formData.size.hemWidth}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, hemWidth: Number(e.target.value)}})} 
+                    />
                   </TelForm>
               </FormField>
               <FormField>
@@ -463,6 +579,7 @@ const Label1 = styled.label`
     max-width: 120px;
     text-align: center;
     font-family: "Prata-Regular";
+    font-size: 10px;
 `;
 
  const PhoneInput = styled.input`
@@ -513,6 +630,7 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   border-radius: 6px;
   background: #fff;
   padding: 5px 10px;
+  cursor: pointer;
 `;
 
   const StoreButton = styled.button`
@@ -537,7 +655,7 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
       object-fit: cover;
   `;
 
-  const EmailFieldWrapper = styled.div`
+  const FieldWrapper = styled.div`
     flex: 1;
     display: flex;
     flex-direction: column;

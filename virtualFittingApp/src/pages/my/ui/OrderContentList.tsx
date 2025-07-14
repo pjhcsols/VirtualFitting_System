@@ -3,7 +3,6 @@ import { OrderItem } from "../types/order";
 import { OrderInfo } from "../api/order.action";
 import { useNavigate } from "react-router-dom";
 import { formatSimpleDate } from "@/shared";
-import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
 import styled from "styled-components";
 import alertImg from "@/pages/my/ui/alert.png";
 import { BREAKPOINTS } from "@/shared";
@@ -12,22 +11,18 @@ function OrderListContent() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
   const navigate = useNavigate();
 
-  // useEffect(() => {
-  //   const fetchOrderList = async () => {
-  //     try {
-  //       const userId = localStorage.getItem("userId");
-  //       if (!userId) return;
-  //       const data = await OrderInfo(userId);
-  //       setOrders(data);
-  //     } catch (error) {
-  //       console.error("주문 정보를 불러오는 데 실패했습니다.", error);
-  //     }
-  //   };
-  //   fetchOrderList();
-  // }, []);
-
   useEffect(() => {
-    setOrders(orderDummyData);
+    const fetchOrderList = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        const data = await OrderInfo(userId);
+        setOrders(data);
+      } catch (error) {
+        console.error("주문 정보를 불러오는 데 실패했습니다.", error);
+      }
+    };
+    fetchOrderList();
   }, []);
 
   if (!orders.length) {
@@ -76,13 +71,11 @@ function OrderListContent() {
 export { OrderListContent };
 
 const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   width: 100%;
   max-width: 800px;
-  margin: 0 auto;
   padding: 20px;
+  box-sizing: border-box;
+  margin: 0 auto;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     max-width: 100%;
