@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { Header } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 
-function ShoppingCartLayout() {
+function OrderListLayout() {
   return (
     <Wrapper>
       <Header />
@@ -40,4 +40,4 @@ const ContentWrapper = styled.article`
 
 `;
 
-export { ShoppingCartLayout };
+export { OrderListLayout };

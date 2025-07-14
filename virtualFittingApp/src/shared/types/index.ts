@@ -11,8 +11,9 @@ export type {
   BrandProductSimpleType,
 } from "@/shared/types/product/product.d";
 export * from "@/shared/types/product/category.d";
+export type { Product } from "@/shared/types/product/products.d";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
 
-export * from "@/shared/types/cart/cart.d";
+export { type CartItem } from "./cart/cart.d";

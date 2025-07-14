@@ -1,33 +1,28 @@
 import { useState, useEffect } from "react";
-import { fetchOrderHistory } from "@/pages/order-list/api/order.action";
-import { OrderData } from "@/pages/order-list/types/order";
-
-// * Shared Layer
-import { Header, Product_Order_List, Delivery } from "@/shared";
+import styled from "styled-components";
+import { OrderData } from "@/shared";
+import { ProductOrderList } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
+import { dummy } from "../constants"; //일단은 더미 넣어둬서 나중에 수정해야함ㅜ,,
 
 const OrderListPage = () => {
-  const [orderData, setOrderData] = useState<OrderData[]>([]);
-
-  useEffect(() => {
-    fetchOrderHistory()
-      .then((response) => {
-        setOrderData(response.data);
-        console.log("2번--------------");
-        console.log(response.data);
-        console.log("2번--------------");
-      })
-      .catch((error) => {
-        console.log("Error fetching order data:", error);
-      });
-  }, []);
+  // const [orderData, setOrderData] = useState<OrderData[]>([]);
+  const [orderData] = useState<OrderData[]>(dummy);
 
   return (
-    <div>
-      <Header />
-      <Product_Order_List orderData={orderData} isOrderListPage={true} />
-      <Delivery />
-    </div>
+    <Wrapper>
+      <ProductOrderList orderData={orderData} isOrderListPage={true} />
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  width: 100%;
+  min-height: 420px;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  align-items: center;  
+`;
 
 export { OrderListPage };

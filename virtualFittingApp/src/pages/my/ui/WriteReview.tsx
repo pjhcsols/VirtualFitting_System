@@ -6,7 +6,8 @@ import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
 import { MyHeader } from "@/shared/components/header";
 import alertImg from "@/pages/my/ui/alert.png";
 import { STAR_EMPTY_ICON, STAR_FILLED_ICON, ADD_ICON, CANCEL_ICON } from "@/pages/my/constants";
-import { ReviewData } from "../types/review";
+import type { ReviewData } from "../types/review";
+import { BREAKPOINTS } from "@/shared";
 
 function StyleReview() {
     const navigate = useNavigate();
@@ -92,98 +93,102 @@ function StyleReview() {
     }
 
     return (
-        <PageWrapper>   
+        <PageWrapper>
             <HeaderWrapper>
                 <MyHeader title="스타일 리뷰" />
             </HeaderWrapper>
 
             <ContentWrapper>
-                <OrderCard>
-                    <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
-                    <RightSection>
+                <FormInner>
+                    <OrderCard>
+                        <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
+                        <RightSection>
                         <TitleLine>
-                        <Brand>{order.brand}</Brand>
+                            <Brand>{order.brand}</Brand>
                         </TitleLine>
                         <ProductName>{order.productName}</ProductName>
                         <OptionText>
                             {order.options.color} / {order.options.size} / {order.options.quantity}개
                         </OptionText>
-                    </RightSection>
-                </OrderCard>
+                        </RightSection>
+                    </OrderCard>
 
-                <RatingSection>
-                    {[1, 2, 3, 4, 5].map((star) => (
+                    <RatingSection>
+                        {[1, 2, 3, 4, 5].map((star) => (
                         <StarImage
-                        key={star}
-                        src={star <= rating ? STAR_FILLED_ICON : STAR_EMPTY_ICON}
-                        onClick={() => setRating(star)}
+                            key={star}
+                            src={star <= rating ? STAR_FILLED_ICON : STAR_EMPTY_ICON}
+                            onClick={() => setRating(star)}
                         />
-                    ))}
-                </RatingSection>
+                        ))}
+                    </RatingSection>
 
-                <Divider/>
+                    <Divider />
 
-                <ReviewSize>
-                    <ReviewLabel>신체 사이즈</ReviewLabel>
-                    <SizeForm>
+                    <ReviewSize>
+                        <ReviewLabel>신체 사이즈</ReviewLabel>
+                        <SizeForm>
                         <SizeInput placeholder="키   cm" />
                         <SizeInput placeholder="몸무게 kg" />
-                    </SizeForm>
-                </ReviewSize>
+                        </SizeForm>
+                    </ReviewSize>
 
-                <ReviewTextWrapper>
-                    <ReviewLabel>
-                        본문 입력(필수)<LengthGuide>20자 이상</LengthGuide>
-                    </ReviewLabel>
+                    <ReviewTextWrapper>
+                        <ReviewLabel>
+                            본문 입력(필수)<LengthGuide>20자 이상</LengthGuide>
+                        </ReviewLabel>
 
-                    <ReviewTextarea
-                        placeholder="다른 회원들이 도움받을 수 있도록 상품에 대한 의견을 자세히 공유해주세요."
-                        value={reviewText}
-                        onChange={(e) => setReviewText(e.target.value)}
-                        maxLength={500}
-                    />
-                    <CharCount>{reviewText.length}/500</CharCount>
-                </ReviewTextWrapper>
+                        <ReviewTextarea
+                            placeholder="다른 회원들이 도움받을 수 있도록 상품에 대한 의견을 자세히 공유해주세요."
+                            value={reviewText}
+                            onChange={(e) => setReviewText(e.target.value)}
+                            maxLength={500}
+                        />
+                        <CharCount>{reviewText.length}/500</CharCount>
+                    </ReviewTextWrapper>
 
-                <ImageWrapper>
-                    <ReviewLabel>사진 첨부 (필수)</ReviewLabel>
+                    <ImageWrapper>
+                        <ReviewLabel>사진 첨부 (필수)</ReviewLabel>
 
-                    <PictureList>
+                        <PictureList>
                         {photoPreviewImages.map((image, index) => (
                             <PreviewContainer key={index}>
-                                <PreviewImg src={image} alt={`preview-${index}`} />
-                                <RemoveButton onClick={() => handleRemoveImage(index)}>
-                                    <CancelIconImage src={CANCEL_ICON} alt="remove" />
-                                </RemoveButton>
+                            <PreviewImg src={image} alt={`preview-${index}`} />
+                            <RemoveButton onClick={() => handleRemoveImage(index)}>
+                                <CancelIconImage src={CANCEL_ICON} alt="remove" />
+                            </RemoveButton>
                             </PreviewContainer>
                         ))}
-                        
+
                         {photoPreviewImages.length < 5 && (
                             <UploadBox onClick={handleUpPhotoButton}>
-                                <UploadInner>
-                                    <AddIconImage src={ADD_ICON} alt="add" />
-                                    <CountText>{photoPreviewImages.length}/5</CountText>
-                                </UploadInner>
+                            <UploadInner>
+                                <AddIconImage src={ADD_ICON} alt="add" />
+                                <CountText>{photoPreviewImages.length}/5</CountText>
+                            </UploadInner>
                             </UploadBox>
                         )}
-                    </PictureList>
-                    
-                    <GuideWrapper>
-                        <ImageGuide>1장 이상</ImageGuide>
-                    </GuideWrapper>
+                        </PictureList>
 
-                    <HiddenInput
+                        <GuideWrapper>
+                            <ImageGuide>1장 이상</ImageGuide>
+                        </GuideWrapper>
+
+                        <HiddenInput
                         type="file"
                         accept="image/*"
                         multiple
                         onChange={handleMultipleImageChange}
                         ref={photoInputRef}
-                    />
-                </ImageWrapper>
+                        />
+                    </ImageWrapper>
+                </FormInner>
             </ContentWrapper>
 
             <FooterWrapper>
-              <RegisterButton onClick={handleRegister}>등록하기</RegisterButton>
+                <FooterInner>
+                    <RegisterButton onClick={handleRegister}>등록하기</RegisterButton>
+                </FooterInner>
             </FooterWrapper>
         </PageWrapper>
     );
@@ -193,158 +198,182 @@ export { StyleReview };
 
 
 const PageWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    background: #fff;
-    min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #fff;
+  min-height: 100vh;
+  overflow-x: hidden;
 `;
 
 const HeaderWrapper = styled.div`
-    position: sticky;
-    top: 0;
-    z-index: 100;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background-color: #fff;
 `;
 
 const ContentWrapper = styled.div`
-    margin-top: 100px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    background: #fff;
-    width: 100%;
-    flex-grow: 1;
+  padding: 100px 20px 20px;
+  background: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 auto;
+  padding-bottom: 70px;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    max-width: 100%;
+    padding: 88px 16px 20px;
+  }
+`;
+
+const FormInner = styled.div`
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
 `;
 
 const FooterWrapper = styled.div`
-      flex-shrink: 0;
-      position: sticky;
-      bottom: 0;
-      background: #fff;
-      padding: 10px 0;
-      border-top: 1px solid #F2F3F5;
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto;
-      
-  `;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  z-index: 100;
+`;
 
-const OrderCard = styled.div`   
-    display: flex;
-    gap: 16px;
-    margin-bottom: 16px;
-    width: 560px;   
+const FooterInner = styled.div`
+  width: 100%;
+  max-width: 800px;
+  padding: 10px 20px;
+  border-top: 1px solid #F2F3F5;
+  box-sizing: border-box;
+`;
+
+const OrderCard = styled.div`
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  width: 100%;
+  max-width: 800px;
 `;
 
 const ImageBox = styled.img`
-    width: 78px;
-    height: 90px;
-    background-color: #d9d9d9;
-    border-radius: 10px;
-    object-fit: cover;
-    background-position: center;
+  width: 78px;
+  height: 90px;
+  background-color: #d9d9d9;
+  border-radius: 10px;
+  object-fit: cover;
+  background-position: center;
 `;
 
 const RightSection = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1;
 `;
 
 const TitleLine = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
 `;
 
 const Brand = styled.div`
-    font-weight: bold;
-    font-size: 14px;
+  font-weight: bold;
+  font-family: "Prata-Regular";
+  font-size: 14px;
 `;
 
 const ProductName = styled.div`
-    font-size: 14px;
-    margin-top: 15px;
-    text-align: left;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  margin-top: 15px;
+  text-align: left;
 `;
 
 const OptionText = styled.div`
-    font-size: 12px;
-    color: rgb(150, 150, 150);
-    text-align: left;
+  font-size: 12px;
+  font-family: "Prata-Regular";
+  color: rgb(150, 150, 150);
+  text-align: left;
 `;
 
 const Divider = styled.hr`
-    margin: 16px 0;
-    border: none;
-    height: 1px;
-    background-color: #e5e5e5;
-    width: 560px;
-    max-width: 100%;
+  margin: 16px 0;
+  border: none;
+  height: 1px;
+  background-color: #e5e5e5;
+  width: 100%;
+  max-width: 800px;
 `;
 
 const RatingSection = styled.div`
-    display: flex;
-    justify-content: flex-start;  
-    align-items: center;
-    gap: 6px;
-    width: 100%;
-    max-width: 560px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  max-width: 800px;
 `;
 
 const StarImage = styled.img`
-    width: 35px;
-    height: 35px;
-    cursor: pointer;
-    object-fit: contain;
-   
+  width: 35px;
+  height: 35px;
+  cursor: pointer;
+  object-fit: contain;
 `;
 
 const ReviewTextWrapper = styled.div`
   width: 100%;
-  max-width: 560px;
+  max-width: 800px;
   margin-top: 35px;
 `;
 
 const ReviewSize = styled.div`
   width: 100%;
-  max-width: 560px;
+  max-width: 800px;
   margin-top: 15px;
 `;
 
 const ImageWrapper = styled.div`
   width: 100%;
-  max-width: 560px;
+  max-width: 800px;
   margin-top: 20px;
 `;
 
 const SizeForm = styled.div`
-    display: flex;
-    gap: 10px;
+  display: flex;
+  gap: 10px;
 `;
 
 const Input = styled.input`
-    width: 300px;
-    padding: 10px;
-    border: 1px solid rgb(228, 230, 233);
-    background: rgb(255, 255, 255);
-    border-radius: 6px;
-    font-size: 14px;
+  width: 300px;
+  padding: 10px;
+  border: 1px solid rgb(228, 230, 233);
+  background: rgb(255, 255, 255);
+  border-radius: 6px;
+  font-size: 14px;
 
-    &::placeholder {
-        color: rgb(150, 150, 150);  /* placeholder 텍스트 색상 */
-        font-weight: normal;
-    }
+  &::placeholder {
+    color: rgb(150, 150, 150);
+    font-weight: normal;
+  }
 `;
 
 const SizeInput = styled(Input)`
-    flex: none;
-    width: 50px;
-    text-align: center;
-    font-size: 12px;
+  flex: none;
+  width: 50px;
+  text-align: center;
+  font-size: 12px;
+  font-family: "Prata-Regular";
 `;
 
 const ReviewLabel = styled.div`
@@ -352,13 +381,15 @@ const ReviewLabel = styled.div`
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
+  font-family: "Prata-Regular";
   margin-bottom: 6px;
   width: 100%;
-  max-width: 560px;
+  max-width: 800px;
 `;
 
 const LengthGuide = styled.span`
   font-size: 12px;
+  font-family: "Prata-Regular";
   color: rgb(150, 150, 150);
   white-space: nowrap;
 `;
@@ -371,18 +402,20 @@ const GuideWrapper = styled.div`
 
 const ImageGuide = styled.span`
   font-size: 12px;
+  font-family: "Prata-Regular";
   color: rgb(150, 150, 150);
   margin-bottom: 30px;
 `;
 
 const ReviewTextarea = styled.textarea`
   width: 100%;
-  max-width: 540px;
-  min-height: 120px;
-  padding: 10px;
+  max-width: 750px;
+  min-height: 150px;
+  padding: 5px;
   border: 1px solid #ddd;
   border-radius: 6px;
   font-size: 14px;
+  font-family: "Prata-Regular";
   resize: none;
   outline: none;
 
@@ -393,30 +426,30 @@ const ReviewTextarea = styled.textarea`
 
 const CharCount = styled.div`
   font-size: 12px;
+  font-family: "Prata-Regular";
   color: rgb(150, 150, 150);
   margin-top: 4px;
   text-align: right;
   width: 100%;
-  max-width: 560px;
+  max-width: 800px;
 `;
 
 const RegisterButton = styled.button`
-    width: 100%;
-    max-width: 550px;
-    padding: 12px;
-    background-color: #d9d9d9;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-
-    &:hover {
-      background-color: #000000; 
-    }
-  `;
+  width: 100%;
+  padding: 12px;
+  background-color: #d9d9d9;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 16px;
+  font-family: "Prata-Regular";
+  &:hover {
+    background-color: #000000;
+  }
+`;
 
 const HiddenInput = styled.input`
-    display: none;
+  display: none;
 `;
 
 const PictureList = styled.div`
@@ -472,6 +505,7 @@ const UploadInner = styled.div`
 
 const CountText = styled.div`
   font-size: 12px;
+  font-family: "Prata-Regular";
   color: rgb(150, 150, 150);
 `;
 

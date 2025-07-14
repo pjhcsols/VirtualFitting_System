@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
+import type { ProductDetail } from "@/shared";
 
 import {
   ProductSmallCard,
@@ -10,6 +12,7 @@ import {
   QuantityBox,
   BREAKPOINTS,
   COLOR_MAP,
+  SIZE_ORDER,
 } from "@/shared";
 
 import {
@@ -19,73 +22,73 @@ import {
   ICON_SHARE,
 } from "@/shared";
 
+type ProductContainerProps = {
+  product: ProductDetail;
+  productColors: string[];
+  onColorChange?: (color: string) => void;
+};
 
-function ProductContainer({ product }: { product: any }) {
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
-  const [selectedSize, setSelectedSize] = useState(product.availableSizes[0]);
+function ProductContainer({ product, productColors, onColorChange }: ProductContainerProps) {
+  const [searchParams] = useSearchParams();
+  const queryColor = searchParams.get("color");
+
+  const selectedColor =
+    queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
+      ? queryColor
+      : product.productOptions[0].productColor;
+
+  const sizesSorted = product.productOptions
+    .filter(po => po.productColor === selectedColor)
+    .map(po => po.productSize)
+    .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
+
+  const [selectedSize, setSelectedSize] = useState(product.productOptions[0].productSize);
   const [quantity, setQuantity] = useState(1);
-  
+
+  const selectedProductImages =
+    product.productImages.productColor === selectedColor
+      ? product.productImages.productPhotoUrls
+      : [];
+
   return (
     <ProductBox>
-        <ProductSmallImagesContainer>
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-            <ProductSmallCard />
-          </ProductSmallImagesContainer>
-        <ProductImage src={product.image} alt={product.name} />
+      <ProductSmallImagesContainer>
+        {selectedProductImages.map((src, i) => (
+          <ProductSmallCard key={i} imageSrc={src} />
+        ))}
+      </ProductSmallImagesContainer>
+      <ProductImage src={selectedProductImages[0]} alt={product.productName} />
       <ProductInfoBox>
         <TopRow>
-          <Brand> {product.brand} </Brand>
+          <Brand>{product.brandUser.firmName}</Brand>
         </TopRow>
         <TopRow>
-          <ProductName> {product.name} </ProductName>
+          <ProductName>{product.productName}</ProductName>
           <LikeButton />
         </TopRow>
         <TopRow>
-          {product.discountedPrice ? (
-            <PriceGroup>
-              <DiscountPrice>{product.discountedPrice.toLocaleString()}원</DiscountPrice>
-              <OriginalPriceBox>
-                <OriginalPrice>{product.price.toLocaleString()}원</OriginalPrice>
-                <DiscountRate>
-                  {product.discountRate}%
-                </DiscountRate>
-              </OriginalPriceBox>
-            </PriceGroup>
-          ) : (
-            <Price>￦{product.price.toLocaleString()}</Price>
-          )}
+          <Price>{product.productPrice.toLocaleString()}원</Price>
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
-
-        <Description>
-          클래식한 오버핏 티셔츠{'\n'}
-          한겨울에도 착용하기 좋습니다
-        </Description>
+        <Description>{product.productDesc}</Description>
         <ColorBoxContainer>
-        {/* <MaterialsText> {product.materials.join(", ")} | {selectedColor} </MaterialsText> */}
-          <SelectedColorText> {product.materials.join(", ")}  | {selectedColor} </SelectedColorText>
-          <ColorSwatches>
-            {product.colors.map((color: string, index: number) => (
-              <ColorCircle
-                key={index}
-                $color={COLOR_MAP[color] ?? "transparent"} 
-                $selectedColor={selectedColor === color}
-                onClick={() => setSelectedColor(color)}
-              />
-            ))}
-          </ColorSwatches>
+          <SelectedColorText>
+            {product.productMaterials.join(", ")} | {selectedColor}
+          </SelectedColorText>
+           <ColorSwatches>
+      {productColors.map(color => (
+        <ColorCircle
+          key={color}
+          $color={COLOR_MAP[color] ?? "transparent"}
+          $selectedColor={selectedColor === color}
+          onClick={() => onColorChange?.(color)}
+        />
+      ))}
+    </ColorSwatches>
         </ColorBoxContainer>
         <SizeBoxContainer>
-          {/* <SizeText> 사이즈 | {selectedSize} </SizeText> */}
           <SizeBox>
-            {product.availableSizes.map((size: string) => (
+            {sizesSorted.map(size => (
               <SizeItem
                 key={size}
                 $selectedSize={selectedSize === size}
@@ -103,7 +106,7 @@ function ProductContainer({ product }: { product: any }) {
             </OptionText>
           </OptionTop>
           <QuantityBox
-            unitPrice={product.discountedPrice ?? product.price}
+            unitPrice={product.productPrice}
             quantity={quantity}
             setQuantity={setQuantity}
           />
@@ -111,27 +114,28 @@ function ProductContainer({ product }: { product: any }) {
         <ButtonBox>
           <AddButton
             product={{
-              id: product.id,
-              name: product.name,
-              brand: product.brand,
-              image: product.image,
-              price: product.price,
-              discountedPrice: product.discountedPrice,
-              discountRate: product.discountRate,
+              id: product.productId.toString(),
+              name: product.productName,
+              brand: product.brandUser.firmName,
+              image: selectedProductImages[0],
+              price: product.productPrice,
+              discountedPrice: undefined,
+              discountRate: undefined,
               color: selectedColor,
               size: selectedSize,
-              quantity: quantity,
+              quantity,
             }}
           />
-          <PurchaseButton></PurchaseButton>
+          <PurchaseButton />
         </ButtonBox>
         <ButtonBox>
-          <AIButton></AIButton>
+          <AIButton />
         </ButtonBox>
       </ProductInfoBox>
     </ProductBox>
   );
 }
+
 
 const ProductBox = styled.section`
   display: flex;
@@ -150,17 +154,17 @@ const ProductBox = styled.section`
 `;
 
 const ProductImage = styled.img`
-  width: 600px;
+  width: 100%;
   max-width: 600px;
-  min-height: 430px;
+  max-height: 750px;
   aspect-ratio: 4 / 5;
   object-fit: contain;
   height: auto;
   order: 0;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    width: 100%;
     max-width: 510px;
+    max-height: 680px;
   }
 `;
 
@@ -193,6 +197,7 @@ const ProductInfoBox = styled.div`
   min-width: 300px;
   display: flex;
   flex-direction: column;
+  
   gap: 8px;
   order: 3;
   margin: 0px 32px;

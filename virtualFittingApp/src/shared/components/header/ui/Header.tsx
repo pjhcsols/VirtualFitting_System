@@ -16,7 +16,7 @@ function Header() {
       </LogoContainer>
 
       <RouterList>
-        <HeaderContent>
+        <HeaderContent onClick={() => router("/shopping-cart")}>
           <img src={ICON_BAG} alt="Cart" width={24} height={24} />
         </HeaderContent>
         <HeaderContent>

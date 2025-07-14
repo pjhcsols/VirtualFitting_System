@@ -3,7 +3,7 @@ import { ICON_MINUS, ICON_PLUS } from "@/shared";
 
 type QuantityBoxProps = {
   quantity: number;
-  setQuantity: React.Dispatch<React.SetStateAction<number>>; // ✅ 이렇게 하면 OK
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
   unitPrice: number;
 };
 
