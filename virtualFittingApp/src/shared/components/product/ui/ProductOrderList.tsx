@@ -35,7 +35,6 @@ function ProductOrderList({ orderData, isOrderListPage }: OrderListProps) {
   );
 }
 
-
 const Wrapper = styled.div`
   width: 600px;
   display: flex;
@@ -64,15 +63,16 @@ const OrderInfoContainer = styled.div`
   padding: 12px 0;
   flex-direction: row;
   align-items: flex-start;
-  border: 1px solid #e0e0e0;
   border-radius: 8px;
   padding: 16px;
   margin-bottom: 12px;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 0px 16px rgba(0, 0, 0, 0.06);
 
   &:hover {
     background-color: #f9f9f9;
+    box-shadow: 0 0px 8px rgba(0, 0, 0, 0.08);
   }
 `;
 
