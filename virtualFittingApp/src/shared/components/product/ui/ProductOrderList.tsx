@@ -64,7 +64,18 @@ const OrderInfoContainer = styled.div`
   padding: 12px 0;
   flex-direction: row;
   align-items: flex-start;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #f9f9f9;
+  }
 `;
+
 
 const OrderInfoBox = styled.div`
   width: 100%;
