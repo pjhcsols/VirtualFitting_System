@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 
-function ProductSmallCard() {
-  return <ProductSmallCardContainer />;
+function ProductSmallCard({ imageSrc }: { imageSrc: string }) {
+  return <ProductSmallCardContainer src={imageSrc} alt="small product" />;
 }
 
 const ProductSmallCardContainer = styled.img`
