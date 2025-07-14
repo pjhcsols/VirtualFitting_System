@@ -18,3 +18,15 @@ export {
   ProductDescription,
   ProductSize,
 } from "@/shared/components/input/ui/ProductInput";
+
+export {
+  LoginInput,
+  PasswordInput,
+  IDInput,
+  EmailAddressInput,
+  AddressInput,
+  NickNameInput,
+  NameInput,
+  PhoneNumberInput,
+  BirthdayInput,
+} from "@/shared/components/input/ui/AuthInput";

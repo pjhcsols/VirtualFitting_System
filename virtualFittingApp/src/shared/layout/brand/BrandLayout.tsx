@@ -1,15 +1,19 @@
-import { BrandHeader } from "@/shared/components";
 import { Outlet } from "react-router-dom";
+import { RecoilRoot } from "recoil";
+
+import { BrandHeader } from "@/shared/components";
 import styled from "styled-components";
 
 function BrandLayout() {
   return (
-    <Wrapper>
-      <BrandHeader />
-      <Container>
-        <Outlet />
-      </Container>
-    </Wrapper>
+    <RecoilRoot>
+      <Wrapper>
+        <BrandHeader />
+        <Container>
+          <Outlet />
+        </Container>
+      </Wrapper>
+    </RecoilRoot>
   );
 }
 
