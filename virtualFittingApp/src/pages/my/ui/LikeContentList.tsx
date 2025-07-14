@@ -11,7 +11,9 @@ function LikeContentList() {
   useEffect(() => {
     const fetchLikedItems = async () => {
       try {
-        const data = await getLikedList();
+        const userId = localStorage.getItem("userId");
+        if (!userId) return;
+        const data = await getLikedList(userId);
         setLikedItems(data);
       } catch (error) {
         console.error("좋아요 목록 불러오기 실패", error);
