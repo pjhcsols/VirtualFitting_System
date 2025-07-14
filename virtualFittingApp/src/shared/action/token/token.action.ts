@@ -4,7 +4,9 @@ export const basilium_refresh_token = async (refreshToken: string) => {
   const BASILIUM_URL = import.meta.env
     .VITE_APPLICATION_BASILIUM_SERVER as string;
   try {
-    const res = await axios.post(`${BASILIUM_URL}/`, { refreshToken });
+    const res = await axios.post(`${BASILIUM_URL}/b1/users/refresh-token`, {
+      refreshToken,
+    });
     return res.data;
   } catch (err) {
     return false;

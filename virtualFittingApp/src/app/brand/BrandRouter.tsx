@@ -18,6 +18,7 @@ function BrandRouter() {
     <Routes location={location} key={location.pathname}>
       <Route path="brand">
         <Route index element={<BrandPage />} />
+        <Route path="signup" />
         <Route element={<BrandLayout />}>
           <Route path="dashboard" index element={<BrandDashboard />} />
           <Route path="product">

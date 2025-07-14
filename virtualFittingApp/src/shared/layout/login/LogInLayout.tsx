@@ -6,7 +6,7 @@ import { motion } from "motion/react";
 
 import { AnimationProps } from "@/shared/constants";
 
-function LogInLayout() {
+function LoginLayout() {
   return (
     <AnimationContainer>
       <Wrapper>
@@ -37,4 +37,4 @@ const Wrapper = styled.main`
   z-index: 10;
 `;
 
-export { LogInLayout };
+export { LoginLayout };

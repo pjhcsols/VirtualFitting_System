@@ -11,10 +11,16 @@ import {
   SettingIcon,
   ShopIcon,
 } from "../../icon";
-import { useState } from "react";
+import { atom, useRecoilState } from "recoil";
+
+const productDropdown = atom({
+  key: "productDropdown",
+  default: false,
+});
 
 function BrandHeader() {
-  const [isProductClicked, setIsProductClicked] = useState<boolean>(false);
+  const [isProductClicked, setIsProductClicked] =
+    useRecoilState(productDropdown);
   const router = useNavigate();
 
   const onClickBrandHomepage = () => {
