@@ -2,7 +2,7 @@ import * as S from "@/widgets/brand/ui/css/BrandProductList.css";
 import { Suspense } from "react";
 import {
   BrandProductCard,
-  ICON_BASILIUM_ASSET_1,
+  ICON_BASILIUM_ASSET_2,
   ProductServerResponseType,
 } from "@/shared";
 
@@ -17,7 +17,7 @@ function BrandProductList({ datas }: BrandPrudctListType) {
         <S.NoDataContainer>
           <span>서버에 에러가 발생했습니다.</span>
           <S.NoDataIcon
-            src={ICON_BASILIUM_ASSET_1}
+            src={ICON_BASILIUM_ASSET_2}
             alt="icon-basilium-asset-2"
           />
         </S.NoDataContainer>
@@ -28,7 +28,7 @@ function BrandProductList({ datas }: BrandPrudctListType) {
           <S.NoDataContainer>
             <span>등록된 상품이 없습니다.</span>
             <S.NoDataIcon
-              src={ICON_BASILIUM_ASSET_1}
+              src={ICON_BASILIUM_ASSET_2}
               alt="icon-basilium-asset-2"
             />
           </S.NoDataContainer>
