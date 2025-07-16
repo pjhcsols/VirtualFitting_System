@@ -22,9 +22,9 @@ import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 import Bag from "/svg/bag.svg";
-import User from "/svg/user.svg";
-import Menu from "/svg/menu.svg";
-import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
+import User from '/svg/user.svg';
+import Menu from '/svg/menu.svg';
+
 
 import type {
   CategoryType,
@@ -33,6 +33,7 @@ import type {
   Size,
   SizeTable,
 } from "@/shared/types";
+
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
@@ -64,7 +65,7 @@ export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
 
 export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
-export const ICON_BASILIUM_ASSET_2 = Basilium3DLogoIcon_2;
+
 export const API_BASE_URL = "http://211.211.22.130:8080";
 
 export const AnimationProps = {
@@ -96,6 +97,7 @@ export const SYSTEM_MESSAGE = {
     "500": "잠시 후 다시 요청해주세요",
   },
 };
+
 
 export const CategoryIndex = [
   {
@@ -242,6 +244,7 @@ export const SizeTableTitles: (keyof SizeTable)[] = [
 export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];
 
 export const Sizes: Size[] = ["S", "M", "L", "XL", "XX"];
+export const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"]
 
 export const CheckOptions: string[] = [
   "사진이 올바르게 업로드 되어있습니다.",
