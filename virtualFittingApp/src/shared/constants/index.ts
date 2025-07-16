@@ -241,6 +241,7 @@ export const SizeTableTitles: (keyof SizeTable)[] = [
 export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];
 
 export const Sizes: Size[] = ["S", "M", "L", "XL", "XX"];
+export const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"]
 
 export const CheckOptions: string[] = [
   "사진이 올바르게 업로드 되어있습니다.",
