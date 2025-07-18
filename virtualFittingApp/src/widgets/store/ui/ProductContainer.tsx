@@ -50,14 +50,20 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       ? product.productImages.productPhotoUrls
       : [];
 
+  const [mainImage, setMainImage] = useState(selectedProductImages[0]);
+
   return (
     <ProductBox>
       <ProductSmallImagesContainer>
         {selectedProductImages.map((src, i) => (
-          <ProductSmallCard key={i} imageSrc={src} />
+          <ProductSmallCard
+            key={i}
+            imageSrc={src}
+            onMouseEnter={() => setMainImage(src)}
+          />
         ))}
       </ProductSmallImagesContainer>
-      <ProductImage src={selectedProductImages[0]} alt={product.productName} />
+      <ProductImage src={mainImage} alt={product.productName} />
       <ProductInfoBox>
         <TopRow>
           <Brand>{product.brandUser.firmName}</Brand>
@@ -157,8 +163,7 @@ const ProductImage = styled.img`
   width: 100%;
   max-width: 600px;
   max-height: 750px;
-  aspect-ratio: 4 / 5;
-  object-fit: contain;
+  object-fit: cover;
   height: auto;
   order: 0;
 
@@ -194,17 +199,12 @@ const ProductSmallImagesContainer = styled.div`
 
 const ProductInfoBox = styled.div`
   width: 408px;
-  min-width: 300px;
   display: flex;
   flex-direction: column;
   
   gap: 8px;
   order: 3;
-  margin: 0px 32px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    margin: 0px 16px;
-  }
+  margin: 0px 24px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;
