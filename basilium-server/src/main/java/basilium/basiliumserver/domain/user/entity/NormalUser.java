@@ -1,7 +1,7 @@
 // src/main/java/basilium/basiliumserver/domain/user/entity/NormalUser.java
 package basilium.basiliumserver.domain.user.entity;
 
-import basilium.basiliumserver.domain.user.dto.UserModifiedInfo;
+import basilium.basiliumserver.domain.user.dto.NormalUserModifiedInfo;
 import basilium.basiliumserver.domain.user.dto.NormalUserSignupDTO;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
@@ -90,7 +90,7 @@ public class NormalUser extends User {
     /**
      * 수정용 메서드: DTO 의 non-null·변경된 필드만 갱신
      */
-    public void updateFrom(UserModifiedInfo info) {
+    public void updateFrom(NormalUserModifiedInfo info) {
         if (info.getName() != null && !Objects.equals(info.getName(), this.name))
             this.name = info.getName();
 

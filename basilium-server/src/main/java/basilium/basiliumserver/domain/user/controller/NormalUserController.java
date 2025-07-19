@@ -2,12 +2,13 @@
 package basilium.basiliumserver.domain.user.controller;
 
 import basilium.basiliumserver.domain.deliveryInfo.DeliveryInfo;
+import basilium.basiliumserver.domain.user.dto.NormalUserModifiedInfo;
 import basilium.basiliumserver.domain.user.dto.NormalUserSignupDTO;
-import basilium.basiliumserver.domain.user.dto.UserModifiedInfo;
 import basilium.basiliumserver.domain.user.dto.NormalUserInfoDTO;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.service.NormalUserService;
+import basilium.basiliumserver.global.apiResponse.ApiResponse;
 import basilium.basiliumserver.global.auth.support.AuthUser;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -20,48 +21,82 @@ import java.util.List;
 
 @Slf4j
 @RestController
-@RequestMapping("/b1/normalUser")
+@RequestMapping("/b1/normalUsers")
 @PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class NormalUserController {
 
     private final NormalUserService normalUserService;
 
-    @PostMapping("/signup")
-    public ResponseEntity<String> createNormalUser(
+    /**
+     * POST /b1/users
+     * 노말 유저 회원가입
+     */
+    @PostMapping
+    public ResponseEntity<ApiResponse<String>> signup(
             @Valid @RequestBody NormalUserSignupDTO dto) {
+
         JoinStatus result = normalUserService.join(dto);
-        return new ResponseEntity<>(result.getMessage(), result.getStatus());
+        return ResponseEntity.status(result.getStatus()).body(ApiResponse.success(result.getMessage()));
     }
 
-    @GetMapping("/allNormalUsers")
-    public List<NormalUser> getAllNormalUsers() {
-        return normalUserService.getAllNormalUsers();
+    /**
+     * GET /b1/users
+     * 전체 노말 유저 목록 조회
+     */
+    @GetMapping
+    public ResponseEntity<ApiResponse<List<NormalUser>>> list() {
+        List<NormalUser> users = normalUserService.getAllNormalUsers();
+        return ResponseEntity.ok(ApiResponse.success(users));
     }
 
-    @PatchMapping("/modify")
-    public ResponseEntity<String> modifyUser(
+    /**
+     * PATCH /b1/users/me
+     * 로그인된 유저 정보 수정
+     */
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<String>> updateMe(
             @AuthUser String userId,
-            @RequestBody UserModifiedInfo info) {
+            @Valid @RequestBody NormalUserModifiedInfo info) {
+
         normalUserService.modify(userId, info);
-        return ResponseEntity.ok("성공적으로 변경되었습니다.");
+        return ResponseEntity.ok(ApiResponse.success("성공적으로 변경되었습니다."));
     }
 
-    @GetMapping("/userInfo")
-    public ResponseEntity<NormalUser> userInfo(@AuthUser String userId) {
-        return ResponseEntity.ok(normalUserService.userInfoById(userId));
+    /**
+     * GET /b1/users/me
+     * 로그인된 유저 기본 정보 조회
+     */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<NormalUser>> getMe(
+            @AuthUser String userId) {
+
+        NormalUser user = normalUserService.userInfoById(userId);
+        return ResponseEntity.ok(ApiResponse.success(user));
     }
 
-    //like -> likecontroller에 존재 / 디테일info -> 배송정보 이관할것
-    @GetMapping("/user/detail")
-    public ResponseEntity<NormalUserInfoDTO> userDetailInfo(@AuthUser String userId) {
+    //like -> likecontroller에 존재 / 디테일info -> 배송정보 이관할것 / 리뷰 제거
+    /**
+     * GET /b1/users/me/detail
+     * 로그인된 유저 상세 정보 조회 (배송정보 포함)
+     */
+    @GetMapping("/me/detail")
+    public ResponseEntity<ApiResponse<NormalUserInfoDTO>> getMeDetail(
+            @AuthUser String userId) {
+
         NormalUser u = normalUserService.userInfoById(userId);
         DeliveryInfo d = normalUserService.deliveryInfoByUserNumber(u.getUserNumber());
-        return ResponseEntity.ok(new NormalUserInfoDTO(u, d));
+        return ResponseEntity.ok(ApiResponse.success(new NormalUserInfoDTO(u, d)));
     }
 
-    @PostMapping("/review")
-    public ResponseEntity<String> writeReview() {
-        return ResponseEntity.ok("리뷰 등록이 완료되었습니다.");
+    /**
+     * POST /b1/users/me/review
+     * 로그인된 유저 리뷰 등록 (임시)
+     */
+    @PostMapping("/me/review")
+    public ResponseEntity<ApiResponse<String>> writeReview(
+            @AuthUser String userId) {
+
+        return ResponseEntity.ok(ApiResponse.success("리뷰 등록이 완료되었습니다."));
     }
 }

@@ -28,7 +28,7 @@ INSERT INTO normal_user (
     user_image_url, user_profile_image_url,
     name, nickname, gender, birth_date, address
 ) VALUES (
-             3, 'normal_mandatory', '1q2w3e4r!R', 'mandatory@example.com', '010-5555-6666',
+             1, 'test', 'test', 'mandatory@example.com', '010-5555-6666',
              0, 0,
              '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png',
              'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==',
@@ -46,7 +46,7 @@ INSERT INTO normal_user (
     pants_total_length, waist_width, hip_width, thigh_width, rise, hem_width,
     height, weight
 ) VALUES (
-             4, 'normal_full', '1q2w3e4r!R', 'full@example.com', '010-7777-8888',
+             2, 'example', '1q2w3e4r!R', 'full@example.com', '010-7777-8888',
              0, 0,
              '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png',
              'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==',
@@ -72,13 +72,17 @@ INSERT INTO brand_user (
          );
 COMMIT;
 
+INSERT INTO brand_user (user_number, id, password, email_address, phone_number, user_grade, login_type, user_image_url, user_profile_image_url,firm_name, firm_address, business_registration, firm_web_url)
+VALUES (2,'brand02', '1q2w3e4r!R', 'example2@naver.com', '010-1234-5678', 5, 1, '/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png','프로필지워짐2', '박한솔컴퍼니', '대구광역시 달서구 저승길 6길', '20-17777777', 'http://phs-컴퍼니');
+commit;
+
 -- SuperUser (기본 Grade.ADMIN=6, Provider.SUPER=2)
 INSERT INTO super_user (
     user_number, id, password, email_address, phone_number,
     user_grade, login_type,
     user_image_url, user_profile_image_url
 ) VALUES (
-             1, 'example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678',
+             1, 'super_example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678',
              6, 2,
              '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png',
              'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1'

@@ -20,6 +20,7 @@ import jakarta.validation.Valid;
 import java.util.Arrays;
 import java.util.List;
 
+//빈값 반환 변경하기 No content로
 @RestController
 @RequestMapping("/b1/products/{productId}/reviews")
 @RequiredArgsConstructor
@@ -60,7 +61,7 @@ public class ReviewController {
             @Valid @RequestBody ReviewDto.Request req
     ) {
         reviewService.updateReview(reviewId, req);
-        return ResponseEntity.ok(ApiResponse.success(null));
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     @DeleteMapping("/{reviewId}")
@@ -73,7 +74,7 @@ public class ReviewController {
                 .body(ApiResponse.success(null));
 
          */
-        return ResponseEntity.ok(ApiResponse.success(null)); //Optional.empty()
+        return ResponseEntity.ok(ApiResponse.success()); //Optional.empty()
     }
 
     //normalUser 자기가 쓴 리뷰 가져오기 (상품전체)

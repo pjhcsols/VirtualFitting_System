@@ -7,7 +7,8 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
     // 200 OK
-    SUCCESS(200, "OK", "요청에 성공하였습니다."),
+    SUCCESS(200, "OK", "요청에 성공하였습니다."), //반환값이 있는 경우
+    NO_CONTENT(204, "NO_CONTENT", "성공적으로 처리되었으나 반환할 콘텐츠가 없습니다."),
 
     // 400 Bad Request
     INVALID_INPUT_VALUE(400, "BAD_REQUEST", "입력값이 올바르지 않습니다."),

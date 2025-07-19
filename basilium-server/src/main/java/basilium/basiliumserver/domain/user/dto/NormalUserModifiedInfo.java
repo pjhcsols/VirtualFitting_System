@@ -1,4 +1,4 @@
-// src/main/java/basilium/basiliumserver/domain/user/dto/UserModifiedInfo.java
+// src/main/java/basilium/basiliumserver/domain/user/dto/NormalUserModifiedInfo.java
 package basilium.basiliumserver.domain.user.dto;
 
 import lombok.Getter;
@@ -6,7 +6,7 @@ import lombok.Setter;
 import java.time.LocalDateTime;
 
 @Getter @Setter
-public class UserModifiedInfo {
+public class NormalUserModifiedInfo {
     private String        name;
     private String        emailAddress;
     private String        password;

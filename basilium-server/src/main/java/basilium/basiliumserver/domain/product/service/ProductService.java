@@ -609,6 +609,7 @@ public class ProductService {
     /**
      * 판매중인 상품만 페이지네이션으로 조회
      */
+    //브랜드 명, 할인% 추가, 할인 금액
     @Transactional
     public Page<ProductAllRetrieveDTO> getOnSaleProducts(Pageable pageable) {
         return productRepository.findByStatus(ProductStatus.ON_SALE, pageable)

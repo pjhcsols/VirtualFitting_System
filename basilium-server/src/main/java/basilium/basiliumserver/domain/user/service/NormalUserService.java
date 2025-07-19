@@ -7,7 +7,7 @@ import basilium.basiliumserver.domain.like.repository.JpaLikeRepo;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.user.dto.NormalUserSignupDTO;
-import basilium.basiliumserver.domain.user.dto.UserModifiedInfo;
+import basilium.basiliumserver.domain.user.dto.NormalUserModifiedInfo;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
@@ -82,7 +82,7 @@ public class NormalUserService {
      * - save() 호출 없이 트랜잭션 커밋 시 JPA 더티체킹
      */
     @Transactional
-    public void modify(String userId, UserModifiedInfo info) {
+    public void modify(String userId, NormalUserModifiedInfo info) {
         NormalUser existing = userInfoById(userId);
         existing.updateFrom(info);
     }
