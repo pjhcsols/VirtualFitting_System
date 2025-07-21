@@ -22,11 +22,10 @@ export {
 export {
   LoginInput,
   PasswordInput,
-  IDInput,
   EmailAddressInput,
   AddressInput,
-  NickNameInput,
-  NameInput,
   PhoneNumberInput,
   BirthdayInput,
+  SignUpTextInfoInput,
+  SignUpPhoneNumberInput,
 } from "@/shared/components/input/ui/AuthInput";

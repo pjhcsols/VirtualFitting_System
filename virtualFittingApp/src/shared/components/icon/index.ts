@@ -12,3 +12,5 @@ export { RightArrowIcon } from "@/shared/components/icon/ui/RightArrowIcon";
 export { ExpiredCouponIcon } from "@/shared/components/icon/ui/ExpiredCouponIcon";
 export { NormalUserIcon } from "@/shared/components/icon/ui/NormalUserIcon";
 export { BrandUserIcon } from "@/shared/components/icon/ui/BrandUserIcon";
+export { MaleIcon } from "@/shared/components/icon/ui/MaleIcon";
+export { FemaleIcon } from "@/shared/components/icon/ui/FemaleIcon";

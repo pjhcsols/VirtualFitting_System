@@ -28,10 +28,12 @@ function useLogin() {
   const onSubmitLoginInfo = async (e: MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     const res = await userLogin(loginInfo);
-    if (res) {
-      alert("로그인에 성공하였습니다!");
-      router("/store");
+    if (res === 401) {
+      alert("로그인에 실패하였습니다.");
+      return;
     }
+    alert("로그인에 성공하였습니다!");
+    router("/store");
   };
 
   const onClickSignUp = () => {

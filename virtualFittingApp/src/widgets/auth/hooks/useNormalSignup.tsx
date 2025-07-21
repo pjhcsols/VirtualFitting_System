@@ -1,10 +1,18 @@
-import { type ChangeEvent, useState } from "react";
+import { type ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import type { NormalUserSignUpRequestDto } from "../types/login";
 import { NormalUserSignUp } from "../api/normalAuth.action";
 import { useNavigate } from "react-router-dom";
+import dayjs, { Dayjs } from "dayjs";
 
-function useNormalSignUp() {
+function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
   const router = useNavigate();
+
+  const [step, setStep] = useState<number>(0);
+  const [phoneNumber, setPhoneNumber] = useState({
+    part1: "",
+    part2: "",
+    part3: "",
+  });
 
   const [signUpInfo, setSignUpInfo] = useState<NormalUserSignUpRequestDto>({
     id: "",
@@ -51,7 +59,6 @@ function useNormalSignUp() {
           [name]: "MALE",
         });
         break;
-      case "phoneNumber":
       case "name":
       case "nickname":
       case "address":
@@ -82,23 +89,112 @@ function useNormalSignUp() {
     }
   };
 
-  const onSubmitSignUp = async () => {
-    const res = await NormalUserSignUp(signUpInfo);
-    if (res) {
-      alert("회원가입에 성공했습니다!");
-      router("/store");
+  const onChangePhoneNumber = (
+    name: string,
+    e: ChangeEvent<HTMLInputElement>,
+  ) => {
+    const { value } = e.target;
+    if (!isStrictInteger(value) && value.length != 0) {
+      return;
+    }
+    if (name === "part1") {
+      setPhoneNumber({
+        ...phoneNumber,
+        ["part1"]: value,
+      });
+    }
+    if (name === "part2") {
+      setPhoneNumber({
+        ...phoneNumber,
+        ["part2"]: value,
+      });
+    }
+    if (name === "part3") {
+      setPhoneNumber({
+        ...phoneNumber,
+        ["part3"]: value,
+      });
     }
   };
 
-  const onClickHome = () => {
-    router("/");
+  const onBlur = (name: string) => {
+    switch (name) {
+      case "signupId":
+        setStep(1);
+        break;
+      case "password":
+        setStep(2);
+        break;
+      case "gender":
+        setStep(3);
+        break;
+      case "name":
+      case "nickname":
+      case "address":
+      case "emailAddress":
+      case "birthDate":
+        setStep(4);
+        setIsCompleted(true);
+        break;
+      case "totalLength":
+      case "chest":
+      case "shoulder":
+      case "arm":
+      case "pantsTotalLength":
+      case "waistWidth":
+      case "hipWidth":
+      case "thighWidth":
+      case "rise":
+      case "hemWidth":
+      case "height":
+      case "width":
+        setStep(5);
+        break;
+    }
+  };
+
+  const onChangeDatePicker = (value: Dayjs | null) => {
+    setSignUpInfo({
+      ...signUpInfo,
+      birthDate: value?.toString() ?? "",
+    });
+  };
+
+  const onClickGender = (gender: "MALE" | "FEMALE") => {
+    setSignUpInfo({
+      ...signUpInfo,
+      ["gender"]: gender,
+    });
+  };
+
+  const onSubmitSignUp = async () => {
+    setSignUpInfo({
+      ...signUpInfo,
+      ["phoneNumber"]:
+        phoneNumber.part1 + phoneNumber.part2 + phoneNumber.part3,
+    });
+    const res = await NormalUserSignUp(signUpInfo);
+    console.log(res);
+    if (res === 201) {
+      router("/signup/success");
+      return;
+    }
+    router("/signup/failed");
+  };
+
+  const isStrictInteger = (str: string) => {
+    return /^-?\d+$/.test(str);
   };
 
   return {
     signUpInfo,
+    phoneNumber,
+    onClickGender,
+    onChangePhoneNumber,
+    onChangeDatePicker,
+    onBlur,
     onChange,
     onSubmitSignUp,
-    onClickHome,
   };
 }
 
