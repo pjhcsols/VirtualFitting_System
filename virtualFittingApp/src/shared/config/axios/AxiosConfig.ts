@@ -50,7 +50,7 @@ API_BASILIUM.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const refreshToken = Cookies.get("refresh-token") ?? ""; // Retrieve the stored refresh token.
+        const refreshToken = Cookies.get("refresh-token") ?? "";
 
         const response = await basilium_refresh_token(refreshToken);
 
@@ -154,6 +154,17 @@ const BASE_REDIS_URL = import.meta.env
 export const API_BASILIUM_REDIS = axios.create({
   baseURL: BASE_REDIS_URL,
   withCredentials: true,
+});
+
+API_BASILIUM_REDIS.defaults.headers = {
+  "Content-Type": "application/json;",
+  Accept: "application/json",
+} as headers & HeadersDefaults;
+
+// * No Token Axios
+export const NOT_LOGGED_BASILIUM_API = axios.create({
+  baseURL: BASE_URL,
+  withCredentials: false,
 });
 
 API_BASILIUM_REDIS.defaults.headers = {
