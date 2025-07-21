@@ -2,6 +2,7 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import {
   AdminLogin,
   BrandSignUpPage,
+  FailedPage,
   Loginpage,
   NormalSignUpPage,
   SuccessSignUpPage,
@@ -21,6 +22,7 @@ export default function AuthRouter() {
         <Route index element={<NormalSignUpPage />} />
         <Route path="brand" element={<BrandSignUpPage />} />
         <Route path="success" element={<SuccessSignUpPage />} />
+        <Route path="failed" element={<FailedPage />} />
       </Route>
     </Routes>
   );
