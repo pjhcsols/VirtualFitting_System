@@ -8,7 +8,7 @@ export interface SubmitUserFormData extends Omit<UserFormData, "address"> {
   address: string;
 }
 
-export interface UserFormData {
+export type UserFormData = {
   name: string;
   password: string;
   emailAddress: string;
@@ -22,7 +22,7 @@ export interface UserFormData {
   userImageUrl?: File | string;
 }
 
-export interface BodySize {
+export type BodySize = {
   height: number;             // 신장
   weight: number;             // 체중
   totalLength: number;        // 총장

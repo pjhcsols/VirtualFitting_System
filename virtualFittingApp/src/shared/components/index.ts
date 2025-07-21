@@ -8,7 +8,7 @@ export * from "@/shared/components/checkbox";
 
 export * from "@/shared/components/heart";
 
-export * from "@/shared/components/delivery";
+// export * from "@/shared/components/delivery";
 
 export * from "@/shared/components/header";
 

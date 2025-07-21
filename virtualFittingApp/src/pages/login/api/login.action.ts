@@ -10,7 +10,7 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
     );
 
     if (response.status === 200) {
-      Cookies.set("access-token", response.data.token);
+      Cookies.set("access-token", response.data.token); 
       Cookies.set(
         "user_info",
         JSON.stringify({
@@ -18,7 +18,7 @@ export const loginUser = async (data: LoginData): Promise<LoginResponse> => {
           loginType: response.data.type,
         })
       );
-
+      
       return response.data;
     }
 

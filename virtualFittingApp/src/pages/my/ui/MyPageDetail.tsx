@@ -1,6 +1,6 @@
   import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
-  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
+  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON, UP_ICON, DOWN_ICON} from "@/pages/my/constants";  
   import { MyHeader } from "@/shared/components/header";
   import penIcon from "./pen.png";
   import { UserFormData } from "../types/user";
@@ -10,6 +10,8 @@
   import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
   import { EmailVerificationInput } from "./EmailVerificationInput";
   import { formatTime } from "@/shared/utils/time/time.util";
+  import { fetchUserInfo } from "../api/get.action";
+  import { fetchUserProfileImage, fetchUserImage} from "@/pages/my/api/image.action";
   import { BREAKPOINTS } from "@/shared";
 
   function MypageDetail() {
@@ -22,6 +24,7 @@
       const [showCodeInput, setShowCodeInput] = useState<boolean>(false);
       const [timer, setTimer] = useState<number>(0); 
       const [isTimerActive, setIsTimerActive] = useState<boolean>(false); 
+      const [showSizeForm, setShowSizeForm] = useState<boolean>(false);
       const [formData, setFormData] = useState<UserFormData>({
             name: "",
             password: "",
@@ -30,7 +33,7 @@
             nickname: "",
             birthDate: "",
             address: {address: "", zonecode: "", detailAddress: ""},
-            size: {
+            size: { 
               height: 0,
               weight: 0,
               totalLength: 0,
@@ -51,6 +54,49 @@
       const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
       const [photoPreviewImage, setPhotoPreviewImage] = useState<string | null>(null);
       const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
+
+      useEffect(() => {
+        const loadUserInfo = async () => {
+          const res = await fetchUserInfo();
+          const userInfo = res.data;
+          setFormData({
+            name: userInfo.name ?? "",
+            password: userInfo.password ?? "",
+            emailAddress: userInfo.emailAddress ?? "",
+            phoneNumber: userInfo.phoneNumber ?? "",
+            nickname: userInfo.nickname ?? "",
+            birthDate: userInfo.birthDate?.split("T")[0] ?? "",
+            address: {
+              address: userInfo.address ?? "",
+              zonecode: "",
+              detailAddress: ""
+            },
+            size: {
+              height: userInfo.height ?? 0,
+              weight: userInfo.weight ?? 0,
+              totalLength: userInfo.totalLength ?? 0,
+              chest: userInfo.chest ?? 0,
+              shoulder: userInfo.shoulder ?? 0,
+              arm: userInfo.arm ?? 0,
+              pantsTotalLength: userInfo.pantsTotalLength ?? 0,
+              waistWidth: userInfo.waistWidth ?? 0,
+              hipWidth: userInfo.hipWidth ?? 0,
+              rise: userInfo.rise ?? 0,
+              hemWidth: userInfo.hemWidth ?? 0
+            },
+            userProfileImageUrl: userInfo.userProfileImageUrl ?? "",
+            userImageUrl: userInfo.userImageUrl ?? "",
+          });
+            
+          // const profileUrl = await fetchUserProfileImage();
+          // const photoUrl = await fetchUserImage();
+
+          // if (profileUrl) setProfilePreviewImage(profileUrl);
+          // if (photoUrl) setPhotoPreviewImage(photoUrl);
+        };
+
+        loadUserInfo();
+      }, []);
       
       useEffect(() => {
         if (!isTimerActive || timer <= 0) return;
@@ -75,7 +121,7 @@
 
       const handleSubmit = async () => {
         try {
-          await submitUserInfo(formData, profileImageFile ?? undefined, photoImageFile ?? undefined);
+          await submitUserInfo(formData);
           alert("회원정보 저장 완료!");
         } catch {
           alert("저장 실패");
@@ -158,15 +204,16 @@
                   <Label>이름</Label>
                   <Input 
                       placeholder="이름을 입력해주세요." 
-                      value={formData.name}
+                      value={formData.name || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
                   />
               </FormField>
               <FormField> 
                   <Label>비밀번호</Label>
                   <Input 
+                      type="password"
                       placeholder="비밀번호를 입력해주세요." 
-                      value={formData.password}
+                      value={formData.password || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
                   />
               </FormField>
@@ -174,7 +221,7 @@
                   <Label>휴대폰 번호</Label>
                   <Input 
                       placeholder="- 없이 입력" 
-                      value={formData.phoneNumber}
+                      value={formData.phoneNumber || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phoneNumber: e.target.value})}
                   />
               </FormField>
@@ -182,7 +229,7 @@
                   <Label>닉네임</Label>
                   <Input 
                       placeholder="닉네임을 입력해주세요." 
-                      value={formData.nickname}
+                      value={formData.nickname || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, nickname: e.target.value})}
                   />
               </FormField>
@@ -192,7 +239,7 @@
                     <TelForm>
                       <PhoneInput 
                         placeholder="이메일을 입력해주세요." 
-                        value={formData.emailAddress}
+                        value={formData.emailAddress || ""}
                         disabled={emailVerified}
                         onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, emailAddress: e.target.value })}
                       />
@@ -221,7 +268,7 @@
                   <Label>생년월일</Label>
                   <Input 
                       placeholder="YYYY-MM-DD" 
-                      value={formData.birthDate}
+                      value={formData.birthDate || ""}
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, birthDate: e.target.value})}
                   />
               </FormField>
@@ -287,66 +334,6 @@
                   </FieldWrapper>
               </FormField>
               <FormField>
-                  <Label>신체사이즈</Label>
-                  <TelForm>
-                    <SizeInput 
-                      placeholder="키   cm"
-                      value={formData.size.height === 0 ? "" : formData.size.height}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, height: Number(e.target.value)}})}
-                    />
-                    <SizeInput 
-                      placeholder="몸무게  kg" 
-                      value={formData.size.weight === 0 ? "" : formData.size.weight }
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, weight: Number(e.target.value)}})}
-                    />
-                    <SizeInput
-                      placeholder="총장  cm" 
-                      value={formData.size.totalLength === 0 ? "" : formData.size.totalLength}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, totalLength: Number(e.target.value)}})}
-                    />
-                    <SizeInput 
-                      placeholder="어깨  cm"
-                      value={formData.size.shoulder === 0 ? "" : formData.size.shoulder}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, shoulder: Number(e.target.value)}})} 
-                    />
-                    <SizeInput 
-                      placeholder="가슴둘레 cm"
-                      value={formData.size.chest === 0 ? "" : formData.size.chest}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, chest: Number(e.target.value)}})} 
-                    />
-                    <SizeInput 
-                      placeholder="팔길이  cm"
-                      value={formData.size.arm === 0 ? "" : formData.size.arm}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, arm: Number(e.target.value)}})} 
-                    />  
-                    <SizeInput 
-                      placeholder="바지총장  cm"
-                      value={formData.size.pantsTotalLength === 0 ? "" : formData.size.pantsTotalLength}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, pantsTotalLength: Number(e.target.value)}})} 
-                    /> 
-                    <SizeInput 
-                      placeholder="허리둘레  cm"
-                      value={formData.size.waistWidth === 0 ? "" : formData.size.waistWidth}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, waistWidth: Number(e.target.value)}})} 
-                    />
-                    <SizeInput 
-                      placeholder="엉덩이둘레  cm"
-                      value={formData.size.hipWidth === 0 ? "" : formData.size.hipWidth}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, hipWidth: Number(e.target.value)}})} 
-                    />
-                    <SizeInput 
-                      placeholder="밑위길이  cm"
-                      value={formData.size.rise === 0 ? "" : formData.size.rise}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, rise: Number(e.target.value)}})} 
-                    />
-                    <SizeInput 
-                      placeholder="밑단너비  cm"
-                      value={formData.size.hemWidth === 0 ? "" : formData.size.hemWidth}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, size: {...formData.size, hemWidth: Number(e.target.value)}})} 
-                    />
-                  </TelForm>
-              </FormField>
-              <FormField>
                 <Label1>사진</Label1>
                 <ImageBoxWrapper>
                   <PictureBox htmlFor="imageUpload">
@@ -367,6 +354,96 @@
                     변경 / 등록
                   </RegisterButton>
                 </ImageBoxWrapper>
+              </FormField>
+              <FormField style={{ alignItems: 'flex-start' }}>
+                <LabelWithIcon onClick={() => setShowSizeForm(prev => !prev)}>
+                  신체사이즈
+                  <ToggleIcon
+                    src={showSizeForm ? DOWN_ICON : UP_ICON}
+                    alt="토글 아이콘"
+                  />
+                </LabelWithIcon>
+                {showSizeForm && (
+                  <TelForm style={{ flexWrap: 'wrap', gap: '8px' }}>
+                    <SizeInput 
+                      placeholder="키   cm"
+                      value={formData.size.height === 0 ? "" : formData.size.height}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, height: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="몸무게  kg"
+                      value={formData.size.weight === 0 ? "" : formData.size.weight}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, weight: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput
+                      placeholder="총장  cm" 
+                      value={formData.size.totalLength === 0 ? "" : formData.size.totalLength}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, totalLength: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="어깨  cm"
+                      value={formData.size.shoulder === 0 ? "" : formData.size.shoulder}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, shoulder: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="가슴둘레 cm"
+                      value={formData.size.chest === 0 ? "" : formData.size.chest}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, chest: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="팔길이  cm"
+                      value={formData.size.arm === 0 ? "" : formData.size.arm}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, arm: Number(e.target.value) } })
+                      }
+                    />  
+                    <SizeInput 
+                      placeholder="바지총장  cm"
+                      value={formData.size.pantsTotalLength === 0 ? "" : formData.size.pantsTotalLength}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, pantsTotalLength: Number(e.target.value) } })
+                      }
+                    /> 
+                    <SizeInput 
+                      placeholder="허리둘레  cm"
+                      value={formData.size.waistWidth === 0 ? "" : formData.size.waistWidth}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, waistWidth: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="엉덩이둘레  cm"
+                      value={formData.size.hipWidth === 0 ? "" : formData.size.hipWidth}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, hipWidth: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="밑위길이  cm"
+                      value={formData.size.rise === 0 ? "" : formData.size.rise}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, rise: Number(e.target.value) } })
+                      }
+                    />
+                    <SizeInput 
+                      placeholder="밑단너비  cm"
+                      value={formData.size.hemWidth === 0 ? "" : formData.size.hemWidth}
+                      onChange={(e) =>
+                        setFormData({ ...formData, size: { ...formData.size, hemWidth: Number(e.target.value) } })
+                      }
+                    />
+                  </TelForm>
+                )}
               </FormField>
             </Form>
           </ContentWrapper>
@@ -676,4 +753,20 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
     font-size: 12px;
     font-family: "Prata-Regular";
     margin-right: 160px;
+`;
+
+const LabelWithIcon = styled.label`
+  width: 120px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  color: #202429;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+`;
+
+const ToggleIcon = styled.img`
+  width: 16px;
+  height: 16px;
 `;

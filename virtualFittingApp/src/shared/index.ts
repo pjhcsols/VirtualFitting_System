@@ -4,14 +4,14 @@ export * from "@/shared/components";
 // * action
 export * from "@/shared/action";
 
-// * config
+// * config 
 export * from "@/shared/config";
 
 // * layout
 export * from "@/shared/layout";
 
 // * types
-export * from "@/shared/types";
+// export * from "@/shared/types";
 
 // * utils
 export * from "@/shared/utils";

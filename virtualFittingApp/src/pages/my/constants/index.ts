@@ -6,4 +6,6 @@ export const STAR_FILLED_ICON = "/svg/starFilled.svg";
 export const STAR_EMPTY_ICON = "/svg/starEmpty.svg";
 export const ADD_ICON = "/svg/add.svg";
 export const CANCEL_ICON = "/svg/cancel.svg";
-export const ELLIPSIS_ICON = "/svg/ellipsis.svg"
+export const ELLIPSIS_ICON = "/svg/ellipsis.svg";
+export const UP_ICON = "/svg/buttonDown.svg";
+export const DOWN_ICON = "/svg/buttonUp.svg";
