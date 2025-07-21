@@ -30,48 +30,53 @@ function PasswordInput({ value, onChange }: LoginInputType) {
 }
 
 type SignUpInputType = {
+  title: string;
   value: string;
+  name: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onBlur: () => void;
 };
 
-function IDInput({ value, onChange }: SignUpInputType) {
+function SignUpTextInfoInput({
+  title,
+  name,
+  value,
+  onBlur,
+  onChange,
+}: SignUpInputType) {
   return (
     <InputWrapper>
       <SignUpIdInput
-        name="signupId"
+        type="text"
+        name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         required
       />
-      <DefaultOutline>ID</DefaultOutline>
+      <DefaultOutline>{title}</DefaultOutline>
     </InputWrapper>
   );
 }
 
-function NameInput({ value, onChange }: SignUpInputType) {
+function SignUpPhoneNumberInput({
+  title,
+  name,
+  value,
+  onBlur,
+  onChange,
+}: SignUpInputType) {
   return (
     <InputWrapper>
-      <SignUpNicknameInput
-        name="name"
+      <SignUpIdInput
+        type="text"
+        name={name}
         value={value}
         onChange={onChange}
+        onBlur={onBlur}
         required
       />
-      <DefaultOutline>NAME</DefaultOutline>
-    </InputWrapper>
-  );
-}
-
-function NickNameInput({ value, onChange }: SignUpInputType) {
-  return (
-    <InputWrapper>
-      <SignUpNicknameInput
-        name="nickname"
-        value={value}
-        onChange={onChange}
-        required
-      />
-      <DefaultOutline>NICKNAME</DefaultOutline>
+      <DefaultOutline>{title}</DefaultOutline>
     </InputWrapper>
   );
 }
@@ -135,13 +140,12 @@ function BirthdayInput({ value, onChange }: SignUpInputType) {
 export {
   LoginInput,
   PasswordInput,
-  IDInput,
   EmailAddressInput,
   AddressInput,
-  NickNameInput,
-  NameInput,
   PhoneNumberInput,
   BirthdayInput,
+  SignUpTextInfoInput,
+  SignUpPhoneNumberInput,
 };
 
 const InputWrapper = styled.div`
