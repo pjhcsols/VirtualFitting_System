@@ -2,8 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ProductDetail } from "@/shared";
-import { requestPayment } from "@/pages/store/api/payment.action";
-import type { ProductColorPayment, ProductSizePayment } from "@/shared"; 
+import { requestPayment, handlePaymentResponse } from "@/pages/store/api/payment.action";
+import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
 
 import {
   ProductSmallCard,
@@ -61,19 +61,39 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
   };
 
+  const [taskId, setTaskId] = useState<string | null>(null);
+
+  const handleCompletePayment = async (taskId: string, success: boolean) => {
+    try {
+      const resultMessage = await handlePaymentResponse({ taskId, success });
+      console.log("Payment result processed:", resultMessage);
+      console.log(success ? "true" : "false");
+    } catch (error) {
+      console.error("Error processing payment result:", error);
+    }
+  };
+
   const handlePurchase = async () => {
     if (!isProductColor(selectedColor)) {
       console.log("Invalid color selected.");
       return;
     }
 
-    await requestPayment({
+    const paymentResponse = await requestPayment({
       productId: product.productId,
       productColor: selectedColor,
       productSize: selectedSize,
       count: quantity,
     });
-    console.log("Purchase completed.");
+
+    if (paymentResponse?.taskId) {
+      setTaskId(paymentResponse.taskId);
+      console.log("Purchase requested. Task ID:", paymentResponse.taskId);
+
+      await handleCompletePayment(paymentResponse.taskId, true);
+    } else {
+      console.log("Failed to get taskId from payment response.");
+    }
   };
 
   return (
