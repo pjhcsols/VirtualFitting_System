@@ -1,5 +1,5 @@
 import { API_BASILIUM } from "@/shared";
-import { PaymentRequestParams, PaymentResponse } from "@/shared";
+import { PaymentRequestParams, PaymentResponse, PaymentResultParams } from "@/shared";
 
 export const requestPayment = async (
   params: PaymentRequestParams
@@ -14,3 +14,18 @@ export const requestPayment = async (
     return null;
   }
 };
+
+export async function handlePaymentResponse(params: PaymentResultParams): Promise<string> {
+  try {
+    const response = await API_BASILIUM.post("/b1/payment/response", null, {
+      params: {
+        taskId: params.taskId,
+        success: params.success,
+      },
+    });
+    return response.data;
+  } catch (error) {
+    console.error("Payment result processing failed:", error);
+    throw error;
+  }
+}
