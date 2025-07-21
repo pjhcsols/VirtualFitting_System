@@ -18,3 +18,5 @@ export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
 
 export { type CartItem } from "./cart/cart.d";
+
+export * from "@/shared/types/payment/payment.d"
