@@ -4,9 +4,10 @@ import {
   BrandSignUpPage,
   Loginpage,
   NormalSignUpPage,
-  SignupPage,
+  SuccessSignUpPage,
 } from "@/pages";
 import { LoginLayout } from "@/shared";
+import { SignUpLayout } from "@/shared/layout/auth";
 
 export default function AuthRouter() {
   const location = useLocation();
@@ -16,10 +17,10 @@ export default function AuthRouter() {
         <Route index element={<Loginpage />} />
         <Route path="admin" element={<AdminLogin />} />
       </Route>
-      <Route path="signup">
-        <Route index element={<SignupPage />} />
-        <Route path="normal" element={<NormalSignUpPage />} />
+      <Route path="signup" element={<SignUpLayout />}>
+        <Route index element={<NormalSignUpPage />} />
         <Route path="brand" element={<BrandSignUpPage />} />
+        <Route path="success" element={<SuccessSignUpPage />} />
       </Route>
     </Routes>
   );
