@@ -1,6 +1,6 @@
-export type ProductSize = "XX" | "S" | "M" | "L" | "XL" | "F";
+export type ProductSizePayment = "XX" | "S" | "M" | "L" | "XL" | "F";
 
-export type ProductColorMap =
+export type ProductColorPayment =
   | "BLACK"
   | "WHITE"
   | "GRAY"
@@ -13,8 +13,8 @@ export type ProductColorMap =
 export interface PaymentRequestParams {
   productId: number;
   count: number;
-  productSize: ProductSize;
-  productColor: ProductColorMap;
+  productSize: ProductSizePayment;
+  productColor: ProductColorPayment;
 }
 
 export interface PaymentResponse {
