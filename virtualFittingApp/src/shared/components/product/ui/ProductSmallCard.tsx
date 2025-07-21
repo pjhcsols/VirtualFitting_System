@@ -1,8 +1,19 @@
 import styled from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 
-function ProductSmallCard({ imageSrc }: { imageSrc: string }) {
-  return <ProductSmallCardContainer src={imageSrc} alt="small product" />;
+type ProductSmallCardProps = {
+  imageSrc: string;
+  onMouseEnter?: () => void;
+};
+
+function ProductSmallCard({ imageSrc, onMouseEnter }: ProductSmallCardProps) {
+  return (
+    <ProductSmallCardContainer
+      src={imageSrc}
+      alt="small product"
+      onMouseEnter={onMouseEnter}
+    />
+  );
 }
 
 const ProductSmallCardContainer = styled.img`
@@ -11,7 +22,7 @@ const ProductSmallCardContainer = styled.img`
   height: auto;
   background-color: #e0e0e0;
   cursor: pointer;
-  object-fit: contain;
+  object-fit: cover;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 60px;

@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ProductDetail } from "@/shared";
+import { requestPayment, handlePaymentResponse } from "@/pages/store/api/payment.action";
+import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
 
 import {
   ProductSmallCard,
@@ -37,12 +39,14 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       ? queryColor
       : product.productOptions[0].productColor;
 
-  const sizesSorted = product.productOptions
+  const sizesSorted: ProductSizePayment[] = product.productOptions
     .filter(po => po.productColor === selectedColor)
-    .map(po => po.productSize)
+    .map(po => po.productSize as ProductSizePayment)
     .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
 
-  const [selectedSize, setSelectedSize] = useState(product.productOptions[0].productSize);
+
+  const [selectedSize, setSelectedSize] = useState<ProductSizePayment>(product.productOptions[0].productSize as ProductSizePayment);
+
   const [quantity, setQuantity] = useState(1);
 
   const selectedProductImages =
@@ -50,14 +54,60 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       ? product.productImages.productPhotoUrls
       : [];
 
+  const [mainImage, setMainImage] = useState(selectedProductImages[0]);
+
+  // 이 부분 나중에 고쳐놓을게욥!
+  const isProductColor = (color: string): color is ProductColorPayment => {
+  return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
+  };
+
+  const [taskId, setTaskId] = useState<string | null>(null);
+
+  const handleCompletePayment = async (taskId: string, success: boolean) => {
+    try {
+      const resultMessage = await handlePaymentResponse({ taskId, success });
+      console.log("Payment result processed:", resultMessage);
+      console.log(success ? "true" : "false");
+    } catch (error) {
+      console.error("Error processing payment result:", error);
+    }
+  };
+
+  const handlePurchase = async () => {
+    if (!isProductColor(selectedColor)) {
+      console.log("Invalid color selected.");
+      return;
+    }
+
+    const paymentResponse = await requestPayment({
+      productId: product.productId,
+      productColor: selectedColor,
+      productSize: selectedSize,
+      count: quantity,
+    });
+
+    if (paymentResponse?.taskId) {
+      setTaskId(paymentResponse.taskId);
+      console.log("Purchase requested. Task ID:", paymentResponse.taskId);
+
+      await handleCompletePayment(paymentResponse.taskId, true);
+    } else {
+      console.log("Failed to get taskId from payment response.");
+    }
+  };
+
   return (
     <ProductBox>
       <ProductSmallImagesContainer>
         {selectedProductImages.map((src, i) => (
-          <ProductSmallCard key={i} imageSrc={src} />
+          <ProductSmallCard
+            key={i}
+            imageSrc={src}
+            onMouseEnter={() => setMainImage(src)}
+          />
         ))}
       </ProductSmallImagesContainer>
-      <ProductImage src={selectedProductImages[0]} alt={product.productName} />
+      <ProductImage src={mainImage} alt={product.productName} />
       <ProductInfoBox>
         <TopRow>
           <Brand>{product.brandUser.firmName}</Brand>
@@ -126,7 +176,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               quantity,
             }}
           />
-          <PurchaseButton />
+          <PurchaseButton onClick={handlePurchase} />
         </ButtonBox>
         <ButtonBox>
           <AIButton />
@@ -157,8 +207,7 @@ const ProductImage = styled.img`
   width: 100%;
   max-width: 600px;
   max-height: 750px;
-  aspect-ratio: 4 / 5;
-  object-fit: contain;
+  object-fit: cover;
   height: auto;
   order: 0;
 
@@ -194,17 +243,12 @@ const ProductSmallImagesContainer = styled.div`
 
 const ProductInfoBox = styled.div`
   width: 408px;
-  min-width: 300px;
   display: flex;
   flex-direction: column;
   
   gap: 8px;
   order: 3;
-  margin: 0px 32px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    margin: 0px 16px;
-  }
+  margin: 0px 24px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 100%;

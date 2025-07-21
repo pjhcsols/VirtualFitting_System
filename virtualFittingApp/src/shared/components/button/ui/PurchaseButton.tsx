@@ -1,10 +1,12 @@
 import styled from "styled-components";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
-function PurchaseButton() {
-  return <PurchaseBtn>
-    BUY NOW
-    </PurchaseBtn>;
+type PurchaseButtonProps = {
+  onClick?: () => void;
+};
+
+function PurchaseButton({ onClick }: PurchaseButtonProps) {
+  return <PurchaseBtn onClick={onClick}>BUY NOW</PurchaseBtn>;
 }
 
 const PurchaseBtn = styled.button`
@@ -22,9 +24,9 @@ const PurchaseBtn = styled.button`
   background: black;
   flex-direction: row;
 
-  @media (max-width: ${md}px) {
-      width: 50%;
-    }
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 50%;
+  }
 `;
 
 export { PurchaseButton };
