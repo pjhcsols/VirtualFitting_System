@@ -2,6 +2,8 @@ import styled from "styled-components";
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ProductDetail } from "@/shared";
+import { requestPayment } from "@/pages/store/api/payment.action";
+import type { ProductColorPayment, ProductSizePayment } from "@/shared"; 
 
 import {
   ProductSmallCard,
@@ -37,12 +39,14 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       ? queryColor
       : product.productOptions[0].productColor;
 
-  const sizesSorted = product.productOptions
+  const sizesSorted: ProductSizePayment[] = product.productOptions
     .filter(po => po.productColor === selectedColor)
-    .map(po => po.productSize)
+    .map(po => po.productSize as ProductSizePayment)
     .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
 
-  const [selectedSize, setSelectedSize] = useState(product.productOptions[0].productSize);
+
+  const [selectedSize, setSelectedSize] = useState<ProductSizePayment>(product.productOptions[0].productSize as ProductSizePayment);
+
   const [quantity, setQuantity] = useState(1);
 
   const selectedProductImages =
@@ -51,6 +55,26 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       : [];
 
   const [mainImage, setMainImage] = useState(selectedProductImages[0]);
+
+  // 이 부분 나중에 고쳐놓을게욥!
+  const isProductColor = (color: string): color is ProductColorPayment => {
+  return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
+  };
+
+  const handlePurchase = async () => {
+    if (!isProductColor(selectedColor)) {
+      console.log("Invalid color selected.");
+      return;
+    }
+
+    await requestPayment({
+      productId: product.productId,
+      productColor: selectedColor,
+      productSize: selectedSize,
+      count: quantity,
+    });
+    console.log("Purchase completed.");
+  };
 
   return (
     <ProductBox>
@@ -132,7 +156,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               quantity,
             }}
           />
-          <PurchaseButton />
+          <PurchaseButton onClick={handlePurchase} />
         </ButtonBox>
         <ButtonBox>
           <AIButton />
