@@ -4,10 +4,11 @@ import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import styled from "styled-components";
+import * as THREE from "three";
 
 function Loginpage() {
   const RotatingStars = () => {
-    const stars = useRef(null);
+    const stars = useRef<THREE.Points>(null);
 
     useFrame(() => {
       if (stars.current) {
@@ -17,19 +18,14 @@ function Loginpage() {
 
     return <Stars ref={stars} />;
   };
+
   return (
     <Wrapper>
-      <LeftContainer>
+      <StarBackground>
         <Canvas>
           <RotatingStars />
         </Canvas>
-        <ModelContainer>
-          <Basilium3DLogo />
-        </ModelContainer>
-      </LeftContainer>
-      <RightContainer>
-        <LoginForm />
-      </RightContainer>
+      </StarBackground>
     </Wrapper>
   );
 }
@@ -37,9 +33,19 @@ function Loginpage() {
 export { Loginpage };
 
 const Wrapper = styled.div`
+  position: relative;
   width: 100%;
   height: 100vh;
+`;
+
+const StarBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
   display: flex;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
 `;
@@ -59,7 +65,6 @@ const RightContainer = styled.div`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: #fffafa;
 `;
 
 const ModelContainer = styled.div`
