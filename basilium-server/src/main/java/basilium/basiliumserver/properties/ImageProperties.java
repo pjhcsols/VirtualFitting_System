@@ -2,8 +2,6 @@ package basilium.basiliumserver.properties;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ResourceLoader;
 import jakarta.annotation.PostConstruct;
 
 import java.io.File;
@@ -26,6 +24,14 @@ public class ImageProperties {
     private String fullProfileDir;
     private String fullReviewDir;
 
+    //image 도메인 -> db
+    private String domainUrl;
+
+    //DB에 저장할 “상대 URL prefix” -> db 저장 url -> UserImageResourceConfig
+    private String domainUploadDir;
+    private String domainProfileDir;
+    private String domainReviewDir;
+
     @PostConstruct
     private void init() {
         try {
@@ -37,6 +43,14 @@ public class ImageProperties {
             logger.info("Full Upload Dir: {}", fullUploadDir);
             logger.info("Full Profile Dir: {}", fullProfileDir);
             logger.info("Full Review Dir: {}", fullReviewDir);
+
+            domainUploadDir  = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainUploadDir);
+            domainProfileDir = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainProfileDir);
+            domainReviewDir  = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainReviewDir);
+
+            logger.info("Domain Upload Dir:  {}", domainUploadDir);
+            logger.info("Domain Profile Dir: {}", domainProfileDir);
+            logger.info("Domain Review Dir:  {}", domainReviewDir);
         } catch (Exception e) {
             logger.error("리소스를 찾을 수 없습니다: {}", e.getMessage());
             throw new RuntimeException("리소스를 찾을 수 없습니다", e);
@@ -63,7 +77,7 @@ public class ImageProperties {
 
     public String getReviewDir() { return reviewDir; }
     public void setReviewDir(String reviewDir) {
-        this.reviewDir = reviewDir.endsWith(File.separator) ? reviewDir : reviewDir + File.separator;
+        this.reviewDir = ensureTrailingSlash(reviewDir);
     }
 
     public String getFullUploadDir() {
@@ -74,5 +88,36 @@ public class ImageProperties {
         return fullProfileDir;
     }
 
-    public String getFullReviewDir()  { return fullReviewDir; }
+    public String getFullReviewDir() {
+        return fullReviewDir;
+    }
+
+    public String getDomainUrl() {
+        return domainUrl;
+    }
+    public void setDomainUrl(String domainUrl) {
+        this.domainUrl = ensureTrailingSlash(domainUrl);
+    }
+
+    public String getDomainUploadDir() {
+        return domainUploadDir;
+    }
+    public void setDomainUploadDir(String domainUploadDir) {
+        this.domainUploadDir = ensureTrailingSlash(domainUploadDir);
+    }
+
+    public String getDomainProfileDir() {
+        return domainProfileDir;
+    }
+    public void setDomainProfileDir(String domainProfileDir) {
+        this.domainProfileDir = ensureTrailingSlash(domainProfileDir);
+    }
+
+    public String getDomainReviewDir() {
+        return domainReviewDir;
+    }
+    public void setDomainReviewDir(String domainReviewDir) {
+        this.domainReviewDir = ensureTrailingSlash(domainReviewDir);
+    }
+
 }

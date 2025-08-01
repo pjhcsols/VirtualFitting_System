@@ -16,7 +16,7 @@ import java.io.IOException;
 @Configuration
 @Slf4j
 public class StaticBlockConfig {
-//b1 스웨거 제외 전부 거르기 변경
+// /b1 + 스웨거 제외 전부 거르기 변경
     @Bean
     public FilterRegistrationBean<OncePerRequestFilter> staticBlockFilter() {
         FilterRegistrationBean<OncePerRequestFilter> bean = new FilterRegistrationBean<>();
@@ -28,10 +28,6 @@ public class StaticBlockConfig {
                     throws ServletException, IOException {
                 String path = req.getRequestURI();
 
-                log.debug("[StaticBlockFilter] Incoming request: method={}, uri={}",
-                        req.getMethod(), req.getRequestURI());
-
-
                 // 1) 스웨거 UI 리소스는 차단 대상에서 제외
                 if (path.startsWith("/swagger-ui")
                         || path.startsWith("/v3/api-docs")
@@ -40,6 +36,9 @@ public class StaticBlockConfig {
                     chain.doFilter(req, res);
                     return;
                 }
+
+                log.debug("[StaticBlockFilter] Incoming request: method={}, uri={}",
+                        req.getMethod(), req.getRequestURI());
 
                 // 2) "." 요청 차단
                 if ("/".equals(path)) {
@@ -86,6 +85,33 @@ public class StaticBlockConfig {
                     return;
                 }
 
+                // actuator health 엔드포인트 차단 (모든 메서드)
+                if ("/actuator/health".equals(path)) {
+                    log.debug("[StaticBlockFilter] Block actuator health request: {}", path);
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN, "Health endpoint disabled");
+                    return;
+                }
+
+                // BOA admin 로그인 페이지 차단 (모든 메서드)
+                if ("/boaform/admin/formLogin".equals(path)) {
+                    log.debug("[StaticBlockFilter] Block BOA formLogin request: {}", path);
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN, "Not allowed BoaForm admin");
+                    return;
+                }
+
+                // /manager/text/list 요청 차단 (모든 메서드)
+                if ("/manager/text/list".equals(path)) {
+                    log.debug("[StaticBlockFilter] Block manager text list request: {}", path);
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN, "Not allowed");
+                    return;
+                }
+
+                // /manager/html 요청 차단 (모든 메서드)
+                if ("/manager/html".equals(path)) {
+                    log.debug("[StaticBlockFilter] Block manager html request: {}", path);
+                    res.sendError(HttpServletResponse.SC_FORBIDDEN, "Not allowed");
+                    return;
+                }
                 // 그 외 정상 요청
                 chain.doFilter(req, res);
             }

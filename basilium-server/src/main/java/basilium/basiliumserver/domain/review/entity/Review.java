@@ -49,6 +49,7 @@ public class Review {
     @Column(length = 1000, nullable = false)
     private String comment;
 
+    //userReviewImageUrl
     @BatchSize(size = 20)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "review_images", joinColumns = @JoinColumn(name = "review_id"))

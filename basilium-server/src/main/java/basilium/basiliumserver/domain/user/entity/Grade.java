@@ -7,5 +7,5 @@ public enum Grade {
     PLATINUM,
     DIAMOND,
     BRAND,
-    ADMIN
+    SUPER
 }
