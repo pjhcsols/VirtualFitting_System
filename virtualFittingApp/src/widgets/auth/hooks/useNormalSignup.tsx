@@ -2,7 +2,7 @@ import { type ChangeEvent, Dispatch, SetStateAction, useState } from "react";
 import type { NormalUserSignUpRequestDto } from "../types/login";
 import { NormalUserSignUp } from "../api/normalAuth.action";
 import { useNavigate } from "react-router-dom";
-import dayjs, { Dayjs } from "dayjs";
+import { Dayjs } from "dayjs";
 
 function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
   const router = useNavigate();
@@ -154,9 +154,13 @@ function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
   };
 
   const onChangeDatePicker = (value: Dayjs | null) => {
+    if (value === null) {
+      return;
+    }
+    console.log(value.utcOffset.toString());
     setSignUpInfo({
       ...signUpInfo,
-      birthDate: value?.toString() ?? "",
+      birthDate: value.utcOffset.toString() ?? "",
     });
   };
 

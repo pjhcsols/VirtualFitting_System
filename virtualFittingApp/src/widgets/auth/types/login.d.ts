@@ -40,4 +40,6 @@ export type BrandUserSignUpRequestDto = {
   firmAddress: string;
   businessRegistration: string;
   firmWebUrl: string;
+  firmEmail: string;
+  firmPhone: string;
 };

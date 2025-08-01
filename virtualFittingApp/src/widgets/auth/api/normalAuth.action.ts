@@ -1,10 +1,10 @@
-import { API_BASILIUM } from "@/shared";
+import { API_BASILIUM, NOT_LOGGED_BASILIUM_API } from "@/shared";
 import { type NormalUserSignUpRequestDto } from "../types/login";
 import { isAxiosError } from "axios";
 
 export const NormalUserSignUp = async (props: NormalUserSignUpRequestDto) => {
   try {
-    const res = await API_BASILIUM.post("/b1/normalUsers", props);
+    const res = await NOT_LOGGED_BASILIUM_API.post("/b1/normalUsers", props);
     if (res.status === 201) {
       return 201;
     }
@@ -12,5 +12,33 @@ export const NormalUserSignUp = async (props: NormalUserSignUpRequestDto) => {
     if (isAxiosError(err)) {
       return err.status;
     }
+  }
+};
+
+export const NormalUserProfileUpload = async (file: File | null) => {
+  try {
+    const res = await API_BASILIUM.post("/b1/users/me/profile-image", file);
+    if (res.status === 201) {
+      return true;
+    }
+  } catch (err) {
+    if (!isAxiosError(err)) {
+      return err;
+    }
+    return err.status;
+  }
+};
+
+export const NormalUserGetProfile = async () => {
+  try {
+    const res = await API_BASILIUM.get("/b1/users/me/profile-image");
+    if (res.status === 200) {
+      return res.data;
+    }
+  } catch (err) {
+    if (!isAxiosError(err)) {
+      return err;
+    }
+    return err.status;
   }
 };

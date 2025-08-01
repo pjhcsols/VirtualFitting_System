@@ -38,7 +38,7 @@ const ButtonWrapper = styled.div`
 const ButtonText = styled.span`
   font-size: 0.9rem;
   font-weight: 600;
-  color: black;
+  color: white;
   text-transform: uppercase;
 `;
 

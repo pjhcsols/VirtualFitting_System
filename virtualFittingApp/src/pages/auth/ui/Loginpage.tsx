@@ -21,11 +21,21 @@ function Loginpage() {
 
   return (
     <Wrapper>
-      <StarBackground>
-        <Canvas>
-          <RotatingStars />
-        </Canvas>
-      </StarBackground>
+      <InfoContainer>
+        <StarBackground>
+          <Canvas>
+            <RotatingStars />
+          </Canvas>
+        </StarBackground>
+        <LeftContainer>
+          <ModelContainer>
+            <Basilium3DLogo />
+          </ModelContainer>
+        </LeftContainer>
+        <RightContainer>
+          <LoginForm />
+        </RightContainer>
+      </InfoContainer>
     </Wrapper>
   );
 }
@@ -48,29 +58,43 @@ const StarBackground = styled.div`
   flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
+  z-index: 0;
+`;
+
+const InfoContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
 `;
 
 const LeftContainer = styled.div`
+  position: relative;
   width: 50%;
   height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
-  position: relative;
+  z-index: 10;
 `;
 
 const RightContainer = styled.div`
+  box-sizing: border-box;
+  padding: 5rem;
   width: 50%;
   height: 100%;
   display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
+  justify-content: center;
+  align-items: cneter;
 `;
 
 const ModelContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
+  position: relative;
+  width: 30%;
   display: flex;
   justify-content: center;
   align-items: center;
