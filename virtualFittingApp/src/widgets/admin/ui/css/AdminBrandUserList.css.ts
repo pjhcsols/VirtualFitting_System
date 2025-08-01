@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const UserListContainer = styled.div`
   width: 100%;
-  max-height: 600px;
+  max-height: 50rem;
   display: flex;
   flex-flow: column;
   justify-content: flex-start;

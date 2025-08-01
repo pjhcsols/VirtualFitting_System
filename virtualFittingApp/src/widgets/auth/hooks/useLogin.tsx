@@ -36,6 +36,10 @@ function useLogin() {
     router("/store");
   };
 
+  const onClickBrandSignUp = () => {
+    router("/signup/brand");
+  };
+
   const onClickSignUp = () => {
     router("/signup");
   };
@@ -46,6 +50,7 @@ function useLogin() {
     onChangeUserPassword,
     onClickSignUp,
     onSubmitLoginInfo,
+    onClickBrandSignUp,
   };
 }
 

@@ -39,7 +39,7 @@ export const AdminHeaderOptions = [
   {
     id: 0,
     title: "Brand User List",
-    href: "/admin/user",
+    href: "/admin",
   },
   {
     id: 1,

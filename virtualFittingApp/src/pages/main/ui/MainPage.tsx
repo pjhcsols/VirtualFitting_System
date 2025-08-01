@@ -10,6 +10,7 @@ import { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,7 +19,7 @@ function MainPage() {
   const lenisRef = useRef<LenisRef>(null);
 
   const RotatingStars = () => {
-    const stars = useRef(null);
+    const stars = useRef<THREE.Points>(null);
 
     useFrame(() => {
       if (stars.current) {

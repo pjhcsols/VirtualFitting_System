@@ -13,7 +13,7 @@ function AdminRouter() {
   return (
     <Routes location={location} key={location.pathname}>
       <Route path="admin" element={<AdminLayout />}>
-        <Route path="user" element={<AdminBrandControllPanel />} />
+        <Route index element={<AdminBrandControllPanel />} />
         <Route path="product" element={<AdminTotalProduct />} />
         <Route path="banner" element={<AdminBannerManager />} />
       </Route>
