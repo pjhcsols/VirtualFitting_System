@@ -1,59 +1,113 @@
+// src/main/java/basilium/basiliumserver/domain/user/controller/BrandUserController.java
 package basilium.basiliumserver.domain.user.controller;
 
-
+import basilium.basiliumserver.domain.user.dto.MyBusinessCertDto;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.service.BrandUserService;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
+import basilium.basiliumserver.global.apiResponse.ApiResponse;
+import basilium.basiliumserver.global.auth.support.AuthUser;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.*;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Optional;
 
-@Slf4j
 @RestController
-@RequestMapping("/brandUser")
-@PreAuthorize("isAuthenticated()")
+@RequestMapping("/b1/brandUsers")
+@Validated
+@RequiredArgsConstructor
 public class BrandUserController {
 
     private final BrandUserService brandUserService;
 
-    @Autowired
-    public BrandUserController(BrandUserService brandUserService) {
-        this.brandUserService = brandUserService;
-    }
-
+    /** 회원가입 */
     @PostMapping("/signup")
-    public ResponseEntity<String> createBrandUser(@RequestBody BrandUser brandUser) {
-        JoinStatus result = brandUserService.join(brandUser);
-        return new ResponseEntity<>(result.getMessage(), result.getStatus());
+    public ResponseEntity<ApiResponse<String>> signup(
+            @Valid @RequestBody BrandUser newUser) {
+        JoinStatus st = brandUserService.join(newUser);
+        return ResponseEntity.status(st.getStatus())
+                .body(ApiResponse.success(st.getMessage()));
     }
 
-
-    @GetMapping("/allBrandUsers")
-    public List<BrandUser> getAllBrandUsers() {
-        return brandUserService.getAllBrandUsers();
+    /** 내 정보 조회 */
+    @GetMapping("/me")
+    public ResponseEntity<ApiResponse<BrandUser>> getMe(
+            @AuthUser String userId) {
+        BrandUser u = brandUserService.getProfile(userId);
+        return ResponseEntity.ok(ApiResponse.success(u));
     }
 
-    @PostMapping("/modify")
-    public ResponseEntity<String> modifyBrandUser(@RequestBody BrandUser brandUser) {
-        try {
-            brandUserService.modify(brandUser);
-            return ResponseEntity.ok("브랜드 사용자 정보 수정 성공");
-        } catch (Exception e) {
-            return ResponseEntity.badRequest().body("브랜드 사용자 정보 수정 실패: " + e.getMessage());
-        }
+    /** 내 정보 수정 */
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<Void>> updateMe(
+            @AuthUser String userId,
+            @Valid @RequestBody BrandUser updated) {
+        brandUserService.modifyProfile(userId, updated);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
-    @GetMapping("/user-info")
-    public ResponseEntity<BrandUser> brandUserInfo(@RequestParam String userId) {
-        BrandUser brandUser = brandUserService.userInfoById(userId);
-        return ResponseEntity.ok(brandUser);
+    /** 내 사업자 등록증 조회 */
+    @GetMapping("/me/business-cert")
+    public ResponseEntity<ApiResponse<MyBusinessCertDto>> getMyCert(
+            @AuthUser String userId) {
+        MyBusinessCertDto dto = brandUserService.getMyBusinessCertInfo(userId);
+        return ResponseEntity.ok(ApiResponse.success(dto));
     }
 
+    /** 내 사업자 등록증 업로드 */
+    @PostMapping(value = "/me/business-cert",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> uploadMyCert(
+            @AuthUser String userId,
+            @RequestPart("file") MultipartFile file) {
+        String fn = brandUserService.uploadBusinessCert(userId, file);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success(fn));
+    }
+
+    /** 관리자: 사업자 등록증 수정 */
+    @PutMapping(value = "/{userNumber}/business-cert",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<ApiResponse<String>> adminUpdateCert(
+            @AuthUser String adminId,
+            @PathVariable Long userNumber,
+            @RequestPart("file") MultipartFile file) {
+        String fn = brandUserService.adminUpdateBusinessCert(adminId, userNumber, file);
+        return ResponseEntity.ok(ApiResponse.success(fn));
+    }
+
+    /** 관리자: 사업자 등록증 삭제 */
+    @DeleteMapping("/{userNumber}/business-cert")
+    public ResponseEntity<ApiResponse<Void>> adminDeleteCert(
+            @AuthUser String adminId,
+            @PathVariable Long userNumber) {
+        brandUserService.adminDeleteBusinessCert(adminId, userNumber);
+        return ResponseEntity.noContent().build();
+    }
+
+    /** 관리자: 판매 권한 설정 */
+    @PatchMapping("/{userNumber}/permissions")
+    public ResponseEntity<ApiResponse<Void>> adminSetPermission(
+            @AuthUser String adminId,
+            @PathVariable Long userNumber,
+            @RequestParam boolean saleAllowed) {
+        brandUserService.adminSetSaleAllowed(adminId, userNumber, saleAllowed);
+        return ResponseEntity.ok(ApiResponse.success());
+    }
+
+    /** 관리자: 전체 브랜드 유저 조회 */
+    @GetMapping("/all")
+    public ResponseEntity<ApiResponse<List<BrandUser>>> listAll() {
+        List<BrandUser> list = brandUserService.getAllBrandUsers();
+        return ResponseEntity.ok(ApiResponse.success(list));
+    }
+
+    // 기타 브랜드 유저 상품 등록 삭제 수정 기능 로직 구현
     //브랜드 user id로 user number를 찾음
     @GetMapping("/findUserNumberById")
     public ResponseEntity<String> findUserNumberById(@RequestParam String userId) {
@@ -69,8 +123,6 @@ public class BrandUserController {
         return brandUserOptional.map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
-
-    // 기타 브랜드 유저 상품 등록 삭제 수정 기능 로직 구현
 
     //스케줄러 용
     @GetMapping("/findById/{userId}")

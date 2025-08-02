@@ -19,10 +19,12 @@ public class ImageProperties {
     private String uploadDir;
     private String profileDir;
     private String reviewDir;
+    private String brandDir;
 
     private String fullUploadDir;
     private String fullProfileDir;
     private String fullReviewDir;
+    private String fullBusinessRegDir;
 
     //image 도메인 -> db
     private String domainUrl;
@@ -31,22 +33,25 @@ public class ImageProperties {
     private String domainUploadDir;
     private String domainProfileDir;
     private String domainReviewDir;
+    private String domainBrandDir;
 
     @PostConstruct
     private void init() {
         try {
             // 파일 시스템 경로로 절대 경로 변환
-            this.fullUploadDir = ensureTrailingSlash(new File(uploadDir).getAbsolutePath());
-            this.fullProfileDir = ensureTrailingSlash(new File(profileDir).getAbsolutePath());
-            this.fullReviewDir  = ensureTrailingSlash(new File(reviewDir).getAbsolutePath());
+            fullUploadDir      = ensureSlash(new File(uploadDir).getAbsolutePath());
+            fullProfileDir     = ensureSlash(new File(profileDir).getAbsolutePath());
+            fullReviewDir      = ensureSlash(new File(reviewDir).getAbsolutePath());
+            fullBusinessRegDir = ensureSlash(new File(brandDir).getAbsolutePath());
 
             logger.info("Full Upload Dir: {}", fullUploadDir);
             logger.info("Full Profile Dir: {}", fullProfileDir);
             logger.info("Full Review Dir: {}", fullReviewDir);
 
-            domainUploadDir  = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainUploadDir);
-            domainProfileDir = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainProfileDir);
-            domainReviewDir  = ensureTrailingSlash(domainUrl) + ensureTrailingSlash(domainReviewDir);
+            domainUploadDir   = ensureSlash(domainUrl) + ensureSlash(domainUploadDir);
+            domainProfileDir  = ensureSlash(domainUrl) + ensureSlash(domainProfileDir);
+            domainReviewDir   = ensureSlash(domainUrl) + ensureSlash(domainReviewDir);
+            domainBrandDir    = ensureSlash(domainUrl) + ensureSlash(domainBrandDir);
 
             logger.info("Domain Upload Dir:  {}", domainUploadDir);
             logger.info("Domain Profile Dir: {}", domainProfileDir);
@@ -57,67 +62,35 @@ public class ImageProperties {
         }
     }
 
-    private String ensureTrailingSlash(String path) {
+    private String ensureSlash(String path) {
         return path.endsWith("/") ? path : path + "/";
     }
 
-    public String getUploadDir() {
-        return uploadDir;
-    }
-    public void setUploadDir(String uploadDir) {
-        this.uploadDir = ensureTrailingSlash(uploadDir);
-    }
-
-    public String getProfileDir() {
-        return profileDir;
-    }
-    public void setProfileDir(String profileDir) {
-        this.profileDir = ensureTrailingSlash(profileDir);
-    }
-
+    // getters & setters
+    public String getUploadDir() { return uploadDir; }
+    public void setUploadDir(String uploadDir) { this.uploadDir = ensureSlash(uploadDir); }
+    public String getProfileDir() { return profileDir; }
+    public void setProfileDir(String profileDir) { this.profileDir = ensureSlash(profileDir); }
     public String getReviewDir() { return reviewDir; }
-    public void setReviewDir(String reviewDir) {
-        this.reviewDir = ensureTrailingSlash(reviewDir);
-    }
+    public void setReviewDir(String reviewDir) { this.reviewDir = ensureSlash(reviewDir); }
+    public String getBrandDir() { return brandDir; }
+    public void setBrandDir(String brandDir) { this.brandDir = ensureSlash(brandDir); }
 
-    public String getFullUploadDir() {
-        return fullUploadDir;
-    }
+    public String getFullUploadDir() { return fullUploadDir; }
+    public String getFullProfileDir() { return fullProfileDir; }
+    public String getFullReviewDir() { return fullReviewDir; }
+    public String getFullBusinessRegDir() { return fullBusinessRegDir; }
 
-    public String getFullProfileDir() {
-        return fullProfileDir;
-    }
+    public String getDomainUrl() { return domainUrl; }
 
-    public String getFullReviewDir() {
-        return fullReviewDir;
-    }
-
-    public String getDomainUrl() {
-        return domainUrl;
-    }
-    public void setDomainUrl(String domainUrl) {
-        this.domainUrl = ensureTrailingSlash(domainUrl);
-    }
-
-    public String getDomainUploadDir() {
-        return domainUploadDir;
-    }
-    public void setDomainUploadDir(String domainUploadDir) {
-        this.domainUploadDir = ensureTrailingSlash(domainUploadDir);
-    }
-
-    public String getDomainProfileDir() {
-        return domainProfileDir;
-    }
-    public void setDomainProfileDir(String domainProfileDir) {
-        this.domainProfileDir = ensureTrailingSlash(domainProfileDir);
-    }
-
-    public String getDomainReviewDir() {
-        return domainReviewDir;
-    }
-    public void setDomainReviewDir(String domainReviewDir) {
-        this.domainReviewDir = ensureTrailingSlash(domainReviewDir);
-    }
+    public void setDomainUrl(String domainUrl) { this.domainUrl = ensureSlash(domainUrl); }
+    public String getDomainUploadDir() { return domainUploadDir; }
+    public void setDomainUploadDir(String domainUploadDir) { this.domainUploadDir = ensureSlash(domainUploadDir); }
+    public String getDomainProfileDir() { return domainProfileDir; }
+    public void setDomainProfileDir(String domainProfileDir) { this.domainProfileDir = ensureSlash(domainProfileDir); }
+    public String getDomainReviewDir() { return domainReviewDir; }
+    public void setDomainReviewDir(String domainReviewDir) { this.domainReviewDir = ensureSlash(domainReviewDir); }
+    public String getDomainBrandDir() { return domainBrandDir; }
+    public void setDomainBrandDir(String domainBrandDir) { this.domainBrandDir = ensureSlash(domainBrandDir); }
 
 }

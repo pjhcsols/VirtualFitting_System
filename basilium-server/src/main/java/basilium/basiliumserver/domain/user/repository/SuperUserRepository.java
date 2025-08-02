@@ -13,7 +13,6 @@ public interface SuperUserRepository extends JpaRepository<SuperUser, Long> {
 
     // 기존 메서드 시그니처 유지
     Optional<SuperUser> findById(String id);
-
     Optional<SuperUser> findByEmailAddress(String emailAddress);
 
     @Query("SELECT m.userImageUrl FROM SuperUser m")
@@ -30,29 +29,3 @@ public interface SuperUserRepository extends JpaRepository<SuperUser, Long> {
 
 
 }
-
-
-/*
-import basilium.basiliumserver.user.domain.SuperUser;
-
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-
-public interface SuperUserRepository {
-    long count();
-    void modify(SuperUser superUser);
-    List<SuperUser> getAllSuperUsers();
-    SuperUser save(SuperUser superUser);
-    Optional<SuperUser> findById(String id);
-    Optional<SuperUser> findByEmail(String emailAddress);
-
-    List<SuperUser> findByUserImageUrlIn(Set<String> imageUrls);
-
-    List<String> getAllUserImageUrls();
-    List<SuperUser> findByUserImageUrlsIn(Set<String> imageUrls);
-    List<String> getAllUserProfileUrls();
-    List<SuperUser> findByUserProfileUrlsIn(Set<String> imageUrls);
-}
-
- */

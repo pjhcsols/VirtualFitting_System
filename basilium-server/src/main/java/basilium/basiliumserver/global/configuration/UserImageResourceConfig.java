@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /*
-* /Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_1713958965868_mysql.png ->
+* /Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_20250801153000.png ->
 * http://basilium.co.kr/b1/images/userImageStorage/brand01_1713958965868_mysql.png
 * url 매핑
 */
@@ -39,6 +39,8 @@ public class UserImageResourceConfig implements WebMvcConfigurer {
                 .setCachePeriod(3600);
 
         // 사업자 등록증
-
+        registry.addResourceHandler("/b1/images/businessCertificateImageStorage/**")
+                .addResourceLocations("file:" + imageProperties.getFullBusinessRegDir())
+                .setCachePeriod(3600);
     }
 }

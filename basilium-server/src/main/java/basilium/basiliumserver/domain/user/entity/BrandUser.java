@@ -1,5 +1,5 @@
+// src/main/java/basilium/basiliumserver/domain/user/entity/BrandUser.java
 package basilium.basiliumserver.domain.user.entity;
-
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,18 +11,68 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class BrandUser extends User{
-    @Column(name = "firm_name")
+public class BrandUser extends User {
+    @Column(name = "firm_name", nullable = false)
     private String firmName;
-    private String firmAddress; //회사주소
-    private String businessRegistration; //사업자등록번호
-    private String businessRegistrationCertificateImageUrl; // 사업자 이미지 url 저장
+
+    @Column(nullable = false)
+    private String firmAddress;
+
+    @Column(name = "business_registration", nullable = false)
+    private String businessRegistration;
+
+    @Column(length = 500)
+    private String businessRegistrationCertificateImageUrl;
+
+    @Column(length = 500)
     private String firmWebUrl;
+
+    @Column(nullable = false)
     private String firmEmail;
+
+    @Column(nullable = false)
     private String firmPhone;
 
-/*
-    @OneToMany(mappedBy = "brandUser", cascade = CascadeType.REMOVE) //CascadeType.REMOVE를 설정하여 BrandUser가 삭제될 때 관련된 Product도 함께 삭제
-    private List<Product> products = new ArrayList<>(); // BrandUser가 소유한 Product 목록
- */
+    /** 판매 가능 여부. 등록증 수정 시 false로 리셋 */
+    @Column(nullable = false)
+    private boolean saleAllowed = false;
+
+    public BrandUser(String id,
+                     String pwd,
+                     String email,
+                     String phone,
+                     String firmName,
+                     String firmAddress,
+                     String businessRegistration) {
+        super(id, pwd, email, phone, Grade.BRAND, Provider.BRAND);
+        this.firmName = firmName;
+        this.firmAddress = firmAddress;
+        this.businessRegistration = businessRegistration;
+    }
+
+    /**
+     * 프로필 정보 일괄 업데이트 (Dirty Checking)
+     */
+    public void updateProfile(String firmName,
+                              String firmAddress,
+                              String businessRegistration,
+                              String firmWebUrl,
+                              String firmEmail,
+                              String firmPhone) {
+        this.firmName = firmName;
+        this.firmAddress = firmAddress;
+        this.businessRegistration = businessRegistration;
+        this.firmWebUrl = firmWebUrl;
+        this.firmEmail = firmEmail;
+        this.firmPhone = firmPhone;
+    }
+
+    public void updateBusinessCert(String filename) {
+        this.businessRegistrationCertificateImageUrl = filename;
+        this.saleAllowed = false;
+    }
+
+    public void updateSaleAllowed(boolean allowed) {
+        this.saleAllowed = allowed;
+    }
 }

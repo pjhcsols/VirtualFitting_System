@@ -39,7 +39,7 @@ public abstract class User {
 
     String userImageUrl;
 
-    @Column(length = 1000)
+    @Column(length = 500)
     String userProfileImageUrl;
 
     /**
