@@ -1,37 +1,79 @@
+// src/main/java/basilium/basiliumserver/domain/user/entity/SuperUser.java
 package basilium.basiliumserver.domain.user.entity;
 
-import jakarta.persistence.Entity;
+import jakarta.persistence.*;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
+import org.hibernate.annotations.BatchSize;
 
-//name, 직책
-// 일반 유저의 등급 변화 가능해야됨
-// 브랜드 유저의 등급 변화 가능해야됨
-// 브랜드 유저에게 상품 판매 권한과 막기 줘야됨
-// 브랜드 유저의 사업자 등록증을 삭제+디비 컬럼을 비우게 하고 재등록하는 기능을 할수있어야된다
-// 광고 배너 이미지 url 컬럼을 만들고 이미지 스토리지도 추가해야됨
-/*
--브랜드 유저 허락 권한
-스토어페이지에 슬라이드 이미지에 admin 어트리뷰트 추가
-// 일반 유저의 등급 변화 수정 가능해야됨
-// 브랜드 유저의 등급 변화 가능해야됨
- */
+import java.util.ArrayList;
+import java.util.List;
 
-@Getter
-@Setter
 @Entity
+@Getter
+@NoArgsConstructor
 public class SuperUser extends User {
-    //직책
-    //부서
-    //담당직무
-    // 광고 배너 이미지 url 컬럼을 만들고 이미지 스토리지도 추가해야됨
 
-    public SuperUser() {
+    @Column(length = 100, nullable = false)
+    private String name;
 
-        super();
+    @Column(length = 100)
+    private String position;
+
+    @Column(length = 100)
+    private String department;
+
+    @Column(length = 200)
+    private String jobRole;
+
+    /** 다중 배너 이미지 파일명(최대 10) */
+    @BatchSize(size = 10)
+    @ElementCollection(fetch = FetchType.LAZY)
+    @CollectionTable(
+            name = "superuser_banners",
+            joinColumns = @JoinColumn(name = "user_number")
+    )
+    @Column(name = "banner_image_file_urls", length = 500)
+    private List<String> bannerImageFileUrls = new ArrayList<>();
+
+    public SuperUser(String id,
+                     String pwd,
+                     String email,
+                     String phone,
+                     String name,
+                     String position,
+                     String department,
+                     String jobRole) {
+        super(id, pwd, email, phone, Grade.SUPER, Provider.SUPER);
+        this.name = name;
+        this.position = position;
+        this.department = department;
+        this.jobRole = jobRole;
     }
 
-    public SuperUser(String id, String pwd, String email, String phone) {
-        super(id, pwd, email, phone, Grade.SUPER, Provider.SUPER);
+    /** 가입·저장 직전에 권한 자동 설정 */
+    @PrePersist
+    private void prePersist() {
+        setUserGrade(Grade.SUPER);
+        setLoginType(Provider.SUPER);
+    }
+
+    /** 프로필 업데이트 (더티체킹) */
+    public void updateProfile(String name,
+                              String position,
+                              String department,
+                              String jobRole) {
+        this.name = name;
+        this.position = position;
+        this.department = department;
+        this.jobRole = jobRole;
+    }
+
+    public void addBanner(String fileName) {
+        this.bannerImageFileUrls.add(fileName);
+    }
+
+    public void removeBanner(String fileName) {
+        this.bannerImageFileUrls.remove(fileName);
     }
 }

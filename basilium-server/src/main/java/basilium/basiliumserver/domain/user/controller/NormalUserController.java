@@ -19,10 +19,11 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+// 일반 유저의 등급 변화 가능해야됨
+//@PreAuthorize("isAuthenticated()")
 @Slf4j
 @RestController
 @RequestMapping("/b1/normalUsers")
-@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class NormalUserController {
 
@@ -44,8 +45,9 @@ public class NormalUserController {
      * GET /b1/users
      * 전체 노말 유저 목록 조회
      */
+    @PreAuthorize("hasRole('SUPER') and #userId == authentication.principal")
     @GetMapping
-    public ResponseEntity<ApiResponse<List<NormalUser>>> list() {
+    public ResponseEntity<ApiResponse<List<NormalUser>>> list(@AuthUser String userId) {
         List<NormalUser> users = normalUserService.getAllNormalUsers();
         return ResponseEntity.ok(ApiResponse.success(users));
     }

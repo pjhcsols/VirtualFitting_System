@@ -24,10 +24,10 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Optional;
 
+//@PreAuthorize("isAuthenticated()")
 @Slf4j
 @RestController
 @RequestMapping("/b1/users")
-@PreAuthorize("isAuthenticated()")
 @RequiredArgsConstructor
 public class UserStateController {
 

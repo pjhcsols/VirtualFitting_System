@@ -29,6 +29,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     // 상품 생성 (POST /api/products)
+    // 브랜드 유저 활성화 상태 검증 활성화 되어있지않으면 불가능하게
     @PostMapping
     public ResponseEntity<String> createProduct(@RequestBody Product product) {
         productService.addProduct(product);

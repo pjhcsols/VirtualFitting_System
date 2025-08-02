@@ -5,6 +5,8 @@ import basilium.basiliumserver.global.auth.exception.AuthException;
 import basilium.basiliumserver.global.auth.exception.AuthExceptionType;
 import java.util.Arrays;
 
+//Provider.BRAND.name() 대문자
+//getProviderName() 소문자
 public enum Provider {
     NORMAL("normal"),
     BRAND("brand"),
@@ -17,6 +19,10 @@ public enum Provider {
 
     Provider(String providerName) {
         this.providerName = providerName;
+    }
+
+    public String getProviderName() {
+        return providerName;
     }
 
     public static Provider from(String name) {

@@ -48,7 +48,7 @@ INSERT INTO normal_user (
 ) VALUES (
              2, 'example', '1q2w3e4r!R', 'full@example.com', '010-7777-8888',
              0, 0,
-             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/example_1713958965868_mysql.png',
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_1713958965868_mysql.png',
              'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==',
              '김철수', 'chulsu', 'MALE', '1988-08-08T08:00:00', '서울특별시 마포구',
              70, 90, 45, 60,
@@ -84,7 +84,7 @@ INSERT INTO brand_user (
              '010-1234-5678',
              5,
              1,
-             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/brand01_20250801153000.png',
+             '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_20250801123000.png',
              '프로필지워짐1',
              '박한솔컴퍼니',
              '대구광역시 달서구 저승길 6길',
@@ -92,7 +92,7 @@ INSERT INTO brand_user (
              'http://phs-컴퍼니',
              'example@naver.com',
              '010-1234-5678',
-             'brand01_20250801153000.png',
+             'super_20250801123000.png',
              TRUE
          );
 
@@ -138,17 +138,75 @@ INSERT INTO brand_user (
 COMMIT;
 
 
--- SuperUser (기본 Grade.ADMIN=6, Provider.SUPER=2)
+-- SuperUser (기본 Grade.SUPER=6, Provider.SUPER=2)
 INSERT INTO super_user (
-    user_number, id, password, email_address, phone_number,
-    user_grade, login_type,
-    user_image_url, user_profile_image_url
+    user_number,
+    id,
+    password,
+    email_address,
+    phone_number,
+    user_grade,
+    login_type,
+    user_image_url,
+    user_profile_image_url,
+    name,
+    position,
+    department,
+    job_role
 ) VALUES (
-             1, 'super_example', '1q2w3e4r!R', 'example@naver.com', '010-1234-5678',
-             6, 2,
+             1,
+             'phs',
+             '1q2w3e4r!R',
+             'phs@naver.com',
+             '010-0000-0000',
+             6,    -- Grade.SUPER
+             2,    -- Provider.SUPER
              '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png',
-             'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1'
+             'L1VzZXJzL2hhbnNvbC9EZXNrdG9wL1ZpcnR1YWxGaXR0aW5nX1N5c3RlbS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWxlSW1hZ2VTdG9yYWdlL2V4YW1wbGVfMTcxODEyMjY0NzAxM19hLnBuZw==날라감1',
+             '박한솔',   -- 예시 이름
+             'CEO',   -- 예시 직책
+             '개발 사업부',   -- 예시 부서
+             'Backend Developer' -- 예시 담당직무
          );
+
+INSERT INTO superuser_banners (user_number, banner_image_file_urls)
+VALUES (1, 'super_20250801123000.png');
+
+COMMIT;
+
+INSERT INTO super_user (
+    user_number,
+    id,
+    password,
+    email_address,
+    phone_number,
+    user_grade,
+    login_type,
+    user_image_url,
+    user_profile_image_url,
+    name,
+    position,
+    department,
+    job_role
+) VALUES (
+             2,
+             'super_ad',
+             '1q2w3e4r!R',
+             'ad@naver.com',
+             '010-2222-2222',
+             6,    -- Grade.SUPER
+             2,    -- Provider.SUPER
+             'super_날라감20250801123000.png',
+             'super_날라감20250801123000.png',
+             'AD',   -- 예시 이름
+             'AD관리자',   -- 예시 직책
+             'AD운영부',   -- 예시 부서
+             'AD 시스템 총괄' -- 예시 담당직무
+         );
+
+INSERT INTO superuser_banners (user_number, banner_image_file_urls)
+VALUES (2, 'super_20250801123000.png');
+
 COMMIT;
 
 -- 포인트 테이블에 데이터 추가
@@ -614,7 +672,7 @@ VALUES
 INSERT INTO review_images
 (review_id, image_url)
 VALUES
-    (1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png'),
+    (1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png'),
     (1, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_1713958965868_mysql1.png');
 
 -- 예시 2: review_id = 2 (이미지 3장)
@@ -624,11 +682,11 @@ VALUES
     (2, 1, 2, 'S', 'GREEN', 3, '평범해요', '생각보다 얇아서 봄에만 입을 것 같아요.', '2025-06-07T14:12:05', NULL);
 
 INSERT INTO review_images (review_id, image_url) VALUES
-                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png'),
-                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png'),
-                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png'),
-                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png'),
-                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png');
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png'),
+                                                     (2, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png');
 
 -- 예시 3: review_id = 3 (이미지 1장)
 INSERT INTO review
@@ -637,7 +695,7 @@ VALUES
     (3, 3, 2, 'XL', 'BLACK', 4, '디자인 굿', '블랙 색상이 정말 멋집니다.', '2025-06-06T09:45:30', NULL);
 
 INSERT INTO review_images (review_id, image_url) VALUES
-    (3, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/brand01_20250801153000.png');
+    (3, '/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png');
 
 
 
