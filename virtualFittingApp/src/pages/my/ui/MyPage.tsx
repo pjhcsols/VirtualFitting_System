@@ -5,11 +5,12 @@ import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
 import { BREAKPOINTS} from "@/shared";
+import Cookies from "js-cookie";
 import arrowImg from "./arrow.png";
 
 function MyPage() {
   const navigate = useNavigate();
-  const userName = "user1";
+  const userId = Cookies.get("userId") as string;
   const [reviewCount, setReviewCount] = useState(0);
 
   useEffect(() => {
@@ -27,7 +28,7 @@ function MyPage() {
         <UserInfoSection>
           <UserInfo onClick={() => navigate("/mypage/detail")}>
             <Avatar src={MYUSER_ICON} alt="유저 이미지" />
-            <UserName>{getMaskedUserName(userName)}</UserName>
+            <UserName>{getMaskedUserName(userId)}</UserName>
             <ArrowImg2 src={arrowImg} alt=">" />
           </UserInfo>
         </UserInfoSection>
