@@ -21,3 +21,8 @@ export interface PaymentResponse {
   taskId: string;
   delayTime: string;
 }
+
+export interface PaymentResultParams {
+  taskId: string;
+  success: boolean;
+}

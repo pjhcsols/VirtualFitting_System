@@ -1,8 +1,9 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useRef,useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import type { ProductDetail } from "@/shared";
-import { requestPayment, handlePaymentResponse } from "@/pages/store/api/payment.action";
+import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
+import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
 
 import {
@@ -30,9 +31,13 @@ type ProductContainerProps = {
   onColorChange?: (color: string) => void;
 };
 
+const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
+const customerKey = "wwXaKkcYycdO5JSA1QlWV";
+
 function ProductContainer({ product, productColors, onColorChange }: ProductContainerProps) {
   const [searchParams] = useSearchParams();
   const queryColor = searchParams.get("color");
+  const [showPaymentTab, setShowPaymentTab] = useState(false);
 
   const selectedColor =
     queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
@@ -61,7 +66,50 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
   };
 
+  const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
+  const paymentMethodsWidgetRef = useRef<any>(null); 
+
+  useEffect(() => {
+    (async () => {
+      const widget = await loadPaymentWidget(clientKey, customerKey);
+      paymentWidgetRef.current = widget;
+    })();
+  }, []);
+
+  useEffect(() => {
+    if (showPaymentTab && paymentWidgetRef.current) {
+      const widget = paymentWidgetRef.current.renderPaymentMethods(
+        "#payment-methods",
+        product.productPrice
+      );
+      paymentMethodsWidgetRef.current = widget;
+    }
+  }, [showPaymentTab]);
+
+
+  const handlePurchaseClick = () => {
+    setShowPaymentTab(true);
+  };
+
+  const closeTab = () => {
+    setShowPaymentTab(false);
+  };
+
   const [taskId, setTaskId] = useState<string | null>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
+
+  const onPaymentComplete = async (success: boolean) => {
+    setShowCheckout(false);
+
+    if (taskId) {
+      try {
+        await handlePaymentResponse({ taskId, success });
+        console.log("Payment result processed");
+      } catch (error) {
+        console.error("Error processing payment result", error);
+      }
+    }
+  };
 
   const handleCompletePayment = async (taskId: string, success: boolean) => {
     try {
@@ -79,20 +127,35 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       return;
     }
 
-    const paymentResponse = await requestPayment({
+    if (!paymentMethodsWidgetRef.current) {
+      console.log("결제수단이 선택되지 않았습니다. 결제수단을 선택해주세요.");
+      alert("결제수단을 선택해 주세요.");
+      return;
+    }
+
+    const paymentResponse = await createPaymentReservation({
       productId: product.productId,
       productColor: selectedColor,
       productSize: selectedSize,
       count: quantity,
     });
 
-    if (paymentResponse?.taskId) {
-      setTaskId(paymentResponse.taskId);
-      console.log("Purchase requested. Task ID:", paymentResponse.taskId);
-
-      await handleCompletePayment(paymentResponse.taskId, true);
-    } else {
+    if (!paymentResponse?.taskId) {
       console.log("Failed to get taskId from payment response.");
+      return;
+    }
+
+    try {
+      await paymentWidgetRef.current?.requestPayment({
+        orderId: paymentResponse.taskId,
+        orderName: product.productName,
+        customerName: "고객이름",
+        customerEmail: "customer@example.com",
+        successUrl: `${window.location.origin}/payment-success`,
+        failUrl: `${window.location.origin}/payment-fail`,
+      });
+    } catch (error) {
+      console.error("Payment request failed:", error);
     }
   };
 
@@ -176,7 +239,17 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               quantity,
             }}
           />
-          <PurchaseButton onClick={handlePurchase} />
+        <PurchaseButton onClick={handlePurchaseClick} />
+        {showPaymentTab && (
+          <TabOverlay onClick={closeTab}>
+            <TabContent onClick={e => e.stopPropagation()}>
+              <h3>결제 수단 선택</h3>
+              <div id="payment-methods" style={{ marginTop: 20 }}></div>
+              <button onClick={handlePurchase}>결제 시작</button>
+              <CloseButton onClick={closeTab}>닫기</CloseButton>
+            </TabContent>
+          </TabOverlay>
+        )}
         </ButtonBox>
         <ButtonBox>
           <AIButton />
@@ -480,5 +553,31 @@ const ButtonBox = styled.div`
     align-items: center;
   }
 `; 
+
+const TabOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const TabContent = styled.div`
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  min-width: 460px;
+  max-height: 520px;
+  overflow-y: auto;
+`;
+
+const CloseButton = styled.button`
+  margin-top: 16px;
+`;
 
 export { ProductContainer };
