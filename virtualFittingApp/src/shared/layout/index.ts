@@ -12,6 +12,4 @@ export * from "@/shared/layout/shopping-cart/ShoppingCartLayout";
 
 export * from "@/shared/layout/brand/BrandLayout";
 
-export { LoginLayout } from "@/shared/layout/login/LoginLayout";
-
 export * from "@/shared/layout/order-list/OrderListLayout";

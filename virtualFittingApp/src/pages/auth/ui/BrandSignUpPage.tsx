@@ -7,21 +7,23 @@ import styled from "styled-components";
 
 function BrandSignUpPage() {
   const {
-    onSubmitSignUp,
+    brandUserSignUp,
     step,
+    businessRegistration,
+    setBusinessRegistration,
+    onSubmitSignUp,
     onClickNextStep,
     onClickPrevStep,
-    brandUserSignUp,
     onChangeEmail,
     onChangeId,
     onChangePassword,
     onChangePhoneNumber,
+    onChangeRegistration,
     onChangeFirmAddress,
     onChangeFirmEmail,
     onChangeFirmName,
     onChangeFirmPhoneNumber,
     onChangeFirmWebUrl,
-    onChnageBusinessRegistration,
     onClickCancel,
   } = useBrandSignup();
   return (
@@ -46,7 +48,9 @@ function BrandSignUpPage() {
       {step === 1 && (
         <BrandUserCompanySignUpPanel
           brandUserInfo={brandUserSignUp}
-          onChangeBusinessRegistration={onChnageBusinessRegistration}
+          files={businessRegistration}
+          setFiles={setBusinessRegistration}
+          onChangeRegistration={onChangeRegistration}
           onChangeFirmAddress={onChangeFirmAddress}
           onChangeFirmEmail={onChangeFirmEmail}
           onChangeFirmName={onChangeFirmName}
@@ -54,6 +58,7 @@ function BrandSignUpPage() {
           onChangeFirmWebUrl={onChangeFirmWebUrl}
         />
       )}
+      {step === 2 && <div></div>}
       <ButtonContainer>
         <PrevButton onClick={step === 1 ? onSubmitSignUp : onClickNextStep}>
           {step === 1 ? "신청" : "다음"}

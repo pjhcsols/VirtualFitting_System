@@ -39,7 +39,9 @@ export type BrandUserSignUpRequestDto = {
   firmName: string;
   firmAddress: string;
   businessRegistration: string;
+  businessRegistrationCertificateImageUrl: string;
   firmWebUrl: string;
   firmEmail: string;
   firmPhone: string;
+  saleAllowed: false;
 };
