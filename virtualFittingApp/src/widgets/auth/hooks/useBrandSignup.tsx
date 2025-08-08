@@ -1,7 +1,16 @@
 import { type ChangeEvent, useState } from "react";
 import { BrandUserSignUpRequestDto } from "../types/login";
-import { BrandUserSignUp } from "../api/brandAuth.action";
+import {
+  brandUserSignUpApi,
+  updateUserInfo,
+  uploadBusinessRegistration,
+} from "../api/brandAuth.action";
 import { useNavigate } from "react-router-dom";
+import { FileItem } from "@/shared";
+import { isAxiosError } from "axios";
+
+// onChange 함수들 조금 더 깔끔하게 보낼 수 있도록 설정
+// page layer 에서 너무 많은 prop 을 전달한다.
 
 function useBrandSignup() {
   const router = useNavigate();
@@ -20,11 +29,18 @@ function useBrandSignup() {
       firmAddress: "",
       firmWebUrl: "",
       businessRegistration: "",
+      businessRegistrationCertificateImageUrl: "",
       firmEmail: "",
       firmPhone: "",
+      saleAllowed: false,
     });
-  const [businessRegistration, setBusinessRegistration] = useState<File>();
-  const [step, setStep] = useState<0 | 1>(0);
+  const [businessRegistration, setBusinessRegistration] = useState<FileItem[]>(
+    [],
+  );
+  const [step, setStep] = useState<0 | 1 | 2>(0);
+  const [stateMsg, setStateMsg] = useState<
+    "idle" | "signUp" | "upload" | "update" | "complete"
+  >("idle");
 
   const onChangeId = (e: ChangeEvent<HTMLInputElement>) => {
     setBrandUserSignUp({
@@ -54,9 +70,12 @@ function useBrandSignup() {
     });
   };
 
-  const onChangeUserImageUrl = () => {};
-
-  const onChangeUserProfileImageUrl = () => {};
+  const onChangeRegistration = (e: ChangeEvent<HTMLInputElement>) => {
+    setBrandUserSignUp({
+      ...brandUserSignUp,
+      businessRegistration: e.target.value,
+    });
+  };
 
   const onChangeFirmName = (e: ChangeEvent<HTMLInputElement>) => {
     setBrandUserSignUp({
@@ -79,15 +98,6 @@ function useBrandSignup() {
     });
   };
 
-  const onChnageBusinessRegistration = (e: ChangeEvent<HTMLInputElement>) => {
-    const { files } = e.target;
-    if (files === null) {
-      return;
-    }
-    const file = files[0];
-    setBusinessRegistration(file);
-  };
-
   const onChangeFirmEmail = (e: ChangeEvent<HTMLInputElement>) => {
     setBrandUserSignUp({
       ...brandUserSignUp,
@@ -103,15 +113,40 @@ function useBrandSignup() {
   };
 
   const onSubmitSignUp = async () => {
-    const res = await BrandUserSignUp(brandUserSignUp);
-    if (res === true) {
-      return res;
+    try {
+      setStateMsg("signUp");
+      const signUpRes = await brandUserSignUpApi(brandUserSignUp);
+      if (!signUpRes) throw new Error("회원가입 실패");
+
+      setStateMsg("upload");
+      if (businessRegistration.length > 0) {
+        const uploadRes =
+          await uploadBusinessRegistration(businessRegistration);
+        if (!uploadRes) throw new Error("사진 업로드 실패");
+      }
+
+      setStateMsg("update");
+      const updateRes = await updateUserInfo(brandUserSignUp);
+      if (!updateRes) throw new Error("회원정보 수정 실패");
+
+      setStateMsg("complete");
+    } catch (err) {
+      if (!isAxiosError(err)) {
+        console.error(err);
+        return;
+      }
+      alert(err.message || "서버 오류 발생");
+      setStateMsg("idle");
     }
-    alert("서버 오류 발생");
   };
 
   const onClickNextStep = () => {
-    setStep(1);
+    if (step === 1) {
+      setStep(2);
+    }
+    if (step === 0) {
+      setStep(1);
+    }
   };
 
   const onClickPrevStep = () => {
@@ -125,6 +160,9 @@ function useBrandSignup() {
   return {
     brandUserSignUp,
     step,
+    businessRegistration,
+    stateMsg,
+    setBusinessRegistration,
     onSubmitSignUp,
     onClickNextStep,
     onClickPrevStep,
@@ -132,10 +170,10 @@ function useBrandSignup() {
     onChangePassword,
     onChangeEmail,
     onChangePhoneNumber,
+    onChangeRegistration,
     onChangeFirmName,
     onChangeFirmAddress,
     onChangeFirmWebUrl,
-    onChnageBusinessRegistration,
     onChangeFirmEmail,
     onChangeFirmPhoneNumber,
     onClickCancel,

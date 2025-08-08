@@ -1,32 +1,31 @@
-import { BREAKPOINTS } from "@/shared";
+import { BREAKPOINTS, DragAndDropFile, FileItem } from "@/shared";
 import styled from "styled-components";
 import { BrandUserSignUpRequestDto } from "../types/login";
-import { type ChangeEvent, useRef } from "react";
+import { Dispatch, type ChangeEvent, SetStateAction } from "react";
 
 type BrandUserCompanySignUpPanelType = {
   brandUserInfo: BrandUserSignUpRequestDto;
+  files: FileItem[];
+  setFiles: Dispatch<SetStateAction<FileItem[]>>;
   onChangeFirmName: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmAddress: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmWebUrl: (e: ChangeEvent<HTMLInputElement>) => void;
-  onChangeBusinessRegistration: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmEmail: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmPhoneNumber: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangeRegistration: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 function BrandUserCompanySignUpPanel({
   brandUserInfo,
+  files,
+  setFiles,
   onChangeFirmName,
   onChangeFirmAddress,
   onChangeFirmEmail,
   onChangeFirmPhoneNumber,
   onChangeFirmWebUrl,
-  onChangeBusinessRegistration,
+  onChangeRegistration,
 }: BrandUserCompanySignUpPanelType) {
-  const fileRef = useRef<HTMLInputElement>(null);
-
-  const onClickButton = () => {
-    if (fileRef.current) fileRef.current.click();
-  };
   return (
     <Wrapper>
       <InfoContainer>
@@ -48,11 +47,18 @@ function BrandUserCompanySignUpPanel({
           />
         </InfoBox>
         <InfoBox>
-          <SubTitle>사업자 등록증 증명</SubTitle>
-          <FileInputDesign onClick={onClickButton}>
-            <FileNameText>사업자 등록증을 등록해주세요!</FileNameText>
-          </FileInputDesign>
-          <FileInput ref={fileRef} onChange={onChangeBusinessRegistration} />
+          <SubTitle>사업자 등록증</SubTitle>
+          <BusinessRegistrationContainer>
+            <Text>사업자 명</Text>
+            <TextInput
+              value={brandUserInfo.businessRegistration}
+              onChange={onChangeRegistration}
+            />
+          </BusinessRegistrationContainer>
+          <BusinessRegistrationContainer>
+            <Text>사업자 등록증 증명 서류</Text>
+            <DragAndDropFile files={files} setFiles={setFiles} />
+          </BusinessRegistrationContainer>
         </InfoBox>
         <InfoBox>
           <SubTitle>회사 WebSite URL</SubTitle>
@@ -160,20 +166,17 @@ const TextInput = styled.input.attrs({ type: "text" })`
   }
 `;
 
-const FileInputDesign = styled.div`
+const BusinessRegistrationContainer = styled.div`
   width: 100%;
-  height: 2rem;
-  border: 1px solid #d9d9d9;
-  border-radius: 1000px;
-  cursor: pointer;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 1rem;
 `;
 
-const FileNameText = styled.span`
-  font-size: 0.6rem;
+const Text = styled.span`
+  font-size: 0.9rem;
   font-weight: 500;
   color: black;
-`;
-
-const FileInput = styled.input.attrs({ type: "file" })`
-  display: none;
 `;
