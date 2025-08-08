@@ -4,7 +4,7 @@ import { isAxiosError } from "axios";
 
 export const brandUserSignUpApi = async (props: BrandUserSignUpRequestDto) => {
   try {
-    const res = await API_BASILIUM.post("/brandUser/signup", props);
+    const res = await API_BASILIUM.post("/brandUsers/signup", props);
     if (res.status === 201) {
       return true;
     } else {
@@ -26,7 +26,7 @@ export const uploadBusinessRegistration = async (props: FileItem[]) => {
       formData.append("files", fileItem.file);
     });
 
-    const res = await API_BASILIUM.post("/brandUser/signup", props, {
+    const res = await API_BASILIUM.post("/brandUsers/me/business-cert", props, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -47,7 +47,7 @@ export const uploadBusinessRegistration = async (props: FileItem[]) => {
 
 export const updateUserInfo = async (props: BrandUserSignUpRequestDto) => {
   try {
-    const res = await API_BASILIUM.post("/brandUser/signup", props);
+    const res = await API_BASILIUM.post("/brandUsers/me", props);
     if (res.status === 201) {
       return true;
     } else {
