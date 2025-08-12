@@ -1,13 +1,27 @@
 spring:
   datasource:
-    url: "jdbc:h2:mem:testdb;MODE=MySQL;DB_CLOSE_DELAY=-1"
-    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
-    password: ""
+    password:
+    driver-class-name: org.h2.Driver
   jpa:
     hibernate:
-      ddl-auto: create-drop
-    database-platform: org.hibernate.dialect.H2Dialect
+      ddl-auto: create-drop   # 테스트는 매번 깨끗하게
+  sql:
+    init:
+      mode: never            # (중요) schema.sql/data.sql 자동실행 금지
+
+# gavlyukovskiy p6spy-starter 사용 시 파일 로깅 대신 slf4j로
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+      logging: slf4j         # FileLogger 금지 (파일 경로 이슈 제거)
+
+logging:
+  level:
+    com.p6spy: INFO
+
 
 
 # AWS S3 Service Configuration

@@ -29,6 +29,7 @@ public class BrandUserController {
     private final BrandUserService brandUserService;
 
     /** 회원가입 */
+    //DTO 생성
     @PostMapping("/signup")
     public ResponseEntity<ApiResponse<String>> signup(
             @Valid @RequestBody BrandUser newUser
