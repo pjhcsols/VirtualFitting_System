@@ -15,3 +15,18 @@ export type RedisProductDto = {
   productDesc: string;
   productPrice: number;
 };
+
+export interface BrandAuthenticationType {
+  timestamp: string;
+  status: number;
+  code: string;
+  message: string;
+  data: BrandAuthenticationDataType;
+}
+
+type BrandAuthenticationDataType = {
+  userNumber: number;
+  busniessRegistration: string;
+  fileName: string;
+  url: string;
+};
