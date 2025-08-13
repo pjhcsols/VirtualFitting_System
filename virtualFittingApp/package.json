@@ -30,6 +30,7 @@
     "googleapis": "^149.0.0",
     "gsap": "^3.12.7",
     "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "lenis": "^1.2.3",
     "lucide-react": "^0.539.0",
     "motion": "^12.5.0",
