@@ -149,13 +149,14 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       await paymentWidgetRef.current?.requestPayment({
         orderId: paymentResponse.taskId,
         orderName: product.productName,
-        customerName: "고객이름",
-        customerEmail: "customer@example.com",
         successUrl: `${window.location.origin}/payment-success`,
         failUrl: `${window.location.origin}/payment-fail`,
+        customerName: "고객이름",
+        customerEmail: "customer@example.com",
       });
     } catch (error) {
       console.error("Payment request failed:", error);
+      window.location.href = `${window.location.origin}/payment-fail?message=${encodeURIComponent((error as Error).message)}`;
     }
   };
 
@@ -269,7 +270,7 @@ const ProductBox = styled.section`
   // justify-content: space-between;
   align-items: flex-start;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     flex-direction: column;
     align-items: center;
     gap: 32px;
@@ -284,7 +285,7 @@ const ProductImage = styled.img`
   height: auto;
   order: 0;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     max-width: 510px;
     max-height: 680px;
   }
@@ -298,7 +299,7 @@ const ProductSmallImagesContainer = styled.div`
   flex-flow: column nowrap;
   margin: 0px 4px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
@@ -310,7 +311,7 @@ const ProductSmallImagesContainer = styled.div`
   }
 
   &::-webkit-scrollbar {
-    display: none; // 스크롤바 숨기기 (선택 사항)
+    display: none;
   }
 `;
 
@@ -323,7 +324,7 @@ const ProductInfoBox = styled.div`
   order: 3;
   margin: 0px 24px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     width: 100%;
   }
 `;
@@ -511,7 +512,7 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
     z-index: 1;
   `}
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     min-width: 78px;
     color: black;
   }
@@ -548,7 +549,7 @@ const ButtonBox = styled.div`
   gap: 8px;
   padding: 2px 0px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     justify-content: center;
     align-items: center;
   }
