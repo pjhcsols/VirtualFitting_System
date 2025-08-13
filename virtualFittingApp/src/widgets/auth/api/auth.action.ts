@@ -23,7 +23,7 @@ export const userLogin = async (userInfo: LoginRequestDto) => {
       console.log(res.data);
       Cookies.set("access-token", res.data.data.accessToken);
       Cookies.set("refresh-token", res.data.data.refreshToken);
-      return true;
+      return res.data.data.accessToken;
     }
   } catch (err) {
     if (isAxiosError(err)) {

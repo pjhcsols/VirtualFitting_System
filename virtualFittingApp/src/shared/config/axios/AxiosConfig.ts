@@ -24,7 +24,7 @@ type headers = {
 
 API_BASILIUM.defaults.headers = {
   "Content-Type": "application/json;",
-  Accept: "application/json",
+  Accept: "*/*",
 } as headers & HeadersDefaults;
 
 API_BASILIUM.interceptors.request.use(
