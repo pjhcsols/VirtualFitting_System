@@ -1,7 +1,7 @@
 import { BREAKPOINTS } from "@/shared";
 import styled from "styled-components";
 import { BrandUserSignUpRequestDto } from "../types/login";
-import { type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 
 type BrandUserSignUpPanelType = {
   brandUserInfo: BrandUserSignUpRequestDto;
@@ -18,6 +18,11 @@ function BrandUserSignUp({
   onChangeEmail,
   onChangePhoneNumber,
 }: BrandUserSignUpPanelType) {
+  const [showPassword, setShowPassword] = useState<boolean>(false);
+  const togglePasswordVisibility = (): void => {
+    setShowPassword(!showPassword);
+  };
+
   return (
     <Wrapper>
       <InfoContainer>
@@ -31,9 +36,37 @@ function BrandUserSignUp({
         <InfoBox>
           <SubTitle>PASSWORD</SubTitle>
           <PasswordInput
+            type={showPassword ? "text" : "password"}
             value={brandUserInfo.password}
             onChange={onChangePassword}
           />
+          <ToggleButton
+            type="button"
+            onClick={togglePasswordVisibility}
+            aria-label={showPassword ? "비밀번호 숨기기" : "비밀번호 보기"}
+          >
+            <EyeIcon
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              {showPassword ? (
+                // 눈 감은 아이콘
+                <>
+                  <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94L17.94 17.94z" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                  <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19l-6.93-6.93a2.99 2.99 0 0 0-4.17-.11L9.9 4.24z" />
+                </>
+              ) : (
+                // 눈 뜬 아이콘
+                <>
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z" />
+                  <circle cx="12" cy="12" r="3" />
+                </>
+              )}
+            </EyeIcon>
+          </ToggleButton>
         </InfoBox>
         <InfoBox>
           <SubTitle>EMAIL</SubTitle>
@@ -104,6 +137,7 @@ const InfoContainer = styled.div`
 `;
 
 const InfoBox = styled.div`
+  position: relative;
   width: 100%;
   display: flex;
   flex-flow: column wrap;
@@ -148,4 +182,34 @@ const PasswordInput = styled.input`
   &:focus {
     outline: 1px solid #121519;
   }
+`;
+
+const ToggleButton = styled.button`
+  position: absolute;
+  top: 2.3rem;
+  right: 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 8px;
+  color: #6b7280;
+  transition: color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: #667eea;
+  }
+
+  &:focus {
+    outline: none;
+    color: #667eea;
+  }
+`;
+
+const EyeIcon = styled.svg`
+  width: 20px;
+  height: 20px;
+  transition: opacity 0.2s ease;
 `;

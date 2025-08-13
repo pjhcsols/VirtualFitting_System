@@ -12,8 +12,10 @@ export const brandUserSignUpApi = async (props: BrandUserSignUpRequestDto) => {
     }
   } catch (err) {
     if (!isAxiosError(err)) {
+      console.log(err);
       return err;
     }
+    console.log(err);
     return err.status;
   }
 };

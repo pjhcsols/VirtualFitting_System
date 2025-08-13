@@ -1,30 +1,24 @@
-import { BREAKPOINTS, DragAndDropFile, FileItem } from "@/shared";
+import { BREAKPOINTS, FileItem } from "@/shared";
 import styled from "styled-components";
 import { BrandUserSignUpRequestDto } from "../types/login";
 import { Dispatch, type ChangeEvent, SetStateAction } from "react";
 
 type BrandUserCompanySignUpPanelType = {
   brandUserInfo: BrandUserSignUpRequestDto;
-  files: FileItem[];
-  setFiles: Dispatch<SetStateAction<FileItem[]>>;
   onChangeFirmName: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmAddress: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmWebUrl: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmEmail: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeFirmPhoneNumber: (e: ChangeEvent<HTMLInputElement>) => void;
-  onChangeRegistration: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 function BrandUserCompanySignUpPanel({
   brandUserInfo,
-  files,
-  setFiles,
   onChangeFirmName,
   onChangeFirmAddress,
   onChangeFirmEmail,
   onChangeFirmPhoneNumber,
   onChangeFirmWebUrl,
-  onChangeRegistration,
 }: BrandUserCompanySignUpPanelType) {
   return (
     <Wrapper>
@@ -45,20 +39,6 @@ function BrandUserCompanySignUpPanel({
             value={brandUserInfo.firmAddress}
             onChange={onChangeFirmAddress}
           />
-        </InfoBox>
-        <InfoBox>
-          <SubTitle>사업자 등록증</SubTitle>
-          <BusinessRegistrationContainer>
-            <Text>사업자 명</Text>
-            <TextInput
-              value={brandUserInfo.businessRegistration}
-              onChange={onChangeRegistration}
-            />
-          </BusinessRegistrationContainer>
-          <BusinessRegistrationContainer>
-            <Text>사업자 등록증 증명 서류</Text>
-            <DragAndDropFile files={files} setFiles={setFiles} />
-          </BusinessRegistrationContainer>
         </InfoBox>
         <InfoBox>
           <SubTitle>회사 WebSite URL</SubTitle>
@@ -164,19 +144,4 @@ const TextInput = styled.input.attrs({ type: "text" })`
   &:focus {
     outline: 1px solid #121519;
   }
-`;
-
-const BusinessRegistrationContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  gap: 1rem;
-`;
-
-const Text = styled.span`
-  font-size: 0.9rem;
-  font-weight: 500;
-  color: black;
 `;

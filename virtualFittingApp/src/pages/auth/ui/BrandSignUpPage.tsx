@@ -9,8 +9,6 @@ function BrandSignUpPage() {
   const {
     brandUserSignUp,
     step,
-    businessRegistration,
-    setBusinessRegistration,
     onSubmitSignUp,
     onClickNextStep,
     onClickPrevStep,
@@ -18,7 +16,6 @@ function BrandSignUpPage() {
     onChangeId,
     onChangePassword,
     onChangePhoneNumber,
-    onChangeRegistration,
     onChangeFirmAddress,
     onChangeFirmEmail,
     onChangeFirmName,
@@ -48,9 +45,6 @@ function BrandSignUpPage() {
       {step === 1 && (
         <BrandUserCompanySignUpPanel
           brandUserInfo={brandUserSignUp}
-          files={businessRegistration}
-          setFiles={setBusinessRegistration}
-          onChangeRegistration={onChangeRegistration}
           onChangeFirmAddress={onChangeFirmAddress}
           onChangeFirmEmail={onChangeFirmEmail}
           onChangeFirmName={onChangeFirmName}

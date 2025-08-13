@@ -28,6 +28,7 @@ export type NormalUserSignUpRequestDto = {
 };
 
 export type BrandUserSignUpRequestDto = {
+  userNumber: number;
   id: string;
   password: string;
   emailAddress: string;

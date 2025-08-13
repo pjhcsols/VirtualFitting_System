@@ -1,22 +1,16 @@
 import { type ChangeEvent, useState } from "react";
 import { BrandUserSignUpRequestDto } from "../types/login";
-import {
-  brandUserSignUpApi,
-  updateUserInfo,
-  uploadBusinessRegistration,
-} from "../api/brandAuth.action";
+import { brandUserSignUpApi } from "../api/brandAuth.action";
 import { useNavigate } from "react-router-dom";
 import { FileItem } from "@/shared";
 import { isAxiosError } from "axios";
-
-// onChange 함수들 조금 더 깔끔하게 보낼 수 있도록 설정
-// page layer 에서 너무 많은 prop 을 전달한다.
 
 function useBrandSignup() {
   const router = useNavigate();
 
   const [brandUserSignUp, setBrandUserSignUp] =
     useState<BrandUserSignUpRequestDto>({
+      userNumber: 0,
       id: "",
       password: "",
       userGrade: "BRONZE",
@@ -117,19 +111,6 @@ function useBrandSignup() {
       setStateMsg("signUp");
       const signUpRes = await brandUserSignUpApi(brandUserSignUp);
       if (!signUpRes) throw new Error("회원가입 실패");
-
-      setStateMsg("upload");
-      if (businessRegistration.length > 0) {
-        const uploadRes =
-          await uploadBusinessRegistration(businessRegistration);
-        if (!uploadRes) throw new Error("사진 업로드 실패");
-      }
-
-      setStateMsg("update");
-      const updateRes = await updateUserInfo(brandUserSignUp);
-      if (!updateRes) throw new Error("회원정보 수정 실패");
-
-      setStateMsg("complete");
     } catch (err) {
       if (!isAxiosError(err)) {
         console.error(err);
