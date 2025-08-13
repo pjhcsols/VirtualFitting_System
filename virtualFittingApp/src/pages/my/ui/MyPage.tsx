@@ -228,5 +228,4 @@ const ArrowImg2 = styled.img`
   height: 28px;
   opacity: 0.6;
   margin-left: -15px;
-  margin-top: 2.8px;
 `;
