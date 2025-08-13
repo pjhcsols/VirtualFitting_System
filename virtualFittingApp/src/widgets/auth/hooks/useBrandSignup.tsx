@@ -13,17 +13,17 @@ function useBrandSignup() {
       userNumber: 0,
       id: "",
       password: "",
-      userGrade: "BRONZE",
       emailAddress: "",
-      loginType: "",
       phoneNumber: "",
+      userGrade: "BRONZE",
+      loginType: "NORMAL",
       userImageUrl: "",
       userProfileImageUrl: "",
       firmName: "",
       firmAddress: "",
-      firmWebUrl: "",
       businessRegistration: "",
       businessRegistrationCertificateImageUrl: "",
+      firmWebUrl: "",
       firmEmail: "",
       firmPhone: "",
       saleAllowed: false,
@@ -111,6 +111,7 @@ function useBrandSignup() {
       setStateMsg("signUp");
       const signUpRes = await brandUserSignUpApi(brandUserSignUp);
       if (!signUpRes) throw new Error("회원가입 실패");
+      router("/login");
     } catch (err) {
       if (!isAxiosError(err)) {
         console.error(err);
