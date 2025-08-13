@@ -8,6 +8,7 @@ import { formatSimpleDate } from "@/shared";
 import alertImg from "@/pages/my/ui/alert.png";
 import { ReviewCard } from "@/widgets";
 import { BREAKPOINTS } from "@/shared";
+import { getReviewAPI } from "../api/get.action";
 
 
 function ReviewContentList() {
@@ -35,6 +36,7 @@ function ReviewContentList() {
 
       setOrders(updatedOrders);
     }, []);
+
     
     useEffect(() => {
         if (activeTab === "작성가능") {

@@ -6,6 +6,7 @@ import { formatSimpleDate } from "@/shared";
 import styled from "styled-components";
 import alertImg from "@/pages/my/ui/alert.png";
 import { BREAKPOINTS } from "@/shared";
+import Cookies from "js-cookie";
 
 function OrderListContent() {
   const [orders, setOrders] = useState<OrderItem[]>([]);
@@ -14,7 +15,7 @@ function OrderListContent() {
   useEffect(() => {
     const fetchOrderList = async () => {
       try {
-        const userId = localStorage.getItem("userId");
+        const userId = Cookies.get("userId") as string;
         if (!userId) return;
         const data = await OrderInfo(userId);
         setOrders(data);

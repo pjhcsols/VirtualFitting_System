@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { MyHeader } from "@/shared/components/header";
 import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
+import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";
 
 function MyOrderListDetail() {
     const {id} = useParams();
@@ -11,7 +12,7 @@ function MyOrderListDetail() {
             <HeaderWrapper>
                 <MyHeader title="주문 상세" />
             </HeaderWrapper>
-
+                <OrderDetailContent />
             <ContentWrapper>
                 <InnerContent>
                 </InnerContent>
