@@ -1,35 +1,5 @@
-package basilium.basiliumserver.batchJobScheduler;
+package basilium.basiliumserver.batchJobScheduler.image;
 
-import basilium.basiliumserver.domain.user.entity.BrandUser;
-import basilium.basiliumserver.domain.user.entity.NormalUser;
-import basilium.basiliumserver.domain.user.entity.SuperUser;
-import basilium.basiliumserver.domain.user.entity.User;
-import basilium.basiliumserver.properties.ImageProperties;
-import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
-import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
-import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.Base64;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-
-//user profile
-// 이미지 명만 따와서 비교하기 super_20250801123000.png 서버 이전 시에 기존 디비에 저장된 위치 url이 달라서 날아갈 위험
-@Component
-@RequiredArgsConstructor //오토와이어 제거
-public class UserProfileScheduler {
 /*
     @Autowired
     private EntityManager em;
@@ -45,6 +15,14 @@ public class UserProfileScheduler {
     private ImageProperties imageProperties;
 
  */
+
+//user profile
+// 이미지 명만 따와서 비교하기 super_20250801123000.png 서버 이전 시에 기존 디비에 저장된 위치 url이 달라서 날아갈 위험
+/*
+@Component
+@RequiredArgsConstructor //오토와이어 제거
+public class UserProfileScheduler {
+
     private final EntityManager em;
     private final NormalUserRepository normalUserRepository;
     private final BrandUserRepository brandUserRepository;
@@ -164,4 +142,6 @@ public class UserProfileScheduler {
 }
 
 
+
+ */
 

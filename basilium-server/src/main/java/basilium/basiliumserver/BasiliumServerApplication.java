@@ -11,6 +11,8 @@ import org.springframework.boot.context.properties.ConfigurationPropertiesScan;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.cloud.openfeign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.scheduling.annotation.EnableScheduling;
@@ -32,6 +34,8 @@ public class BasiliumServerApplication {
 	}
 
 	@Bean
+	@Order(1)
+	@DependsOn("entityManagerFactory")
 	public ApplicationRunner initializeDatabase(DataSource dataSource) {
 		return args -> {
 			try {

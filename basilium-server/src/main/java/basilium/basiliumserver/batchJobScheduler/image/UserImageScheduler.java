@@ -1,30 +1,8 @@
-package basilium.basiliumserver.batchJobScheduler;
-
-import basilium.basiliumserver.domain.user.entity.BrandUser;
-import basilium.basiliumserver.domain.user.entity.NormalUser;
-import basilium.basiliumserver.domain.user.entity.SuperUser;
-import basilium.basiliumserver.domain.user.entity.User;
-import basilium.basiliumserver.properties.ImageProperties;
-import jakarta.persistence.EntityManager;
-import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.scheduling.annotation.Scheduled;
-import org.springframework.stereotype.Component;
-import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
-import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
-import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
+package basilium.basiliumserver.batchJobScheduler.image;
 
 //local user 가상착용 이미지
 // 이미지 명만 따와서 비교하기 super_20250801123000.png 서버 이전 시에 기존 디비에 저장된 위치 url이 달라서 날아갈 위험
+/*
 @Component
 @RequiredArgsConstructor //오토 와이어 제거
 public class UserImageScheduler {
@@ -157,3 +135,5 @@ public class UserImageScheduler {
     }
 
 }
+
+ */
