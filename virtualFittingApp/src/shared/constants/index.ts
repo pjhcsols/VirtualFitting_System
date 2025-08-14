@@ -25,6 +25,7 @@ import Bag from "/svg/bag.svg";
 import User from "/svg/user.svg";
 import Menu from "/svg/menu.svg";
 import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
+import Hoodie from "/img/clothes/hoodie.png";
 
 import type {
   CategoryType,
@@ -39,6 +40,8 @@ export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
 export const IMG_GRADIENT = Gradient;
+
+export const PNG_HOODIE = Hoodie;
 
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;

@@ -3,13 +3,14 @@ import * as S from "@/pages/main/ui/css/MainPage.css";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
-import { HeroSection } from "@/widgets";
+import { HeroSection, AiServiceSection } from "@/widgets";
 import { useEffect, useRef } from "react";
 
 import { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
+import * as THREE from "three";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -18,11 +19,12 @@ function MainPage() {
   const lenisRef = useRef<LenisRef>(null);
 
   const RotatingStars = () => {
-    const stars = useRef(null);
+    const stars = useRef<THREE.Points>(null);
 
     useFrame(() => {
       if (stars.current) {
-        stars.current.rotation.x = stars.current.rotation.y += 0.00015;
+        stars.current.rotation.x += 0.00015;
+      stars.current.rotation.y += 0.00015;
       }
     });
 
@@ -84,7 +86,9 @@ function MainPage() {
             <S.Hero>
               <HeroSection />
             </S.Hero>
-            <S.AIIntroduction></S.AIIntroduction>
+            <S.AIIntroduction>
+              <AiServiceSection />
+            </S.AIIntroduction>
           </S.ModelContainer>
           <section></section>
           <section></section>
