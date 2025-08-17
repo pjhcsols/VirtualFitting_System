@@ -49,13 +49,13 @@ public class Review {
     @Column(length = 1000, nullable = false)
     private String comment;
 
-    //userReviewImageUrl
+    /** 리뷰 이미지: DB에는 '파일명'만 저장 */
     @BatchSize(size = 20)
     @ElementCollection(fetch = FetchType.LAZY)
     @CollectionTable(name = "review_images", joinColumns = @JoinColumn(name = "review_id"))
-    @Column(name = "image_url", length = 500)
+    @Column(name = "image_file_name", length = 255)
     @Builder.Default
-    private List<String> imageUrls = new ArrayList<>();
+    private List<String> reviewImageUrls = new ArrayList<>();
 
     @Column(updatable = false)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
@@ -76,8 +76,9 @@ public class Review {
         this.updatedAt = LocalDateTime.now();
     }
 
-    public void addImageUrl(String url) {
-        this.imageUrls.add(url);
+    // 변경 메서드
+    public void addReviewImageUrl(String fileName) {
+        this.reviewImageUrls.add(fileName);
     }
 
     public void updateContent(String title, String comment) {
@@ -85,48 +86,16 @@ public class Review {
         this.comment = comment;
     }
 
-    // Explicit getters
-    public Long getReviewId() {
-        return reviewId;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public NormalUser getUser() {
-        return user;
-    }
-
-    public String getPurchaseSize() {
-        return purchaseSize;
-    }
-
-    public String getPurchaseColor() {
-        return purchaseColor;
-    }
-
-    public int getRating() {
-        return rating;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public String getComment() {
-        return comment;
-    }
-
-    public List<String> getImageUrls() {
-        return imageUrls;
-    }
-
-    public LocalDateTime getCreatedAt() {
-        return createdAt;
-    }
-
-    public LocalDateTime getUpdatedAt() {
-        return updatedAt;
-    }
+    // Getters
+    public Long getReviewId() { return reviewId; }
+    public Product getProduct() { return product; }
+    public NormalUser getUser() { return user; }
+    public String getPurchaseSize() { return purchaseSize; }
+    public String getPurchaseColor() { return purchaseColor; }
+    public int getRating() { return rating; }
+    public String getTitle() { return title; }
+    public String getComment() { return comment; }
+    public List<String> getReviewImageUrls() { return reviewImageUrls; }
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
 }

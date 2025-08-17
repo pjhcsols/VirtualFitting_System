@@ -711,7 +711,7 @@ VALUES
 
 -- review_images 테이블에 이미지 URL 2건 삽입
 INSERT INTO review_images
-(review_id, image_url)
+(review_id, image_file_name)
 VALUES
     (1, 'brand01_1713958965868_mysql.png'),
     (1, 'super_20250801123000.png'),
@@ -723,12 +723,12 @@ INSERT INTO review
 VALUES
     (2, 1, 2, 'S', 'GREEN', 3, '평범해요', '생각보다 얇아서 봄에만 입을 것 같아요.', '2025-06-07T14:12:05', NULL);
 
-INSERT INTO review_images (review_id, image_url) VALUES
-                                                     (2, '지워짐2super_20250801123000.png'),
-                                                     (2, '지워짐2super_20250801123000.png'),
-                                                     (2, 'brand01_1713958965868_mysql1.png'),
-                                                     (2, '지워짐2super_20250801123000.png'),
-                                                     (2, '지워짐2/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png');
+INSERT INTO review_images (review_id, image_file_name) VALUES
+                                                           (2, '지워짐2super_20250801123000.png'),
+                                                           (2, '지워짐2super_20250801123000.png'),
+                                                           (2, 'brand01_1713958965868_mysql1.png'),
+                                                           (2, '지워짐2super_20250801123000.png'),
+                                                           (2, '지워짐2/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userReviewImageStorage/super_20250801123000.png');
 
 -- 예시 3: review_id = 3 (이미지 1장)
 INSERT INTO review
@@ -736,7 +736,7 @@ INSERT INTO review
 VALUES
     (3, 3, 2, 'XL', 'BLACK', 4, '디자인 굿', '블랙 색상이 정말 멋집니다.', '2025-06-06T09:45:30', NULL);
 
-INSERT INTO review_images (review_id, image_url) VALUES
+INSERT INTO review_images (review_id, image_file_name) VALUES
     (3, '지워짐3super_20250801123000.png');
 
 

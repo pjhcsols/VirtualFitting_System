@@ -219,7 +219,7 @@ public class ImageBatchCleanupService {
             // N+1 방지: @EntityGraph로 imageUrls 함께 로딩
             List<Review> reviews = reviewRepository.findAllWithImagesIn(part);
             for (Review r : reviews) {
-                List<String> imgs = r.getImageUrls();
+                List<String> imgs = r.getReviewImageUrls();
                 if (imgs != null && !imgs.isEmpty()) {
                     int before = imgs.size();
                     imgs.removeIf(part::contains);
