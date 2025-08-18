@@ -1,138 +1,85 @@
-import gsap from "gsap";
-import { MouseEvent, useEffect } from "react";
+import { Link } from "react-router-dom";
+
 import styled from "styled-components";
+import BasiliumLogo from "/public/svg/BasiliumLogo.svg";
+
 import { AdminHeaderOptions } from "@/shared/components/header/constants";
-import { ICON_BASILIUM_LOGO } from "@/shared/constants";
-import { useNavigate } from "react-router-dom";
 
 function AdminHeader() {
-  const router = useNavigate();
-  useEffect(() => {
-    gsap.fromTo(".header-wrapper", {}, {});
-    gsap.fromTo(
-      ".content-box",
-      {
-        y: 10,
-        opacity: 0,
-      },
-      {
-        y: 0,
-        opacity: 1,
-        stagger: 0.2,
-        duration: 1,
-      },
-    );
-  }, []);
-
-  const onClickOptionBox = (href: string) => {
-    router(`${href}`);
-  };
-
   return (
-    <Wrapper className="header-wrapper">
+    <Wrapper>
       <LogoContainer>
-        <Logo src={ICON_BASILIUM_LOGO} alt="admin-header-logo" />
-        <LogoText>basilium</LogoText>
+        <Logo />
       </LogoContainer>
       <ContentContainer>
         {AdminHeaderOptions.map((item, key) => {
           return (
-            <ContentBox
-              className="content-box"
-              key={key}
-              onClick={() => onClickOptionBox(item.href)}
-            >
-              <ContentText className="content-text">{item.title}</ContentText>
+            <ContentBox key={key} to={item.href}>
+              <ContentText>{item.title}</ContentText>
             </ContentBox>
           );
         })}
       </ContentContainer>
-      <CopyrightBox>
-        <CopyrightText>@Copyright BASILIUM</CopyrightText>
-        <CopyrightText>The right have basilium</CopyrightText>
-      </CopyrightBox>
     </Wrapper>
   );
 }
 
+export { AdminHeader };
+
 const Wrapper = styled.header`
   box-sizing: border-box;
-  padding: 80px 10px;
-  width: 240px;
-  height: 100vh;
+  padding: 1rem;
+  min-width: 18rem;
+  min-height: 95vh;
   display: flex;
-  flex-flow: column wrap;
-  justify-content: space-between;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
   align-items: flex-start;
-  border-top-right-radius: 18px;
-  border-bottom-right-radius: 18px;
-  border: 1px solid #121212;
-`;
-
-const Logo = styled.img`
-  width: 50px;
-  height: 70px;
-  overflow: hidden;
-  object-fit: contain;
+  background-color: #f5f6f8;
+  border-radius: 1rem;
+  gap: 2rem;
 `;
 
 const LogoContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-flow: column wrap;
   justify-content: center;
   align-items: center;
-  gap: 8px;
 `;
 
-const LogoText = styled.span`
-  font-family: "Prata-Regular";
-  font-size: 1.2rem;
-  text-transform: uppercase;
-  color: black;
+const Logo = styled.img.attrs({ src: BasiliumLogo, alt: "basilium-logo" })`
+  width: 3rem;
+  height: 3rem;
+  object-fit: contain;
 `;
 
 const ContentContainer = styled.div`
+  box-sizing: border-box;
   width: 100%;
   display: flex;
   flex-flow: column wrap;
-  justify-items: flex-start;
+  justify-content: flex-start;
   align-items: flex-start;
-  gap: 16px;
+  gap: 0.2rem;
 `;
 
-const ContentBox = styled.div`
+const ContentBox = styled(Link)`
+  box-sizing: border-box;
+  padding: 1rem;
   width: 100%;
-  border-radius: 12px;
+  min-height: 1rem;
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
-  gap: 8px;
-  cursor: pointer;
+  border-radius: 1rem;
+  transition: 0.2s all ease;
+  &:hover {
+    background-color: #ffffff;
+  }
 `;
 
 const ContentText = styled.span`
-  padding: 10px 25px;
   font-size: 0.8rem;
-  font-weight: 700;
+  font-weight: 500;
   color: black;
 `;
-
-const CopyrightBox = styled.div`
-  box-sizing: border-box;
-  padding: 18px 10px;
-  width: 100%;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 8px;
-`;
-
-const CopyrightText = styled.span`
-  font-size: 0.6rem;
-  font-weight: 400;
-  color: gray;
-`;
-
-export { AdminHeader };

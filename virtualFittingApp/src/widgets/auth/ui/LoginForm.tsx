@@ -51,8 +51,6 @@ const Wrapper = styled.div`
   justify-content: flex-start;
   align-items: flex-start;
   gap: 1rem;
-
-  background: rgba(255, 255, 255, 0.05);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-radius: 20px;
@@ -64,7 +62,6 @@ const Wrapper = styled.div`
     inset 0 0 0px 0px rgba(255, 255, 255, 0);
   position: relative;
   overflow: hidden;
-
   &::before {
     content: "";
     position: absolute;
