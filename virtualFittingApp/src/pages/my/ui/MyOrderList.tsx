@@ -1,6 +1,6 @@
   import React, { Suspense } from "react";
   import styled from "styled-components";
-  import { MyHeader } from "@/shared/components/header";
+  import { Header } from "@/shared";
   import { OrderListContent } from "@/pages/my/ui/OrderContentList";
   import { BREAKPOINTS } from "@/shared";
 
@@ -8,7 +8,7 @@
     return (
       <PageWrapper>
         <HeaderWrapper>
-          <MyHeader title="주문내역" />
+          <Header />
         </HeaderWrapper>
 
         <ContentWrapper>

@@ -1,7 +1,7 @@
   import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
   import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
-  import { MyHeader } from "@/shared/components/header";
+  import { Header } from "@/shared";
   import penIcon from "./pen.png";
   import { UserFormData } from "../types/user";
   import { submitUserInfo } from "../api/submit.action";
@@ -138,7 +138,7 @@
       return (
           <PageWrapper>
           <HeaderWrapper>
-              <MyHeader title="회원정보 수정" />
+              <Header />
           </HeaderWrapper>
 
           <ContentWrapper>

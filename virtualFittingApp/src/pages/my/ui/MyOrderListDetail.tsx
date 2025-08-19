@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { MyHeader } from "@/shared/components/header";
+import { Header } from "@/shared";
 import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 
@@ -9,7 +9,7 @@ function MyOrderListDetail() {
     return (
         <PageWrapper>
             <HeaderWrapper>
-                <MyHeader title="주문 상세" />
+                <Header />
             </HeaderWrapper>
 
             <ContentWrapper>

@@ -1,6 +1,6 @@
 import React, { Suspense } from "react";
 import styled from "styled-components";
-import { MyHeader } from "@/shared/components/header";
+import { Header } from "@/shared";
 import { LikeContentList } from "@/pages/my/ui/LikeContentList";
 import { BREAKPOINTS } from "@/shared";
 
@@ -8,9 +8,8 @@ function MyLike() {
   return (
     <PageWrapper>
       <HeaderWrapper>
-        <MyHeader title="좋아요" />
+        <Header />
       </HeaderWrapper>
-
       <ContentWrapper>
         <InnerContent>
           <Suspense fallback={<div>불러오는 중...</div>}>
