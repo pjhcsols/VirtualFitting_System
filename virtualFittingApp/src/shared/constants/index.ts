@@ -21,9 +21,6 @@ import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
-import Bag from "/svg/bag.svg";
-import User from "/svg/user.svg";
-import Menu from "/svg/menu.svg";
 import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
 import Hoodie from "/img/clothes/hoodie.png";
 
@@ -58,10 +55,6 @@ export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
-
-export const ICON_BAG = Bag;
-export const ICON_USER = User;
-export const ICON_MENU = Menu;
 
 export const ICON_LIKED = Liked;
 export const ICON_UNLIKED = UnLiked;
