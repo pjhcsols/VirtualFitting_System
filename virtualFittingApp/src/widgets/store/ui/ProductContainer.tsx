@@ -19,9 +19,6 @@ import {
 } from "@/shared";
 
 import {
-  IMG_TEST_CLOTHES,
-  ICON_LIKED,
-  ICON_UNLIKED,
   ICON_SHARE,
 } from "@/shared";
 
@@ -95,31 +92,31 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     setShowPaymentTab(false);
   };
 
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [showCheckout, setShowCheckout] = useState(false);
+  // const [taskId, setTaskId] = useState<string | null>(null);
+  // const [showCheckout, setShowCheckout] = useState(false);
 
-  const onPaymentComplete = async (success: boolean) => {
-    setShowCheckout(false);
+  // const onPaymentComplete = async (success: boolean) => {
+  //   setShowCheckout(false);
 
-    if (taskId) {
-      try {
-        await handlePaymentResponse({ taskId, success });
-        console.log("Payment result processed");
-      } catch (error) {
-        console.error("Error processing payment result", error);
-      }
-    }
-  };
+  //   if (taskId) {
+  //     try {
+  //       await handlePaymentResponse({ taskId, success });
+  //       console.log("Payment result processed");
+  //     } catch (error) {
+  //       console.error("Error processing payment result", error);
+  //     }
+  //   }
+  // };
 
-  const handleCompletePayment = async (taskId: string, success: boolean) => {
-    try {
-      const resultMessage = await handlePaymentResponse({ taskId, success });
-      console.log("Payment result processed:", resultMessage);
-      console.log(success ? "true" : "false");
-    } catch (error) {
-      console.error("Error processing payment result:", error);
-    }
-  };
+  // const handleCompletePayment = async (taskId: string, success: boolean) => {
+  //   try {
+  //     const resultMessage = await handlePaymentResponse({ taskId, success });
+  //     console.log("Payment result processed:", resultMessage);
+  //     console.log(success ? "true" : "false");
+  //   } catch (error) {
+  //     console.error("Error processing payment result:", error);
+  //   }
+  // };
 
   const handlePurchase = async () => {
     if (!isProductColor(selectedColor)) {

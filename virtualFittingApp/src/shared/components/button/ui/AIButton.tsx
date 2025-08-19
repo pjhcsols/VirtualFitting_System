@@ -25,7 +25,7 @@ const AIBtn = styled.button`
   background: white;
   flex-direction: row;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${lg}px) {
       width: 100%;
     }
 `;

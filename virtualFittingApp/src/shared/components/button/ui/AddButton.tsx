@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { md } from "@/shared";
 import { PopUpBottom } from "@/shared";
 import type { CartItem } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function AddButton({ product }: { product: CartItem }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -55,7 +56,7 @@ const AddBtn = styled.div`
   background: white;
   color: black;
 
-  @media (max-width: ${md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     width: 50%;
   }
 `;
