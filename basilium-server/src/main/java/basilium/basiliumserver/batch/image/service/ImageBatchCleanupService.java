@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batchJobScheduler.image.service;
+package basilium.basiliumserver.batch.image.service;
 
 import basilium.basiliumserver.domain.review.entity.Review;
 import basilium.basiliumserver.domain.review.repository.ReviewRepository;

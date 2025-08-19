@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batchJobScheduler.batchMeta;
+package basilium.basiliumserver.batch.batchMeta;
 
 import org.springframework.batch.core.configuration.JobRegistry;
 import org.springframework.batch.core.configuration.support.JobRegistrySmartInitializingSingleton;

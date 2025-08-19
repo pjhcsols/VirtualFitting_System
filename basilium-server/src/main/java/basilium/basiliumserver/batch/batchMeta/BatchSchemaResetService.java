@@ -1,5 +1,5 @@
 // src/main/java/basilium/basiliumserver/batchJobScheduler/batchMeta/BatchSchemaResetService.java
-package basilium.basiliumserver.batchJobScheduler.batchMeta;
+package basilium.basiliumserver.batch.batchMeta;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

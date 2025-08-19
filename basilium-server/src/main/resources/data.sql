@@ -739,6 +739,196 @@ VALUES
 INSERT INTO review_images (review_id, image_file_name) VALUES
     (3, '지워짐3super_20250801123000.png');
 
+COMMIT;
+
+/* ===============================
+ * 1) ProductDiscount (브랜드 1 소유 상품 1~3 금액 고정 할인)
+ *    - product_price = 53,000 기준
+ *    - percent는 금액 기준으로 자동 역산(반올림), 90% 상한 준수
+ * =============================== */
+
+-- 브랜드 유저 1 상품 1: 할인액 2,000원  => percent ≈ 4%
+INSERT INTO product_discount
+(brand_user_number, product_id, percent, discount_amount, discounted_unit_price,
+ active, start_at, end_at, created_at)
+SELECT
+    1,
+    p.product_id,
+    LEAST(90, COALESCE(ROUND((2000 * 100) / NULLIF(p.product_price, 0)), 0)),
+    LEAST(ROUND(p.product_price * 0.9), 2000),
+    GREATEST(0, p.product_price - LEAST(ROUND(p.product_price * 0.9), 2000)),
+    TRUE,
+    NOW(),
+    DATE_ADD(NOW(), INTERVAL 30 DAY),
+    NOW()
+FROM product p
+WHERE p.product_id = 1
+  AND p.brand_user_number = 1;
+
+-- 브랜드 유저 1 상품 2: 할인액 3,000원  => percent ≈ 6%
+INSERT INTO product_discount
+(brand_user_number, product_id, percent, discount_amount, discounted_unit_price,
+ active, start_at, end_at, created_at)
+SELECT
+    1,
+    p.product_id,
+    LEAST(90, COALESCE(ROUND((3000 * 100) / NULLIF(p.product_price, 0)), 0)),
+    LEAST(ROUND(p.product_price * 0.9), 3000),
+    GREATEST(0, p.product_price - LEAST(ROUND(p.product_price * 0.9), 3000)),
+    TRUE,
+    NOW(),
+    DATE_ADD(NOW(), INTERVAL 30 DAY),
+    NOW()
+FROM product p
+WHERE p.product_id = 2
+  AND p.brand_user_number = 1;
+
+-- 브랜드 유저 1 상품 3: 할인액 5,000원  => percent ≈ 9%
+INSERT INTO product_discount
+(brand_user_number, product_id, percent, discount_amount, discounted_unit_price,
+ active, start_at, end_at, created_at)
+SELECT
+    1,
+    p.product_id,
+    LEAST(90, COALESCE(ROUND((5000 * 100) / NULLIF(p.product_price, 0)), 0)),
+    LEAST(ROUND(p.product_price * 0.9), 5000),
+    GREATEST(0, p.product_price - LEAST(ROUND(p.product_price * 0.9), 5000)),
+    TRUE,
+    NOW(),
+    DATE_ADD(NOW(), INTERVAL 30 DAY),
+    NOW()
+FROM product p
+WHERE p.product_id = 3
+  AND p.brand_user_number = 1;
+
+COMMIT;
+
+/* ===============================
+ * 2) UserDiscount (특정 일반유저 1 대상)
+ *    - A: 브랜드 1 전체 5% (뷰/표시용 추가 혜택)
+ *    - B: 상품 1 전용 10% (뷰/표시용 추가 혜택)
+ * =============================== */
+
+-- A) 일반 유저 1 <- 브랜드 1 전체 추가 5%
+INSERT INTO user_discount
+(user_number, brand_user_number, product_id, extra_percent, active, start_at, end_at, created_at)
+VALUES
+    (1, 1, NULL, 5, TRUE, NOW(), DATE_ADD(NOW(), INTERVAL 30 DAY), NOW());
+
+-- B) 일반 유저 1 <- (브랜드 자동세팅) 상품 1 전용 추가 10%
+INSERT INTO user_discount
+(user_number, brand_user_number, product_id, extra_percent, active, start_at, end_at, created_at)
+SELECT
+    1                          AS user_number,
+    p.brand_user_number        AS brand_user_number,  -- 상품 소유 브랜드로 자동 세팅
+    p.product_id               AS product_id,
+    10                         AS extra_percent,
+    TRUE                       AS active,
+    NOW()                      AS start_at,
+    DATE_ADD(NOW(), INTERVAL 30 DAY) AS end_at,
+    NOW()                      AS created_at
+FROM product p
+WHERE p.product_id = 1;  -- 브랜드 1 소유 상품
+
+COMMIT;
+
+/* ===============================
+ * 3) (옵션) 상품할인 12% 예시
+ *    - 실제 존재값으로 파라미터 치환: 브랜드 1, 유저 1, 상품 9(브랜드 1 소유)
+ *    - 결제 기준가(공개 할인)로 적용
+ * =============================== */
+
+-- 실제 값으로 파라미터 세팅
+SET @brand_user_number = 1;   -- BrandUser #1 (승인됨)
+SET @user_number       = 1;   -- NormalUser #1
+SET @product_id        = 9;   -- Brand 1 소유 상품
+SET @start_at          = NOW();
+SET @end_at            = DATE_ADD(NOW(), INTERVAL 30 DAY);
+
+-- (모든 유저 대상) 상품할인 12% - product 9
+INSERT INTO product_discount
+(brand_user_number, product_id, percent, discount_amount, discounted_unit_price, active, start_at, end_at, created_at)
+SELECT
+    p.brand_user_number                            AS brand_user_number,
+    p.product_id                                   AS product_id,
+    12                                             AS percent,
+    ROUND(p.product_price * 12 / 100)              AS discount_amount,
+    GREATEST(0, p.product_price - ROUND(p.product_price * 12 / 100)) AS discounted_unit_price,
+    TRUE                                           AS active,
+    @start_at                                      AS start_at,
+    @end_at                                        AS end_at,
+    NOW()                                          AS created_at
+FROM product p
+WHERE p.product_id = @product_id
+  AND p.brand_user_number = @brand_user_number;
+
+-- (이미 위에서 A/B로 삽입했으면 아래 두 문은 생략 가능)
+-- 특정 유저 1 <- 브랜드 1 전체 5%
+INSERT INTO user_discount
+(user_number, brand_user_number, product_id, extra_percent, active, start_at, end_at, created_at)
+VALUES
+    (@user_number, @brand_user_number, NULL, 5, TRUE, @start_at, @end_at, NOW());
+
+-- 특정 유저 1 <- (브랜드 자동세팅) 상품 9 전용 10%
+INSERT INTO user_discount
+(user_number, brand_user_number, product_id, extra_percent, active, start_at, end_at, created_at)
+SELECT
+    @user_number              AS user_number,
+    p.brand_user_number       AS brand_user_number,
+    p.product_id              AS product_id,
+    10                        AS extra_percent,
+    TRUE                      AS active,
+    @start_at                 AS start_at,
+    @end_at                   AS end_at,
+    NOW()                     AS created_at
+FROM product p
+WHERE p.product_id = @product_id
+  AND p.brand_user_number = @brand_user_number;
+
+COMMIT;
+
+/* ===============================
+ * 4) (옵션) 브랜드 1 전상품 5% 공개 할인 일괄
+ *    - 네가 준 원문 유지: ON_SALE 필터 그대로 둠
+ *    - Brand 1 소유 & ON_SALE 인 상품에만 생성됨
+ *      (현재 데이터에서 status가 NULL/다르면 삽입 안될 수 있음)
+ * =============================== */
+
+-- 실제 값으로 재설정(필요 시)
+SET @brand_user_number = 1;
+SET @start_at          = NOW();
+SET @end_at            = DATE_ADD(NOW(), INTERVAL 30 DAY);
+
+INSERT INTO product_discount
+(brand_user_number, product_id, percent, discount_amount, discounted_unit_price, active, start_at, end_at, created_at)
+SELECT
+    p.brand_user_number,
+    p.product_id,
+    5,
+    ROUND(p.product_price * 5 / 100),
+    GREATEST(0, p.product_price - ROUND(p.product_price * 5 / 100)),
+    TRUE,
+    @start_at,
+    @end_at,
+    NOW()
+FROM product p
+WHERE p.brand_user_number = @brand_user_number
+  AND p.status = 'ON_SALE';   -- 전시중 상품만(원문 유지)
+
+COMMIT;
+
+/* ===============================
+ * 5) 빠른 검증
+ * =============================== */
+-- 상품별 공개 할인 확인
+SELECT * FROM product_discount
+WHERE product_id IN (1,2,3,9)
+ORDER BY created_at DESC;
+
+-- 유저별 추가 할인 확인
+SELECT * FROM user_discount
+WHERE user_number = 1
+ORDER BY created_at DESC;
 
 
 INSERT INTO delivery_info(delivery_info_id, user_number, default_delivery_address, first_delivery_address, second_delivery_address)
@@ -757,23 +947,6 @@ VALUES (1, 1),
        (1, 2);
 
  */
-
-/*
-INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
-VALUES (1, '문비글 / 깔끔단정 어게인 레터링 스판 라운드 반팔 티셔츠', 18900, '베스트셀러 아이템: 남녀공용 오버사이즈 티셔츠. 로켓배송 가능.', 'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/4991/23276e00825eddb77e5c55619ac6637fd991c5efbd43ad7eee136adf282d.png');
-
-INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
-VALUES (2, '제작티01탄 1+1 데일리필수 소프트텐션 기본핏 라운드반팔티', 9900, '로켓배송, 내일(금) 도착 보장. 평점 4.0 (1144)', 'https://thumbnail7.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/3d85/d4eee945d43f389f33989893285eea7f13f73977a6d3dc8ddcf4e99e1360.jpg');
-
-INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
-VALUES (3, '1+1 자체제작 촉감왕 여름 데일리 소프트 모달 스판 라운드 반팔티', 26960, '순면 소재의 캐주얼 스타일. 4/23 도착 예정.', 'https://thumbnail8.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/3560/2fe7a770fa24a586a912cd4b6149ded88dccb469eee1de9ebf775afab993.jpg');
-
-INSERT INTO Product (category_id, product_name, product_price, product_desc, product_photo_url)
-VALUES (4, '이브컴퍼니 4장묶음 (1+3) 남녀공용 오버핏 라운드 무지 긴팔티셔츠 (1611-4)', 25500, '캐주얼 슬림핏 스타일, 36% 할인율. 4/23 도착 예정, 평점 3.5', 'https://thumbnail10.coupangcdn.com/thumbnails/remote/230x230ex/image/vendor_inventory/bd36/722efd676290f18b692f4066eb292c4a271ae40874f01c39fecd49958430.png');
-commit;
-
- */
-
 
 
 

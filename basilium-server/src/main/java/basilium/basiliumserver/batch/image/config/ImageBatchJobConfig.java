@@ -1,7 +1,6 @@
-package basilium.basiliumserver.batchJobScheduler.image.config;
+package basilium.basiliumserver.batch.image.config;
 
-import basilium.basiliumserver.batchJobScheduler.image.service.ImageBatchCleanupService;
-import lombok.RequiredArgsConstructor;
+import basilium.basiliumserver.batch.image.service.ImageBatchCleanupService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;

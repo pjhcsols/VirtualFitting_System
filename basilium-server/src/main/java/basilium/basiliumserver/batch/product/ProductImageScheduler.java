@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batchJobScheduler.product;
+package basilium.basiliumserver.batch.product;
 
 import basilium.basiliumserver.domain.product.s3Storage.service.S3StorageService;
 import basilium.basiliumserver.domain.product.service.ProductService;

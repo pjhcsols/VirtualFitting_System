@@ -1,5 +1,5 @@
 // src/main/java/basilium/basiliumserver/batchJobScheduler/batchMeta/StartupBatchOrchestrator.java
-package basilium.basiliumserver.batchJobScheduler.batchMeta;
+package basilium.basiliumserver.batch.batchMeta;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.batch.core.Job;
