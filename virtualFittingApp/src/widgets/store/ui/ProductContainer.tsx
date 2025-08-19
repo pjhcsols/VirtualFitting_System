@@ -58,7 +58,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
 
   const [mainImage, setMainImage] = useState(selectedProductImages[0]);
 
-  // 이 부분 나중에 고쳐놓을게욥!
   const isProductColor = (color: string): color is ProductColorPayment => {
   return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
   };
@@ -348,14 +347,14 @@ const IconImage = styled.img`
 
 const ProductName = styled.div`
   font-family: "pretendard";
-  font-weight: 200;
+  font-weight: 400;
   font-size: 24px;
   color: black;
 `;
 
 const Price = styled.div`
   font-family: "pretendard";
-  font-weight: 200;
+  font-weight: 500;
   color: black;
   font-size: 24px;
 `;
