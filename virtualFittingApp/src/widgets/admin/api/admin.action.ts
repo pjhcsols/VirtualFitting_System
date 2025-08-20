@@ -1,17 +1,60 @@
-import { API_BASILIUM } from "@/shared";
+import { API_BASILIUM, BasiliumResponse } from "@/shared";
+import { isAxiosError } from "axios";
 
-export const DELETE_BRAND_USER = async ({ idx }: { idx: number }) => {
+interface BrandApplicants extends BasiliumResponse {
+  data: BrandApplicantsDataType[];
+}
+
+type BrandApplicantsDataType = {
+  userNumber: number;
+  id: string;
+  password: string;
+  emailAddress: string;
+  phoneNumber: string;
+  userGrade: "BRONZE";
+  loginType: "NORMAL";
+  userImageUrl: string;
+  userProfileImageUrl: string;
+  firmName: string;
+  firmAddress: string;
+  businessRegistration: string;
+  businessRegistrationCertificateImageUrl: string;
+  firmWebUrl: string;
+  firmEmail: string;
+  firmPhone: string;
+  saleAllowed: boolean;
+};
+
+export const GET_BRAND_APPLICANTS = async () => {
   try {
-    const res = await API_BASILIUM.delete(`/${idx}`);
+    const res = await API_BASILIUM.get<BrandApplicants>("/b1/brandUsers/all");
+    if (res.status === 200) {
+      return res.data;
+    }
   } catch (err) {
-    return false;
+    if (!isAxiosError(err)) {
+      return err;
+    }
   }
 };
 
-export const POST_BANNERS = async ({ banner }: { banner: File[] | null }) => {
+export const PATCH_BRAND_APPLICANTS_STATE = async ({
+  userId,
+  saleAllowed,
+}: {
+  userId: number;
+  saleAllowed: boolean;
+}) => {
   try {
-    const res = await API_BASILIUM.post("", banner);
+    const res = await API_BASILIUM.patch(
+      `/b1/brandUsers/${userId}/permissions?saleAllowed=${saleAllowed}`,
+    );
+    if (res.status === 200) {
+      return true;
+    }
   } catch (err) {
-    return false;
+    if (!isAxiosError(err)) {
+      return err;
+    }
   }
 };

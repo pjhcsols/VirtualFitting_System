@@ -1,24 +1,21 @@
 import styled from "styled-components";
 import { Text, Title } from "../components";
-import { AdminBrandManager } from "@/widgets";
 
-function AdminBrand() {
+function AdminUser() {
   return (
     <Wrapper>
       <TopLayerContainer>
         <DescBox>
           <Title>Brand User 관리</Title>
-          <Text>Basilium 에 입점한 브랜드들을 관리하는 화면입니다.</Text>
+          <Text>Basilium 에 가입된 User를 관리할 수 있습니다.</Text>
         </DescBox>
       </TopLayerContainer>
-      <ContentLayerContainer>
-        <AdminBrandManager />
-      </ContentLayerContainer>
+      <ContentLayerContainer></ContentLayerContainer>
     </Wrapper>
   );
 }
 
-export { AdminBrand };
+export { AdminUser };
 
 const Wrapper = styled.main`
   width: 100%;

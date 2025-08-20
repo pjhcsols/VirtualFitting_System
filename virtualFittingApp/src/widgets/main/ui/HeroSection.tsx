@@ -6,38 +6,60 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { BasiliumLogoText, PrataText } from "@/shared/components/common";
 import { NavLink } from "react-router-dom";
+import { Canvas, useFrame } from "@react-three/fiber";
+import { useRef } from "react";
+import * as THREE from "three";
+import { Stars } from "@react-three/drei";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function HeroSection() {
+  const RotatingStars = () => {
+    const stars = useRef<THREE.Points>(null);
+
+    useFrame(() => {
+      if (stars.current) {
+        stars.current.rotation.x = stars.current.rotation.y += 0.00015;
+      }
+    });
+
+    return <Stars ref={stars} />;
+  };
   return (
     <Wrapper>
-      <HeaderContainer>
-        <BasiliumLogoText />
-      </HeaderContainer>
-      <ModelContainer>
-        <Basilium3DLogo />
-      </ModelContainer>
-      <InfoContainer>
-        <PrataText size={"4rem"} weight={700} color="#fff">
-          WEAR CROWN
-        </PrataText>
-        <PrataText size={"1.5rem"} weight={500} color="#fff">
-          RULE YOUR STYLE
-        </PrataText>
-        <ButtonContainer>
-          <LoginButton to={"/login"}>
-            <PrataText size={"0.8rem"} weight={500} color="#fff">
-              LOGIN
-            </PrataText>
-          </LoginButton>
-          <LoginButton to={"/store"}>
-            <PrataText size={"0.8rem"} weight={500} color="#fff">
-              STORE
-            </PrataText>
-          </LoginButton>
-        </ButtonContainer>
-      </InfoContainer>
+      <StarBackground>
+        <StarContainer>
+          <Canvas>
+            <RotatingStars />
+          </Canvas>
+        </StarContainer>
+        <HeaderContainer>
+          <BasiliumLogoText />
+        </HeaderContainer>
+        <ModelContainer>
+          <Basilium3DLogo />
+        </ModelContainer>
+        <InfoContainer>
+          <PrataText size={"4rem"} weight={700} color="#fff">
+            WEAR CROWN
+          </PrataText>
+          <PrataText size={"1.5rem"} weight={500} color="#fff">
+            RULE YOUR STYLE
+          </PrataText>
+          <ButtonContainer>
+            <LoginButton to={"/login"}>
+              <PrataText size={"0.8rem"} weight={500} color="#fff">
+                LOGIN
+              </PrataText>
+            </LoginButton>
+            <LoginButton to={"/store"}>
+              <PrataText size={"0.8rem"} weight={500} color="#fff">
+                STORE
+              </PrataText>
+            </LoginButton>
+          </ButtonContainer>
+        </InfoContainer>
+      </StarBackground>
     </Wrapper>
   );
 }
@@ -51,6 +73,31 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StarBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+`;
+
+const StarContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+  z-index: 0;
   background: radial-gradient(
     circle at 30% 30%,
     #292e49 0%,
@@ -91,6 +138,7 @@ const InfoContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 1rem;
+  z-index: 10;
 `;
 
 const ButtonContainer = styled.div`
