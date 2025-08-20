@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { MyHeader } from "@/shared/components/header";
+import { Header } from "@/shared/components/header";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
@@ -20,10 +20,7 @@ function MyPage() {
 
   return (
     <PageWrapper>
-      <HeaderWrapper>
-        <MyHeader title="마이페이지" backPath="/"/>
-      </HeaderWrapper>
-
+      <Header />
       <ContentWrapper>
         <GlassPanel>
           <UserInfoSection>

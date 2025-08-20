@@ -24,7 +24,7 @@ const PurchaseBtn = styled.button`
   background: black;
   flex-direction: row;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     width: 50%;
   }
 `;

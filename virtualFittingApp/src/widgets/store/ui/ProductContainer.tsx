@@ -5,6 +5,7 @@ import type { ProductDetail } from "@/shared";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
+import { fetchProductPrice } from "@/pages/store/api/products.action";
 
 import {
   ProductSmallCard,
@@ -19,9 +20,6 @@ import {
 } from "@/shared";
 
 import {
-  IMG_TEST_CLOTHES,
-  ICON_LIKED,
-  ICON_UNLIKED,
   ICON_SHARE,
 } from "@/shared";
 
@@ -38,6 +36,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   const [searchParams] = useSearchParams();
   const queryColor = searchParams.get("color");
   const [showPaymentTab, setShowPaymentTab] = useState(false);
+  const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
 
   const selectedColor =
     queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
@@ -61,7 +60,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
 
   const [mainImage, setMainImage] = useState(selectedProductImages[0]);
 
-  // 이 부분 나중에 고쳐놓을게욥!
   const isProductColor = (color: string): color is ProductColorPayment => {
   return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
   };
@@ -77,14 +75,27 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   }, []);
 
   useEffect(() => {
-    if (showPaymentTab && paymentWidgetRef.current) {
+    async function loadPrice() {
+      const priceData = await fetchProductPrice(product.productId);
+      if (priceData) {
+        setPrice({
+          original: priceData.baseUnitPrice,
+          ...(priceData.productDiscountedUnitPrice !== null && { discounted: priceData.productDiscountedUnitPrice }),
+        });
+      }
+    }
+    loadPrice();
+  }, [product.productId]);
+
+  useEffect(() => {
+    if (showPaymentTab && paymentWidgetRef.current && price) {
       const widget = paymentWidgetRef.current.renderPaymentMethods(
         "#payment-methods",
-        product.productPrice
+        price.discounted || price.original
       );
       paymentMethodsWidgetRef.current = widget;
     }
-  }, [showPaymentTab]);
+  }, [showPaymentTab, price]);
 
 
   const handlePurchaseClick = () => {
@@ -134,6 +145,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     }
 
     const paymentResponse = await createPaymentReservation({
+      userId: "test",
       productId: product.productId,
       productColor: selectedColor,
       productSize: selectedSize,
@@ -149,15 +161,25 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       await paymentWidgetRef.current?.requestPayment({
         orderId: paymentResponse.taskId,
         orderName: product.productName,
-        customerName: "고객이름",
-        customerEmail: "customer@example.com",
         successUrl: `${window.location.origin}/payment-success`,
         failUrl: `${window.location.origin}/payment-fail`,
+        customerName: "고객이름",
+        customerEmail: "customer@example.com",
       });
     } catch (error) {
       console.error("Payment request failed:", error);
+      window.location.href = `${window.location.origin}/payment-fail?message=${encodeURIComponent((error as Error).message)}`;
     }
   };
+  
+  if (!price) {
+    return null;
+  }
+
+  const hasDiscount = price.discounted !== undefined && price.discounted < price.original;
+  const discountRate = hasDiscount
+    ? Math.round(((price.original - price.discounted!) / price.original) * 100)
+    : 0;
 
   return (
     <ProductBox>
@@ -180,7 +202,17 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>{product.productPrice.toLocaleString()}원</Price>
+          {hasDiscount ? (
+            <PriceGroup>
+              <DiscountPrice>{price.discounted!.toLocaleString()}원</DiscountPrice>
+              <OriginalPriceBox>
+                <OriginalPrice>{price.original.toLocaleString()}원</OriginalPrice>
+                <DiscountRate>{discountRate}%</DiscountRate>
+              </OriginalPriceBox>
+            </PriceGroup>
+          ) : (
+            <Price>{price.original.toLocaleString()}원</Price>
+          )}
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
         <Description>{product.productDesc}</Description>
@@ -219,7 +251,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
             </OptionText>
           </OptionTop>
           <QuantityBox
-            unitPrice={product.productPrice}
+            unitPrice={price.original}
             quantity={quantity}
             setQuantity={setQuantity}
           />
@@ -231,9 +263,9 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               name: product.productName,
               brand: product.brandUser.firmName,
               image: selectedProductImages[0],
-              price: product.productPrice,
-              discountedPrice: undefined,
-              discountRate: undefined,
+              price: price.original,
+              discountedPrice: price.discounted,
+              discountRate: discountRate,
               color: selectedColor,
               size: selectedSize,
               quantity,
@@ -259,7 +291,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   );
 }
 
-
 const ProductBox = styled.section`
   display: flex;
   gap: 4px;
@@ -269,7 +300,7 @@ const ProductBox = styled.section`
   // justify-content: space-between;
   align-items: flex-start;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     flex-direction: column;
     align-items: center;
     gap: 32px;
@@ -284,7 +315,7 @@ const ProductImage = styled.img`
   height: auto;
   order: 0;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     max-width: 510px;
     max-height: 680px;
   }
@@ -298,7 +329,7 @@ const ProductSmallImagesContainer = styled.div`
   flex-flow: column nowrap;
   margin: 0px 4px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     flex-direction: row;
     justify-content: flex-start;
     width: 100%;
@@ -310,7 +341,7 @@ const ProductSmallImagesContainer = styled.div`
   }
 
   &::-webkit-scrollbar {
-    display: none; // 스크롤바 숨기기 (선택 사항)
+    display: none;
   }
 `;
 
@@ -323,7 +354,7 @@ const ProductInfoBox = styled.div`
   order: 3;
   margin: 0px 24px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     width: 100%;
   }
 `;
@@ -350,14 +381,14 @@ const IconImage = styled.img`
 
 const ProductName = styled.div`
   font-family: "pretendard";
-  font-weight: 200;
+  font-weight: 400;
   font-size: 24px;
   color: black;
 `;
 
 const Price = styled.div`
   font-family: "pretendard";
-  font-weight: 200;
+  font-weight: 500;
   color: black;
   font-size: 24px;
 `;
@@ -371,8 +402,8 @@ const PriceGroup = styled.div`
 const DiscountPrice = styled.div`
   font-family: "pretendard";
   font-size: 24px;
-  font-weight: 200;
-  color: black;
+  font-weight: 500;
+  color: red;
 `;
 
 const OriginalPriceBox = styled.div`
@@ -511,7 +542,7 @@ const SizeItem = styled.div<{ $selectedSize?: boolean }>`
     z-index: 1;
   `}
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     min-width: 78px;
     color: black;
   }
@@ -548,7 +579,7 @@ const ButtonBox = styled.div`
   gap: 8px;
   padding: 2px 0px;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
     justify-content: center;
     align-items: center;
   }

@@ -17,10 +17,13 @@ function StoreDetailPage() {
   const { id } = useParams();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  
 
   const [color, setColor] = useState<string | null>(null);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
+
+  const [activeTab, setActiveTab] = useState<"description" | "size" | "review" | "qna">("description");
 
   useEffect(() => {
     if (!id) return;
@@ -62,10 +65,21 @@ function StoreDetailPage() {
       <ProductContainer product={product} productColors={productColors} onColorChange={(c) => {
         navigate(`?color=${c}`);
       }} />
+      
+      <ContentArea>
+      <TabMenu>
+        <TabButton $active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
+        <TabButton $active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
+        <TabButton $active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
+        <TabButton $active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
+      </TabMenu>
       <Divider />
-      <DetailDescription />
-      <SizeInfo />
-      <ReviewContent />
+      
+        {activeTab === "description" && <DetailDescription />}
+        {activeTab === "size" && <SizeInfo />}
+        {activeTab === "review" && <ReviewContent />}
+        {/* {activeTab === "qna" && <만들어야함>} */}
+      </ContentArea>
     </Wrapper>
   );
 }
@@ -85,11 +99,40 @@ const Wrapper = styled.div`
 `;
 
 const Divider = styled.div`
-  margin-top: 64px;
+  margin-top: 16px;
   width: 100%;
   height: 1px;
   background: #e4e4e4;
   border-radius: 1000px;
+`;
+
+const TabMenu = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 64px;
+  flex-wrap: nowrap;
+  gap: 64px;
+`;
+
+const TabButton = styled.button<{ $active: boolean }>`
+  padding: 8px 32px;
+  border: none;
+  background: transparent;
+  color: ${({ $active }) => ($active ? "#000" : "#777")};
+  font-size: 15px;
+  font-weight: ${({ $active }) => ($active ? 700 : 500)};
+  cursor: pointer;
+  white-space: nowrap;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 8px 8px;
+  }
+`;
+
+const ContentArea = styled.div`
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 16px;
 `;
 
 export { StoreDetailPage };

@@ -1,13 +1,13 @@
 import React, { Suspense } from "react";
 import styled from "styled-components";
-import { MyHeader } from "@/shared/components/header";
+import { Header } from "@/shared";
 import { CancelContentList } from "@/pages/my/ui/CancelContentList";
 
 function MyCancel() {
   return (
     <PageWrapper>
       <HeaderWrapper>
-        <MyHeader title="취소/반품/교환 내역" />
+        <Header/>
       </HeaderWrapper>
 
       <ContentWrapper>

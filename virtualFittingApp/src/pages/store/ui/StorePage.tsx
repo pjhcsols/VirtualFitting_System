@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 import { BREAKPOINTS } from "@/shared";
 import { ProductCard } from "@/shared/components/product-card";
-import { Carousel, NameCard } from "@/widgets";
+import { Carousel } from "@/widgets";
 
 import { fetchOnSaleProducts } from "../api/products.action";
 import type { Product } from "@/shared";

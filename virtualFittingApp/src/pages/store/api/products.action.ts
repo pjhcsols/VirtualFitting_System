@@ -1,4 +1,4 @@
-import { Product, ProductDetail } from "@/shared";
+import { Product, ProductDetail, ProductPrice } from "@/shared";
 import { API_BASILIUM } from "@/shared";
 
 export const fetchOnSaleProducts = async ({
@@ -20,7 +20,6 @@ export const fetchOnSaleProducts = async ({
     return [];
   }
 };
-
 
 export const fetchProductDetailByColor = async (
   productId: number,
@@ -45,3 +44,14 @@ export const fetchProductColors = async (
   }
 };
 
+export const fetchProductPrice = async (
+  productId: number
+): Promise<ProductPrice | null> => {
+  try {
+    const response = await API_BASILIUM.get(`/b1/discounts/products/price/${productId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error("Failed to fetch product price", error);
+    return null;
+  }
+};

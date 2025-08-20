@@ -21,7 +21,7 @@ const Wrapper = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  padding: 100px 0px;
+  padding: 16px 0px;
   display: flex;
   flex-flow: column nowrap;
 `;

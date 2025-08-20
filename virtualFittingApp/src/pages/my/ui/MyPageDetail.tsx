@@ -1,5 +1,7 @@
   import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
+  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
+  import { Header } from "@/shared";
   import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON, UP_ICON, DOWN_ICON} from "@/pages/my/constants"; 
   import { MyHeader } from "@/shared/components/header";
   import penIcon from "./pen.png";
@@ -189,6 +191,64 @@
 
       return (
           <PageWrapper>
+          <HeaderWrapper>
+              <Header />
+          </HeaderWrapper>
+
+          <ContentWrapper>
+              <AvatarContainer>
+                <AvatarIcon src={profilePreviewImage ?? MYUSER_ICON} alt="사용자 이미지" />
+                <PenIcon src={penIcon} alt="수정 아이콘" onClick={handleUpProfileButton} />
+                <HiddenInput
+                  type="file"
+                  accept="image/*"
+                  ref={profileInputRef}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleImageFileChange(e, setProfilePreviewImage, setProfileImageFile)}
+                />
+              </AvatarContainer>
+              <Divider />
+              <Form>
+              <FormField> 
+                  <Label>이름</Label>
+                  <Input 
+                      placeholder="이름을 입력해주세요." 
+                      value={formData.name}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
+                  />
+              </FormField>
+              <FormField> 
+                  <Label>비밀번호</Label>
+                  <Input 
+                      placeholder="비밀번호를 입력해주세요." 
+                      value={formData.password}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
+                  />
+              </FormField>
+              <FormField>
+                  <Label>휴대폰 번호</Label>
+                  <Input 
+                      placeholder="- 없이 입력" 
+                      value={formData.phoneNumber}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phoneNumber: e.target.value})}
+                  />
+              </FormField>
+              <FormField>
+                  <Label>닉네임</Label>
+                  <Input 
+                      placeholder="닉네임을 입력해주세요." 
+                      value={formData.nickname}
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, nickname: e.target.value})}
+                  />
+              </FormField>
+              <FormField> 
+                  <Label>이메일</Label>
+                  <FieldWrapper>
+                    <TelForm>
+                      <PhoneInput 
+                        placeholder="이메일을 입력해주세요." 
+                        value={formData.emailAddress}
+                        disabled={emailVerified}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, emailAddress: e.target.value })}
             <HeaderWrapper>
                 <MyHeader title="회원정보 수정" />
             </HeaderWrapper>

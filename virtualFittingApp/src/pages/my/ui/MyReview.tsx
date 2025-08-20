@@ -1,13 +1,13 @@
 import React, { Suspense } from "react";
 import styled from "styled-components";
-import { MyHeader } from "@/shared/components/header";
+import { Header } from "@/shared";
 import { ReviewContentList } from "@/pages/my/ui/ReviewContentList";
 
 function MyReview() {
   return (
     <PageWrapper>
       <HeaderWrapper>
-        <MyHeader title="후기 작성" backPath="/myPage" />
+        <Header />
       </HeaderWrapper>
 
       <ContentWrapper>

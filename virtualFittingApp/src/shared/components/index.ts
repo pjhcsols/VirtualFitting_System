@@ -14,8 +14,6 @@ export * from "@/shared/components/liked-carousel";
 
 export * from "@/shared/components/pagination";
 
-export * from "@/shared/components/payment";
-
 export * from "@/shared/components/pop-up";
 
 export * from "@/shared/components/product";
