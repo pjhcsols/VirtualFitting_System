@@ -9,3 +9,4 @@ export const CANCEL_ICON = "/svg/cancel.svg";
 export const ELLIPSIS_ICON = "/svg/ellipsis.svg";
 export const UP_ICON = "/svg/buttonDown.svg";
 export const DOWN_ICON = "/svg/buttonUp.svg";
+export const ARROW_ICON = "/svg/arrow.svg";

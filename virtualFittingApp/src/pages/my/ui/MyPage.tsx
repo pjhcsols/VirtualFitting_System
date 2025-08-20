@@ -6,7 +6,7 @@ import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
 import { BREAKPOINTS} from "@/shared";
 import Cookies from "js-cookie";
-import arrowImg from "./arrow.png";
+import { ARROW_ICON } from "@/pages/my/constants";
 
 function MyPage() {
   const navigate = useNavigate();
@@ -25,53 +25,55 @@ function MyPage() {
       </HeaderWrapper>
 
       <ContentWrapper>
-        <UserInfoSection>
-          <UserInfo onClick={() => navigate("/mypage/detail")}>
-            <Avatar src={MYUSER_ICON} alt="유저 이미지" />
-            <UserName>{getMaskedUserName(userId)}</UserName>
-            <ArrowImg2 src={arrowImg} alt=">" />
-          </UserInfo>
-        </UserInfoSection>
+        <GlassPanel>
+          <UserInfoSection>
+            <UserInfo onClick={() => navigate("/mypage/detail")}>
+              <Avatar src={MYUSER_ICON} alt="유저 이미지" />
+              <UserName>{getMaskedUserName(userId)}</UserName>
+              <ArrowImg2 src={ARROW_ICON} alt=">" />
+            </UserInfo>
+          </UserInfoSection>
 
-        <Divider />
+          <Divider />
 
-        <StatsWrapper>
-          <Stat>
-            포인트
-            <ReviewCount>0원</ReviewCount>
-          </Stat>
-          <Stat>
-            쿠폰
-            <ReviewCount>0개</ReviewCount>
-          </Stat>
-          <Stat onClick={() => navigate("/myPage/review")}>
-            후기작성
-            <ReviewCount>{reviewCount}개</ReviewCount>
-          </Stat>
-        </StatsWrapper>
+          <StatsWrapper>
+            <Stat>
+              포인트
+              <ReviewCount>0원</ReviewCount>
+            </Stat>
+            <Stat>
+              쿠폰
+              <ReviewCount>0개</ReviewCount>
+            </Stat>
+            <Stat onClick={() => navigate("/myPage/review")}>
+              후기작성
+              <ReviewCount>{reviewCount}개</ReviewCount>
+            </Stat>
+          </StatsWrapper>
 
-        <MenuList>
-          <MenuItem>
-            좋아요
-            <ArrowImg src={arrowImg} onClick={() => navigate("/myPage/like")} alt=">" />
-          </MenuItem>
-          <MenuItem>
-            주문내역
-            <ArrowImg
-              src={arrowImg}
-              onClick={() => navigate("/myPage/order")}
-              alt=">"
-            />
-          </MenuItem>
-          <MenuItem>
-            취소/반품/교환 내역
-            <ArrowImg
-              src={arrowImg}
-              onClick={() => navigate("/myPage/cancel")}
-              alt=">"
-            />
-          </MenuItem>
-        </MenuList>
+          <MenuList>
+            <MenuItem>
+              좋아요
+              <ArrowImg src={ARROW_ICON} onClick={() => navigate("/myPage/like")} alt=">" />
+            </MenuItem>
+            <MenuItem>
+              주문내역
+              <ArrowImg
+                src={ARROW_ICON}
+                onClick={() => navigate("/myPage/order")}
+                alt=">"
+              />
+            </MenuItem>
+            <MenuItem>
+              취소/반품/교환 내역
+              <ArrowImg
+                src={ARROW_ICON}
+                onClick={() => navigate("/myPage/cancel")}
+                alt=">"
+              />
+            </MenuItem>
+          </MenuList>
+        </GlassPanel>
       </ContentWrapper>
     </PageWrapper>
   );
@@ -81,12 +83,7 @@ export { MyPage };
 
 const PageWrapper = styled.div`
   width: 100%;
-  height: 100vh;
-  background: #fff;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  left: 0;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -105,10 +102,9 @@ const ContentWrapper = styled.div`
   justify-content: center;
   flex: 1;
   width: 100%;
-  max-width: 1000px;
   padding: 20px;
+  margin-top: 50px;
   box-sizing: border-box;
-  overflow: hidden;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 10px;
@@ -146,6 +142,7 @@ const Avatar = styled.img`
 const UserName = styled.span`
   font-size: 16px;
   font-weight: 500;
+  color: rgba(255,255,255,0.9); 
   font-family: "Prata-Regular";
 `;
 
@@ -153,19 +150,19 @@ const Divider = styled.hr`
   margin: 16px 0;
   border: none;
   height: 1px;
-  background-color: #e5e5e5;
+  background: rgba(255,255,255,0.5);
   width: 100%;
 `;
 
 const StatsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  background: #f9f9f9;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.9);
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 24px;
   width: 100%;
-  max-width: 1000px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -178,7 +175,7 @@ const Stat = styled.div`
   text-align: center;
   font-size: 14px;
   font-family: "Prata-Regular";
-  color: #999;
+  color: rgba(255,255,255,0.9);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -190,7 +187,7 @@ const ReviewCount = styled.span`
   font-size: 14px;
   font-weight: bold;
   font-family: "Prata-Regular";
-  color: #555;
+  color: rgba(255,255,255,0.9);
 `;
 
 const MenuList = styled.div`
@@ -211,21 +208,38 @@ const MenuItem = styled.div`
   padding: 13px 5px;
   font-size: 14px;
   font-family: "Prata-Regular";
-  border-bottom: 1px solid #eee;
+  color: rgba(255,255,255,0.9);
+  border-bottom: 1px solid rgba(255,255,255,0.5);
   cursor: pointer;
   text-align: left;
   margin-left: 8px;
 `;
 
 const ArrowImg = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px; 
   opacity: 0.6;
 `;
 
 const ArrowImg2 = styled.img`
   width: 28px;
   height: 28px;
-  opacity: 0.6;
   margin-left: -15px;
+  opacity: 0.6;
+`;
+
+const GlassPanel = styled.div`
+  width: 100%;
+  max-width: 1000px;
+  padding: 24px;
+  border-radius: 18px;
+
+  background: rgba(200, 200, 200, 0.15);  
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.3),
+    0 10px 30px rgba(0,0,0,0.15);
 `;
