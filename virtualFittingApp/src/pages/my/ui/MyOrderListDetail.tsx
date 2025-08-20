@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { Header } from "@/shared";
 import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
+import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";
 
 function MyOrderListDetail() {
     const {id} = useParams();
@@ -11,7 +12,7 @@ function MyOrderListDetail() {
             <HeaderWrapper>
                 <Header />
             </HeaderWrapper>
-
+                <OrderDetailContent />
             <ContentWrapper>
                 <InnerContent>
                 </InnerContent>
@@ -26,7 +27,6 @@ export { MyOrderListDetail };
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: #fff;
   height: 100vh;
 `;
 

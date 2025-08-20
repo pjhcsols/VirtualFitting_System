@@ -1,7 +1,10 @@
 "use server";
 
-import { API_BASILIUM, ProductServerResponseType } from "@/shared";
-import { BrandUserType } from "@/pages/brand/types/brandUser";
+import { API_BASILIUM, FileItem, ProductServerResponseType } from "@/shared";
+import {
+  BrandAuthenticationType,
+  BrandUserType,
+} from "@/pages/brand/types/brandUser";
 import axios from "axios";
 
 export const MODIFY_BRAND_INFO = async (request: BrandUserType) => {
@@ -58,5 +61,51 @@ export const GET_BRAND_PRODUCT_LIST = async ({
     if (axios.isAxiosError(err)) {
       console.error(err.message);
     }
+  }
+};
+
+export const GET_BRAND_AUTHENTICATION = async () => {
+  try {
+    const res = await API_BASILIUM.get("/b1/brandUsers/me/busniess-cert");
+    if (res.status === 200) {
+      return res.data as BrandAuthenticationType;
+    }
+  } catch (err) {
+    if (!axios.isAxiosError(err)) return err;
+    if (err.status === 401) {
+      console.log("내잘못");
+      console.log(err.message);
+      return err;
+    }
+    console.log(err);
+    return err;
+  }
+};
+
+export const POST_BRAND_AUTHENTICATION = async (fileItem: FileItem) => {
+  try {
+    const formData = new FormData();
+    formData.append("file", fileItem.file);
+    const res = await API_BASILIUM.post(
+      "/b1/brandUsers/me/busniess-cert",
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data;",
+        },
+      },
+    );
+    if (res.status === 200) {
+      return true;
+    }
+  } catch (err) {
+    if (!axios.isAxiosError(err)) return err;
+    if (err.status === 401) {
+      console.log("내잘못");
+      console.log(err.message);
+      return err;
+    }
+    console.log(err);
+    return err;
   }
 };

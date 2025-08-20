@@ -7,14 +7,13 @@ import {
   NormalSignUpPage,
   SuccessSignUpPage,
 } from "@/pages";
-import { LoginLayout } from "@/shared";
 import { SignUpLayout } from "@/shared/layout/auth";
 
 export default function AuthRouter() {
   const location = useLocation();
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="login" element={<LoginLayout />}>
+      <Route path="login">
         <Route index element={<Loginpage />} />
         <Route path="admin" element={<AdminLogin />} />
       </Route>

@@ -28,6 +28,7 @@ export type NormalUserSignUpRequestDto = {
 };
 
 export type BrandUserSignUpRequestDto = {
+  userNumber: number;
   id: string;
   password: string;
   emailAddress: string;
@@ -39,5 +40,9 @@ export type BrandUserSignUpRequestDto = {
   firmName: string;
   firmAddress: string;
   businessRegistration: string;
+  businessRegistrationCertificateImageUrl: string;
   firmWebUrl: string;
+  firmEmail: string;
+  firmPhone: string;
+  saleAllowed: false;
 };

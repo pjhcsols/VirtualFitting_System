@@ -21,3 +21,5 @@ export * from "@/pages/shopping-cart";
 export * from "@/pages/admin";
 
 export * from "@/pages/auth";
+
+export * from "@/pages/redirect";

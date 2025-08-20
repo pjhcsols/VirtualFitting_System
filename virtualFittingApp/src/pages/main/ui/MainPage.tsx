@@ -1,16 +1,17 @@
-import * as S from "@/pages/main/ui/css/MainPage.css";
-
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
 import { HeroSection, AiServiceSection } from "@/widgets";
 import { useEffect, useRef } from "react";
 
-import { type LenisRef } from "lenis/react";
+import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+
+import styled from "styled-components";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -34,8 +35,6 @@ function MainPage() {
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
-      // Query sections within slider
-      // const sections = gsap.utils.toArray("section", slider);
       const tl = gsap.timeline({
         defaults: {
           ease: "none",
@@ -51,9 +50,7 @@ function MainPage() {
         yPercent: -100,
       });
 
-      // Cleanup ScrollTrigger on unmount
       return () => {
-        // Remove all ScrollTriggers
         ScrollTrigger.killAll();
       };
     }
@@ -70,33 +67,90 @@ function MainPage() {
   }, []);
 
   return (
-    <S.Wrapper
+    <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
       ref={lenisRef}
       root
     >
-      <S.MainSection>
-        <S.StarContainer>
+      <MainSection>
+        {/* <StarContainer>
           <Canvas>
             <RotatingStars />
           </Canvas>
-        </S.StarContainer>
-        <S.Article className="slider" ref={sliderRef}>
-          <S.ModelContainer>
-            <S.Hero>
+        </StarContainer> */}
+        <Article className="slider" ref={sliderRef}>
+          <ModelContainer>
+            <Hero>
               <HeroSection />
             </S.Hero>
             <S.AIIntroduction>
               <AiServiceSection />
             </S.AIIntroduction>
           </S.ModelContainer>
+            </Hero>
+            <AIIntroduction></AIIntroduction>
+          </ModelContainer>
           <section></section>
           <section></section>
           <section></section>
-        </S.Article>
-      </S.MainSection>
-    </S.Wrapper>
+        </Article>
+      </MainSection>
+    </Wrapper>
   );
 }
 
 export { MainPage };
+
+const Wrapper = styled(ReactLenis)``;
+
+const MainSection = styled.section`
+  box-sizing: border-box;
+  width: 100%;
+  transition: 0.3s padding ease-out;
+  background: linear-gradient(to bottom, #292e49, #536976 50%, #bbd2c5 100%);
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+const Article = styled.article`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+const StarContainer = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
+
+const ModelContainer = styled.section`
+  position: relative;
+  width: 100%;
+  height: 200vh;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  align-items: flex-start;
+`;
+
+const Hero = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const AIIntroduction = styled.div`
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;

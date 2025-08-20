@@ -6,7 +6,7 @@ import { MainLayout } from "@/shared";
 function MainRouter() {
   return (
     <Routes location={location} key={location.pathname}>
-      <Route path="/" element={<MainLayout />}>
+      <Route path="" element={<MainLayout />}>
         <Route index element={<MainPage />} />
       </Route>
     </Routes>
