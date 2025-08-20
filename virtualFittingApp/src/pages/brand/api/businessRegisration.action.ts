@@ -14,7 +14,7 @@ interface IBusinessRegistrationResponse extends AxiosResponse {
 export const isValidBrandRegistration = async (registration: string) => {
   try {
     const request: IBusinessRegistration = {
-      b_no: [registration],
+      b_no: [registration.replace("-", "")],
     };
     const res = await axios.post<IBusinessRegistrationResponse>(
       `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${API_KEY}`,
@@ -27,7 +27,10 @@ export const isValidBrandRegistration = async (registration: string) => {
       },
     );
     if (res.status === 200) {
+      console.log(res.data);
       return res.data.match_cnt === 1;
     }
-  } catch (err) {}
+  } catch (err) {
+    console.error(err);
+  }
 };
