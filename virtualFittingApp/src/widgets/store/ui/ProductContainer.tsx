@@ -5,7 +5,7 @@ import type { ProductDetail } from "@/shared";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
-import { fetchProductPrice } from "@/pages/store/api/products.action"; // API 함수 import
+import { fetchProductPrice } from "@/pages/store/api/products.action";
 
 import {
   ProductSmallCard,
@@ -36,7 +36,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   const [searchParams] = useSearchParams();
   const queryColor = searchParams.get("color");
   const [showPaymentTab, setShowPaymentTab] = useState(false);
-  const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null); // 가격 상태 추가
+  const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
 
   const selectedColor =
     queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
@@ -74,7 +74,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     })();
   }, []);
 
-  // 가격 정보 불러오기 로직 추가
   useEffect(() => {
     async function loadPrice() {
       const priceData = await fetchProductPrice(product.productId);
@@ -92,7 +91,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     if (showPaymentTab && paymentWidgetRef.current && price) {
       const widget = paymentWidgetRef.current.renderPaymentMethods(
         "#payment-methods",
-        price.discounted || price.original // 할인가가 있으면 할인가, 없으면 원가로 렌더링
+        price.discounted || price.original
       );
       paymentMethodsWidgetRef.current = widget;
     }
