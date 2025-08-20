@@ -66,14 +66,15 @@ function StoreDetailPage() {
         navigate(`?color=${c}`);
       }} />
       
+      <ContentArea>
       <TabMenu>
-        <TabButton active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
-        <TabButton active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
-        <TabButton active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
-        <TabButton active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
+        <TabButton $active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
+        <TabButton $active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
+        <TabButton $active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
+        <TabButton $active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
       </TabMenu>
       <Divider />
-      <ContentArea>
+      
         {activeTab === "description" && <DetailDescription />}
         {activeTab === "size" && <SizeInfo />}
         {activeTab === "review" && <ReviewContent />}
@@ -113,13 +114,13 @@ const TabMenu = styled.div`
   gap: 64px;
 `;
 
-const TabButton = styled.button<{ active: boolean }>`
+const TabButton = styled.button<{ $active: boolean }>`
   padding: 8px 32px;
   border: none;
   background: transparent;
-  color: ${({ active }) => (active ? "#000" : "#777")};
+  color: ${({ $active }) => ($active ? "#000" : "#777")};
   font-size: 15px;
-  font-weight: ${({ active }) => (active ? 700 : 500)};
+  font-weight: ${({ $active }) => ($active ? 700 : 500)};
   cursor: pointer;
   white-space: nowrap;
 
@@ -128,9 +129,9 @@ const TabButton = styled.button<{ active: boolean }>`
   }
 `;
 
-
 const ContentArea = styled.div`
   width: 100%;
+  max-width: 1200px;
   margin-top: 16px;
 `;
 
