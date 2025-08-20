@@ -8,6 +8,5 @@ type MypageTitlesType = {
 export const BrandMyPageInputTitles: MypageTitlesType[] = [
   { title: "회사 명", name: "firmName" },
   { title: "회사 주소", name: "firmAddress" },
-  { title: "사업자 등록증", name: "businessRegistration" },
   { title: "회사 웹 사이트 URL", name: "firmWebUrl" },
 ];

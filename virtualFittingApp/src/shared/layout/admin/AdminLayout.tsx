@@ -15,9 +15,10 @@ function AdminLayout() {
 
 const Wrapper = styled.main`
   box-sizing: border-box;
+  padding: 1rem;
   max-width: 100vw;
   min-height: 100vh;
-  background-color: #fffafa;
+  background-color: #e7e8ea;
   overflow: hidden;
   display: flex;
   justify-content: flex-start;
@@ -26,23 +27,23 @@ const Wrapper = styled.main`
 
 const AdminContentContainer = styled.article`
   box-sizing: border-box;
-  padding: 2rem 10rem;
+  padding: 2rem 5rem;
   width: 100%;
 
   @media (max-width: 1280px) {
-    padding: 0 9rem;
+    padding: 0 4rem;
   }
 
   @media (max-width: 1024px) {
-    padding: 0 7rem;
+    padding: 0 3rem;
   }
 
   @media (max-width: 768px) {
-    padding: 0 5rem;
+    padding: 0 2rem;
   }
 
   @media (max-width: 640px) {
-    padding: 0 4rem;
+    padding: 0 1rem;
   }
 `;
 

@@ -1,17 +1,37 @@
+import { type ChangeEvent } from "react";
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column wrap;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: 32px;
-`;
+interface ITextInput {
+  title: string;
+  name: string;
+  value: string;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
+}
 
-export const TitleInputContainer = styled.div`
+function TextInput({ title, value, name, onChange }: ITextInput) {
+  return (
+    <InputContainer inputed={value.length !== 0}>
+      <input
+        type="text"
+        id="input"
+        name={name}
+        value={value}
+        onChange={onChange}
+        required
+      />
+      <label htmlFor="input" className="label">
+        {title}
+      </label>
+      <div className="underline" />
+    </InputContainer>
+  );
+}
+
+export { TextInput };
+
+const InputContainer = styled.div<{ inputed: boolean }>`
   position: relative;
-  margin: 50px auto;
+  margin: 2.5rem auto;
   width: 80%;
 
   input[type="text"] {
@@ -26,7 +46,7 @@ export const TitleInputContainer = styled.div`
   }
   label {
     position: absolute;
-    top: 0;
+    top: ${(props) => (props.inputed ? "-20px" : "0")};
     left: 0;
     color: #ccc;
     transition: all 0.3s ease;

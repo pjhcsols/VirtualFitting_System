@@ -1,5 +1,6 @@
 import { Route, Routes, useLocation } from "react-router-dom";
 import {
+  BasiliumRedirect,
   BrandAnalytics,
   BrandAuthenticate,
   BrandCoupon,
@@ -30,6 +31,7 @@ function BrandRouter() {
           <Route path="coupon" element={<BrandCoupon />} />
           <Route path="my" element={<BrandProfile />} />
           <Route path="analytics" element={<BrandAnalytics />} />
+          <Route path="*" element={<BasiliumRedirect />} />
         </Route>
       </Route>
     </Routes>
