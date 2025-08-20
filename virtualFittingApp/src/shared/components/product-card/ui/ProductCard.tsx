@@ -1,9 +1,10 @@
-import styled, { createGlobalStyle } from "styled-components";
-import { useState } from "react";
+import styled from "styled-components";
+import { useState, useEffect } from "react";
 import { ColorPopup } from "./ColorPopUp";
 import { LikeButton } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 import { COLOR_MAP } from "@/shared";
+import { fetchProductPrice } from "@/pages/store/api/products.action";
 
 type ProductCardProps = {
   product: any;
@@ -12,9 +13,23 @@ type ProductCardProps = {
 
 function ProductCard({ product, onClick }: ProductCardProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [price, setPrice] = useState<{ original: number; discounted: number } | null>(null);
   const maxVisibleColors = 3;
   const visibleColors = product.productColors?.slice(0, maxVisibleColors) || [];
   const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
+
+  useEffect(() => {
+    async function loadPrice() {
+      const priceData = await fetchProductPrice(product.productId);
+      if (priceData) {
+        setPrice({
+          original: priceData.baseUnitPrice,
+          discounted: priceData.productDiscountedUnitPrice,
+        });
+      }
+    }
+    loadPrice();
+  }, [product.productId]);
 
   return (
     <Card onClick={onClick}>
@@ -43,16 +58,31 @@ function ProductCard({ product, onClick }: ProductCardProps) {
         )}
       </ImageBox>
       <InfoBox>
-        <Brand>{product.categoryName}</Brand> {/* 브랜드가 따로 없으면 카테고리로 대체 가능 */}
+        <Brand>{product.categoryName}</Brand>
         <Name>{product.productName}</Name>
         <PriceBox>
-          {/* 할인율 없으면 안 보여주기, 할인율 계산은 API에서 하거나 여기서 */}
-          {/* 예시로 10% 할인율 적용 */}
-          <DiscountRate>10%</DiscountRate>
-          <PriceRow>
-            <OriginalPrice>{product.productPrice.toLocaleString()}원</OriginalPrice>
-            <DiscountedPrice>{Math.floor(product.productPrice * 0.9).toLocaleString()}원</DiscountedPrice>
-          </PriceRow>
+          {price && (
+            <>
+              {price.original !== price.discounted ? (
+                <>
+                  <DiscountRate>
+                    {Math.round(((price.original - price.discounted) / price.original) * 100)}%
+                  </DiscountRate>
+                  <PriceRow>
+                    <OriginalPrice>{price.original.toLocaleString()}원</OriginalPrice>
+                    <DiscountedPrice>{price.discounted.toLocaleString()}원</DiscountedPrice>
+                  </PriceRow>
+                </>
+              ) : (
+                <>
+                  <HiddenSpace />
+                  <PriceRow>
+                    <Price>{price.original.toLocaleString()}원</Price>
+                  </PriceRow>
+                </>
+              )}
+            </>
+          )}
         </PriceBox>
       </InfoBox>
     </Card>
@@ -177,7 +207,11 @@ const Price = styled.div`
   font-size: 0.8em;
   color: black;
   font-family: "pretendard";
+`;
 
+const HiddenSpace = styled.div`
+  visibility: hidden;
+  height: 0.5em;
 `;
 
 const ColorSwatches = styled.div`
@@ -223,6 +257,5 @@ const ExtraText = styled.div`
   font-size: 0.75em;
   color: black;
 `;
-
 
 export { ProductCard };

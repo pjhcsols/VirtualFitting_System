@@ -13,6 +13,7 @@ export type {
 export * from "@/shared/types/product/category.d";
 export type { Product } from "@/shared/types/product/products.d";
 export type { ProductDetail } from "@/shared/types/product/productDetail.d";
+export type { ProductPrice } from "@/shared/types/product/productPrice.d";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
