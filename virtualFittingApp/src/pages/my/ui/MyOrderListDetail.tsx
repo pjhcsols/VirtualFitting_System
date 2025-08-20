@@ -27,7 +27,6 @@ export { MyOrderListDetail };
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  background: #fff;
   height: 100vh;
 `;
 
