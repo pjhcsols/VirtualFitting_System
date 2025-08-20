@@ -5,6 +5,7 @@ import type { ProductDetail } from "@/shared";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
+import { fetchProductPrice } from "@/pages/store/api/products.action"; // API 함수 import
 
 import {
   ProductSmallCard,
@@ -35,6 +36,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   const [searchParams] = useSearchParams();
   const queryColor = searchParams.get("color");
   const [showPaymentTab, setShowPaymentTab] = useState(false);
+  const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null); // 가격 상태 추가
 
   const selectedColor =
     queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
@@ -72,15 +74,29 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     })();
   }, []);
 
+  // 가격 정보 불러오기 로직 추가
   useEffect(() => {
-    if (showPaymentTab && paymentWidgetRef.current) {
+    async function loadPrice() {
+      const priceData = await fetchProductPrice(product.productId);
+      if (priceData) {
+        setPrice({
+          original: priceData.baseUnitPrice,
+          ...(priceData.productDiscountedUnitPrice !== null && { discounted: priceData.productDiscountedUnitPrice }),
+        });
+      }
+    }
+    loadPrice();
+  }, [product.productId]);
+
+  useEffect(() => {
+    if (showPaymentTab && paymentWidgetRef.current && price) {
       const widget = paymentWidgetRef.current.renderPaymentMethods(
         "#payment-methods",
-        product.productPrice
+        price.discounted || price.original // 할인가가 있으면 할인가, 없으면 원가로 렌더링
       );
       paymentMethodsWidgetRef.current = widget;
     }
-  }, [showPaymentTab]);
+  }, [showPaymentTab, price]);
 
 
   const handlePurchaseClick = () => {
@@ -91,31 +107,31 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     setShowPaymentTab(false);
   };
 
-  // const [taskId, setTaskId] = useState<string | null>(null);
-  // const [showCheckout, setShowCheckout] = useState(false);
+  const [taskId, setTaskId] = useState<string | null>(null);
+  const [showCheckout, setShowCheckout] = useState(false);
 
-  // const onPaymentComplete = async (success: boolean) => {
-  //   setShowCheckout(false);
+  const onPaymentComplete = async (success: boolean) => {
+    setShowCheckout(false);
 
-  //   if (taskId) {
-  //     try {
-  //       await handlePaymentResponse({ taskId, success });
-  //       console.log("Payment result processed");
-  //     } catch (error) {
-  //       console.error("Error processing payment result", error);
-  //     }
-  //   }
-  // };
+    if (taskId) {
+      try {
+        await handlePaymentResponse({ taskId, success });
+        console.log("Payment result processed");
+      } catch (error) {
+        console.error("Error processing payment result", error);
+      }
+    }
+  };
 
-  // const handleCompletePayment = async (taskId: string, success: boolean) => {
-  //   try {
-  //     const resultMessage = await handlePaymentResponse({ taskId, success });
-  //     console.log("Payment result processed:", resultMessage);
-  //     console.log(success ? "true" : "false");
-  //   } catch (error) {
-  //     console.error("Error processing payment result:", error);
-  //   }
-  // };
+  const handleCompletePayment = async (taskId: string, success: boolean) => {
+    try {
+      const resultMessage = await handlePaymentResponse({ taskId, success });
+      console.log("Payment result processed:", resultMessage);
+      console.log(success ? "true" : "false");
+    } catch (error) {
+      console.error("Error processing payment result:", error);
+    }
+  };
 
   const handlePurchase = async () => {
     if (!isProductColor(selectedColor)) {
@@ -130,6 +146,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     }
 
     const paymentResponse = await createPaymentReservation({
+      userId: "test",
       productId: product.productId,
       productColor: selectedColor,
       productSize: selectedSize,
@@ -155,6 +172,15 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       window.location.href = `${window.location.origin}/payment-fail?message=${encodeURIComponent((error as Error).message)}`;
     }
   };
+  
+  if (!price) {
+    return null;
+  }
+
+  const hasDiscount = price.discounted !== undefined && price.discounted < price.original;
+  const discountRate = hasDiscount
+    ? Math.round(((price.original - price.discounted!) / price.original) * 100)
+    : 0;
 
   return (
     <ProductBox>
@@ -177,7 +203,17 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           <LikeButton />
         </TopRow>
         <TopRow>
-          <Price>{product.productPrice.toLocaleString()}원</Price>
+          {hasDiscount ? (
+            <PriceGroup>
+              <DiscountPrice>{price.discounted!.toLocaleString()}원</DiscountPrice>
+              <OriginalPriceBox>
+                <OriginalPrice>{price.original.toLocaleString()}원</OriginalPrice>
+                <DiscountRate>{discountRate}%</DiscountRate>
+              </OriginalPriceBox>
+            </PriceGroup>
+          ) : (
+            <Price>{price.original.toLocaleString()}원</Price>
+          )}
           <IconImage src={ICON_SHARE} alt="share icon" />
         </TopRow>
         <Description>{product.productDesc}</Description>
@@ -216,7 +252,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
             </OptionText>
           </OptionTop>
           <QuantityBox
-            unitPrice={product.productPrice}
+            unitPrice={price.original}
             quantity={quantity}
             setQuantity={setQuantity}
           />
@@ -228,9 +264,9 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               name: product.productName,
               brand: product.brandUser.firmName,
               image: selectedProductImages[0],
-              price: product.productPrice,
-              discountedPrice: undefined,
-              discountRate: undefined,
+              price: price.original,
+              discountedPrice: price.discounted,
+              discountRate: discountRate,
               color: selectedColor,
               size: selectedSize,
               quantity,
@@ -255,7 +291,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     </ProductBox>
   );
 }
-
 
 const ProductBox = styled.section`
   display: flex;
@@ -368,8 +403,8 @@ const PriceGroup = styled.div`
 const DiscountPrice = styled.div`
   font-family: "pretendard";
   font-size: 24px;
-  font-weight: 200;
-  color: black;
+  font-weight: 500;
+  color: red;
 `;
 
 const OriginalPriceBox = styled.div`
