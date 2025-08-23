@@ -28,6 +28,7 @@ public enum ErrorCode {
 
     // 409 Conflict
     DUPLICATE_RESOURCE(409, "CONFLICT", "데이터가 이미 존재합니다."),
+    CONFLICT(409, "CONFLICT", "데이터가 이미 존재합니다."),
 
     // 500 Internal Server Error
     SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", "서버 내부 오류가 발생했습니다.");

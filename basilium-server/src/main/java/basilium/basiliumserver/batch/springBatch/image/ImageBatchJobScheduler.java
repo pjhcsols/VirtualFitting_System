@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batch.image;
+package basilium.basiliumserver.batch.springBatch.image;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

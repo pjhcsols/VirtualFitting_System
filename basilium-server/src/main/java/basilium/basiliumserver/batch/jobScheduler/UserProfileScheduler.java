@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batch.image;
+package basilium.basiliumserver.batch.jobScheduler;
 
 /*
     @Autowired

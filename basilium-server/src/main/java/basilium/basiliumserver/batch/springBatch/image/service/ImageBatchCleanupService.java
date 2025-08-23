@@ -1,4 +1,4 @@
-package basilium.basiliumserver.batch.image.service;
+package basilium.basiliumserver.batch.springBatch.image.service;
 
 import basilium.basiliumserver.domain.review.entity.Review;
 import basilium.basiliumserver.domain.review.repository.ReviewRepository;

@@ -930,6 +930,92 @@ SELECT * FROM user_discount
 WHERE user_number = 1
 ORDER BY created_at DESC;
 
+/* ===============================
+ * BrandCouponCampaign INSERT
+ * =============================== */
+
+-- 1.브랜드 전체 대상 캠페인 (scope=BRAND, product_id=NULL)
+-- 예시: 브랜드 유저번호 1의 브랜드, 전체 15% 할인, 최소주문 100000, 최대할인 50000
+INSERT INTO brand_coupon_campaign
+(
+    brand_user_number, scope, product_id,
+    percent, min_order, max_discount,
+    start_at, end_at,
+    per_user_limit, total_issuable, issued_count,
+    status, created_at, version
+)
+VALUES
+    (
+        1, 'BRAND', NULL,
+        15, 100000, 50000,
+        '2025-09-01 00:00:00', '2025-09-30 23:59:59',
+        1, 10000, 0,
+        'SCHEDULED', NOW(), 0
+    );
+
+-- 새로 생성된 캠페인 ID 보관
+SET @campaign_brand := LAST_INSERT_ID();
+
+-- 2.브랜드 전체 대상 캠페인 (scope=BRAND, product_id=NULL)
+-- 예시: 동일 브랜드(1)의 상품 1에 20% 할인, 최소주문 제한 없음, 최대할인 30000
+INSERT INTO brand_coupon_campaign
+(
+    brand_user_number, scope, product_id,
+    percent, min_order, max_discount,
+    start_at, end_at,
+    per_user_limit, total_issuable, issued_count,
+    status, created_at, version
+)
+VALUES
+    (
+        1, 'PRODUCT', 1,
+        20, 0, 30000,
+        '2025-09-10 00:00:00', '2025-10-10 23:59:59',
+        1, 5000, 0,
+        'SCHEDULED', NOW(), 0
+    );
+
+SET @campaign_product := LAST_INSERT_ID();
+
+/* ===============================
+ * NormalCouponWallet INSERT
+ * (user_number = 1)
+ * =============================== */
+
+-- 유저 변수 고정
+SET @user_number := 1;
+
+-- 1) 브랜드 전체 대상 캠페인(@campaign_brand) 지갑 발급
+INSERT INTO normal_coupon_wallet
+(
+    user_number, campaign_id, status,
+    claimed_at, used_at, used_order_id, created_at
+)
+VALUES
+    (
+        @user_number, @campaign_brand, 'AVAILABLE',
+        NOW(), NULL, NULL, NOW()
+    );
+
+-- 2) 특정 상품 한정 캠페인(@campaign_product) 지갑 발급
+INSERT INTO normal_coupon_wallet
+(
+    user_number, campaign_id, status,
+    claimed_at, used_at, used_order_id, created_at
+)
+VALUES
+    (
+        @user_number, @campaign_product, 'AVAILABLE',
+        NOW(), NULL, NULL, NOW()
+    );
+
+-- (선택) 방금 생성된 지갑 id 확인
+SELECT * FROM normal_coupon_wallet
+WHERE user_number = @user_number
+  AND campaign_id IN (@campaign_brand, @campaign_product)
+ORDER BY claimed_at DESC;
+
+
 
 INSERT INTO delivery_info(delivery_info_id, user_number, default_delivery_address, first_delivery_address, second_delivery_address)
 VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 1202호", "대구광역시 동구 아양로 애일린의 뜰", "대구광역시 동구 신암동 신암뜨란채 104동 1906호");

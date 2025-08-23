@@ -1,6 +1,6 @@
-package basilium.basiliumserver.batch.image.config;
+package basilium.basiliumserver.batch.springBatch.image.config;
 
-import basilium.basiliumserver.batch.image.service.ImageBatchCleanupService;
+import basilium.basiliumserver.batch.springBatch.image.service.ImageBatchCleanupService;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
 import org.springframework.batch.core.job.builder.JobBuilder;
