@@ -1,4 +1,4 @@
-package basilium.basiliumserver.global.util;
+package basilium.basiliumserver.global.review;
 
 public class MaskingUtil {
     private MaskingUtil() {}

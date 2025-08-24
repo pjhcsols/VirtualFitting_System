@@ -25,6 +25,8 @@ import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static java.util.Collections.emptyList;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -52,6 +54,12 @@ public class CouponService {
         if (value <= 0) return 0L;
         if (cap == null) return value;
         return Math.min(value, cap);
+    }
+
+    private NormalUser findUserByAuthIdOrThrow(String authUserId) {
+        return normalUserRepo.findById(authUserId)
+                .orElseThrow(() -> new BasiliumCustomException(
+                        ErrorCode.MEMBER_NOT_FOUND, "일반 유저를 찾을 수 없습니다: " + authUserId));
     }
 
     private BrandUser findBrandOrThrow(String brandUserId) {
@@ -163,49 +171,87 @@ public class CouponService {
 
     /* ===== 2) 상품 상세: 발급 가능 조회 / 발급 ===== */
 
-    /** 상품 상세: 발급/노출 가능 캠페인 조회(브랜드/상품 범위 동시 노출) */
-    public List<ClaimableOnProductView> listClaimablesOnProduct(Long productId, Long userNumber) {
-        Product product = findProductOrThrow(productId);
-        Long brandUserNumber = product.getBrandUser().getUserNumber();
-        LocalDateTime now = LocalDateTime.now();
+    /**
+     * 상품 상세: 발급/노출 가능 캠페인 조회(브랜드/상품 범위 동시 노출)
+     * - 게스트: alreadyClaimed=false, remainingCanClaim=perUserLimit
+     * - 로그인: AVAILABLE/USED 카운트를 그룹쿼리 1회로 수집
+     * - null 배제: emptyList/emptyMap/Optional.orElseGet
+     */
+    public List<ClaimableOnProductView> listClaimablesOnProductForViewer(
+            Long productId, Optional<String> normalUserId
+    ) {
+        final Product product = productRepo.findById(productId).orElseThrow(() ->
+                new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "상품 없음: " + productId));
 
-        long base = Optional.ofNullable(product.getProductPrice()).orElse(0L);
-        int brandPercent = productDiscountRepo.findActivePercentNow(productId, now).orElse(0);
-        long discountedUnit = base - roundPercent(base, brandPercent);
+        final Long brandUserNumber = product.getBrandUser().getUserNumber();
+        final LocalDateTime now = LocalDateTime.now();
 
-        List<BrandCouponCampaign> cs = campaignRepo.findClaimablesForProduct(productId, brandUserNumber, now);
-        if (cs.isEmpty()) return Collections.emptyList();
+        final long base = Optional.ofNullable(product.getProductPrice()).orElse(0L);
+        final int brandPercent = productDiscountRepo.findActivePercentNow(productId, now).orElse(0);
+        final long discountedUnit = base - roundPercent(base, brandPercent);
 
-        Map<Long, Long> alreadyMap = cs.stream().collect(Collectors.toMap(
-                BrandCouponCampaign::getId,
-                c -> walletRepo.countByUserAndCampaign(userNumber, c.getId())
+        final List<BrandCouponCampaign> campaigns =
+                Optional.ofNullable(campaignRepo.findClaimablesForProduct(productId, brandUserNumber, now))
+                        .filter(list -> !list.isEmpty())
+                        .orElseGet(Collections::emptyList);
+        if (campaigns.isEmpty()) return emptyList();
+
+        final List<Long> campaignIds = campaigns.stream().map(BrandCouponCampaign::getId).toList();
+
+        final Optional<Long> userNumberOpt = normalUserId
+                .flatMap(id -> normalUserRepo.findById(id).map(NormalUser::getUserNumber));
+
+        final List<NormalCouponWalletRepository.CampaignStatusCount> rows =
+                userNumberOpt
+                        .map(u -> walletRepo.countByUserAndCampaignInGrouped(u, campaignIds))
+                        .orElseGet(Collections::emptyList);
+
+        final Map<Long, Long> availableMap = rows.stream()
+                .filter(r -> r.getStatus() == NormalCouponWalletStatus.AVAILABLE)
+                .collect(Collectors.toMap(
+                        NormalCouponWalletRepository.CampaignStatusCount::getCampaignId,
+                        NormalCouponWalletRepository.CampaignStatusCount::getCnt,
+                        Long::sum
+                ));
+
+        final Map<Long, Long> usedMap = rows.stream()
+                .filter(r -> r.getStatus() == NormalCouponWalletStatus.USED)
+                .collect(Collectors.toMap(
+                        NormalCouponWalletRepository.CampaignStatusCount::getCampaignId,
+                        NormalCouponWalletRepository.CampaignStatusCount::getCnt,
+                        Long::sum
+                ));
+
+        final Map<Long, Long> ownedMap = campaignIds.stream().collect(Collectors.toMap(
+                cid -> cid,
+                cid -> availableMap.getOrDefault(cid, 0L) + usedMap.getOrDefault(cid, 0L)
         ));
 
-        List<ClaimableOnProductView> out = new ArrayList<>();
-        for (BrandCouponCampaign c : cs) {
-            long estRaw = roundPercent(discountedUnit, c.getPercent());
-            long est = cap(estRaw, c.getMaxDiscountPrice());
-            int remaining = Math.max(0, c.getPerUserLimit() - alreadyMap.getOrDefault(c.getId(), 0L).intValue());
+        return campaigns.stream().map(c -> {
+            final long est = cap(roundPercent(discountedUnit, c.getPercent()), c.getMaxDiscountPrice());
+            final long owned = ownedMap.getOrDefault(c.getId(), 0L);
+            final long avail = availableMap.getOrDefault(c.getId(), 0L);
+            final long used  = usedMap.getOrDefault(c.getId(), 0L);
 
-            out.add(ClaimableOnProductView.builder()
-                    .campaignId(c.getId())
-                    .scope(c.getScope())
-                    .percent(c.getPercent())
-                    .maxDiscountPrice(c.getMaxDiscountPrice())
-                    .minOrderPrice(c.getMinOrderPrice())
-                    .estimatedDiscountOnThisProduct(est)
-                    .endAt(c.getEndAt())
-                    .alreadyClaimed(alreadyMap.getOrDefault(c.getId(), 0L) > 0)
-                    .remainingCanClaim(remaining)
-                    .build());
-        }
-        return out;
+            final boolean already = userNumberOpt.isPresent() && owned > 0;
+            final int remaining = userNumberOpt
+                    .map(u -> Math.max(0, c.getPerUserLimit() - Math.toIntExact(owned)))
+                    .orElseGet(c::getPerUserLimit);
+
+            return ClaimableOnProductView.of(
+                    c.getId(), c.getScope(), c.getPercent(),
+                    c.getMaxDiscountPrice(), c.getMinOrderPrice(),
+                    est, c.getEndAt(),
+                    already, remaining,
+                    owned, avail, used
+            );
+        }).toList();
     }
 
     /** 상품 상세: 다운(발급) 버튼 → 지갑 생성(1인 N장 정책은 perUserLimit로 제어) */
     @Transactional
-    public WalletClaimResponse claimWallet(Long userNumber, Long campaignId) {
-        NormalUser user = findUserOrThrow(userNumber);
+    public WalletClaimResponse claimWallet(String authUserId, Long campaignId) {
+        NormalUser user = findUserByAuthIdOrThrow(authUserId);
         BrandCouponCampaign c = campaignRepo.findById(campaignId)
                 .orElseThrow(() -> new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "캠페인 없음"));
 
@@ -251,7 +297,7 @@ public class CouponService {
     ) {
         List<NormalCouponWallet> wallets =
                 walletRepo.findAllByUserAndStatus(userNumber, NormalCouponWalletStatus.AVAILABLE);
-        if (wallets.isEmpty()) return Collections.emptyList();
+        if (wallets.isEmpty()) return emptyList();
 
         LocalDateTime now = LocalDateTime.now();
         Map<Long, Product> products = productRepo.findAllById(productIds).stream()

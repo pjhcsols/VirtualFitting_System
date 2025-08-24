@@ -8,7 +8,7 @@ import basilium.basiliumserver.domain.user.entity.Provider;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
 import basilium.basiliumserver.global.apiResponse.ErrorCode;
-import basilium.basiliumserver.global.storage.FileStorageService;
+import basilium.basiliumserver.global.image.FileStorageService;
 import basilium.basiliumserver.properties.ImageProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 

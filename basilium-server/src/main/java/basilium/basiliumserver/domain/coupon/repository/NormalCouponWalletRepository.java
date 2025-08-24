@@ -15,6 +15,40 @@ public interface NormalCouponWalletRepository extends JpaRepository<NormalCoupon
     /* 소유 검증용 단건 조회 */
     Optional<NormalCouponWallet> findByIdAndUser_UserNumber(Long id, Long userNumber);
 
+    /** 캠페인별 보유 개수를 한 번에 카운트 (N+1 제거) */
+    interface CampaignCount {
+        Long getCampaignId();
+        Long getCnt();
+    }
+
+    /** 상태별(AVAILABLE/USED) 그룹 카운트 프로젝션 */
+    interface CampaignStatusCount {
+        Long getCampaignId();
+        NormalCouponWalletStatus getStatus();
+        Long getCnt();
+    }
+
+    /** 사용자 + 캠페인 목록 기준 상태별 보유 수량 집계 (1회 쿼리) */
+    @Query("""
+        SELECT w.campaign.id AS campaignId, w.status AS status, COUNT(w) AS cnt
+          FROM NormalCouponWallet w
+         WHERE w.user.userNumber = :userNumber
+           AND w.campaign.id IN :campaignIds
+         GROUP BY w.campaign.id, w.status
+    """)
+    List<CampaignStatusCount> countByUserAndCampaignInGrouped(@Param("userNumber") Long userNumber,
+                                                              @Param("campaignIds") Collection<Long> campaignIds);
+
+    @Query("""
+        SELECT w.campaign.id AS campaignId, COUNT(w) AS cnt
+          FROM NormalCouponWallet w
+         WHERE w.user.userNumber = :userNumber
+           AND w.campaign.id IN :campaignIds
+         GROUP BY w.campaign.id
+    """)
+    List<CampaignCount> countByUserAndCampaignIn(@Param("userNumber") Long userNumber,
+                                                 @Param("campaignIds") Collection<Long> campaignIds);
+
     /* 사용자-캠페인 보유 개수 (perUserLimit 체크용) */
     @Query("""
         SELECT COUNT(w) FROM NormalCouponWallet w

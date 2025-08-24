@@ -1,27 +1,28 @@
+// src/main/java/basilium/basiliumserver/global/auth/JwtFilter.java
 package basilium.basiliumserver.global.auth;
 
-import basilium.basiliumserver.global.util.JwtUtil;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.CredentialsExpiredException;
+import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-//회원가입,로그인
-//auth
 @RequiredArgsConstructor
 @Slf4j
 public class JwtFilter extends OncePerRequestFilter {
@@ -29,98 +30,42 @@ public class JwtFilter extends OncePerRequestFilter {
     private final JwtUtil jwtUtil;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-            throws ServletException, IOException, ServletException {
-        final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
 
-        if (authorization == null || !authorization.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
+        var tokenOpt = jwtUtil.removeBearer(request.getHeader(HttpHeaders.AUTHORIZATION));
+        if (tokenOpt.isEmpty()) {
+            chain.doFilter(request, response);
             return;
         }
 
-        // Token 꺼내기
-        String token = authorization.split(" ")[1];
-        log.info("[Token 검증]");
-        log.info(token);
-/*
-        // Token 검증
-        if (!jwtUtil.validateToken(token)) {
-            log.error("유효하지 않은 토큰입니다.");
-            filterChain.doFilter(request, response);
-            return;
-        }
+        String token = tokenOpt.get();
+        log.info("[Token 검증] {}", token);
 
-        // 블랙리스트에 있는 토큰인지 확인
         if (jwtUtil.isTokenBlacklisted(token)) {
-            log.error("블랙리스트에 등록된 토큰입니다.");
-            filterChain.doFilter(request, response);
-            return;
+            throw new BadCredentialsException("블랙리스트에 등록된 토큰입니다.");
         }
 
-        // Token Expiration 체크
-        if (jwtUtil.isTokenExpired(token)) {
-            log.error("토큰이 만료되었습니다.");
-            filterChain.doFilter(request, response);
-            return;
+        final Claims claims;
+        try {
+            claims = jwtUtil.getClaims(token); // 단일 파싱
+        } catch (ExpiredJwtException e) {
+            throw new CredentialsExpiredException("만료된 토큰입니다.", e);
+        } catch (JwtException e) {
+            throw new BadCredentialsException("유효하지 않은 엑세스 토큰입니다.", e);
         }
 
- */
-        if (jwtUtil.isTokenBlacklisted(token)) {
-            log.error("블랙리스트에 등록된 토큰입니다: {}", token);
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "블랙리스트에 등록된 토큰입니다.");
-            return;
-        }
-
-        // 엑세스 Token 검증 및 상태 체크
-        // 리프레쉬 토큰은 오직 엑세스 토큰 발급만 따라서 검증하는 것도 별도 로직
-        if (!jwtUtil.validateToken(token)) {
-            log.error("유효하지 않은 엑세스 토큰: {}", token);
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "유효하지 않은 엑세스 토큰입니다.");
-            return;
-        }
-
-        if (jwtUtil.isTokenExpired(token)) {
-            log.error("만료된 토큰입니다: {}", token);
-            response.sendError(HttpStatus.UNAUTHORIZED.value(), "만료된 토큰입니다.");
-            return;
-        }
-
-        //log.info(token);
-        // UserName Token에서 꺼내기
-        //log.info("userType:{}", userType);
-
-        /*
-        // 기존 로직
-        String userName = jwtUtil.getUserId(token);
-        log.info("userName:{}", userName);
-
-        UsernamePasswordAuthenticationToken authenticationToken =
-                new UsernamePasswordAuthenticationToken(userName, null, List.of(new SimpleGrantedAuthority("USER")));
-        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-        SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-
-        filterChain.doFilter(request, response);
-
-         */
-
-        Claims claims = jwtUtil.getClaims(token);
         String userId = claims.getSubject();
         String role   = claims.get("role", String.class);
         if (role == null) {
-            response.sendError(HttpStatus.FORBIDDEN.value(), "권한 정보가 없습니다.");
-            return;
+            throw new InsufficientAuthenticationException("권한 정보가 없습니다.");
         }
 
-        // ROLE_ 접두사를 붙여 권한으로 등록
-        List<SimpleGrantedAuthority> auths =
-                List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
-
-        UsernamePasswordAuthenticationToken auth =
-                new UsernamePasswordAuthenticationToken(userId, null, auths);
+        var auths = List.of(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()));
+        var auth  = new UsernamePasswordAuthenticationToken(userId, null, auths);
         auth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
         SecurityContextHolder.getContext().setAuthentication(auth);
 
-        filterChain.doFilter(request, response);
+        chain.doFilter(request, response);
     }
-
 }

@@ -9,7 +9,7 @@ import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
 import basilium.basiliumserver.global.apiResponse.ErrorCode;
-import basilium.basiliumserver.global.util.MaskingUtil;
+import basilium.basiliumserver.global.review.MaskingUtil;
 import basilium.basiliumserver.properties.ImageProperties;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;

@@ -21,6 +21,8 @@ public interface BrandCouponCampaignRepository extends JpaRepository<BrandCoupon
     Page<BrandCouponCampaign> findAllByBrand(@Param("brandUserNumber") Long brandUserNumber, Pageable pageable);
 
     /* 상품 상세: 현재 발급/노출 가능(진행중 & 기간 내) 캠페인 — 브랜드/상품 범위 모두 포함 */
+    /** 상품 상세 노출용: 진행중 & 기간 내 + 브랜드/상품 범위, product 참조 필요지점만 즉시 로딩 */
+    @EntityGraph(attributePaths = {"product"})
     @Query("""
         SELECT c FROM BrandCouponCampaign c
          WHERE c.status = basilium.basiliumserver.domain.coupon.entity.BrandCouponCampaignStatus.ACTIVE

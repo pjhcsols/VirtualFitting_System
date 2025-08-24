@@ -1,5 +1,5 @@
 // src/main/java/basilium/basiliumserver/global/storage/FileStorageService.java
-package basilium.basiliumserver.global.storage;
+package basilium.basiliumserver.global.image;
 
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
 import basilium.basiliumserver.global.apiResponse.ErrorCode;

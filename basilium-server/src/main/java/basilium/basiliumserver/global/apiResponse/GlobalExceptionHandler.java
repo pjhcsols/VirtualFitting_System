@@ -1,7 +1,9 @@
 package basilium.basiliumserver.global.apiResponse;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -31,48 +33,58 @@ public class GlobalExceptionHandler {
                 .status(code.getStatus())
                 .body(ApiResponse.error(code, message));
     }
+    /*
+    @ExceptionHandler(BasiliumCustomException.class)
+    public ResponseEntity<ApiResponse<Void>> handleCustom(BasiliumCustomException ex) {
+        ErrorCode code = ex.getErrorCode();
+        log.error("Business exception: {}", ex.getMessage(), ex);
+        return ResponseEntity.status(code.getStatus()).body(ApiResponse.error(code, ex.getMessage()));
+    }
+     */
 
+    /* 400 계열 */
     /** 입력 검증 실패 (@Valid) */
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Void>> handleValidation(MethodArgumentNotValidException ex) {
         var details = ex.getBindingResult().getFieldErrors().stream()
-                .map(fe -> String.format("%s[%s]: %s",
-                        fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage()))
+                .map(fe -> String.format("%s[%s]: %s", fe.getField(), fe.getRejectedValue(), fe.getDefaultMessage()))
                 .collect(Collectors.joining(", "));
         var message = "Validation failed: " + details;
-
         log.error("Validation error: {}", message);
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
+        return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
+    }
+
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ApiResponse<Void>> handleConstraint(ConstraintViolationException ex) {
+        var message = ex.getConstraintViolations().stream()
+                .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                .collect(Collectors.joining(", "));
+        log.error("Constraint violation: {}", message);
+        return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
     }
 
     /** 파라미터 타입 불일치 */
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ResponseEntity<ApiResponse<Void>> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
-        var name = ex.getName();
-        var value = ex.getValue();
-        var requiredType = ex.getRequiredType() != null
-                ? ex.getRequiredType().getSimpleName() : "Unknown";
-        var message = String.format("Parameter '%s' expects '%s' but got '%s'",
-                name, requiredType, value);
-
+        var required = ex.getRequiredType() != null ? ex.getRequiredType().getSimpleName() : "Unknown";
+        var message  = String.format("Parameter '%s' expects '%s' but got '%s'",
+                ex.getName(), required, ex.getValue());
         log.error("Type mismatch: {}", message);
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
+        return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
     }
 
     /** 필수 파라미터 누락 */
     @ExceptionHandler(MissingServletRequestParameterException.class)
     public ResponseEntity<ApiResponse<Void>> handleMissingParam(MissingServletRequestParameterException ex) {
-        var name = ex.getParameterName();
-        var message = "Missing request parameter: " + name;
+        var message = "Missing request parameter: " + ex.getParameterName();
+        log.error("Missing parameter: {}", ex.getParameterName());
+        return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
+    }
 
-        log.error("Missing parameter: {}", name);
-        return ResponseEntity
-                .badRequest()
-                .body(ApiResponse.error(ErrorCode.INVALID_INPUT_VALUE, message));
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ApiResponse<Void>> handleUnreadable(HttpMessageNotReadableException ex) {
+        log.error("Message not readable", ex);
+        return ResponseEntity.badRequest().body(ApiResponse.error(ErrorCode.BAD_REQUEST, "Malformed JSON request"));
     }
 
     /** 지원되지 않는 HTTP 메서드 */

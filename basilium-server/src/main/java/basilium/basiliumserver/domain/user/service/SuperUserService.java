@@ -8,7 +8,7 @@ import basilium.basiliumserver.domain.user.entity.SuperUser;
 import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
 import basilium.basiliumserver.global.apiResponse.ErrorCode;
-import basilium.basiliumserver.global.storage.FileStorageService;
+import basilium.basiliumserver.global.image.FileStorageService;
 import basilium.basiliumserver.properties.ImageProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;

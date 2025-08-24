@@ -948,16 +948,25 @@ VALUES
     (
         1, 'BRAND', NULL,
         15, 100000, 50000,
-        '2025-09-01 00:00:00', '2025-09-30 23:59:59',
+        NOW() - INTERVAL 1 DAY, '2025-09-30 23:59:59',
         1, 10000, 0,
-        'SCHEDULED', NOW(), 0
+        'ACTIVE', NOW(), 0
     );
 
 -- 새로 생성된 캠페인 ID 보관
 SET @campaign_brand := LAST_INSERT_ID();
 
--- 2.브랜드 전체 대상 캠페인 (scope=BRAND, product_id=NULL)
--- 예시: 동일 브랜드(1)의 상품 1에 20% 할인, 최소주문 제한 없음, 최대할인 30000
+-- 2) 특정 상품 한정 쿠폰 캠페인 생성 (scope=PRODUCT)
+--    - 브랜드 소유자: brand_user_number = 1
+--    - 대상 상품   : product_id = 1
+--    - 할인율      : 20% (1~90 허용 가정)
+--    - 최소주문    : 없음 (min_order = 0)
+--    - 최대할인    : 30,000 (max_discount)
+--    - 기간        : 시작 = NOW() - 1 DAY (즉시 노출 목적), 종료 = '2025-10-10 23:59:59'
+--    - 발급 한도   : 1인당 1장 (per_user_limit = 1), 전체 5,000장 (total_issuable = 5000), 초기 발급수 0
+--    - 상태        : ACTIVE (기간과 함께 노출 조건 충족)
+--    - 생성시각    : created_at = NOW()
+--    - 낙관잠금    : version = 0
 INSERT INTO brand_coupon_campaign
 (
     brand_user_number, scope, product_id,
@@ -970,9 +979,9 @@ VALUES
     (
         1, 'PRODUCT', 1,
         20, 0, 30000,
-        '2025-09-10 00:00:00', '2025-10-10 23:59:59',
+        NOW() - INTERVAL 1 DAY, '2025-10-10 23:59:59',
         1, 5000, 0,
-        'SCHEDULED', NOW(), 0
+        'ACTIVE', NOW(), 0
     );
 
 SET @campaign_product := LAST_INSERT_ID();

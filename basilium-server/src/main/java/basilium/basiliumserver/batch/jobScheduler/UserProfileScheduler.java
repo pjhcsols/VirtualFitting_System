@@ -17,7 +17,6 @@ package basilium.basiliumserver.batch.jobScheduler;
  */
 
 //user profile
-// 이미지 명만 따와서 비교하기 super_20250801123000.png 서버 이전 시에 기존 디비에 저장된 위치 url이 달라서 날아갈 위험
 /*
 @Component
 @RequiredArgsConstructor //오토와이어 제거

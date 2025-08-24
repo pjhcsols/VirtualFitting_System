@@ -22,7 +22,7 @@ public final class CouponDtos {
         private LocalDateTime startAt;
         private LocalDateTime endAt;
         private Integer perUserLimit;        // 기본 1
-        private Long totalIssuable;          // 0이면 무제한 의미로 사용 가능(정책에 따라)
+        private Long totalIssuable;          // 0이면 무제한 의미로 사용 가능 (정책에 따라)
     }
 
     /* 수정 요청 */
@@ -75,17 +75,52 @@ public final class CouponDtos {
 
     /* ========== 상품 상세 노출용(다운 버튼 영역) ========== */
 
-    @Getter @Setter @NoArgsConstructor @AllArgsConstructor @Builder
+    @Getter
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
     public static class ClaimableOnProductView {
-        private Long campaignId;
-        private BrandCouponScope scope;
-        private Integer percent;
-        private Long maxDiscountPrice;
-        private Long minOrderPrice;
-        private Long estimatedDiscountOnThisProduct; // 1개 기준 미리보기(상품할인 단가 기준)
-        private LocalDateTime endAt;
-        private boolean alreadyClaimed;
-        private int remainingCanClaim;
+        private final Long campaignId;
+        private final BrandCouponScope scope;
+        private final Integer percent;
+        private final Long maxDiscountPrice;
+        private final Long minOrderPrice;
+        //estimatedDiscountOnThisProduct = (상품 “할인후 단가”) × (쿠폰 %) 에 상한(maxDiscountPrice)
+        private final Long estimatedDiscountOnThisProduct; // 상품 1개 기준 미리보기 (쿠폰으로 깎이는 예상 금액 계산)
+        private final LocalDateTime endAt;
+
+        private final boolean alreadyClaimed;
+        private final int remainingCanClaim;
+
+        private final long ownedCount;        // AVAILABLE + USED
+        private final long availableCount;    // AVAILABLE
+        private final long usedCount;         // USED
+        private final boolean hasAvailable;   // derived: availableCount > 0
+        private final boolean alreadyUsedOnce; // derived: usedCount > 0
+
+        /** 안전한 생성 팩토리: 파생 필드는 여기서 계산 */
+        public static ClaimableOnProductView of(
+                Long campaignId,
+                BrandCouponScope scope,
+                Integer percent,
+                Long maxDiscountPrice,
+                Long minOrderPrice,
+                Long estimatedDiscountOnThisProduct,
+                LocalDateTime endAt,
+                boolean alreadyClaimed,
+                int remainingCanClaim,
+                long ownedCount,
+                long availableCount,
+                long usedCount
+        ) {
+            final boolean hasAvailable = availableCount > 0;
+            final boolean alreadyUsedOnce = usedCount > 0;
+            return new ClaimableOnProductView(
+                    campaignId, scope, percent, maxDiscountPrice, minOrderPrice,
+                    estimatedDiscountOnThisProduct, endAt,
+                    alreadyClaimed, remainingCanClaim,
+                    ownedCount, availableCount, usedCount,
+                    hasAvailable, alreadyUsedOnce
+            );
+        }
     }
 
     /* ========== 체크아웃 옵션(결제창) ========== */
