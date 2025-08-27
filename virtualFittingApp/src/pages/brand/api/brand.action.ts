@@ -1,45 +1,40 @@
 "use server";
 
-import { API_BASILIUM, FileItem, ProductServerResponseType } from "@/shared";
 import {
-  BrandAuthenticationType,
-  BrandUserType,
-} from "@/pages/brand/types/brandUser";
+  API_BASILIUM,
+  BasiliumResponse,
+  ProductServerResponseType,
+} from "@/shared";
+import type { BrandUserType } from "@/pages/brand/types/brandUser";
 import axios from "axios";
 
-export const MODIFY_BRAND_INFO = async (request: BrandUserType) => {
-  try {
-    const res = await API_BASILIUM.post("/modify", request);
-    if (res.status === 201) {
-      return true;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    return err;
+interface IBrandUser extends BasiliumResponse {
+  data: BrandUserType;
+}
+
+export const getBrandUserInfo = async (): Promise<IBrandUser> => {
+  const res = await API_BASILIUM.get<IBrandUser>("/b1/brandUsers/me");
+  if (res.status === 200) {
+    return res.data;
   }
+  throw new Error(`Unexpected status code: ${res.status}`);
 };
 
-type GetBrandInfoType = {
-  page: number;
-  size: number;
-};
-
-export const GET_BRAND_INFO = async ({ page, size }: GetBrandInfoType) => {
-  try {
-    const res = await API_BASILIUM.get(
-      `/b1/products/?page=${page}&size=${size}`,
-    );
-    if (res.status === 200) {
-      return res.data;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    return err;
+export const modifyBrandUserInfo = async (
+  request: BrandUserType,
+): Promise<IBrandUser> => {
+  const res = await API_BASILIUM.patch<IBrandUser>(
+    "/b1/brandUsers/me",
+    request,
+  );
+  if (res.status === 200) {
+    return res.data;
   }
+  throw new Error(`Unexpected status code: ${res.status}`);
 };
 
+// * Brand User 상품 관련
+// * ================================================
 type PaginationBrandProductListType = {
   size: number;
   page: number;
@@ -51,7 +46,7 @@ export const GET_BRAND_PRODUCT_LIST = async ({
 }: PaginationBrandProductListType) => {
   try {
     const res = await API_BASILIUM.get<ProductServerResponseType[]>(
-      `/b1/products?page=${page}&size=${size}`,
+      `/b1/products/brand?page=${page}&size=${size}`,
     );
     if (res.status === 200) {
       return res.data;
@@ -64,48 +59,49 @@ export const GET_BRAND_PRODUCT_LIST = async ({
   }
 };
 
-export const GET_BRAND_AUTHENTICATION = async () => {
-  try {
-    const res = await API_BASILIUM.get("/b1/brandUsers/me/busniess-cert");
-    if (res.status === 200) {
-      return res.data as BrandAuthenticationType;
-    }
-  } catch (err) {
-    if (!axios.isAxiosError(err)) return err;
-    if (err.status === 401) {
-      console.log("내잘못");
-      console.log(err.message);
-      return err;
-    }
-    console.log(err);
-    return err;
-  }
-};
+// * Brand User 사업자 등록증 관련
+// * ================================================
+interface IBrandRegistrationFile extends BasiliumResponse {
+  data: {
+    userNumber: number;
+    businessRegistration: string;
+    fileName: string;
+    url: string;
+  };
+}
 
-export const POST_BRAND_AUTHENTICATION = async (fileItem: FileItem) => {
-  try {
-    const formData = new FormData();
-    formData.append("file", fileItem.file);
-    const res = await API_BASILIUM.post(
+export const getBrandRegistrationFile =
+  async (): Promise<IBrandRegistrationFile> => {
+    const res = await API_BASILIUM.get<IBrandRegistrationFile>(
       "/b1/brandUsers/me/busniess-cert",
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data;",
-        },
-      },
     );
     if (res.status === 200) {
-      return true;
+      return res.data;
     }
-  } catch (err) {
-    if (!axios.isAxiosError(err)) return err;
-    if (err.status === 401) {
-      console.log("내잘못");
-      console.log(err.message);
-      return err;
-    }
-    console.log(err);
-    return err;
+    throw new CustomException(
+      res.status,
+      "사업자 증명서 파일을 가져오기 실패하였습니다.",
+    );
+  };
+
+export const postBrandRegistrationFile = async (
+  fileItem: File,
+): Promise<IBrandRegistrationFile> => {
+  const formData = new FormData();
+  formData.append("file", fileItem);
+  const res = await API_BASILIUM.post(
+    "/b1/brandUsers/me/busniess-cert",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data;",
+      },
+    },
+  );
+  if (res.status === 200) {
+    return res.data;
   }
+  throw new CustomException(res.status, "업로드에 실패하였습니다.");
 };
+
+// * ================================================

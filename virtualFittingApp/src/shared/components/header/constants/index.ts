@@ -64,7 +64,7 @@ export const AdminHeaderOptions = [
   {
     id: 5,
     title: "Logout",
-    href: "",
+    href: "/",
   },
 ];
 

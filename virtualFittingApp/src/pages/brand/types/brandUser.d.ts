@@ -1,8 +1,21 @@
 export type BrandUserType = {
+  userNumber: number;
+  id: string;
+  password: string;
+  emailAddress: string;
+  phoneNumber: string;
+  userGrade: string;
+  loginType: strign;
+  userImageUrl: string;
+  userProfileImageUrl: string;
   firmName: string;
   firmAddress: string;
   businessRegistration: string;
+  businessRegistrationCertificateImageUrl: string;
   firmWebUrl: string;
+  firmEmail: string;
+  firmPhone: string;
+  saleAllowed: boolean;
 };
 
 export type BrandSigninUserType = {
@@ -14,19 +27,4 @@ export type RedisProductDto = {
   productName: string;
   productDesc: string;
   productPrice: number;
-};
-
-export interface BrandAuthenticationType {
-  timestamp: string;
-  status: number;
-  code: string;
-  message: string;
-  data: BrandAuthenticationDataType;
-}
-
-type BrandAuthenticationDataType = {
-  userNumber: number;
-  busniessRegistration: string;
-  fileName: string;
-  url: string;
 };

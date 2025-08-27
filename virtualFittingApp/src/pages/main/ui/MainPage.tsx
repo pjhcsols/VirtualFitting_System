@@ -12,7 +12,6 @@ import * as THREE from "three";
 
 import styled from "styled-components";
 
-
 gsap.registerPlugin(ScrollTrigger);
 
 function MainPage() {
@@ -25,7 +24,7 @@ function MainPage() {
     useFrame(() => {
       if (stars.current) {
         stars.current.rotation.x += 0.00015;
-      stars.current.rotation.y += 0.00015;
+        stars.current.rotation.y += 0.00015;
       }
     });
 
@@ -82,13 +81,10 @@ function MainPage() {
           <ModelContainer>
             <Hero>
               <HeroSection />
-            </S.Hero>
-            <S.AIIntroduction>
-              <AiServiceSection />
-            </S.AIIntroduction>
-          </S.ModelContainer>
             </Hero>
-            <AIIntroduction></AIIntroduction>
+            <AIIntroduction>
+              <AiServiceSection />
+            </AIIntroduction>
           </ModelContainer>
           <section></section>
           <section></section>
