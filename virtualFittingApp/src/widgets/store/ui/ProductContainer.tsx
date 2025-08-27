@@ -5,7 +5,8 @@ import type { ProductDetail } from "@/shared";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
-import { fetchProductPrice } from "@/pages/store/api/products.action";
+import { fetchDiscountQuote } from "@/pages/store/api/products.action";
+
 
 import {
   ProductSmallCard,
@@ -75,17 +76,26 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   }, []);
 
   useEffect(() => {
-    async function loadPrice() {
-      const priceData = await fetchProductPrice(product.productId);
-      if (priceData) {
+  async function loadPrice() {
+    try {
+      const quote = await fetchDiscountQuote({ 
+        productId: product.productId, 
+        userId: "test"
+      });
+
+      if (quote?.data) {
         setPrice({
-          original: priceData.baseUnitPrice,
-          ...(priceData.productDiscountedUnitPrice !== null && { discounted: priceData.productDiscountedUnitPrice }),
+          original: quote.data.baseUnitPrice,
+          discounted: quote.data.finalUnitPrice,
         });
       }
+    } catch (error) {
+      console.error("Failed to fetch discount quote", error);
     }
-    loadPrice();
-  }, [product.productId]);
+  }
+
+  loadPrice();
+}, [product.productId]);
 
   useEffect(() => {
     if (showPaymentTab && paymentWidgetRef.current && price) {
@@ -145,7 +155,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     }
 
     const paymentResponse = await createPaymentReservation({
-      userId: "test",
       productId: product.productId,
       productColor: selectedColor,
       productSize: selectedSize,
@@ -161,14 +170,14 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
       await paymentWidgetRef.current?.requestPayment({
         orderId: paymentResponse.taskId,
         orderName: product.productName,
-        successUrl: `${window.location.origin}/payment-success`,
-        failUrl: `${window.location.origin}/payment-fail`,
+        successUrl: `${window.location.origin}/payment/success`,
+        failUrl: `${window.location.origin}/payment/fail`,
         customerName: "고객이름",
         customerEmail: "customer@example.com",
       });
     } catch (error) {
       console.error("Payment request failed:", error);
-      window.location.href = `${window.location.origin}/payment-fail?message=${encodeURIComponent((error as Error).message)}`;
+      window.location.href = `${window.location.origin}/payment/fail?message=${encodeURIComponent((error as Error).message)}`;
     }
   };
   
