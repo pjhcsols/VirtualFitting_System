@@ -2,7 +2,6 @@
 import { AnimatePresence } from "framer-motion";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { MyPage } from "@/pages/my";
-import { MypageDetail } from "@/pages/my";
 import { MyOrderList } from "@/pages/my/ui/MyOrderList";
 import { MyCancel } from "@/pages/my/ui/MyCancel";
 import { MyLike } from "@/pages/my/ui/MyLike";
@@ -19,7 +18,6 @@ function MyRouter() {
       <Routes location={location} key={location.pathname}>
         <Route path="/mypage" element={<MyPageLayout />}>
           <Route index element={<MyPage />} />                 {/* /mypage */}
-          <Route path="detail" element={<MypageDetail />} />   {/* /mypage/detail */}
           <Route path="order" element={<MyOrderList />} />     {/* /mypage/order */}
           <Route path="order/:id" element={<MyOrderListDetail />} />
           <Route path="cancel" element={<MyCancel />} />
