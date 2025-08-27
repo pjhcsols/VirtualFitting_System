@@ -1,4 +1,4 @@
-import { Product, ProductDetail, ProductPrice, DiscountQuote } from "@/shared";
+import { Product, ProductDetail, ProductPrice, DiscountQuote, ClaimableCoupon } from "@/shared";
 import { API_BASILIUM } from "@/shared";
 
 export const fetchOnSaleProducts = async ({
@@ -72,5 +72,21 @@ export const fetchDiscountQuote = async ({
   } catch (error) {
     console.error("Failed to fetch discount quote", error);
     return null;
+  }
+};
+
+export const fetchClaimableCoupons = async (
+  productId: number,
+  normalUserId?: string
+): Promise<ClaimableCoupon[]> => {
+  try {
+    const response = await API_BASILIUM.get(`/b1/coupons/products/${productId}/claimables`, {
+      params: normalUserId ? { normalUserId } : {},
+    });
+
+    return Array.isArray(response.data?.data) ? response.data.data : [];
+  } catch (error) {
+    console.error("Failed to fetch claimable coupons", error);
+    return [];
   }
 };

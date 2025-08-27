@@ -15,6 +15,7 @@ export type { Product } from "@/shared/types/product/products.d";
 export type { ProductDetail } from "@/shared/types/product/productDetail.d";
 export type { ProductPrice } from "@/shared/types/product/productPrice.d";
 export type { DiscountQuote } from "@/shared/types/product/discountQuote.d";
+export type { ClaimableCoupon } from "@/shared/types/product/claimableCoupon";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";

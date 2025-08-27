@@ -1,11 +1,11 @@
 import styled from "styled-components";
 import { useEffect, useRef,useState } from "react";
 import { useSearchParams } from "react-router-dom";
-import type { ProductDetail } from "@/shared";
+import type { ProductDetail, ClaimableCoupon } from "@/shared";
 import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
 import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
 import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
-import { fetchDiscountQuote } from "@/pages/store/api/products.action";
+import { fetchDiscountQuote, fetchClaimableCoupons } from "@/pages/store/api/products.action";
 
 
 import {
@@ -38,6 +38,12 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   const queryColor = searchParams.get("color");
   const [showPaymentTab, setShowPaymentTab] = useState(false);
   const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
+  const [coupons, setCoupons] = useState<ClaimableCoupon[]>([]);
+  const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
+  const paymentMethodsWidgetRef = useRef<any>(null); 
+  const [selectedSize, setSelectedSize] = useState<ProductSizePayment>(product.productOptions[0].productSize as ProductSizePayment);
+  const [quantity, setQuantity] = useState(1);
+  const [showCouponPopup, setShowCouponPopup] = useState(false);
 
   const selectedColor =
     queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
@@ -48,11 +54,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     .filter(po => po.productColor === selectedColor)
     .map(po => po.productSize as ProductSizePayment)
     .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
-
-
-  const [selectedSize, setSelectedSize] = useState<ProductSizePayment>(product.productOptions[0].productSize as ProductSizePayment);
-
-  const [quantity, setQuantity] = useState(1);
 
   const selectedProductImages =
     product.productImages.productColor === selectedColor
@@ -65,9 +66,6 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
   };
 
-  const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
-  const paymentMethodsWidgetRef = useRef<any>(null); 
-
   useEffect(() => {
     (async () => {
       const widget = await loadPaymentWidget(clientKey, customerKey);
@@ -76,26 +74,25 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
   }, []);
 
   useEffect(() => {
-  async function loadPrice() {
-    try {
-      const quote = await fetchDiscountQuote({ 
-        productId: product.productId, 
-        userId: "test"
-      });
-
-      if (quote?.data) {
-        setPrice({
-          original: quote.data.baseUnitPrice,
-          discounted: quote.data.finalUnitPrice,
+    async function loadPrice() {
+      try {
+        const quote = await fetchDiscountQuote({ 
+          productId: product.productId, 
+          userId: "test"
         });
-      }
-    } catch (error) {
-      console.error("Failed to fetch discount quote", error);
-    }
-  }
 
-  loadPrice();
-}, [product.productId]);
+        if (quote?.data) {
+          setPrice({
+            original: quote.data.baseUnitPrice,
+            discounted: quote.data.finalUnitPrice,
+          });
+        }
+      } catch (error) {
+        console.error("Failed to fetch discount quote", error);
+      }
+    }
+    loadPrice();
+  }, [product.productId]);
 
   useEffect(() => {
     if (showPaymentTab && paymentWidgetRef.current && price) {
@@ -107,6 +104,17 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     }
   }, [showPaymentTab, price]);
 
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const data = await fetchClaimableCoupons(product.productId, "test"); // userId 있으면 넣기
+        setCoupons(data);
+      } catch (error) {
+        console.error("Failed to fetch claimable coupons", error);
+      }
+    })();
+  }, [product.productId]);
 
   const handlePurchaseClick = () => {
     setShowPaymentTab(true);
@@ -222,8 +230,36 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           ) : (
             <Price>{price.original.toLocaleString()}원</Price>
           )}
-          <IconImage src={ICON_SHARE} alt="share icon" />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            {coupons.length > 0 && (
+              <CouponButton onClick={() => setShowCouponPopup(true)}>
+                쿠폰받기
+              </CouponButton>
+            )}
+            <IconImage src={ICON_SHARE} alt="share icon" />
+          </div>
         </TopRow>
+        {showCouponPopup && (
+          <CouponPopupOverlay onClick={() => setShowCouponPopup(false)}>
+            <CouponPopupContent onClick={(e) => e.stopPropagation()}>
+              <CloseButton onClick={() => setShowCouponPopup(false)}>×</CloseButton>
+              <CouponItems>
+                {coupons.map(coupon => (
+                  <CouponItem key={coupon.campaignId} disabled={!coupon.hasAvailable}>
+                    <div>{coupon.scope} 쿠폰</div>
+                    <div>{coupon.percent}% / 최대 {coupon.maxDiscountPrice.toLocaleString()}원</div>
+                    <div>최소 주문 {coupon.minOrderPrice.toLocaleString()}원 이상</div>
+                    {coupon.hasAvailable ? (
+                      <UseButton>발급하기</UseButton>
+                    ) : (
+                      <DisabledText>조건 미달</DisabledText>
+                    )}
+                  </CouponItem>
+                ))}
+              </CouponItems>
+            </CouponPopupContent>
+          </CouponPopupOverlay>
+        )}
         <Description>{product.productDesc}</Description>
         <ColorBoxContainer>
           <SelectedColorText>
@@ -504,13 +540,6 @@ const SizeBoxContainer = styled.div`
   padding: 16px 0px 16px 0px;
 `; 
 
-const SizeText = styled.div`
-  display: flex;
-  font-size: 12px;
-  font-family: "pretendard";
-  color: black;
-`;
-
 const SizeBox = styled.div`
   max-width: 408px;
   min-width: 350px;
@@ -519,7 +548,7 @@ const SizeBox = styled.div`
 `; 
 
 const SizeItem = styled.div<{ $selectedSize?: boolean }>`
-  position: relative; /* 추가 */
+  position: relative;
   width: 80px;
   height: 40px;
   border: 1px solid black;
@@ -617,7 +646,83 @@ const TabContent = styled.div`
 `;
 
 const CloseButton = styled.button`
-  margin-top: 16px;
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: transparent;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+  color: black;
+`;
+
+const CouponButton = styled.button`
+  padding: 4px 8px;
+  font-size: 14px;
+  border: 1px solid #dfdfdf;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  color: black;
+`;
+
+const CouponPopupOverlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0,0,0,0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+`;
+
+const CouponPopupContent = styled.div`
+  background-color: white;
+  padding: 24px;
+  color: black;
+  border-radius: 8px;
+  max-width: 600px;
+  max-height: 80vh;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+const CouponItems = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+`;
+
+const CouponItem = styled.div<{ disabled?: boolean }>`
+  flex: 1 1 150px;
+  padding: 12px;
+  border-radius: 4px;
+  background-color: ${({ disabled }) => (disabled ? "#f5f5f5" : "#fff")};
+  display: flex;
+  flex-direction: column;
+  color: black;
+  gap: 6px;
+  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
+`;
+
+const UseButton = styled.button`
+  padding: 6px 12px;
+  font-size: 14px;
+  background-color: black;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+`;
+
+const DisabledText = styled.div`
+  font-size: 12px;
+  color: gray;
 `;
 
 export { ProductContainer };
