@@ -10,6 +10,7 @@ import { ReviewCard } from "@/widgets";
 import { BREAKPOINTS } from "@/shared";
 import { getReviewAPI } from "../api/get.action";
 
+const HEADER_H = 52; 
 
 function ReviewContentList() {
     const navigate = useNavigate(); 
@@ -83,38 +84,41 @@ function ReviewContentList() {
             </Message>
           </EmptyWrapper>
         ) : (
-          filteredOrders.map((order) => (
-            <React.Fragment key={order.id}>
-              {activeTab === "작성완료" ? (
-                order.reviewData && (
-                  <ReviewCard order={order} reviewData={order.reviewData} onDelete={handleDeleteReview} />
-                )
-              ) : (
-                <>
-                  <OrderCard>
-                    <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
-                    <RightSection>
-                      <TitleLine>
-                        <Brand>{order.brand}</Brand>
-                      </TitleLine>
-                      <ProductName>{order.productName}</ProductName>
-                      <OptionText>
-                        {order.options.color} / {order.options.size} / {order.options.quantity}개 |{" "}
-                        {formatSimpleDate(order.date)} 구매
-                      </OptionText>
-                    </RightSection>
-                  </OrderCard>
-
-                  <ButtonWrapper>
-                    <ActionButton onClick={() => navigate(`/myPage/review/${order.id}`)}>
-                      스타일 리뷰
-                    </ActionButton>
-                  </ButtonWrapper>
-                </>
-              )}
-              <Divider />
-            </React.Fragment>
-          ))
+          <CardGrid>
+            {filteredOrders.map((order) => (
+              <GlassCard key={order.id}>
+                {activeTab === "작성완료" ? (
+                  order.reviewData && (
+                    <ReviewCard
+                      order={order}
+                      reviewData={order.reviewData}
+                      onDelete={handleDeleteReview}
+                    />
+                  )
+                ) : (
+                  <>
+                    <OrderCard>
+                      <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
+                      <RightSection>
+                        <TitleLine>
+                          <Brand>{order.brand}</Brand>
+                        </TitleLine>
+                        <ProductName>{order.productName}</ProductName>
+                        <OptionText>
+                          {order.options.color} / {order.options.size} / {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
+                        </OptionText>
+                      </RightSection>
+                    </OrderCard>
+                    <ButtonWrapper>
+                      <ActionButton onClick={() => navigate(`/myPage/review/${order.id}`)}>
+                        스타일 리뷰
+                      </ActionButton>
+                    </ButtonWrapper>
+                  </>
+                )}
+              </GlassCard>
+            ))}
+          </CardGrid>
         )}
       </ContentWrapper>
     </OuterWrapper>
@@ -132,10 +136,13 @@ const OuterWrapper = styled.div`
 
 const StickyTabWrapper = styled.div`
   position: sticky;
-  top: 81px;
+  top: calc(var(--header-h, ${HEADER_H}px));
   z-index: 100;
   width: 100%;
-  background-color: white;
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
 `;
 
 const TabInner = styled.div`
@@ -145,7 +152,6 @@ const TabInner = styled.div`
   width: 100%;
   padding: 10px 0;
   margin: 0 auto;
-  border-bottom: 1px solid #eee;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 10px 16px;
@@ -155,8 +161,8 @@ const TabInner = styled.div`
 
 const TabText = styled.span<{ active: boolean }>`
   font-size: 14px;
-  font-weight: ${(props) => (props.active ? "bold" : "normal")};
-  color: ${(props) => (props.active ? "#000" : "#969696")};
+  font-weight: bold;
+  color: ${(props) => (props.active ? "rgba(255, 255, 255, 0.9)" : "#000")};
   cursor: pointer;
   font-family: "Prata-Regular";
   position: relative;
@@ -170,12 +176,8 @@ const TabText = styled.span<{ active: boolean }>`
     transform: translateX(-50%);
     width: ${(props) => (props.active ? "100%" : "0")};
     height: 2px;
-    background-color: #000;
+    background-color: rgba(255, 255, 255, 0.9);
     transition: width 0.3s ease;
-  }
-
-  &:hover {
-    color: #000;
   }
 `;
 
@@ -223,11 +225,13 @@ const Brand = styled.div`
   font-weight: bold;
   font-family: "Prata-Regular";
   font-size: 14px;
+  color: #fff;
 `;
 
 const ProductName = styled.div`
   font-size: 14px;
   font-family: "Prata-Regular";
+  color: rgba(255, 255, 255, 0.9);
   margin-top: 15px;
   text-align: left;
 `;
@@ -235,7 +239,7 @@ const ProductName = styled.div`
 const OptionText = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: #969696;
+  color: rgba(255, 255, 255, 0.6);
   text-align: left;
 `;
 
@@ -251,20 +255,13 @@ const ActionButton = styled.button`
   flex: 1 1 200px;
   min-width: 120px;
   height: 40px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 6px;
-  background-color: #fff;
+  background-color: #292E49;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   font-family: "Prata-Regular";
   cursor: pointer;
-`;
-
-const Divider = styled.hr`
-  margin: 16px 0;
-  border: none;
-  height: 1px;
-  background-color: #e5e5e5;
-  width: 100%;
 `;
 
 const EmptyWrapper = styled.div`
@@ -284,4 +281,30 @@ const Message = styled.p`
   font-family: "Prata-Regular";
   margin-bottom: 20px;
   color: #d9d9d9;
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+`;
+
+const GlassCard = styled.div`
+  border-radius: 16px;
+  padding: 16px;
+  overflow: hidden;
+
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    margin: 20px auto 28px;   
+    padding: 20px 14px 12px;
+  }
+
 `;

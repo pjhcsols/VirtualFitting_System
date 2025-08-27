@@ -1,26 +1,48 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Header } from "@/shared/components/header";
+import { Header } from "@/shared";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
-import { BREAKPOINTS} from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 import Cookies from "js-cookie";
 import { ARROW_ICON } from "@/pages/my/constants";
+import * as THREE from "three";
+import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 
 function MyPage() {
   const navigate = useNavigate();
   const userId = Cookies.get("userId") as string;
   const [reviewCount, setReviewCount] = useState(0);
 
+  const RotatingStars = () => {
+    const stars = useRef<THREE.Points>(null);
+
+    useFrame(() => {
+      if (stars.current) {
+        stars.current.rotation.x = stars.current.rotation.y += 0.00005;
+      }
+    });
+
+    return <Stars ref={stars} />;
+  };
+
   useEffect(() => {
-      const storedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
-      setReviewCount(storedReviews.length);
+    const storedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+    setReviewCount(storedReviews.length);
   }, []);
 
   return (
     <PageWrapper>
-      <Header />
+      <StarBackground>
+        <Canvas>
+          <RotatingStars />
+        </Canvas>
+      </StarBackground>
+      <HeaderWrapper>
+        <Header />
+      </HeaderWrapper>
       <ContentWrapper>
         <GlassPanel>
           <UserInfoSection>
@@ -51,7 +73,11 @@ function MyPage() {
           <MenuList>
             <MenuItem>
               좋아요
-              <ArrowImg src={ARROW_ICON} onClick={() => navigate("/myPage/like")} alt=">" />
+              <ArrowImg
+                src={ARROW_ICON}
+                onClick={() => navigate("/myPage/like")}
+                alt=">"
+              />
             </MenuItem>
             <MenuItem>
               주문내역
@@ -79,6 +105,7 @@ function MyPage() {
 export { MyPage };
 
 const PageWrapper = styled.div`
+  position: relative;
   width: 100%;
   min-height: 100vh;
   display: flex;
@@ -86,10 +113,18 @@ const PageWrapper = styled.div`
   align-items: center;
 `;
 
+const StarBackground = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
+
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
   z-index: 10;
+  width: 100%;
+  align-self: stretch;
 `;
 
 const ContentWrapper = styled.div`
@@ -139,7 +174,7 @@ const Avatar = styled.img`
 const UserName = styled.span`
   font-size: 16px;
   font-weight: 500;
-  color: rgba(255,255,255,0.9); 
+  color: rgba(255, 255, 255, 0.9);
   font-family: "Prata-Regular";
 `;
 
@@ -147,15 +182,15 @@ const Divider = styled.hr`
   margin: 16px 0;
   border: none;
   height: 1px;
-  background: rgba(255,255,255,0.5);
+  background: rgba(255, 255, 255, 0.5);
   width: 100%;
 `;
 
 const StatsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  background: rgba(255,255,255,0.1);
-  border: 1px solid rgba(255,255,255,0.9);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.9);
   padding: 16px;
   border-radius: 8px;
   margin-bottom: 24px;
@@ -172,7 +207,7 @@ const Stat = styled.div`
   text-align: center;
   font-size: 14px;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -184,7 +219,7 @@ const ReviewCount = styled.span`
   font-size: 14px;
   font-weight: bold;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 const MenuList = styled.div`
@@ -205,8 +240,8 @@ const MenuItem = styled.div`
   padding: 13px 5px;
   font-size: 14px;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
-  border-bottom: 1px solid rgba(255,255,255,0.5);
+  color: rgba(255, 255, 255, 0.9);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
   text-align: left;
   margin-left: 8px;
@@ -214,7 +249,7 @@ const MenuItem = styled.div`
 
 const ArrowImg = styled.img`
   width: 25px;
-  height: 25px; 
+  height: 25px;
   opacity: 0.6;
 `;
 
@@ -231,12 +266,12 @@ const GlassPanel = styled.div`
   padding: 24px;
   border-radius: 18px;
 
-  background: rgba(200, 200, 200, 0.15);  
+  background: rgba(200, 200, 200, 0.15);
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
 
   border: 1px solid rgba(255, 255, 255, 0.25);
   box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.3),
-    0 10px 30px rgba(0,0,0,0.15);
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
 `;

@@ -82,11 +82,11 @@ function MainPage() {
           <ModelContainer>
             <Hero>
               <HeroSection />
-            </S.Hero>
-            <S.AIIntroduction>
+            </Hero>
+            <AIIntroduction>
               <AiServiceSection />
-            </S.AIIntroduction>
-          </S.ModelContainer>
+            </AIIntroduction>
+            <Hero>
             </Hero>
             <AIIntroduction></AIIntroduction>
           </ModelContainer>

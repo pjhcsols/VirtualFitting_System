@@ -1,11 +1,30 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useRef } from "react";
 import styled from "styled-components";
 import { Header } from "@/shared";
 import { CancelContentList } from "@/pages/my/ui/CancelContentList";
+import * as THREE from "three";
+import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 
 function MyCancel() {
+  const RotatingStars = () => {
+    const stars = useRef<THREE.Points>(null);
+    
+      useFrame(() => {
+        if (stars.current) {
+          stars.current.rotation.x = stars.current.rotation.y += 0.00005;
+        }
+      });
+      return <Stars ref={stars} />;
+    };
+
   return (
     <PageWrapper>
+      <StarBackground>
+        <Canvas>
+          <RotatingStars />
+        </Canvas>
+      </StarBackground>
       <HeaderWrapper>
         <Header/>
       </HeaderWrapper>
@@ -22,6 +41,8 @@ function MyCancel() {
 export { MyCancel };
 
 const PageWrapper = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   min-height: 100vh;
@@ -30,13 +51,23 @@ const PageWrapper = styled.div`
 const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
+  z-index: 100;
 `;
 
 const ContentWrapper = styled.div`
-  margin-top: 70px;
+  margin-top: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   width: 100%;
   flex-grow: 1;
+`;
+
+const StarBackground = styled.div`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 `;

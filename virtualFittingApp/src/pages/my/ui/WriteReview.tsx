@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, memo } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import type { OrderItem } from "../types/order";
@@ -8,6 +8,30 @@ import alertImg from "@/pages/my/ui/alert.png";
 import { STAR_EMPTY_ICON, STAR_FILLED_ICON, ADD_ICON, CANCEL_ICON } from "@/pages/my/constants";
 import type { ReviewData } from "../types/review";
 import { BREAKPOINTS } from "@/shared";
+import * as THREE from "three";
+import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
+
+function RotatingStars() {
+  const stars = useRef<THREE.Points>(null);
+
+  useFrame(() => {
+    if (stars.current) {
+      stars.current.rotation.x = stars.current.rotation.y += 0.00005;
+    }
+  });
+  return <Stars ref={stars} />;
+}
+
+export const Starfield = memo(function Starfield() {
+  return (
+    <StarBackground>
+      <Canvas>
+        <RotatingStars />
+      </Canvas>
+    </StarBackground>
+  );
+});
 
 function StyleReview() {
     const navigate = useNavigate();
@@ -94,11 +118,13 @@ function StyleReview() {
 
     return (
         <PageWrapper>
+            <Starfield />
             <HeaderWrapper>
                 <Header />
             </HeaderWrapper>
 
             <ContentWrapper>
+              <GlassForm>
                 <FormInner>
                     <OrderCard>
                         <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
@@ -183,13 +209,12 @@ function StyleReview() {
                         />
                     </ImageWrapper>
                 </FormInner>
-            </ContentWrapper>
 
-            <FooterWrapper>
                 <FooterInner>
-                    <RegisterButton onClick={handleRegister}>등록하기</RegisterButton>
+                  <RegisterButton onClick={handleRegister}>등록하기</RegisterButton>
                 </FooterInner>
-            </FooterWrapper>
+              </GlassForm>
+            </ContentWrapper>
         </PageWrapper>
     );
 }
@@ -198,9 +223,10 @@ export { StyleReview };
 
 
 const PageWrapper = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  background: #fff;
   min-height: 100vh;
   overflow-x: hidden;
 `;
@@ -209,12 +235,10 @@ const HeaderWrapper = styled.div`
   position: sticky;
   top: 0;
   z-index: 100;
-  background-color: #fff;
 `;
 
 const ContentWrapper = styled.div`
-  padding: 100px 20px 20px;
-  background: #fff;
+  padding: 24px 20px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -230,28 +254,32 @@ const ContentWrapper = styled.div`
   }
 `;
 
+const GlassForm = styled.div`
+  width: 100%;
+  max-width: 800px;
+  border-radius: 18px;
+  padding: 20px;
+  overflow: hidden;
+  margin-top: 35px;
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
+`;
+
 const FormInner = styled.div`
   width: 100%;
   max-width: 800px;
   margin: 0 auto;
 `;
 
-const FooterWrapper = styled.div`
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  background: #fff;
-  display: flex;
-  justify-content: center;
-  z-index: 100;
-`;
-
 const FooterInner = styled.div`
   width: 100%;
   max-width: 800px;
   padding: 10px 20px;
-  border-top: 1px solid #F2F3F5;
   box-sizing: border-box;
 `;
 
@@ -290,11 +318,13 @@ const Brand = styled.div`
   font-weight: bold;
   font-family: "Prata-Regular";
   font-size: 14px;
+  color: #fff;
 `;
 
 const ProductName = styled.div`
   font-size: 14px;
   font-family: "Prata-Regular";
+  color: rgba(255, 255, 255, 0.9);
   margin-top: 15px;
   text-align: left;
 `;
@@ -302,7 +332,7 @@ const ProductName = styled.div`
 const OptionText = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgb(150, 150, 150);
+  color: rgba(255, 255, 255, 0.6);
   text-align: left;
 `;
 
@@ -310,7 +340,7 @@ const Divider = styled.hr`
   margin: 16px 0;
   border: none;
   height: 1px;
-  background-color: #e5e5e5;
+  background-color: rgba(255, 255, 255, 0.5);
   width: 100%;
   max-width: 800px;
 `;
@@ -374,6 +404,14 @@ const SizeInput = styled(Input)`
   text-align: center;
   font-size: 12px;
   font-family: "Prata-Regular";
+  border: none;
+  background: rgba(200, 200, 200, 0.15);
+  color: #fff;
+
+  &::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
+
 `;
 
 const ReviewLabel = styled.div`
@@ -385,12 +423,13 @@ const ReviewLabel = styled.div`
   margin-bottom: 6px;
   width: 100%;
   max-width: 800px;
+  color: rgba(255,255,255,0.9);
 `;
 
 const LengthGuide = styled.span`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgb(150, 150, 150);
+  color: rgba(255,255,255,0.6);
   white-space: nowrap;
 `;
 
@@ -403,7 +442,7 @@ const GuideWrapper = styled.div`
 const ImageGuide = styled.span`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgb(150, 150, 150);
+  color: rgba(255,255,255,0.6);
   margin-bottom: 30px;
 `;
 
@@ -412,22 +451,24 @@ const ReviewTextarea = styled.textarea`
   max-width: 750px;
   min-height: 150px;
   padding: 5px;
-  border: 1px solid #ddd;
+  border: none;
   border-radius: 6px;
   font-size: 14px;
   font-family: "Prata-Regular";
+  background: rgba(200, 200, 200, 0.15);
+  color: #fff;
   resize: none;
   outline: none;
 
   &::placeholder {
-    color: #bbb;
+    color: rgba(255,255,255,0.5);
   }
 `;
 
 const CharCount = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgb(150, 150, 150);
+  color: rgba(255,255,255,0.6);
   margin-top: 4px;
   text-align: right;
   width: 100%;
@@ -437,7 +478,7 @@ const CharCount = styled.div`
 const RegisterButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #d9d9d9;
+  background-color: #292E49;
   color: white;
   border: none;
   border-radius: 6px;
@@ -461,7 +502,7 @@ const PreviewContainer = styled.div`
   position: relative;
   width: 105px;
   height: 140px;
-  border: 1px solid #e4e6e9;
+  border: none;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -486,12 +527,12 @@ const RemoveButton = styled.button`
 const UploadBox = styled.div`
   width: 100px;
   height: 140px;
-  border: 1px solid #e4e6e9;
   border-radius: 4px;
   display: flex;
   justify-content: center;
   align-items: center;
-  color: #bbb;
+  color: rgba(255,255,255,0.9);
+  background: rgba(200, 200, 200, 0.15);
   cursor: pointer;
   position: relative;
 `;
@@ -506,7 +547,7 @@ const UploadInner = styled.div`
 const CountText = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgb(150, 150, 150);
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 const AddIconImage = styled.img`
@@ -518,4 +559,13 @@ const CancelIconImage = styled.img`
   width: 20px;
   height: 20px;
   border-radius: 50%;
+`;
+
+const StarBackground = styled.div`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 `;

@@ -1,10 +1,7 @@
   import { useState, useRef, useEffect} from "react";
   import styled from "styled-components";
-  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON} from "@/pages/my/constants";  
   import { Header } from "@/shared";
-  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON, UP_ICON, DOWN_ICON} from "@/pages/my/constants"; 
-  import { MyHeader } from "@/shared/components/header";
-  import penIcon from "./pen.png";
+  import { MYUSER_ICON, CAMERA_ICON, MALE_ICON, FEMALE_ICON, UP_ICON, DOWN_ICON, PEN_ICON} from "@/pages/my/constants"; 
   import { UserFormData } from "../types/user";
   import { submitUserInfo } from "../api/submit.action";
   import { handleImageFileChange } from "@/pages/my";
@@ -18,9 +15,10 @@
   import { DatePicker } from "@mui/x-date-pickers/DatePicker";
   import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
   import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+  import * as THREE from "three";
+  import { Stars } from "@react-three/drei";
+  import { Canvas, useFrame } from "@react-three/fiber";
   import dayjs from "dayjs";
-
-  const HEADER_H = 64;
 
   function MypageDetail() {
       const profileInputRef = useRef<HTMLInputElement | null>(null);
@@ -127,6 +125,18 @@
         return () => clearInterval(interval);
       }, [isTimerActive, timer]);
 
+      const RotatingStars = () => {
+        const stars = useRef<THREE.Points>(null);
+      
+        useFrame(() => {
+          if (stars.current) {
+            stars.current.rotation.x = stars.current.rotation.y += 0.00005;
+          }
+        });
+      
+        return <Stars ref={stars} />;
+      };
+
       const handleSubmit = async () => {
         try {
           await submitUserInfo(formData);
@@ -191,73 +201,19 @@
 
       return (
           <PageWrapper>
-          <HeaderWrapper>
-              <Header />
-          </HeaderWrapper>
-
-          <ContentWrapper>
-              <AvatarContainer>
-                <AvatarIcon src={profilePreviewImage ?? MYUSER_ICON} alt="사용자 이미지" />
-                <PenIcon src={penIcon} alt="수정 아이콘" onClick={handleUpProfileButton} />
-                <HiddenInput
-                  type="file"
-                  accept="image/*"
-                  ref={profileInputRef}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleImageFileChange(e, setProfilePreviewImage, setProfileImageFile)}
-                />
-              </AvatarContainer>
-              <Divider />
-              <Form>
-              <FormField> 
-                  <Label>이름</Label>
-                  <Input 
-                      placeholder="이름을 입력해주세요." 
-                      value={formData.name}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, name: e.target.value })}
-                  />
-              </FormField>
-              <FormField> 
-                  <Label>비밀번호</Label>
-                  <Input 
-                      placeholder="비밀번호를 입력해주세요." 
-                      value={formData.password}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, password: e.target.value })}
-                  />
-              </FormField>
-              <FormField>
-                  <Label>휴대폰 번호</Label>
-                  <Input 
-                      placeholder="- 없이 입력" 
-                      value={formData.phoneNumber}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, phoneNumber: e.target.value})}
-                  />
-              </FormField>
-              <FormField>
-                  <Label>닉네임</Label>
-                  <Input 
-                      placeholder="닉네임을 입력해주세요." 
-                      value={formData.nickname}
-                      onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, nickname: e.target.value})}
-                  />
-              </FormField>
-              <FormField> 
-                  <Label>이메일</Label>
-                  <FieldWrapper>
-                    <TelForm>
-                      <PhoneInput 
-                        placeholder="이메일을 입력해주세요." 
-                        value={formData.emailAddress}
-                        disabled={emailVerified}
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) => setFormData({ ...formData, emailAddress: e.target.value })}
+            <StarBackground>
+              <Canvas>
+                <RotatingStars />
+              </Canvas>
+            </StarBackground>
             <HeaderWrapper>
-                <MyHeader title="회원정보 수정" />
+              <Header />
             </HeaderWrapper>
-
             <GlassContainer>
                 <ContentWrapper>
                   <AvatarContainer>
                     <AvatarIcon src={profilePreviewImage ?? MYUSER_ICON} alt="사용자 이미지" />
-                    <PenIcon src={penIcon} alt="수정 아이콘" onClick={handleUpProfileButton} />
+                    <PenIcon src={PEN_ICON} alt="수정 아이콘" onClick={handleUpProfileButton} />
                     <HiddenInput
                       type="file"
                       accept="image/*"
@@ -562,12 +518,12 @@
   export { MypageDetail };
 
 
-
   const PageWrapper = styled.div`
+    position: relative;
+    z-index: 1;
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    padding-top: ${HEADER_H + 30}px; 
   `;
 
   const HeaderWrapper = styled.div`
@@ -595,6 +551,7 @@ const GlassContainer = styled.div`
   width: 100%;
   max-width: 700px;         
   margin: 32px auto 48px;
+  margin-top: 50px;
   border-radius: 20px;
   overflow: hidden;
 
@@ -614,6 +571,15 @@ const GlassContainer = styled.div`
     margin: 20px auto 28px;   
     padding: 20px 14px 12px;
   }
+`;
+
+const StarBackground = styled.div`
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 0;
+  pointer-events: none;
 `;
 
 const FooterWrapper = styled.div`
@@ -736,7 +702,7 @@ const Label1 = styled.label`
   const AuthButton = styled.button`
     width: 80px;
     height: 40px;
-    background-color: #536976;
+    background-color: #292E49;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -745,7 +711,7 @@ const Label1 = styled.label`
     cursor: pointer;
 
     &:hover {
-      background-color: #292E49; 
+      background-color: #000; 
     }
   `;
 
@@ -811,13 +777,13 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   font-family: "Prata-Regular";
   border: none;
   border-radius: 6px;
-  background-color: #536976;
+  background-color: #292E49;
   padding: 5px 10px;
   color: #fff;
   cursor: pointer;
 
    &:hover {
-      background-color: #292E49; 
+      background-color: #000; 
     }
 
 `;
@@ -826,7 +792,7 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
     width: 100%;
     max-width: 550px;
     padding: 12px;
-    background-color: #536976;
+    background-color: #292E49;
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -834,7 +800,7 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
     font-family: "Prata-Regular";
 
     &:hover {
-      background-color: #292E49; 
+      background-color: #000; 
     }
   `;
 
