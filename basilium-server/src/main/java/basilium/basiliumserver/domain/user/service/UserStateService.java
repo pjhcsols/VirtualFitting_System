@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -38,6 +39,7 @@ public class UserStateService {
     private final ImageProperties imageProperties;
     private final JwtUtil jwtUtil;
     private final FileStorageService storage;
+    private final PasswordEncoder passwordEncoder;
 
     /* ------------ Auth ------------ */
 
@@ -49,15 +51,15 @@ public class UserStateService {
 
     public LoginResponse login(String userId, String userPassword) {
         Optional<NormalUser> normal = normalUserRepository.findById(userId);
-        if (normal.isPresent() && normal.get().getPassword().equals(userPassword)) {
+        if (normal.isPresent() && passwordEncoder.matches(userPassword, normal.get().getPassword())) {
             return generateTokens(userId, Provider.NORMAL.name());
         }
         Optional<BrandUser> brand = brandUserRepository.findById(userId);
-        if (brand.isPresent() && brand.get().getPassword().equals(userPassword)) {
+        if (brand.isPresent() && passwordEncoder.matches(userPassword, brand.get().getPassword())) {
             return generateTokens(userId, Provider.BRAND.name());
         }
         Optional<SuperUser> sup = superUserRepository.findById(userId);
-        if (sup.isPresent() && sup.get().getPassword().equals(userPassword)) {
+        if (sup.isPresent() && passwordEncoder.matches(userPassword, sup.get().getPassword())) {
             return generateTokens(userId, Provider.SUPER.name());
         }
         return new LoginResponse();

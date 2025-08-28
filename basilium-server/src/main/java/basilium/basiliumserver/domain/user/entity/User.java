@@ -16,16 +16,16 @@ public abstract class User {
     private Long userNumber;
 
     @Column(unique = true, nullable = false)
-    private String id;
+    protected String id;
 
     @Column(nullable = false)
-    private String password;
+    protected String password;
 
-    @Column(nullable = false)
-    private String emailAddress;
+    @Column(unique = true, nullable = false)
+    protected String emailAddress;
 
-    @Column(nullable = false)
-    private String phoneNumber;
+    @Column(unique = true, nullable = false)
+    protected String phoneNumber;
 
     /** 0=BRONZE,1=SILVER… */
     @Enumerated(EnumType.ORDINAL)

@@ -28,7 +28,7 @@ INSERT INTO normal_user (
     user_image_url, user_profile_image_url,
     name, nickname, gender, birth_date, address
 ) VALUES (
-             1, 'test', 'test', 'mandatory@example.com', '010-5555-6666',
+             1, 'test', '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m', 'mandatory@example.com', '+821012345671',
              0, 0,
              'example_1713958965868_mysql.png',
              'normal1_날라감1_2hhbnNvbC9EZXNrdG9wL1ZpcnS9iYXNpbGl1bS1zZXJ2ZXIvc3JjL21haW4vcmVzb3VyY2VzL3VzZXJQcm9maWx==',
@@ -46,7 +46,7 @@ INSERT INTO normal_user (
     pants_total_length, waist_width, hip_width, thigh_width, rise, hem_width,
     height, weight
 ) VALUES (
-             2, 'example', '1q2w3e4r!R', 'full@example.com', '010-7777-8888',
+             2, 'example', '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m', 'full@example.com', '+821012345672',
              0, 0,
              'brand01_1713958965868_mysql.png',
              'example_1718122647013_a.png',
@@ -79,9 +79,9 @@ INSERT INTO brand_user (
 ) VALUES (
              1,
              'brand01',
-             '1q2w3e4r!R',
+             '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m',
              'example@naver.com',
-             '010-1234-5678',
+             '+821012345677',
              5,
              1,
              'brand1_날라감1_/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_20250801123000.png',
@@ -91,7 +91,7 @@ INSERT INTO brand_user (
              '20-17777777',
              'http://phs-컴퍼니',
              'example@naver.com',
-             '010-1234-5678',
+             '+82212345677',
              'brand01_20250801153000.png',
              TRUE
          );
@@ -118,9 +118,9 @@ INSERT INTO brand_user (
 ) VALUES (
              2,
              'brand02',
-             '1q2w3e4r!R',
+             '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m',
              'example2@naver.com',
-             '010-1234-5678',
+             '+821012345678',
              5,
              1,
              'brand2_날라감2_/Users/hansol/user2번스케줄링_테스트_날라가야_정상.png',
@@ -130,7 +130,7 @@ INSERT INTO brand_user (
              '20-17777777',
              'http://phs-컴퍼니',
              'example2@naver.com',
-             '010-1234-5678',
+             '+82212345677',
              'brand02_20250801153100.png',
              FALSE
          );
@@ -158,9 +158,9 @@ INSERT INTO brand_user (
              3,
              'brand003',
              -- bcrypt('password') 예시 해시 (필요 시 교체)
-             '$2a$10$7EqJtq98hPqEX7fNZaFWoOhi5CR7EvS4F.J2J8.V/5x4J5r9E5v2W',
+             '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m',
              'brand003@basilium.co.kr',
-             '010-1234-0003',
+             '+821012345679',
              5,
              1,
              NULL,   -- user_image_url (비워둠)
@@ -170,7 +170,7 @@ INSERT INTO brand_user (
              '333-33-33333',
              'https://brand003.basilium.co.kr',
              'biz3@basilium.co.kr',
-             '02-555-0003',
+             '+82212345677',
              '/businessRegistrationCertificateImageStorage/BRAND_3_20250813040530.png',
              FALSE
          );
@@ -197,9 +197,9 @@ INSERT INTO super_user (
 ) VALUES (
              1,
              'phs',
-             '1q2w3e4r!R',
+             '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m',
              'phs@naver.com',
-             '010-0000-0000',
+             '+821012345674',
              6,    -- Grade.SUPER
              2,    -- Provider.SUPER
              'super1_날라감1_/Users/hansol/Desktop/VirtualFitting_System/basilium-server/src/main/resources/userImageStorage/super_날라감_mysql.png',
@@ -232,9 +232,9 @@ INSERT INTO super_user (
 ) VALUES (
              2,
              'super_ad',
-             '1q2w3e4r!R',
+             '{bcrypt}$2a$10$25p01uFhzsK3nXWPE5FUaOX2l6jZJvS/P.xREttIjZn8FhLZaYX2m',
              'ad@naver.com',
-             '010-2222-2222',
+             '+821012345675',
              6,    -- Grade.SUPER
              2,    -- Provider.SUPER
              'super2_날라감2_20250801123000.png',
@@ -246,7 +246,13 @@ INSERT INTO super_user (
          );
 
 INSERT INTO superuser_banners (user_number, banner_image_file_urls)
-VALUES (2, 'super_20250801123000.png');
+VALUES (2, 'admin1.jpeg');
+INSERT INTO superuser_banners (user_number, banner_image_file_urls)
+VALUES (2, 'admin2.png');
+INSERT INTO superuser_banners (user_number, banner_image_file_urls)
+VALUES (2, 'admin3.jpeg');
+INSERT INTO superuser_banners (user_number, banner_image_file_urls)
+VALUES (2, 'admin4.png');
 
 COMMIT;
 

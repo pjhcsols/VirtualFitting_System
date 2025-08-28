@@ -1,6 +1,7 @@
 // src/main/java/basilium/basiliumserver/domain/user/controller/BrandUserController.java
 package basilium.basiliumserver.domain.user.controller;
 
+import basilium.basiliumserver.domain.user.dto.BrandUserDto;
 import basilium.basiliumserver.domain.user.dto.MyBusinessCertDto;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.user.entity.JoinStatus;
@@ -29,15 +30,23 @@ public class BrandUserController {
     private final BrandUserService brandUserService;
 
     /** 회원가입 */
-    //DTO 생성
+    /** 회원가입: DB 대조 → 정규화/해시 → 엔티티 검증 → 저장 */
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponse<String>> signup(
-            @Valid @RequestBody BrandUser newUser
+    public ResponseEntity<ApiResponse<String>> signup(@Valid @RequestBody BrandUserDto.Signup dto) {
+        brandUserService.signUp(dto);
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .body(ApiResponse.success("회원가입이 완료되었습니다."));
+    }
+
+    /** 내 정보 수정: 중복 대조 → 정규화/해시 → 도메인 검증/머지(Dirty Checking) */
+    @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")
+    @PatchMapping("/me")
+    public ResponseEntity<ApiResponse<Void>> updateMe(
+            @AuthUser String userId,
+            @Valid @RequestBody BrandUserDto.Update dto
     ) {
-        JoinStatus st = brandUserService.join(newUser);
-        return ResponseEntity
-                .status(st.getStatus())
-                .body(ApiResponse.success(st.getMessage()));
+        brandUserService.modify(userId, dto);
+        return ResponseEntity.ok(ApiResponse.success());
     }
 
     /** 내 정보 조회 */
@@ -51,6 +60,7 @@ public class BrandUserController {
     }
 
     /** 내 정보 수정 */
+    /*
     @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")
     @PatchMapping("/me")
     public ResponseEntity<ApiResponse<Void>> updateMe(
@@ -60,6 +70,8 @@ public class BrandUserController {
         brandUserService.modifyProfile(userId, updated);
         return ResponseEntity.ok(ApiResponse.success());
     }
+
+     */
 
     /** 내 사업자 등록증 조회 */
     @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")

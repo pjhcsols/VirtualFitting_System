@@ -13,6 +13,16 @@ import java.util.Set;
 
 public interface NormalUserRepository extends JpaRepository<NormalUser, Long> {
 
+    // 중복 대조
+    boolean existsById(String id);
+    boolean existsByEmailAddress(String emailAddress);
+    boolean existsByPhoneNumber(String phoneNumber);
+
+    // 자기 자신 제외 중복 검사
+    boolean existsByIdAndUserNumberNot(String id, Long userNumber);
+    boolean existsByEmailAddressAndUserNumberNot(String emailAddress, Long userNumber);
+    boolean existsByPhoneNumberAndUserNumberNot(String phoneNumber, Long userNumber);
+
     @Query("select u from NormalUser u where u.id = :id")
     Optional<NormalUser> findById(String id);
 

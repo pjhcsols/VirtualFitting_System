@@ -23,7 +23,6 @@ public interface BrandUserRepository extends JpaRepository<BrandUser, Long> {
     Optional<BrandUser> findByBrandUserOfNumber(@Param("userNumber") Long userNumber);
  */
 
-    boolean existsById(String userId);
 
     @Query("select u from BrandUser u where u.id = :id")
     Optional<BrandUser> findById(String id);
@@ -33,6 +32,15 @@ public interface BrandUserRepository extends JpaRepository<BrandUser, Long> {
 
     @Query("select cast(u.userNumber as string) from BrandUser u where u.id = :id")
     Optional<String> findByNumber(String id);
+
+    /** 중복 대조(가입 시 1회씩) */
+    boolean existsById(String userId);
+    boolean existsByEmailAddress(String emailAddress);
+    boolean existsByPhoneNumber(String phoneNumber);
+    // 자기 자신 제외 중복 검사
+    boolean existsByIdAndUserNumberNot(String id, Long userNumber);
+    boolean existsByEmailAddressAndUserNumberNot(String email, Long userNumber);
+    boolean existsByPhoneNumberAndUserNumberNot(String phone, Long userNumber);
 
 
     /* 일반/프로필 이미지(파일명) 수집 */

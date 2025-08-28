@@ -1,9 +1,9 @@
 // src/main/java/basilium/basiliumserver/domain/user/service/BrandUserService.java
 package basilium.basiliumserver.domain.user.service;
 
+import basilium.basiliumserver.domain.user.dto.BrandUserDto;
 import basilium.basiliumserver.domain.user.dto.MyBusinessCertDto;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
-import basilium.basiliumserver.domain.user.entity.JoinStatus;
 import basilium.basiliumserver.domain.user.entity.Provider;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
@@ -13,6 +13,7 @@ import basilium.basiliumserver.properties.ImageProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,7 @@ public class BrandUserService {
     private final BrandUserRepository brandUserRepository;
     private final FileStorageService storage;
     private final ImageProperties imageProperties;
+    private final PasswordEncoder passwordEncoder;
 
     /** ROLE_BRAND 여부 검증 */
     private void ensureBrand() {
@@ -60,24 +62,74 @@ public class BrandUserService {
         return brandUserRepository.findAll();
     }
 
-
-    /** 프로필 수정 (Dirty Checking) */
+    /* ===== 생성(가입) ===== */
     @Transactional
-    public void modifyProfile(String userId, BrandUser updated) {
-        ensureBrand();
-        BrandUser existing = brandUserRepository.findById(userId)
-                .orElseThrow(() -> new BasiliumCustomException(
-                        ErrorCode.RESOURCE_NOT_FOUND,
-                        "수정할 브랜드 유저가 없습니다: " + userId
-                ));
-        existing.updateProfile(
-                updated.getFirmName(),
-                updated.getFirmAddress(),
-                updated.getBusinessRegistration(),
-                updated.getFirmWebUrl(),
-                updated.getFirmEmail(),
-                updated.getFirmPhone()
+    public void signUp(BrandUserDto.Signup dto) {
+        final String loginId   = dto.getId().trim(); // 대소문자 허용: 보존
+        final String email     = dto.getEmailAddress().trim().toLowerCase();
+        final String phoneE164 = dto.getPhoneNumber().trim();     // E.164 그대로
+        final String firmEmail = dto.getFirmEmail().trim().toLowerCase();
+        final String hashed    = passwordEncoder.encode(dto.getPassword().trim());
+
+        if (brandUserRepository.existsById(loginId))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 아이디입니다.");
+        if (brandUserRepository.existsByEmailAddress(email))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 이메일입니다.");
+        if (brandUserRepository.existsByPhoneNumber(phoneE164))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 전화번호입니다.");
+
+        BrandUser u = new BrandUser(
+                loginId, hashed, email, phoneE164,
+                dto.getFirmName(), dto.getFirmAddress(), dto.getBusinessRegistration(),
+                dto.getFirmWebUrl(), firmEmail, dto.getFirmPhone()
         );
+        brandUserRepository.save(u);
+    }
+
+    /* ===== 수정(더티체킹) ===== */
+    @Transactional
+    public void modify(String currentUserId, BrandUserDto.Update dto) {
+        ensureBrand();
+        BrandUser existing = getProfile(currentUserId);
+
+        final var idOpt        = Optional.ofNullable(dto.getId()).map(String::trim);
+        final var pwHashOpt    = Optional.ofNullable(dto.getPassword()).map(String::trim).map(passwordEncoder::encode);
+        final var emailOpt     = Optional.ofNullable(dto.getEmailAddress()).map(s -> s.trim().toLowerCase());
+        final var phoneOpt     = Optional.ofNullable(dto.getPhoneNumber()).map(String::trim);
+        final var firmNameOpt  = Optional.ofNullable(dto.getFirmName()).map(String::trim);
+        final var firmAddrOpt  = Optional.ofNullable(dto.getFirmAddress()).map(String::trim);
+        final var bizRegOpt    = Optional.ofNullable(dto.getBusinessRegistration()).map(String::trim);
+        final var webUrlOpt    = Optional.ofNullable(dto.getFirmWebUrl()).map(String::trim);
+        final var firmEmailOpt = Optional.ofNullable(dto.getFirmEmail()).map(s -> s.trim().toLowerCase());
+        final var firmPhoneOpt = Optional.ofNullable(dto.getFirmPhone()).map(String::trim);
+
+        // 2) 변경 의도 있는 값에 한정해 중복 대조(각 1회)
+        idOpt.filter(newId -> !newId.equals(existing.getId()))
+                .filter(newId -> brandUserRepository.existsByIdAndUserNumberNot(newId, existing.getUserNumber()))
+                .ifPresent(x -> { throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 아이디입니다."); });
+
+        emailOpt.filter(newEmail -> !newEmail.equals(existing.getEmailAddress()))
+                .filter(newEmail -> brandUserRepository.existsByEmailAddressAndUserNumberNot(newEmail, existing.getUserNumber()))
+                .ifPresent(x -> { throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 이메일입니다."); });
+
+        phoneOpt.filter(newPhone -> !newPhone.equals(existing.getPhoneNumber()))
+                .filter(newPhone -> brandUserRepository.existsByPhoneNumberAndUserNumberNot(newPhone, existing.getUserNumber()))
+                .ifPresent(x -> { throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 전화번호입니다."); });
+
+        // 3) 최종값 병합(미제공 → 기존값) 후 엔티티에 반영(더티체킹)
+        existing.updateBrandUser(
+                idOpt.orElseGet(existing::getId),
+                pwHashOpt.orElseGet(existing::getPassword),
+                emailOpt.orElseGet(existing::getEmailAddress),
+                phoneOpt.orElseGet(existing::getPhoneNumber),
+                firmNameOpt.orElseGet(existing::getFirmName),
+                firmAddrOpt.orElseGet(existing::getFirmAddress),
+                bizRegOpt.orElseGet(existing::getBusinessRegistration),
+                webUrlOpt.orElseGet(existing::getFirmWebUrl),
+                firmEmailOpt.orElseGet(existing::getFirmEmail),
+                firmPhoneOpt.orElseGet(existing::getFirmPhone)
+        );
+        // 트랜잭션 커밋 시 dirty checking으로 UPDATE 발행
     }
 
     /** 내 프로필 조회 */
@@ -89,25 +141,6 @@ public class BrandUserService {
                 ));
     }
 
-    /** 브랜드 유저 가입 */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public JoinStatus join(BrandUser candidate) {
-        if (brandUserRepository.existsById(candidate.getId())) {
-            return JoinStatus.DUPLICATE;
-        }
-        String pw = candidate.getPassword();
-        if (pw.length() < 8 || pw.length() > 16) {
-            return JoinStatus.INVALID_PASSWORD_LENGTH;
-        }
-        boolean hasU = pw.chars().anyMatch(Character::isUpperCase);
-        boolean hasL = pw.chars().anyMatch(Character::isLowerCase);
-        boolean hasS = pw.chars().anyMatch(c -> "!@#$%^&*()-_=+[]{}|;:'\",.<>/?".indexOf(c) != -1);
-        if (!(hasU && hasL && hasS)) {
-            return JoinStatus.INVALID_PASSWORD_STRENGTH;
-        }
-        brandUserRepository.save(candidate);
-        return JoinStatus.SUCCESS;
-    }
 
     /** 내 사업자 등록증 업로드 */
     @Transactional

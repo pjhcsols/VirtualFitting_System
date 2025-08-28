@@ -59,14 +59,10 @@ public class NormalUser extends User {
      * 가입용 생성자: DTO → Entity,
      * Grade.BRONZE·Provider.NORMAL 자동 세팅
      */
+    /** 호환용 DTO 생성자 */
     public NormalUser(NormalUserSignupDTO dto) {
-        super(dto.getId(),
-                dto.getPassword(),
-                dto.getEmailAddress(),
-                dto.getPhoneNumber(),
-                Grade.BRONZE,
-                Provider.NORMAL);
-
+        super(dto.getId(), dto.getPassword(), dto.getEmailAddress(), dto.getPhoneNumber(),
+                Grade.BRONZE, Provider.NORMAL);
         this.name      = dto.getName();
         this.nickname  = dto.getNickname();
         this.gender    = dto.getGender();
@@ -87,65 +83,63 @@ public class NormalUser extends User {
         this.weight           = dto.getWeight();
     }
 
-    /**
-     * 수정용 메서드: DTO 의 non-null·변경된 필드만 갱신
-     */
+    /** 서비스에서 해시된 비번 등 가공값을 직접 주입하는 생성자 */
+    public NormalUser(
+            String id, String hashedPassword, String emailAddress, String phoneNumber,
+            String name, String nickname, Gender gender, LocalDateTime birthDate, String address,
+            Long totalLength, Long chest, Long shoulder, Long arm,
+            Long pantsTotalLength, Long waistWidth, Long hipWidth, Long thighWidth,
+            Long rise, Long hemWidth, Integer height, Integer weight
+    ) {
+        super(id, hashedPassword, emailAddress, phoneNumber, Grade.BRONZE, Provider.NORMAL);
+        this.name      = name;
+        this.nickname  = nickname;
+        this.gender    = gender;
+        this.birthDate = birthDate;
+        this.address   = address;
+
+        this.totalLength      = totalLength;
+        this.chest            = chest;
+        this.shoulder         = shoulder;
+        this.arm              = arm;
+        this.pantsTotalLength = pantsTotalLength;
+        this.waistWidth       = waistWidth;
+        this.hipWidth         = hipWidth;
+        this.thighWidth       = thighWidth;
+        this.rise             = rise;
+        this.hemWidth         = hemWidth;
+        this.height           = height;
+        this.weight           = weight;
+    }
+
+    /** 수정: Optional 기반, 값이 존재할 때만 변경 */
     public void updateFrom(NormalUserModifiedInfo info) {
-        if (info.getName() != null && !Objects.equals(info.getName(), this.name))
-            this.name = info.getName();
+        info.getId().ifPresent(v -> { if (!Objects.equals(v, getId())) setId(v); });
 
-        if (info.getNickname() != null && !Objects.equals(info.getNickname(), this.nickname))
-            this.nickname = info.getNickname();
+        // 비밀번호는 서비스에서 이미 해시로 교체된 상태로 전달됨
+        info.getPassword().ifPresent(v -> { if (!Objects.equals(v, getPassword())) setPassword(v); });
 
-        if (info.getPassword() != null && !Objects.equals(info.getPassword(), getPassword()))
-            setPassword(info.getPassword());
+        info.getEmailAddress().ifPresent(v -> { if (!Objects.equals(v, getEmailAddress())) setEmailAddress(v); });
+        info.getPhoneNumber().ifPresent(v -> { if (!Objects.equals(v, getPhoneNumber())) setPhoneNumber(v); });
 
-        if (info.getEmailAddress() != null && !Objects.equals(info.getEmailAddress(), getEmailAddress()))
-            setEmailAddress(info.getEmailAddress());
+        info.getName().ifPresent(v -> { if (!Objects.equals(v, this.name)) this.name = v; });
+        info.getNickname().ifPresent(v -> { if (!Objects.equals(v, this.nickname)) this.nickname = v; });
+        info.getBirthDate().ifPresent(v -> { if (!Objects.equals(v, this.birthDate)) this.birthDate = v; });
+        info.getAddress().ifPresent(v -> { if (!Objects.equals(v, this.address)) this.address = v; });
 
-        if (info.getPhoneNumber() != null && !Objects.equals(info.getPhoneNumber(), getPhoneNumber()))
-            setPhoneNumber(info.getPhoneNumber());
+        info.getTotalLength().ifPresent(v -> { if (!Objects.equals(v, this.totalLength)) this.totalLength = v; });
+        info.getChest().ifPresent(v -> { if (!Objects.equals(v, this.chest)) this.chest = v; });
+        info.getShoulder().ifPresent(v -> { if (!Objects.equals(v, this.shoulder)) this.shoulder = v; });
+        info.getArm().ifPresent(v -> { if (!Objects.equals(v, this.arm)) this.arm = v; });
 
-        if (info.getBirthDate() != null && !Objects.equals(info.getBirthDate(), this.birthDate))
-            this.birthDate = info.getBirthDate();
+        info.getPantsTotalLength().ifPresent(v -> { if (!Objects.equals(v, this.pantsTotalLength)) this.pantsTotalLength = v; });
+        info.getWaistWidth().ifPresent(v -> { if (!Objects.equals(v, this.waistWidth)) this.waistWidth = v; });
+        info.getHipWidth().ifPresent(v -> { if (!Objects.equals(v, this.hipWidth)) this.hipWidth = v; });
+        info.getThighWidth().ifPresent(v -> { if (!Objects.equals(v, this.thighWidth)) this.thighWidth = v; });
+        info.getRise().ifPresent(v -> { if (!Objects.equals(v, this.rise)) this.rise = v; });
+        info.getHemWidth().ifPresent(v -> { if (!Objects.equals(v, this.hemWidth)) this.hemWidth = v; });
 
-        if (info.getAddress() != null && !Objects.equals(info.getAddress(), this.address))
-            this.address = info.getAddress();
-
-        if (info.getTotalLength() != null && !Objects.equals(info.getTotalLength(), this.totalLength))
-            this.totalLength = info.getTotalLength();
-
-        if (info.getChest() != null && !Objects.equals(info.getChest(), this.chest))
-            this.chest = info.getChest();
-
-        if (info.getShoulder() != null && !Objects.equals(info.getShoulder(), this.shoulder))
-            this.shoulder = info.getShoulder();
-
-        if (info.getArm() != null && !Objects.equals(info.getArm(), this.arm))
-            this.arm = info.getArm();
-
-        if (info.getPantsTotalLength() != null && !Objects.equals(info.getPantsTotalLength(), this.pantsTotalLength))
-            this.pantsTotalLength = info.getPantsTotalLength();
-
-        if (info.getWaistWidth() != null && !Objects.equals(info.getWaistWidth(), this.waistWidth))
-            this.waistWidth = info.getWaistWidth();
-
-        if (info.getHipWidth() != null && !Objects.equals(info.getHipWidth(), this.hipWidth))
-            this.hipWidth = info.getHipWidth();
-
-        if (info.getThighWidth() != null && !Objects.equals(info.getThighWidth(), this.thighWidth))
-            this.thighWidth = info.getThighWidth();
-
-        if (info.getRise() != null && !Objects.equals(info.getRise(), this.rise))
-            this.rise = info.getRise();
-
-        if (info.getHemWidth() != null && !Objects.equals(info.getHemWidth(), this.hemWidth))
-            this.hemWidth = info.getHemWidth();
-
-        if (info.getHeight() != null && !Objects.equals(info.getHeight(), this.height))
-            this.height = info.getHeight();
-
-        if (info.getWeight() != null && !Objects.equals(info.getWeight(), this.weight))
-            this.weight = info.getWeight();
+        info.getHeight().ifPresent(v -> { if (!Objects.equals(v, this.height)) this.height = v; });
+        info.getWeight().ifPresent(v -> { if (!Objects.equals(v, this.weight)) this.weight = v; });
     }
 }
