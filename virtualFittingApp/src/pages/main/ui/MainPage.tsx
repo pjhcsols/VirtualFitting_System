@@ -1,7 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
-import { HeroSection, AiServiceSection } from "@/widgets";
+import { HeroSection } from "@/widgets";
 import { useEffect, useRef } from "react";
 
 import ReactLenis, { type LenisRef } from "lenis/react";
@@ -9,7 +9,6 @@ import "lenis/dist/lenis.css";
 import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
 import * as THREE from "three";
-
 import styled from "styled-components";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -25,6 +24,7 @@ function MainPage() {
       if (stars.current) {
         stars.current.rotation.x += 0.00015;
         stars.current.rotation.y += 0.00015;
+        stars.current.rotation.x = stars.current.rotation.y += 0.00015;
       }
     });
 
