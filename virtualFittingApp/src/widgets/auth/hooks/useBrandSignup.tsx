@@ -22,7 +22,7 @@ function useBrandSignup() {
       firmName: "",
       firmAddress: "",
       businessRegistration: "",
-      businessRegistrationCertificateImageUrl: "",
+      businessRegistrationCertificateImageUrl: null,
       firmWebUrl: "",
       firmEmail: "",
       firmPhone: "",

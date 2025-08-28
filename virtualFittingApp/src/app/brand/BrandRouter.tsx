@@ -2,7 +2,6 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import {
   BasiliumRedirect,
   BrandAnalytics,
-  BrandAuthenticate,
   BrandCoupon,
   BrandDashboard,
   BrandPage,
@@ -22,7 +21,6 @@ function BrandRouter() {
         <Route index element={<BrandPage />} />
         <Route element={<BrandLayout />}>
           <Route path="dashboard" index element={<BrandDashboard />} />
-          <Route path="auth" element={<BrandAuthenticate />} />
           <Route path="product">
             <Route index element={<BrandProductListPage />} />
             <Route path="create" element={<BrandProductCreate />} />

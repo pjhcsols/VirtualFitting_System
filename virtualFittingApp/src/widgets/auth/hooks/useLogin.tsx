@@ -45,6 +45,8 @@ function useLogin() {
     const decodedToken = jwtDecode<BasiliumJwtPayload>(res);
     if (decodedToken.role === "BRAND") {
       router("/brand/dashboard");
+    } else if (decodedToken.role === "SUPER") {
+      router("/admin");
     } else {
       router("/store");
     }

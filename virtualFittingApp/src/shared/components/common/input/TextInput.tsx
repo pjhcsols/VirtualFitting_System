@@ -2,17 +2,18 @@ import { type ChangeEvent } from "react";
 import styled from "styled-components";
 
 interface ITextInput {
+  type: "email" | "text" | "password";
   title: string;
   name: string;
   value: string;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-function TextInput({ title, value, name, onChange }: ITextInput) {
+function TextInput({ type, title, value, name, onChange }: ITextInput) {
   return (
     <InputContainer inputed={value.length !== 0}>
       <input
-        type="text"
+        type={type}
         id="input"
         name={name}
         value={value}
@@ -32,7 +33,7 @@ export { TextInput };
 const InputContainer = styled.div<{ inputed: boolean }>`
   position: relative;
   margin: 2.5rem auto;
-  width: 80%;
+  width: 100%;
 
   input[type="text"] {
     font-size: 20px;

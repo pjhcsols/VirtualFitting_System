@@ -1,3 +1,4 @@
+export { AdminLogin } from "@/pages/auth/ui/AdminLogin";
 export { Loginpage } from "@/pages/auth/ui/Loginpage";
 export { SignupPage } from "@/pages/auth/ui/SignupPage";
 export { BrandSignUpPage } from "@/pages/auth/ui/BrandSignUpPage";

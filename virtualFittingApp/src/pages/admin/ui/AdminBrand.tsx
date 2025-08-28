@@ -1,8 +1,11 @@
 import styled from "styled-components";
 import { Text, Title } from "../components";
 import { AdminBrandManager } from "@/widgets";
+import { useBrandUser } from "../hooks/useBrandUser";
 
 function AdminBrand() {
+  const { brandUsers } = useBrandUser();
+
   return (
     <Wrapper>
       <TopLayerContainer>

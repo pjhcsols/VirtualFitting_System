@@ -22,6 +22,8 @@ function MainPage() {
 
     useFrame(() => {
       if (stars.current) {
+        stars.current.rotation.x += 0.00015;
+        stars.current.rotation.y += 0.00015;
         stars.current.rotation.x = stars.current.rotation.y += 0.00015;
       }
     });
@@ -80,7 +82,9 @@ function MainPage() {
             <Hero>
               <HeroSection />
             </Hero>
-            <AIIntroduction></AIIntroduction>
+            <AIIntroduction>
+              <AiServiceSection />
+            </AIIntroduction>
           </ModelContainer>
           <section></section>
           <section></section>

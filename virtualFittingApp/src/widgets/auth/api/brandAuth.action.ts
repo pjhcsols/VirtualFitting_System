@@ -5,6 +5,7 @@ import { isAxiosError } from "axios";
 export const brandUserSignUpApi = async (props: BrandUserSignUpRequestDto) => {
   try {
     const res = await API_BASILIUM.post("/b1/brandUsers/signup", props);
+    console.log("res:", res);
     if (res.status === 201) {
       return true;
     } else {
