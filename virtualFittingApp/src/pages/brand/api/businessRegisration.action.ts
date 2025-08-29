@@ -13,8 +13,9 @@ interface IBusinessRegistrationResponse extends AxiosResponse {
 
 export const isValidBrandRegistration = async (registration: string) => {
   try {
+    // g 옵션이 global 옵션으로 String 에 있는 - 를 전부 없애줌.
     const request: IBusinessRegistration = {
-      b_no: [registration.replace("-", "")],
+      b_no: [registration.replace(/-/g, "")],
     };
     const res = await axios.post<IBusinessRegistrationResponse>(
       `https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=${API_KEY}`,

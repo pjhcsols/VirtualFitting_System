@@ -40,7 +40,7 @@ export type BrandUserSignUpRequestDto = {
   firmName: string;
   firmAddress: string;
   businessRegistration: string;
-  businessRegistrationCertificateImageUrl: string;
+  businessRegistrationCertificateImageUrl: string | null;
   firmWebUrl: string;
   firmEmail: string;
   firmPhone: string;
