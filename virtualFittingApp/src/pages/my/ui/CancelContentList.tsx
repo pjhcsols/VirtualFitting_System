@@ -7,15 +7,13 @@ import { formatSimpleDate } from "@/shared";
 import alertImg from "@/pages/my/ui/alert.png";
 import { BREAKPOINTS } from "@/shared";
 
+const HEADER_H = 52;
+
 function CancelContentList() {
     const navigate = useNavigate();
     const [activeTab, setActiveTab] = useState<string>("전체");
     const [orders, setOrders] = useState<OrderItem[]>([]);
     const [filteredOrders, setFilteredOrders] = useState<OrderItem[]>([]);
-
-    const handleTabClick = (tabName: string) => {
-      setActiveTab(tabName);
-    };
 
     useEffect(() => {
       setOrders(orderDummyData);
@@ -57,8 +55,9 @@ function CancelContentList() {
         </StickyTabWrapper>
 
         <ContentWrapper>
-          {filteredOrders.map((order) => (
-            <React.Fragment key={order.id}>
+          <CardGrid>
+            {filteredOrders.map((order) => (
+            <GlassCard key={order.id}>
               <DateText>{formatSimpleDate(order.date)}</DateText>
               <CateogryText>{order.category} 요청</CateogryText>
               <OrderCard>
@@ -93,9 +92,9 @@ function CancelContentList() {
                   </>
                 )}
               </ButtonWrapper>
-              <Divider />
-            </React.Fragment>
+            </GlassCard>
           ))}
+          </CardGrid>
         </ContentWrapper>
       </OuterWrapper>
     );
@@ -113,10 +112,13 @@ const OuterWrapper = styled.div`
 
 const StickyTabWrapper = styled.div`
   position: sticky;
-  top: 81px;
+  top: calc(var(--header-h, ${HEADER_H}px));
   z-index: 100;
   width: 100%;
-  background-color: white;
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border-bottom: 1px solid rgba(255,255,255,0.25);
 `;
 
 const TabInner = styled.div`
@@ -126,7 +128,6 @@ const TabInner = styled.div`
   width: 100%;
   padding: 10px 0;
   margin: 0 auto;
-  border-bottom: 1px solid #eee;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 10px 16px;
@@ -136,12 +137,12 @@ const TabInner = styled.div`
 
 const TabText = styled.span<{ active: boolean }>`
   font-size: 14px;
-  font-weight: ${(props) => (props.active ? "bold" : "normal")};
-  color: ${(props) => (props.active ? "#000" : "#969696")};
+  font-weight: bold;
+  color: ${(props) => (props.active ? "rgba(255, 255, 255, 0.9)" : "#000")};
   cursor: pointer;
+  font-family: "Prata-Regular";
   position: relative;
   padding-bottom: 4px;
-  font-family: "Prata-Regular";
 
   &::after {
     content: "";
@@ -151,12 +152,8 @@ const TabText = styled.span<{ active: boolean }>`
     transform: translateX(-50%);
     width: ${(props) => (props.active ? "100%" : "0")};
     height: 2px;
-    background-color: #000;
+    background-color: rgba(255, 255, 255, 0.9);
     transition: width 0.3s ease;
-  }
-
-  &:hover {
-    color: #000;
   }
 `;
 
@@ -177,12 +174,13 @@ const DateText = styled.p`
   margin-bottom: 12px;
   text-align: left;
   font-family: "Prata-Regular";
+  color: #fff;
 `;
 
 const CateogryText = styled.p`
   font-size: 15px;
   font-family: "Prata-Regular";
-  color: #333;
+  color: rgba(255, 255, 255, 0.9);
   text-align: left;
 `;
 
@@ -219,12 +217,13 @@ const Brand = styled.div`
   font-weight: bold;
   font-size: 14px;
   font-family: "Prata-Regular";
+  color: #fff;
 `;
 
 const OrderDetail = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: #888;
+  color: rgba(255, 255, 255, 0.9);
   text-decoration: underline;
   cursor: pointer;
 `;
@@ -232,6 +231,7 @@ const OrderDetail = styled.div`
 const ProductName = styled.div`
   font-size: 14px;
   font-family: "Prata-Regular";
+  color: rgba(255, 255, 255, 0.9);
   margin-top: 15px;
   text-align: left;
 `;
@@ -247,6 +247,7 @@ const Price = styled.div`
   font-weight: bold;
   font-size: 16px;
   font-family: "Prata-Regular";
+  color: #000;
   margin-top: 4px;
   text-align: left;
 `;
@@ -263,9 +264,10 @@ const ActionButton = styled.button`
   flex: 1 1 200px;
   min-width: 120px;
   height: 40px;
-  border: 1px solid #ccc;
+  border: none;
   border-radius: 6px;
-  background-color: #fff;
+  background-color: #292E49;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 14px;
   font-family: "Prata-Regular";
   cursor: pointer;
@@ -296,4 +298,30 @@ const Message = styled.p`
   font-family: "Prata-Regular";
   margin-bottom: 20px;
   color: #d9d9d9;
+`;
+
+const CardGrid = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+`;
+
+const GlassCard = styled.div`
+  border-radius: 16px;
+  padding: 16px;
+  overflow: hidden;
+
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    margin: 20px auto 28px;   
+    padding: 20px 14px 12px;
+  }
+
 `;
