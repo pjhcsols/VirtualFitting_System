@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -46,6 +47,19 @@ public interface SuperUserRepository extends JpaRepository<SuperUser, Long> {
     @EntityGraph(attributePaths = "bannerImageFileUrls")
     @Query("select distinct u from SuperUser u join u.bannerImageFileUrls b where b in :fileNames")
     List<SuperUser> findAllWithBannersIn(@Param("fileNames") Set<String> fileNames);
+
+    // 새 메서드 추가 1: 배너 파일명 집합에 걸린 슈퍼유저 PK만 가볍게 조회
+    @Query("""
+      select distinct u.userNumber
+      from SuperUser u
+      join u.bannerImageFileUrls b
+      where b in :fileNames
+    """)
+    List<Long> findUserNumbersHavingAnyBannerIn(@Param("fileNames") Set<String> fileNames);
+
+    // 새 메서드 추가 2: 위에서 뽑은 PK들로 배너 컬렉션까지 한 번에 로딩
+    @EntityGraph(attributePaths = "bannerImageFileUrls")
+    List<SuperUser> findByUserNumberIn(Collection<Long> ids);
 
     /* ===== 벌크 NULL 처리 ===== */
     @Modifying(clearAutomatically = true, flushAutomatically = true)

@@ -46,4 +46,21 @@ public class FileStorageService {
             );
         }
     }
+
+    public String storeIndexed(MultipartFile file, String fullDir, String role, String userId, String ts, int index1Based) {
+        try {
+            String orig = file.getOriginalFilename();
+            int dot = (orig != null ? orig.lastIndexOf('.') : -1);
+            String ext = (dot >= 0 ? orig.substring(dot + 1) : "");
+            String fn = String.format("%s_%s_%s_%d.%s", role, userId, ts, index1Based, ext);
+
+            Path target = Paths.get(fullDir, fn);
+            Files.createDirectories(target.getParent());
+            Files.copy(file.getInputStream(), target, StandardCopyOption.REPLACE_EXISTING);
+
+            return fn; // DB에는 '파일명'만 저장
+        } catch (IOException e) {
+            throw new BasiliumCustomException(ErrorCode.SERVER_ERROR, "파일 저장 실패: " + e.getMessage());
+        }
+    }
 }

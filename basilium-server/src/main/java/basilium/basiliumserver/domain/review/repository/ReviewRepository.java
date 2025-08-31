@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -167,4 +168,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
     @EntityGraph(attributePaths = "reviewImageUrls")
     @Query("select distinct r from Review r join r.reviewImageUrls img where img in :fileNames")
     List<Review> findAllWithImagesIn(@Param("fileNames") Set<String> fileNames);
+
+    // 새 메서드 추가 1: 이미지 파일명 집합에 걸린 리뷰 ID만 가볍게 조회
+    @Query("""
+      select distinct r.reviewId
+      from Review r
+      join r.reviewImageUrls img
+      where img in :fileNames
+    """)
+    List<Long> findReviewIdsHavingAnyOf(@Param("fileNames") Set<String> fileNames);
+
+    // 새 메서드 추가 2: 위에서 뽑은 리뷰 ID들로 전체 컬렉션을 한 번에 로딩
+    @EntityGraph(attributePaths = "reviewImageUrls")
+    List<Review> findByReviewIdIn(Collection<Long> ids);
 }

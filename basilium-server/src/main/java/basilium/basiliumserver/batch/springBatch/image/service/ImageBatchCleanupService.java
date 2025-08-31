@@ -56,7 +56,7 @@ public class ImageBatchCleanupService {
             return s.filter(Files::isRegularFile)
                     .filter(p -> isOlderThan(p, safeBefore))
                     .map(p -> p.getFileName().toString())
-                    .collect(Collectors.toCollection(TreeSet::new)); // 정렬된 Set
+                    .collect(Collectors.toCollection(HashSet::new)); // 핵심 변경
         } catch (IOException e) {
             log.error("디렉터리 조회 실패: {}", fullDir, e);
             return Collections.emptySet();
@@ -204,25 +204,37 @@ public class ImageBatchCleanupService {
         List<String> rv = reviewRepository.getAllReviewImageFileNames();
         logAll(SCOPE, "DB_RAW_ReviewImages", rv);
 
-        Set<String> db = asSortedSet(rv);
+        Set<String> db = new HashSet<>(rv); // 내부 집합연산은 HashSet
         logAll(SCOPE, "DB_MERGED_SET", db);
 
-        Set<String> orphans = dir.stream().filter(fn -> !db.contains(fn)).collect(Collectors.toCollection(TreeSet::new));
+        // 디렉터리에만 있는 고아 파일 → 물리 삭제
+        Set<String> orphans = dir.stream()
+                .filter(fn -> !db.contains(fn))
+                .collect(Collectors.toCollection(HashSet::new));
         logAll(SCOPE, "ORPHANS(to delete)", orphans);
         deletePhysical(imageProperties.getFullReviewDir(), orphans);
 
-        Set<String> dbOnly = db.stream().filter(fn -> !dir.contains(fn)).collect(Collectors.toCollection(TreeSet::new));
+        // DB에만 남은 참조(= 실제 파일 없음) → '없는 파일명'만 부분 삭제
+        Set<String> dbOnly = db.stream()
+                .filter(fn -> !dir.contains(fn))
+                .collect(Collectors.toCollection(HashSet::new));
         logAll(SCOPE, "DB_ONLY(to remove-ref)", dbOnly);
 
         int removedRefs = 0;
         for (Set<String> part : chunk(dbOnly, inClauseChunk)) {
-            // N+1 방지: @EntityGraph로 imageUrls 함께 로딩
-            List<Review> reviews = reviewRepository.findAllWithImagesIn(part);
+            if (part.isEmpty()) continue;
+
+            // 1) 가벼운 ID 조회
+            List<Long> ids = reviewRepository.findReviewIdsHavingAnyOf(part);
+            if (ids.isEmpty()) continue;
+
+            // 2) 컬렉션까지 한 번에 로딩 후 부분 삭제
+            List<Review> reviews = reviewRepository.findByReviewIdIn(ids);
             for (Review r : reviews) {
                 List<String> imgs = r.getReviewImageUrls();
                 if (imgs != null && !imgs.isEmpty()) {
                     int before = imgs.size();
-                    imgs.removeIf(part::contains);
+                    imgs.removeIf(part::contains); // 없는 파일명만 제거
                     removedRefs += (before - imgs.size());
                 }
             }
@@ -277,19 +289,30 @@ public class ImageBatchCleanupService {
         List<String> banners = superUserRepository.getAllBannerFileNames();
         logAll(SCOPE, "DB_RAW_Banners", banners);
 
-        Set<String> db = asSortedSet(banners);
+        Set<String> db = new HashSet<>(banners);
         logAll(SCOPE, "DB_MERGED_SET", db);
 
-        Set<String> orphans = dir.stream().filter(fn -> !db.contains(fn)).collect(Collectors.toCollection(TreeSet::new));
+        Set<String> orphans = dir.stream()
+                .filter(fn -> !db.contains(fn))
+                .collect(Collectors.toCollection(HashSet::new));
         logAll(SCOPE, "ORPHANS(to delete)", orphans);
         deletePhysical(imageProperties.getFullSuperDir(), orphans);
 
-        Set<String> dbOnly = db.stream().filter(fn -> !dir.contains(fn)).collect(Collectors.toCollection(TreeSet::new));
+        Set<String> dbOnly = db.stream()
+                .filter(fn -> !dir.contains(fn))
+                .collect(Collectors.toCollection(HashSet::new));
         logAll(SCOPE, "DB_ONLY(to remove-ref)", dbOnly);
 
         int removedRefs = 0;
         for (Set<String> part : chunk(dbOnly, inClauseChunk)) {
-            List<SuperUser> targets = superUserRepository.findAllWithBannersIn(part);
+            if (part.isEmpty()) continue;
+
+            // 1) 가벼운 PK 조회
+            List<Long> ids = superUserRepository.findUserNumbersHavingAnyBannerIn(part);
+            if (ids.isEmpty()) continue;
+
+            // 2) 배너 컬렉션까지 한 번에 로딩 후 부분 삭제
+            List<SuperUser> targets = superUserRepository.findByUserNumberIn(ids);
             for (SuperUser su : targets) {
                 List<String> list = su.getBannerImageFileUrls();
                 if (list != null && !list.isEmpty()) {

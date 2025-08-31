@@ -13,6 +13,8 @@ public class ReviewDto {
 
     @Getter @Setter
     public static class Request {
+        private Long paymentId;  // [추가] 리뷰 적립(10%)을 위한 결제 라인 식별자
+
         @NotNull @Min(1) @Max(5)
         private Integer rating;
 

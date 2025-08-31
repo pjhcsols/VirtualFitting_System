@@ -1032,6 +1032,84 @@ ORDER BY claimed_at DESC;
 
 
 
+
+
+-- wallet
+/* 1) wallet: id='test' 유저가 있을 때만 생성, 이미 있으면 skip */
+INSERT INTO wallet(user_number, balance, version, updated_at)
+SELECT nu.user_number, 0, 0, NOW()
+FROM normal_user nu
+WHERE nu.id = 'test'
+  AND NOT EXISTS (
+    SELECT 1 FROM wallet w WHERE w.user_number = nu.user_number
+);
+
+/* 2) 리뷰 적립(CREDIT) ledger 멱등 + 잔액 반영 */
+-- ledger: unique_key 중복이면 skip
+INSERT INTO wallet_ledger(user_number, type, ref_type, ref_id, amount, balance_after, unique_key, created_at)
+SELECT nu.user_number, 'CREDIT', 'REVIEW', '12345', 1500,
+       (SELECT COALESCE(w.balance,0) + 1500 FROM wallet w WHERE w.user_number = nu.user_number),
+       'REVIEW:12345', NOW()
+FROM normal_user nu
+WHERE nu.id = 'test'
+  AND EXISTS (SELECT 1 FROM wallet w WHERE w.user_number = nu.user_number)
+  AND NOT EXISTS (SELECT 1 FROM wallet_ledger wl WHERE wl.unique_key = 'REVIEW:12345');
+
+-- wallet 잔액 실제 반영 (존재할 때만)
+UPDATE wallet w
+    JOIN normal_user nu ON nu.id = 'test' AND nu.user_number = w.user_number
+SET w.balance = w.balance + 1500,
+    w.version = w.version + 1,
+    w.updated_at = NOW()
+WHERE EXISTS (SELECT 1 FROM wallet_ledger wl WHERE wl.unique_key = 'REVIEW:12345');
+
+/* 3) 결제 차감(DEBIT) ledger 멱등 + 잔액 반영 */
+INSERT INTO wallet_ledger(user_number, type, ref_type, ref_id, amount, balance_after, unique_key, created_at)
+SELECT nu.user_number, 'DEBIT', 'PAYMENT', '20250901093000001', 1000,
+       (SELECT COALESCE(w.balance,0) - 1000 FROM wallet w WHERE w.user_number = nu.user_number),
+       'PAYMENT:20250901093000001', NOW()
+FROM normal_user nu
+WHERE nu.id = 'test'
+  AND EXISTS (SELECT 1 FROM wallet w WHERE w.user_number = nu.user_number)
+  AND NOT EXISTS (SELECT 1 FROM wallet_ledger wl WHERE wl.unique_key = 'PAYMENT:20250901093000001');
+
+UPDATE wallet w
+    JOIN normal_user nu ON nu.id = 'test' AND nu.user_number = w.user_number
+SET w.balance = w.balance - 1000,
+    w.version = w.version + 1,
+    w.updated_at = NOW()
+WHERE EXISTS (SELECT 1 FROM wallet_ledger wl WHERE wl.unique_key = 'PAYMENT:20250901093000001');
+
+
+
+
+
+
+/* payment */
+/* 4) payment 시드: 멱등(imp_u_id로 중복 방지) + FK 확인 */
+INSERT INTO payment (
+    normal_user_number, product_id, size, color, total_cnt,
+    status, amount, payment_key, payment_type, currency,
+    approved_at, callback_received_at, reserve_task_id, imp_u_id, order_id
+)
+SELECT
+    nu.user_number, p.product_id, 'L', 'black', 1,
+    'APPROVED', 30000, 'PG-KEY-001', 'CARD', 'KRW',
+    NOW(), NOW(),
+    UNHEX(REPLACE('4b9a9f33-8a2f-46f0-9b5b-2b7a4a0a5e11','-','')),
+    'SEED-IMP-0001', '20250829120000-1'
+FROM normal_user nu
+         JOIN product p ON p.product_id = 1
+WHERE nu.id = 'test'
+  AND NOT EXISTS (SELECT 1 FROM payment WHERE imp_u_id = 'SEED-IMP-0001');
+
+
+commit;
+
+
+
+
+
 INSERT INTO delivery_info(delivery_info_id, user_number, default_delivery_address, first_delivery_address, second_delivery_address)
 VALUES (1, 1, "경기도 성남시 분당구 서현동 현대아파트 428동 1202호", "대구광역시 동구 아양로 애일린의 뜰", "대구광역시 동구 신암동 신암뜨란채 104동 1906호");
 
@@ -1063,9 +1141,5 @@ values (1, 1);
 commit;
 
 
-INSERT INTO payment(transaction_id, user_number, product_id, size, color, total_cnt, payment_type, transaction_creation_time)
-VALUES (1, 1, 1, "L","black",1, 0, CURRENT_TIMESTAMP);
 
 
-
-commit;

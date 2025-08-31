@@ -9,7 +9,9 @@ import org.hibernate.annotations.BatchSize;
 import java.util.ArrayList;
 import java.util.List;
 
+// 테이블 분리 가능
 @Entity
+@Table(name = "super_user")
 @Getter
 @NoArgsConstructor
 public class SuperUser extends User {

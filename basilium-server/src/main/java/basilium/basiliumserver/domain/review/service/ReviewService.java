@@ -7,8 +7,10 @@ import basilium.basiliumserver.domain.review.entity.Review;
 import basilium.basiliumserver.domain.review.repository.ReviewRepository;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
 import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
+import basilium.basiliumserver.domain.wallet.service.WalletService;
 import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
 import basilium.basiliumserver.global.apiResponse.ErrorCode;
+import basilium.basiliumserver.global.image.FileStorageService;
 import basilium.basiliumserver.global.review.MaskingUtil;
 import basilium.basiliumserver.properties.ImageProperties;
 import jakarta.persistence.EntityManager;
@@ -23,8 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -42,6 +42,8 @@ public class ReviewService {
     private final ProductRepository productRepository;
     private final NormalUserRepository userRepository;
     private final ImageProperties imageProperties;
+    private final FileStorageService fileStorageService;
+    private final WalletService walletService;
 
     private static final int MAX_IMAGES = 5;
     private static final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -52,19 +54,19 @@ public class ReviewService {
         return Math.min(decade, 60);
     }
 
-    /** CSV 파일명 → 풀 URL 리스트로 변환 */
+    // [교체] CSV → URL 변환 시 도메인 스킴 자동 보정
+    // 기존 메서드 전체 교체
     private List<String> toFullUrlsFromCsv(String csv) {
         if (csv == null || csv.isBlank()) return Collections.emptyList();
-        String base = imageProperties.getDomainReviewDir(); // e.g. https://basilium.co.kr/b1/images/userReviewImageStorage/
+        String base = imageProperties.getDomainReviewDir(); // ex) basilium.co.kr/b1/images/userReviewImageStorage/
         String[] names = csv.split(",");
         List<String> urls = new ArrayList<>(names.length);
         for (String fn : names) {
-            if (fn != null && !fn.isBlank()) {
-                urls.add(base + fn.trim());
-            }
+            if (fn != null && !fn.isBlank()) urls.add(base + fn.trim());
         }
         return urls;
     }
+
 
     /** 파일 저장명: {role}_{userId}_{yyyyMMddHHmmss}_{index}.{ext} */
     private String buildReviewFileName(String role, String userId, String ts, int index1Based, String extNoDotLower) {
@@ -163,6 +165,7 @@ public class ReviewService {
     // ---------------------------
     // 생성: 파일명만 DB 저장, 응답은 풀 URL
     // ---------------------------
+    // [교체] 리뷰 생성: FileStorageService 사용 & 리뷰작성 즉시 지갑 10% 적립(멱등)
     @Transactional
     public ReviewDto.Response createReview(Long productId, String userId, ReviewDto.Request req, List<MultipartFile> images) {
         List<MultipartFile> files = Optional.ofNullable(images).orElseGet(Collections::emptyList);
@@ -177,8 +180,13 @@ public class ReviewService {
         Optional.ofNullable(user.getAddress())
                 .orElseThrow(() -> new BasiliumCustomException(ErrorCode.INVALID_INPUT_VALUE, "주소 누락"));
 
-        if (files.size() > MAX_IMAGES) {
-            throw new BasiliumCustomException(ErrorCode.INVALID_INPUT_VALUE, "이미지는 최대 5장까지");
+        if (files.size() > MAX_IMAGES) throw new BasiliumCustomException(ErrorCode.INVALID_INPUT_VALUE, "이미지는 최대 5장까지");
+
+        // [추가] 리뷰 적립(10%) — 결제 라인 필수일 때만 시도 (멱등키: REVIEW:{paymentId})
+        Long paymentId = req.getPaymentId();
+        if (paymentId != null) {
+            // 내부에서 본인 결제/APPROVED 검증 & 멱등 처리됨 (실패 시 예외)
+            walletService.creditByReview(userId, paymentId);
         }
 
         Review review = Review.builder()
@@ -191,31 +199,24 @@ public class ReviewService {
                 .comment(req.getComment())
                 .build();
 
+        // [변경] 물리 저장: FileStorageService.storeIndexed 사용, DB에는 파일명만 저장
         String ts = LocalDateTime.now().format(TS_FMT);
-        String role = "normal"; // 일반 유저
+        String role = "normal";
+        String fullDir = imageProperties.getFullReviewDir();
+
         for (int i = 0; i < files.size(); i++) {
             MultipartFile file = files.get(i);
-            String ext = extractExtNoDotLower(file.getOriginalFilename());
-            String filename = buildReviewFileName(role, userId, ts, i + 1, ext); // 파일명만
-
-            File dest = new File(imageProperties.getFullReviewDir() + filename);
-            try {
-                File parent = dest.getParentFile();
-                if (parent != null) parent.mkdirs();
-                file.transferTo(dest);
-            } catch (IOException e) {
-                log.error("이미지 저장 실패 {}", filename, e);
-                throw new BasiliumCustomException(ErrorCode.SERVER_ERROR, "이미지 저장 실패: " + filename);
-            }
-
-            review.addReviewImageUrl(filename); // DB에는 파일명만
+            String filename = fileStorageService.storeIndexed(file, fullDir, role, userId, ts, i + 1);
+            review.addReviewImageUrl(filename);
         }
 
         em.persist(review);
 
-        // 응답: 풀 URL 변환
+        // 응답 URL 조립(스킴 보정 포함)
         String base = imageProperties.getDomainReviewDir();
-        List<String> urls = review.getReviewImageUrls().stream().map(fn -> base + fn).toList();
+        List<String> urls = review.getReviewImageUrls().stream()
+                .map(fn -> base + fn)
+                .toList();
 
         return new ReviewDto.Response(
                 review.getReviewId(),
@@ -251,23 +252,18 @@ public class ReviewService {
     // ---------------------------
     // 삭제: 파일명 기준 물리 삭제 + 엔티티 제거
     // ---------------------------
+    // [교체] 삭제: FileStorageService.delete 사용
     @Transactional
     public void deleteReview(Long reviewId) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         boolean isSuper = auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_SUPER"));
-        if (!isSuper) {
-            throw new BasiliumCustomException(ErrorCode.ACCESS_DENIED, "슈퍼유저만 삭제할 수 있습니다.");
-        }
+        if (!isSuper) throw new BasiliumCustomException(ErrorCode.ACCESS_DENIED, "슈퍼유저만 삭제할 수 있습니다.");
 
         Review review = reviewRepository.findById(reviewId)
                 .orElseThrow(() -> new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "삭제할 리뷰를 찾을 수 없습니다: " + reviewId));
 
-        review.getReviewImageUrls().forEach(fileName -> {
-            File file = new File(imageProperties.getFullReviewDir() + fileName);
-            if (file.exists() && !file.delete()) {
-                log.warn("이미지 삭제 실패 {}", file.getAbsolutePath());
-            }
-        });
+        String fullDir = imageProperties.getFullReviewDir();
+        review.getReviewImageUrls().forEach(fileName -> fileStorageService.delete(fullDir, fileName));
 
         reviewRepository.delete(review);
     }

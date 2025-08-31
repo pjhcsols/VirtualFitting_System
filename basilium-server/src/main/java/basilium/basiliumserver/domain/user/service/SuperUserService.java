@@ -89,7 +89,6 @@ public class SuperUserService {
                         ErrorCode.MEMBER_NOT_FOUND, "슈퍼유저가 없습니다: " + userId
                 ));
 
-        // 용량 검사
         if (file.getSize() > 5 * 1024 * 1024) {
             throw new BasiliumCustomException(
                     ErrorCode.BAD_REQUEST, "파일 크기는 5MB 이하입니다."
@@ -97,38 +96,33 @@ public class SuperUserService {
         }
 
         List<String> banners = u.getBannerImageFileUrls();
+        String role = Provider.SUPER.getProviderName();
+        String dir  = imageProperties.getFullSuperDir();
+        String ts   = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
 
         String fn;
         if (oldFileNameOpt.filter(banners::contains).isPresent()) {
-            // ── 교체(branch 1) ──
-            String old = oldFileNameOpt.get();
-            // 1) DB 반영: 기존 배너 리스트에서 교체
-            int idx = banners.indexOf(old);
-            banners.set(idx, "");          // 자리 확보용 빈 문자열
-            // 2) 파일 삭제
-            storage.delete(imageProperties.getFullSuperDir(), old);
-            // 3) 파일 저장
-            fn = storage.store(file,
-                    imageProperties.getFullSuperDir(),
-                    Provider.SUPER.getProviderName(), userId);
-            // 4) DB 반영: 새 파일명 삽입
-            banners.set(idx, fn);
+            // 교체: 새 파일 저장 → 리스트 교체 → 기존 파일 삭제
+            int idx = banners.indexOf(oldFileNameOpt.get());
+            String newName = storage.storeIndexed(file, dir, role, userId, ts, 1);
+            String old     = banners.get(idx);
 
+            banners.set(idx, newName);
+            storage.delete(dir, old);
+
+            fn = newName;
         } else {
-            // ── 신규 추가(branch 2) ──
+            // 추가
             if (banners.size() >= 10) {
                 throw new BasiliumCustomException(
                         ErrorCode.BAD_REQUEST, "최대 10장의 배너만 등록 가능합니다."
                 );
             }
-            // 1) 파일 저장
-            fn = storage.store(file,
-                    imageProperties.getFullSuperDir(),
-                    Provider.SUPER.getProviderName(), userId);
-            // 2) DB 반영: 리스트에 추가
+            int nextIndex = banners.size() + 1;
+            fn = storage.storeIndexed(file, dir, role, userId, ts, nextIndex);
             banners.add(fn);
         }
-
         return fn;
     }
 
@@ -140,7 +134,7 @@ public class SuperUserService {
         ensureSuper();
 
         if (files == null || files.isEmpty()) {
-            return Collections.emptyList();
+            return java.util.Collections.emptyList();
         }
         if (files.size() > 10) {
             throw new BasiliumCustomException(
@@ -155,39 +149,39 @@ public class SuperUserService {
                         "슈퍼유저가 없습니다: " + userId
                 ));
 
-        // 1) 기존 전부 삭제
-        u.getBannerImageFileUrls().forEach(fn ->
-                storage.delete(imageProperties.getFullSuperDir(), fn)
-        );
+        String role = Provider.SUPER.getProviderName();
+        String dir  = imageProperties.getFullSuperDir();
+        String ts   = java.time.LocalDateTime.now()
+                .format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+
+        // 1) 새 파일들 먼저 저장 (안전)
+        java.util.List<String> newNames = new java.util.ArrayList<>(files.size());
+        for (int i = 0; i < files.size(); i++) {
+            MultipartFile f = files.get(i);
+            if (f.getSize() > 5 * 1024 * 1024) {
+                throw new BasiliumCustomException(
+                        ErrorCode.BAD_REQUEST,
+                        "파일 크기는 5MB 이하입니다."
+                );
+            }
+            String name = storage.storeIndexed(f, dir, role, userId, ts, i + 1);
+            newNames.add(name);
+        }
+
+        // 2) 기존 파일 삭제는 저장 성공 후
+        java.util.List<String> oldFiles = java.util.List.copyOf(u.getBannerImageFileUrls());
         u.getBannerImageFileUrls().clear();
+        u.getBannerImageFileUrls().addAll(newNames);
+        oldFiles.forEach(old -> storage.delete(dir, old));
 
-        // 2) 새로 업로드 + DTO 생성
-        List<MyBannerDto> dtos = files.stream()
-                .peek(f -> {
-                    if (f.getSize() > 5 * 1024 * 1024) {
-                        throw new BasiliumCustomException(
-                                ErrorCode.BAD_REQUEST,
-                                "파일 크기는 5MB 이하입니다."
-                        );
-                    }
-                })
-                .map(f -> {
-                    String fn = storage.store(
-                            f,
-                            imageProperties.getFullSuperDir(),
-                            Provider.SUPER.getProviderName(),
-                            userId
-                    );
-                    u.addBanner(fn);
-                    return new MyBannerDto(
-                            u.getUserNumber(),
-                            fn,
-                            imageProperties.getDomainSuperDir() + fn
-                    );
-                })
-                .collect(Collectors.toList());
-
-        return Collections.unmodifiableList(dtos);
+        // 3) 응답 DTO
+        return newNames.stream()
+                .map(fn -> new MyBannerDto(
+                        u.getUserNumber(),
+                        fn,
+                        imageProperties.getDomainSuperDir() + fn
+                ))
+                .collect(java.util.stream.Collectors.toUnmodifiableList());
     }
 
     /** 내 배너 리스트 조회 */

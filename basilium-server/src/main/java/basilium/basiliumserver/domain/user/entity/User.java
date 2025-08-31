@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class User {
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "userNumber")
+    @Column(name = "user_number")
     private Long userNumber;
 
     @Column(unique = true, nullable = false)
