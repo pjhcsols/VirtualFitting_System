@@ -1,28 +1,7 @@
-import styled from "styled-components";
-import { useEffect, useRef,useState } from "react";
-import { useSearchParams } from "react-router-dom";
-import type { ProductDetail, ClaimableCoupon } from "@/shared";
-import { loadPaymentWidget, PaymentWidgetInstance } from "@tosspayments/payment-widget-sdk";
-import { createPaymentReservation, handlePaymentResponse } from "@/features/payment/api/payment.action";
-import type { ProductColorPayment, ProductSizePayment, PaymentResultParams } from "@/shared"; 
-import { fetchDiscountQuote, fetchClaimableCoupons } from "@/pages/store/api/products.action";
-
-
-import {
-  ProductSmallCard,
-  LikeButton,
-  AddButton,
-  AIButton,
-  PurchaseButton,
-  QuantityBox,
-  BREAKPOINTS,
-  COLOR_MAP,
-  SIZE_ORDER,
-} from "@/shared";
-
-import {
-  ICON_SHARE,
-} from "@/shared";
+import { type ProductDetail, COLOR_MAP } from "@/shared";
+import { useProductContainer } from "../hooks/useProductContainer";
+import * as S from "./ProductContainer.styles";
+import { ProductSmallCard, AddButton, AIButton, PurchaseButton, QuantityBox, ICON_SHARE } from "@/shared";
 
 type ProductContainerProps = {
   product: ProductDetail;
@@ -30,177 +9,52 @@ type ProductContainerProps = {
   onColorChange?: (color: string) => void;
 };
 
-const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
-const customerKey = "wwXaKkcYycdO5JSA1QlWV";
+function getPaymentMethodName(method: string): string {
+  const methodNames: { [key: string]: string } = {
+    'CARD': '신용카드',
+    'TRANSFER': '계좌이체',
+    'VIRTUAL_ACCOUNT': '가상계좌',
+  };
+  return methodNames[method] || method;
+}
 
 function ProductContainer({ product, productColors, onColorChange }: ProductContainerProps) {
-  const [searchParams] = useSearchParams();
-  const queryColor = searchParams.get("color");
-  const [showPaymentTab, setShowPaymentTab] = useState(false);
-  const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
-  const [coupons, setCoupons] = useState<ClaimableCoupon[]>([]);
-  const paymentWidgetRef = useRef<PaymentWidgetInstance | null>(null);
-  const paymentMethodsWidgetRef = useRef<any>(null); 
-  const [selectedSize, setSelectedSize] = useState<ProductSizePayment>(product.productOptions[0].productSize as ProductSizePayment);
-  const [quantity, setQuantity] = useState(1);
-  const [showCouponPopup, setShowCouponPopup] = useState(false);
+  const {
+    price,
+    coupons,
+    selectedCoupon,
+    quantity,
+    showCouponPopup,
+    showPaymentTab,
+    paymentLoading,
+    selectedColor,
+    selectedSize,
+    mainImage,
+    finalPrice,
+    sizesSorted,
+    selectedProductImages,
+    selectedPaymentMethod,
+    setQuantity,
+    setShowCouponPopup,
+    setShowPaymentTab,
+    setSelectedSize,
+    setMainImage,
+    setSelectedPaymentMethod,
+    handlePurchaseClick,
+    handleDownloadCoupon,
+    handleSelectCoupon,
+    handlePurchase,
+    handleColorChange,
+  } = useProductContainer(product, onColorChange);
 
-  const selectedColor =
-    queryColor && product.productOptions.some(opt => opt.productColor === queryColor)
-      ? queryColor
-      : product.productOptions[0].productColor;
-
-  const sizesSorted: ProductSizePayment[] = product.productOptions
-    .filter(po => po.productColor === selectedColor)
-    .map(po => po.productSize as ProductSizePayment)
-    .sort((a, b) => SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b));
-
-  const selectedProductImages =
-    product.productImages.productColor === selectedColor
-      ? product.productImages.productPhotoUrls
-      : [];
-
-  const [mainImage, setMainImage] = useState(selectedProductImages[0]);
-
-  const isProductColor = (color: string): color is ProductColorPayment => {
-  return ["BLACK", "WHITE", "GRAY", "BLUE", "RED", "YELLOW", "GREEN", "ORANGE"].includes(color);
-  };
-
-  useEffect(() => {
-    (async () => {
-      const widget = await loadPaymentWidget(clientKey, customerKey);
-      paymentWidgetRef.current = widget;
-    })();
-  }, []);
-
-  useEffect(() => {
-    async function loadPrice() {
-      try {
-        const quote = await fetchDiscountQuote({ 
-          productId: product.productId, 
-          userId: "test"
-        });
-
-        if (quote?.data) {
-          setPrice({
-            original: quote.data.baseUnitPrice,
-            discounted: quote.data.finalUnitPrice,
-          });
-        }
-      } catch (error) {
-        console.error("Failed to fetch discount quote", error);
-      }
-    }
-    loadPrice();
-  }, [product.productId]);
-
-  useEffect(() => {
-    if (showPaymentTab && paymentWidgetRef.current && price) {
-      const widget = paymentWidgetRef.current.renderPaymentMethods(
-        "#payment-methods",
-        price.discounted || price.original
-      );
-      paymentMethodsWidgetRef.current = widget;
-    }
-  }, [showPaymentTab, price]);
-
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const data = await fetchClaimableCoupons(product.productId, "test"); // userId 있으면 넣기
-        setCoupons(data);
-      } catch (error) {
-        console.error("Failed to fetch claimable coupons", error);
-      }
-    })();
-  }, [product.productId]);
-
-  const handlePurchaseClick = () => {
-    setShowPaymentTab(true);
-  };
-
-  const closeTab = () => {
-    setShowPaymentTab(false);
-  };
-
-  const [taskId, setTaskId] = useState<string | null>(null);
-  const [showCheckout, setShowCheckout] = useState(false);
-
-  const onPaymentComplete = async (success: boolean) => {
-    setShowCheckout(false);
-
-    if (taskId) {
-      try {
-        await handlePaymentResponse({ taskId, success });
-        console.log("Payment result processed");
-      } catch (error) {
-        console.error("Error processing payment result", error);
-      }
-    }
-  };
-
-  const handleCompletePayment = async (taskId: string, success: boolean) => {
-    try {
-      const resultMessage = await handlePaymentResponse({ taskId, success });
-      console.log("Payment result processed:", resultMessage);
-      console.log(success ? "true" : "false");
-    } catch (error) {
-      console.error("Error processing payment result:", error);
-    }
-  };
-
-  const handlePurchase = async () => {
-    if (!isProductColor(selectedColor)) {
-      console.log("Invalid color selected.");
-      return;
-    }
-
-    if (!paymentMethodsWidgetRef.current) {
-      console.log("결제수단이 선택되지 않았습니다. 결제수단을 선택해주세요.");
-      alert("결제수단을 선택해 주세요.");
-      return;
-    }
-
-    const paymentResponse = await createPaymentReservation({
-      productId: product.productId,
-      productColor: selectedColor,
-      productSize: selectedSize,
-      count: quantity,
-    });
-
-    if (!paymentResponse?.taskId) {
-      console.log("Failed to get taskId from payment response.");
-      return;
-    }
-
-    try {
-      await paymentWidgetRef.current?.requestPayment({
-        orderId: paymentResponse.taskId,
-        orderName: product.productName,
-        successUrl: `${window.location.origin}/payment/success`,
-        failUrl: `${window.location.origin}/payment/fail`,
-        customerName: "고객이름",
-        customerEmail: "customer@example.com",
-      });
-    } catch (error) {
-      console.error("Payment request failed:", error);
-      window.location.href = `${window.location.origin}/payment/fail?message=${encodeURIComponent((error as Error).message)}`;
-    }
-  };
-  
-  if (!price) {
-    return null;
-  }
+  if (!price) return null;
 
   const hasDiscount = price.discounted !== undefined && price.discounted < price.original;
-  const discountRate = hasDiscount
-    ? Math.round(((price.original - price.discounted!) / price.original) * 100)
-    : 0;
+  const discountRate = hasDiscount ? Math.round(((price.original - price.discounted!) / price.original) * 100) : 0;
 
   return (
-    <ProductBox>
-      <ProductSmallImagesContainer>
+    <S.ProductBox>
+      <S.ProductSmallImagesContainer>
         {selectedProductImages.map((src, i) => (
           <ProductSmallCard
             key={i}
@@ -208,100 +62,116 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
             onMouseEnter={() => setMainImage(src)}
           />
         ))}
-      </ProductSmallImagesContainer>
-      <ProductImage src={mainImage} alt={product.productName} />
-      <ProductInfoBox>
-        <TopRow>
-          <Brand>{product.brandUser.firmName}</Brand>
-        </TopRow>
-        <TopRow>
-          <ProductName>{product.productName}</ProductName>
-          <LikeButton />
-        </TopRow>
-        <TopRow>
+      </S.ProductSmallImagesContainer>
+      <S.ProductImage src={mainImage} alt={product.productName} />
+      <S.ProductInfoBox>
+        <S.TopRow>
+          <S.Brand>{product.brandUser.firmName}</S.Brand>
+        </S.TopRow>
+        <S.TopRow>
+          <S.ProductName>{product.productName}</S.ProductName>
+        </S.TopRow>
+        <S.TopRow>
           {hasDiscount ? (
-            <PriceGroup>
-              <DiscountPrice>{price.discounted!.toLocaleString()}원</DiscountPrice>
-              <OriginalPriceBox>
-                <OriginalPrice>{price.original.toLocaleString()}원</OriginalPrice>
-                <DiscountRate>{discountRate}%</DiscountRate>
-              </OriginalPriceBox>
-            </PriceGroup>
+            <S.PriceGroup>
+              <S.DiscountPrice>{price.discounted!.toLocaleString()}원</S.DiscountPrice>
+              <S.OriginalPriceBox>
+                <S.OriginalPrice>{price.original.toLocaleString()}원</S.OriginalPrice>
+                <S.DiscountRate>{discountRate}%</S.DiscountRate>
+              </S.OriginalPriceBox>
+            </S.PriceGroup>
           ) : (
-            <Price>{price.original.toLocaleString()}원</Price>
+            <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
           <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             {coupons.length > 0 && (
-              <CouponButton onClick={() => setShowCouponPopup(true)}>
+              <S.CouponButton onClick={() => setShowCouponPopup(true)}>
                 쿠폰받기
-              </CouponButton>
+              </S.CouponButton>
             )}
-            <IconImage src={ICON_SHARE} alt="share icon" />
+            <S.IconImage src={ICON_SHARE} alt="share icon" />
           </div>
-        </TopRow>
+        </S.TopRow>
         {showCouponPopup && (
-          <CouponPopupOverlay onClick={() => setShowCouponPopup(false)}>
-            <CouponPopupContent onClick={(e) => e.stopPropagation()}>
-              <CloseButton onClick={() => setShowCouponPopup(false)}>×</CloseButton>
-              <CouponItems>
+          <S.CouponPopupOverlay onClick={() => setShowCouponPopup(false)}>
+            <S.CouponPopupContent onClick={(e) => e.stopPropagation()}>
+              <S.CloseButton onClick={() => setShowCouponPopup(false)}>×</S.CloseButton>
+              <S.CouponItems>
                 {coupons.map(coupon => (
-                  <CouponItem key={coupon.campaignId} disabled={!coupon.hasAvailable}>
+                  <S.CouponItem key={coupon.campaignId} disabled={!coupon.hasAvailable}>
                     <div>{coupon.scope} 쿠폰</div>
                     <div>{coupon.percent}% / 최대 {coupon.maxDiscountPrice.toLocaleString()}원</div>
                     <div>최소 주문 {coupon.minOrderPrice.toLocaleString()}원 이상</div>
                     {coupon.hasAvailable ? (
-                      <UseButton>발급하기</UseButton>
+                      <S.UseButton onClick={() => handleDownloadCoupon(coupon.campaignId)}>
+                        발급하기
+                      </S.UseButton>
                     ) : (
-                      <DisabledText>조건 미달</DisabledText>
+                      <S.DisabledText>조건 미달</S.DisabledText>
                     )}
-                  </CouponItem>
+                  </S.CouponItem>
                 ))}
-              </CouponItems>
-            </CouponPopupContent>
-          </CouponPopupOverlay>
+              </S.CouponItems>
+            </S.CouponPopupContent>
+          </S.CouponPopupOverlay>
         )}
-        <Description>{product.productDesc}</Description>
-        <ColorBoxContainer>
-          <SelectedColorText>
+        <S.Description>{product.productDesc}</S.Description>
+        <S.ColorBoxContainer>
+          <S.SelectedColorText>
             {product.productMaterials.join(", ")} | {selectedColor}
-          </SelectedColorText>
-           <ColorSwatches>
-      {productColors.map(color => (
-        <ColorCircle
-          key={color}
-          $color={COLOR_MAP[color] ?? "transparent"}
-          $selectedColor={selectedColor === color}
-          onClick={() => onColorChange?.(color)}
-        />
-      ))}
-    </ColorSwatches>
-        </ColorBoxContainer>
-        <SizeBoxContainer>
-          <SizeBox>
+          </S.SelectedColorText>
+          <S.ColorSwatches>
+            {productColors.map(color => (
+              <S.ColorCircle
+                key={color}
+                $color={COLOR_MAP[color] ?? "transparent"}
+                $selectedColor={selectedColor === color}
+                onClick={() => handleColorChange(color)}
+              />
+            ))}
+          </S.ColorSwatches>
+        </S.ColorBoxContainer>
+        <S.SizeBoxContainer>
+          <S.SizeBox>
             {sizesSorted.map(size => (
-              <SizeItem
+              <S.SizeItem
                 key={size}
                 $selectedSize={selectedSize === size}
                 onClick={() => setSelectedSize(size)}
               >
                 {size}
-              </SizeItem>
+              </S.SizeItem>
             ))}
-          </SizeBox>
-        </SizeBoxContainer>
-        <OptionBox>
-          <OptionTop>
-            <OptionText>
+          </S.SizeBox>
+        </S.SizeBoxContainer>
+        <S.OptionBox>
+          <S.OptionTop>
+            <S.OptionText>
               {selectedColor} · {selectedSize}
-            </OptionText>
-          </OptionTop>
+            </S.OptionText>
+          </S.OptionTop>
           <QuantityBox
             unitPrice={price.original}
+            discountedPrice={price.discounted}
             quantity={quantity}
             setQuantity={setQuantity}
           />
-        </OptionBox>
-        <ButtonBox>
+        </S.OptionBox>
+
+        {selectedCoupon && (
+          <S.CouponDisplayBox>
+            <S.CouponInfo>
+              <S.CouponLabel>쿠폰 적용</S.CouponLabel>
+              <S.CouponDetails>
+                {selectedCoupon.scope} 쿠폰 ({selectedCoupon.percent}%)
+              </S.CouponDetails>
+            </S.CouponInfo>
+            <S.CouponRemoveButton onClick={() => handleSelectCoupon(null)}>
+              ×
+            </S.CouponRemoveButton>
+          </S.CouponDisplayBox>
+        )}
+        <S.ButtonBox>
           <AddButton
             product={{
               id: product.productId.toString(),
@@ -309,420 +179,53 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               brand: product.brandUser.firmName,
               image: selectedProductImages[0],
               price: price.original,
-              discountedPrice: price.discounted,
+              discountedPrice: price.discounted ?? price.original,
               discountRate: discountRate,
               color: selectedColor,
               size: selectedSize,
               quantity,
             }}
           />
-        <PurchaseButton onClick={handlePurchaseClick} />
+          <PurchaseButton onClick={handlePurchaseClick} />
+        </S.ButtonBox>
         {showPaymentTab && (
-          <TabOverlay onClick={closeTab}>
-            <TabContent onClick={e => e.stopPropagation()}>
+          <S.TabOverlay onClick={() => setShowPaymentTab(false)}>
+            <S.TabContent onClick={e => e.stopPropagation()}>
+              <S.CloseButton onClick={() => setShowPaymentTab(false)}>×</S.CloseButton>
               <h3>결제 수단 선택</h3>
-              <div id="payment-methods" style={{ marginTop: 20 }}></div>
-              <button onClick={handlePurchase}>결제 시작</button>
-              <CloseButton onClick={closeTab}>닫기</CloseButton>
-            </TabContent>
-          </TabOverlay>
+              <S.PaymentMethodContainer>
+                  {['CARD', 'TRANSFER', 'VIRTUAL_ACCOUNT'].map(method => (
+                      <S.PaymentMethodButton
+                          key={method}
+                          $selected={selectedPaymentMethod === method}
+                          onClick={() => setSelectedPaymentMethod(method as 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT')}
+                      >
+                          {getPaymentMethodName(method)}
+                      </S.PaymentMethodButton>
+                  ))}
+              </S.PaymentMethodContainer>
+
+              <S.PaymentInfo>
+                <div>상품명 : {product.productName}</div>
+                <div>총 결제금액 : {finalPrice.toLocaleString()}원</div>
+                <div>결제방법 : {getPaymentMethodName(selectedPaymentMethod)}</div>
+              </S.PaymentInfo>
+
+              <S.PaymentButton
+                onClick={handlePurchase}
+                disabled={paymentLoading}
+              >
+                {paymentLoading ? '결제 진행 중...' : `${finalPrice.toLocaleString()}원 결제하기`}
+              </S.PaymentButton>
+            </S.TabContent>
+          </S.TabOverlay>
         )}
-        </ButtonBox>
-        <ButtonBox>
+        <S.ButtonBox>
           <AIButton />
-        </ButtonBox>
-      </ProductInfoBox>
-    </ProductBox>
+        </S.ButtonBox>
+      </S.ProductInfoBox>
+    </S.ProductBox>
   );
 }
-
-const ProductBox = styled.section`
-  display: flex;
-  gap: 4px;
-  width: 100%;
-  max-width: 1200px;
-  flex-direction: row;
-  // justify-content: space-between;
-  align-items: flex-start;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
-  }
-`;
-
-const ProductImage = styled.img`
-  width: 100%;
-  max-width: 600px;
-  max-height: 750px;
-  object-fit: cover;
-  height: auto;
-  order: 0;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    max-width: 510px;
-    max-height: 680px;
-  }
-`;
-
-const ProductSmallImagesContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  height: 100%;
-  object-fit: cover;
-  flex-flow: column nowrap;
-  margin: 0px 4px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    flex-direction: row;
-    justify-content: flex-start;
-    width: 100%;
-    order: 2;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-  }
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
-`;
-
-const ProductInfoBox = styled.div`
-  width: 408px;
-  display: flex;
-  flex-direction: column;
-  
-  gap: 8px;
-  order: 3;
-  margin: 0px 24px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    width: 100%;
-  }
-`;
-
-const TopRow = styled.div`
-  display: flex;
-  min-width: 350px;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const Brand = styled.div`
-  font-family: "pretendard";
-  font-weight: 500;
-  font-size: 16px;
-  color: black;
-`;
-
-const IconImage = styled.img`
-  width: 24px;
-  height: 24px;
-  cursor: pointer;
-`;
-
-const ProductName = styled.div`
-  font-family: "pretendard";
-  font-weight: 400;
-  font-size: 24px;
-  color: black;
-`;
-
-const Price = styled.div`
-  font-family: "pretendard";
-  font-weight: 500;
-  color: black;
-  font-size: 24px;
-`;
-
-const PriceGroup = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const DiscountPrice = styled.div`
-  font-family: "pretendard";
-  font-size: 24px;
-  font-weight: 500;
-  color: red;
-`;
-
-const OriginalPriceBox = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-const OriginalPrice = styled.div`
-  font-family: "pretendard";
-  font-size: 14px;
-  color: gray;
-  text-decoration: line-through;
-`;
-
-const DiscountRate = styled.div`
-  font-family: "pretendard";
-  font-size: 12px;
-  color: white;
-  background-color: black;
-  padding: 0px 2px;
-  background-color: red;
-`;
-
-const Description = styled.p`
-  white-space: pre-line;
-  display: flex;
-  font-family: "pretendard";
-  font-size: 14px;
-  font-weight: 500;
-  color: black;
-  text-align: left;
-  padding: 16px 0px;
-`;
-
-const ColorBoxContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  padding: 16px 0px;
-`; 
-
-const SelectedColorText = styled.div`
-  display: flex;
-  font-size: 12px;
-  font-family: "pretendard";
-  color: black;
-`;
-
-const ColorSwatches = styled.div`
-  display: flex;
-  gap: 6px;
-  align-items: center;
-`;
-
-const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean }>`
-  position: relative;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background-color: ${(props) => props.$color};
-  border: 1px solid gray;
-  box-sizing: border-box;
-
-  ${(props) =>
-    props.$selectedColor &&
-    `
-    &::after {
-      content: "";
-      align-items: center;
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      border: 2px solid #ccc; 
-      box-sizing: border-box;
-    }
-  `}
-`;
-
-const SizeBoxContainer = styled.div`
-  max-width: 408px;
-  min-width: 350px;
-  display: flex;
-  gap: 8px;
-  flex-direction: column;
-  padding: 16px 0px 16px 0px;
-`; 
-
-const SizeBox = styled.div`
-  max-width: 408px;
-  min-width: 350px;
-  display: flex;
-  gap: 8px;
-`; 
-
-const SizeItem = styled.div<{ $selectedSize?: boolean }>`
-  position: relative;
-  width: 80px;
-  height: 40px;
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "pretendard";
-  font-weight: 400;
-  font-size: 14px;
-  cursor: pointer;
-  color: black;
-
-  ${(props) =>
-    props.$selectedSize &&
-    `
-    &::before {
-      content: "";
-      position: absolute;
-      top: -5px;
-      left: -5px;
-      right: -5px;
-      bottom: -5px;
-      border: 2px solid #dfdfdf;
-      pointer-events: none;
-      box-sizing: border-box;
-      z-index: 0;
-    }
-    position: relative;
-    z-index: 1;
-  `}
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    min-width: 78px;
-    color: black;
-  }
-`;
-
-const OptionTop = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const OptionText = styled.div`
-  display: flex;
-  font-size: 12px;
-  font-family: "pretendard";
-  color: black;
-`;
-
-const OptionBox = styled.div`
-  min-width: 350px;
-  height: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  border-radius: 4px;
-  background-color: #f5f5f5;
-  padding: 12px 16px;
-  box-sizing: border-box;
-`;
-
-const ButtonBox = styled.div`
-  min-width: 350px;
-  display: flex;
-  gap: 8px;
-  padding: 2px 0px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    justify-content: center;
-    align-items: center;
-  }
-`; 
-
-const TabOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-`;
-
-const TabContent = styled.div`
-  background: white;
-  padding: 20px;
-  border-radius: 8px;
-  min-width: 460px;
-  max-height: 520px;
-  overflow-y: auto;
-`;
-
-const CloseButton = styled.button`
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: transparent;
-  border: none;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
-  color: black;
-`;
-
-const CouponButton = styled.button`
-  padding: 4px 8px;
-  font-size: 14px;
-  border: 1px solid #dfdfdf;
-  border-radius: 8px;
-  background-color: white;
-  cursor: pointer;
-  color: black;
-`;
-
-const CouponPopupOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0,0,0,0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-`;
-
-const CouponPopupContent = styled.div`
-  background-color: white;
-  padding: 24px;
-  color: black;
-  border-radius: 8px;
-  max-width: 600px;
-  max-height: 80vh;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-`;
-const CouponItems = styled.div`
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-`;
-
-const CouponItem = styled.div<{ disabled?: boolean }>`
-  flex: 1 1 150px;
-  padding: 12px;
-  border-radius: 4px;
-  background-color: ${({ disabled }) => (disabled ? "#f5f5f5" : "#fff")};
-  display: flex;
-  flex-direction: column;
-  color: black;
-  gap: 6px;
-  opacity: ${({ disabled }) => (disabled ? 0.6 : 1)};
-`;
-
-const UseButton = styled.button`
-  padding: 6px 12px;
-  font-size: 14px;
-  background-color: black;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-
-const DisabledText = styled.div`
-  font-size: 12px;
-  color: gray;
-`;
 
 export { ProductContainer };

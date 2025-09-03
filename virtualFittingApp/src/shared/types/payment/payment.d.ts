@@ -11,18 +11,66 @@ export type ProductColorPayment =
   | "ORANGE";
 
 export interface PaymentRequestParams {
+  userId: string; 
   productId: number;
   count: number;
   productSize: ProductSizePayment;
   productColor: ProductColorPayment;
 }
 
+export interface PaymentData {
+  reserveTaskOrderPayId: string;
+  expiresAt: string;
+  items: {
+    productId: number;
+    count: number;
+    productSize: ProductSizePayment;
+    productColor: ProductColorPayment;
+  }[];
+}
+
 export interface PaymentResponse {
-  taskId: string;
-  delayTime: string;
+  timestamp: string;
+  status: number;
+  code: string;
+  message: string;
+  data: PaymentData;
 }
 
 export interface PaymentResultParams {
   taskId: string;
   success: boolean;
+}
+
+export interface PaymentIntentLine {
+  productId: number;
+  size: string;
+  color: string;
+  quantity: number;
+  couponWalletId?: number;
+}
+
+export interface PaymentIntentRequest {
+  orderId: string;
+  currency: number;
+  pointsToUse: number;
+  lines: PaymentIntentLine[];
+  expiresAt: string;
+}
+
+export interface PaymentIntentData {
+  paymentId: number;
+  orderId: string;
+  serverTotal: number;
+  pointsToUse: number;
+  pgAmount: number;
+  intentExpiresAt: string;
+}
+
+export interface ApiResponse<T> {
+  timestamp: string;
+  status: number;
+  code: string;
+  message: string;
+  data: T;
 }
