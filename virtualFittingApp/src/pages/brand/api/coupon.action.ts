@@ -25,7 +25,7 @@ export const postCoupon = async (coupon: ClientCouponDto) => {
     coupon,
   );
   if (res.status === 201) {
-    return res.data;
+    return res.data.content;
   }
   throw new CustomException(res.status, "쿠폰을 업로드하지 못하였습니다.");
 };

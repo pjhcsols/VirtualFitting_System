@@ -5,7 +5,7 @@ import { getCouponList } from "../api/coupon.action";
 
 function BrandCoupon() {
   const [coupons, setCoupons] = useState<ServerCouponDto[]>([]);
-  const [, setErrMsg] = useState<string>("");
+  const [errMsg, setErrMsg] = useState<string>("");
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -26,9 +26,13 @@ function BrandCoupon() {
         <CouponTitle>쿠폰</CouponTitle>
       </CouponBannerWrapper>
       <CouponContainer>
-        {coupons.map((item: ServerCouponDto, key) => {
-          return <CouponColumn key={key}></CouponColumn>;
-        })}
+        {coupons.length !== 0 ? (
+          coupons.map((item: ServerCouponDto, key) => {
+            return <CouponColumn key={key}></CouponColumn>;
+          })
+        ) : (
+          <></>
+        )}
       </CouponContainer>
     </Wrapper>
   );
