@@ -7,7 +7,7 @@ import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import { Stars } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
 import styled from "styled-components";
 
@@ -82,9 +82,6 @@ function MainPage() {
             <Hero>
               <HeroSection />
             </Hero>
-            <AIIntroduction>
-              <AiServiceSection />
-            </AIIntroduction>
           </ModelContainer>
           <section></section>
           <section></section>

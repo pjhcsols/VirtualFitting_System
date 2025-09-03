@@ -1,2 +1,6 @@
 export { Divider } from "@/pages/brand/components/divider/Divider";
-export { SizeTable } from "@/pages/brand/components/sizeTable/SizeTable";
+export { ProductImageUploader } from "@/pages/brand/components/input/ProductImageUploader";
+export { TextInput } from "@/pages/brand/components/input/TextInput";
+export { NumberInput } from "@/pages/brand/components/input/NumberInput";
+export { ProductOptionUploader } from "@/pages/brand/components/input/ProductOptionUploader";
+export { SizeInput } from "@/pages/brand/components/input/SizeInput";

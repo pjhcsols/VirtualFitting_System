@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import styled from "styled-components";
 
-import { ClientProductDto } from "@/shared";
-import { SizeTable } from "@/pages/brand/components";
+import { ClientProductDto, Color, Material } from "@/shared";
+import {
+  NumberInput,
+  ProductImageUploader,
+  ProductOptionUploader,
+  SizeInput,
+  TextInput,
+} from "../components";
+import { Colors, Materials } from "../constants";
+import { ProductSizeOptionType } from "@/shared/types/product/product";
+import { postProduct } from "../api/brand.action";
+import { Upload } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 function BrandProductCreate() {
+  const router = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isFreeSize, setIsFreeSize] = useState<boolean>(false);
   const [productInfo, setProductInfo] = useState<ClientProductDto>({
     productId: 0,
     status: "ON SALE",
@@ -22,16 +36,144 @@ function BrandProductCreate() {
     productColorOptions: [],
     version: 0,
   });
+  const [mainPhotos, setMainPhotos] = useState<File[]>([]);
+  const [subPhotos, setSubPhotos] = useState<File[]>([]);
+
+  const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+
+    if (name.includes(".")) {
+      const [parentKey, childKey] = name.split(".");
+      setProductInfo((prev) => ({
+        ...prev,
+        [parentKey]: {
+          ...prev,
+          [childKey]: value,
+        },
+      }));
+    } else {
+      setProductInfo((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
+  };
+
+  const onNumberChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    const numValue = value === "" ? 0 : Number(value);
+
+    if (name.includes(".")) {
+      const [parentKey, childKey] = name.split(".");
+      setProductInfo((prev) => ({
+        ...prev,
+        [parentKey]: {
+          ...prev,
+          [childKey]: numValue,
+        },
+      }));
+    } else {
+      setProductInfo((prev) => ({
+        ...prev,
+        [name]: numValue,
+      }));
+    }
+  };
+
+  const onClickFreeSize = () => {
+    const sizeOption: ProductSizeOptionType[] = [
+      {
+        id: {
+          productId: productInfo.productId,
+          productSize: "XX",
+        },
+        arm: 0,
+        chest: 0,
+        product: productInfo.productName,
+        shoulder: 0,
+        totalLength: 0,
+      },
+    ];
+    setIsFreeSize((prev) => !prev);
+    setProductInfo({
+      ...productInfo,
+      ["productSizeOptions"]: sizeOption,
+    });
+  };
+
+  const onSubmitProduct = async () => {
+    setIsLoading(true);
+    const res = await postProduct(productInfo, mainPhotos, subPhotos);
+    setIsLoading(false);
+    if (res) {
+      alert("상품 등록 완료!");
+      router("/brand/product/list");
+    }
+  };
 
   return (
     <Wrapper>
       <InfoWrapper>
-        <PhotoContainer></PhotoContainer>
-        <InfoContainer></InfoContainer>
+        <PhotoContainer>
+          <ProductImageUploader />
+        </PhotoContainer>
+        <InfoContainer>
+          <TextInput
+            name="productName"
+            title="상품 제목"
+            value={productInfo.productName}
+            onChange={onChangeText}
+          />
+          <NumberInput
+            name="productPrice"
+            title="상품 가격"
+            value={productInfo.productPrice}
+            onChange={onNumberChange}
+          />
+          <TextInput
+            name="productDesc"
+            title="상품 설명"
+            value={productInfo.productName}
+            onChange={onNumberChange}
+          />
+          <SubmitButton>
+            <Upload />
+          </SubmitButton>
+        </InfoContainer>
       </InfoWrapper>
-      <SizeContainer>
-        <SizeTable />
-      </SizeContainer>
+      <OptionContainer>
+        <Title>색상</Title>
+        <ColorContainer>
+          {Colors.map((item: Color, key: number) => {
+            return <ColorPallete color={item} key={key} />;
+          })}
+        </ColorContainer>
+        <Title>재질</Title>
+        <MaterialContainer>
+          {Materials.map((item: Material, key: number) => {
+            return (
+              <MaterialBox clicked={true} key={key}>
+                <span>{item}</span>
+              </MaterialBox>
+            );
+          })}
+        </MaterialContainer>
+        <SizeTitleContainer>
+          <Title>사이즈</Title>
+          <ToggleBox>
+            <ToggleText>프리 사이즈</ToggleText>
+            <ToggleContainer onClick={onClickFreeSize} isOn={isFreeSize}>
+              <ToggleCircle isOn={isFreeSize} />
+            </ToggleContainer>
+          </ToggleBox>
+        </SizeTitleContainer>
+        {!isFreeSize ? (
+          <SizeInput sizeValue={productInfo.productSizeOptions} />
+        ) : (
+          <></>
+        )}
+      </OptionContainer>
+      <ProductOptionUploader />
     </Wrapper>
   );
 }
@@ -54,8 +196,8 @@ const InfoWrapper = styled.section`
   padding: 2rem 3rem;
   width: 100%;
   display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
+  flex-flow: row nowrap;
+  justify-content: flex-start;
   align-items: flex-start;
   gap: 32px;
 `;
@@ -74,71 +216,145 @@ const InfoContainer = styled.div`
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 32px;
+  gap: 0.5rem;
 `;
 
-const SizeContainer = styled.div`
+const OptionContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column nowrap;
   justify-content: flex-start;
   align-items: flex-start;
+  gap: 2rem;
 `;
 
-const ButtonDefault = styled.div`
-  appearance: none;
-  background-color: transparent;
-  border: 2px solid #1a1a1a;
-  border-radius: 15px;
-  box-sizing: border-box;
-  color: #3b3b3b;
-  cursor: pointer;
-  display: inline-block;
-  font-family: "Pretendard";
-  font-size: 16px;
-  font-weight: 600;
+const Title = styled.span`
+  font-size: 1.2rem;
+  font-weight: 500;
   color: black;
-  line-height: normal;
-  margin: 0;
-  width: 40%;
-  min-height: 45px;
-  min-width: 140px;
-  outline: none;
-  padding: 16px 24px;
-  text-align: center;
-  text-decoration: none;
-  transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  will-change: transform;
-  &:disabled {
-    pointer-events: none;
-  }
-  &:hover {
-    color: #fff;
-    background-color: #1a1a1a;
-    box-shadow: rgba(0, 0, 0, 0.25) 0 8px 15px;
-    transform: translateY(-2px);
-  }
-  &:active {
-    box-shadow: none;
-    transform: translateY(0);
-  }
-`;
-
-const SizeTableContainer = styled.div`
-  width: 100%;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
 `;
 
 const ColorContainer = styled.div`
   width: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const ColorPallete = styled.div<{ color: string }>`
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 100%;
+  background-color: ${(props) => props.color ?? "black"};
+  cursor: pointer;
+`;
+
+const MaterialContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const MaterialBox = styled.div<{ clicked: boolean }>`
+  width: 5rem;
+  height: 3rem;
+  border: 1px solid black;
+  border-radius: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: 0.2s all ease;
+  background-color: ${(props) => (props.clicked ? "black" : "transparent")};
+  cursor: pointer;
+  &:hover {
+    background-color: ${(props) => !props.clicked && "#d9d9d9"};
+  }
+  span {
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: ${(props) => (props.clicked ? "white" : "black")};
+  }
+`;
+
+const SizeTitleContainer = styled.div`
+  width: 100%;
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const ToggleBox = styled.div`
+  width: 200px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+`;
+
+const ToggleText = styled.span`
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: black;
+`;
+
+const ToggleContainer = styled.div<{ isOn: boolean }>`
+  width: 60px;
+  height: 30px;
+  background-color: ${({ isOn }) => (isOn ? "#4f46e5" : "#d1d5db")};
+  border-radius: 9999px;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+`;
+
+const ToggleCircle = styled.div<{ isOn: boolean }>`
+  width: 22px;
+  height: 22px;
+  background: white;
+  border-radius: 50%;
+  transform: ${({ isOn }) => (isOn ? "translateX(36px)" : "translateX(0)")};
+  transition: transform 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+`;
+
+const SubmitButton = styled.button`
+  box-sizing: border-box;
+  width: 100%;
+  padding: 12px 32px;
+  background: linear-gradient(90deg, #3b82f6, #2563eb);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: linear-gradient(90deg, #2563eb, #1d4ed8);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  &:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
 `;

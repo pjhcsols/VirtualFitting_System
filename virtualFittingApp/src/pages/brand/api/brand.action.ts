@@ -3,6 +3,7 @@
 import {
   API_BASILIUM,
   BasiliumResponse,
+  ClientProductDto,
   ProductServerResponseType,
 } from "@/shared";
 import type { BrandUserType } from "@/pages/brand/types/brandUser";
@@ -104,4 +105,73 @@ export const postBrandRegistrationFile = async (
   throw new CustomException(res.status, "업로드에 실패하였습니다.");
 };
 
+// * 상품 관련 API
 // * ================================================
+export const postProduct = async (
+  product: ClientProductDto,
+  mainPhotoFiles: File[],
+  subPhotoFiles: File[],
+) => {
+  if (mainPhotoFiles.length === 0) {
+    throw new CustomException(400, "메인 프로필 사진이 없습니다.");
+  }
+
+  if (subPhotoFiles.length === 0) {
+    throw new CustomException(400, "서브 프로필 사진이 없습니다.");
+  }
+
+  // * 메인 사진 전송
+  const mainPhotoFormData = new FormData();
+  mainPhotoFiles.map((item, _) => {
+    mainPhotoFormData.append("file", item);
+  });
+  const mainPhotos = await API_BASILIUM.post(
+    "/aws/products/upload-photo",
+    mainPhotoFormData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+  if (mainPhotos.status !== 200) {
+    throw new CustomException(
+      mainPhotos.status,
+      "파일을 업로드하지 못했습니다.",
+    );
+  }
+
+  // * 상품 옵션 사진 데이터 전송
+  const subPhotoFormData = new FormData();
+  subPhotoFiles.map((item, _) => {
+    subPhotoFormData.append("file", item);
+  });
+  const subPhotos = await API_BASILIUM.post(
+    "/aws/products/upload-photo",
+    subPhotoFormData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    },
+  );
+  if (subPhotos.status !== 200) {
+    throw new CustomException(
+      subPhotos.status,
+      "파일을 업로드하지 못했습니다.",
+    );
+  }
+
+  // * 상품 업로드
+  let request: ClientProductDto = product;
+  if (request.productColorOptions.length > 1) {
+    request.productColorOptions[length - 1].productPhotoUrls = mainPhotos.data;
+    request.productColorOptions[length - 1].productSubPhotoUrls =
+      subPhotos.data;
+  }
+  const res = await API_BASILIUM.post("/b1/products", request);
+  if (res.status === 201) {
+    return res.data;
+  }
+  throw new CustomException(res.status, "상품을 업로드하지 않았습니다!");
+};

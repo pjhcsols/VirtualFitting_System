@@ -2,13 +2,14 @@ import { BREAKPOINTS } from "@/shared";
 import styled from "styled-components";
 import { BrandUserSignUpRequestDto } from "../types/login";
 import { useState, type ChangeEvent } from "react";
+import { PhoneNumberInput } from "@/shared/components/common";
 
 type BrandUserSignUpPanelType = {
   brandUserInfo: BrandUserSignUpRequestDto;
   onChangeId: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangePassword: (e: ChangeEvent<HTMLInputElement>) => void;
   onChangeEmail: (e: ChangeEvent<HTMLInputElement>) => void;
-  onChangePhoneNumber: (e: ChangeEvent<HTMLInputElement>) => void;
+  onChangePhoneNumber: (value: string) => void;
 };
 
 function BrandUserSignUp({
@@ -77,7 +78,8 @@ function BrandUserSignUp({
         </InfoBox>
         <InfoBox>
           <SubTitle>PHONE-NUMBER</SubTitle>
-          <TextInput
+          <PhoneNumberInput
+            name="phone-number"
             value={brandUserInfo.phoneNumber}
             onChange={onChangePhoneNumber}
           />

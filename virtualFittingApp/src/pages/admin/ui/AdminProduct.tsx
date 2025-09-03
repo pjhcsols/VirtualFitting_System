@@ -1,5 +1,6 @@
 import styled from "styled-components";
-import { Text, Title } from "../components";
+import { Text, Title } from "@/pages/admin/components";
+import { ProductFinder } from "@/pages/admin/widgets";
 
 function AdminProduct() {
   return (
@@ -10,7 +11,9 @@ function AdminProduct() {
           <Text>Basilium 에 출품된 Product를 관리할 수 있습니다.</Text>
         </DescBox>
       </TopLayerContainer>
-      <ContentLayerContainer></ContentLayerContainer>
+      <ContentLayerContainer>
+        <ProductFinder />
+      </ContentLayerContainer>
     </Wrapper>
   );
 }
