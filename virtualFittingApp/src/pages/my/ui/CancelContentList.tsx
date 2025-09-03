@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import type { OrderItem } from "../types/order";
@@ -41,17 +41,17 @@ function CancelContentList() {
     return (
       <OuterWrapper>
         <StickyTabWrapper>
-          <TabInner>
+          <TabBar>
             {["전체", "취소/반품", "교환"].map((tab) => (
-              <TabText
+              <TabButton
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                active={activeTab === tab}
+                $active={activeTab === tab}
               >
                 {tab}
-              </TabText>
+              </TabButton>
             ))}
-          </TabInner>
+          </TabBar>
         </StickyTabWrapper>
 
         <ContentWrapper>
@@ -114,47 +114,41 @@ const StickyTabWrapper = styled.div`
   position: sticky;
   top: calc(var(--header-h, ${HEADER_H}px));
   z-index: 100;
-  width: 100%;
-  background: rgba(200, 200, 200, 0.15);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-bottom: 1px solid rgba(255,255,255,0.25);
-`;
-
-const TabInner = styled.div`
-  display: flex;
-  gap: 24px;
   max-width: 800px;
   width: 100%;
-  padding: 10px 0;
+  padding: 12px 30px;
   margin: 0 auto;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 10px 16px;
+    padding: 12px 16px;       
     max-width: 100%;
   }
 `;
 
-const TabText = styled.span<{ active: boolean }>`
-  font-size: 14px;
-  font-weight: bold;
-  color: ${(props) => (props.active ? "rgba(255, 255, 255, 0.9)" : "#000")};
-  cursor: pointer;
-  font-family: "Prata-Regular";
-  position: relative;
-  padding-bottom: 4px;
+const TabBar = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  gap: 12px;
+  padding: 12px 0;
+`;
 
-  &::after {
-    content: "";
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    transform: translateX(-50%);
-    width: ${(props) => (props.active ? "100%" : "0")};
-    height: 2px;
-    background-color: rgba(255, 255, 255, 0.9);
-    transition: width 0.3s ease;
-  }
+const TabButton = styled.button<{ $active: boolean }>`
+  padding: 8px 20px;
+  border-radius: 6px;
+  border: none;
+  background-color: ${({ $active }) => ($active ? "#000" : "#fff")};
+  color: ${({ $active }) => ($active ? "#fff" : "#000")};
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  background: rgba(200, 200, 200, 0.15);
+  backdrop-filter: blur(16px) saturate(160%);
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
 `;
 
 const ContentWrapper = styled.div`

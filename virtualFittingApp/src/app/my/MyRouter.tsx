@@ -1,4 +1,3 @@
-// src/app/MyRouter.tsx (혹은 기존 파일)
 import { AnimatePresence } from "framer-motion";
 import { Route, Routes, useLocation } from "react-router-dom";
 import { MyPage } from "@/pages/my";

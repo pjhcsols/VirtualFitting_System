@@ -97,7 +97,9 @@ const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  width: 800px;
+  width: 100%;
+  max-width: 800px;
+  box-sizing: border-box;
   align-items: flex-start;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -116,11 +118,12 @@ const Header = styled.div`
 
 const StatusText = styled.span`
   font-weight: bold;
+  color: #fff;
 `;
 
 const RatingSection = styled.div`
   font-size: 13px;
-  color: #777;
+  color: #fff;
   width: 100%;
   text-align: left;
   display: flex;
@@ -159,22 +162,25 @@ const Brand = styled.div`
   font-weight: bold;
   font-size: 14px;
   text-align: left;
+  color: #fff;
 `;
 
 const ProductName = styled.div`
   font-size: 13px;
   margin-top: 4px;
   text-align: left;
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 const OptionText = styled.div`
   font-size: 12px;
-  color: #999;
+  color: rgba(255, 255, 255, 0.6);
   text-align: left;
 `;
 
 const ReviewText = styled.p`
   font-size: 14px;
+  color: rgba(255, 255, 255, 0.9);
   line-height: 1;
   width: 100%;
   text-align: left;

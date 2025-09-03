@@ -1,37 +1,13 @@
-import React, { useState, useEffect, useRef, memo } from "react";
+import React, { useState, useEffect, useRef} from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import type { OrderItem } from "../types/order";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
-import { Header } from "@/shared";
 import alertImg from "@/pages/my/ui/alert.png";
 import { STAR_EMPTY_ICON, STAR_FILLED_ICON, ADD_ICON, CANCEL_ICON } from "@/pages/my/constants";
 import type { ReviewData } from "../types/review";
 import { BREAKPOINTS } from "@/shared";
-import * as THREE from "three";
-import { Stars } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-
-function RotatingStars() {
-  const stars = useRef<THREE.Points>(null);
-
-  useFrame(() => {
-    if (stars.current) {
-      stars.current.rotation.x = stars.current.rotation.y += 0.00005;
-    }
-  });
-  return <Stars ref={stars} />;
-}
-
-export const Starfield = memo(function Starfield() {
-  return (
-    <StarBackground>
-      <Canvas>
-        <RotatingStars />
-      </Canvas>
-    </StarBackground>
-  );
-});
+import { createProductReview, type CreateReviewBody } from "@/pages/my/api/review.action";
 
 function StyleReview() {
     const navigate = useNavigate();
@@ -44,6 +20,7 @@ function StyleReview() {
     const [reviewText, setReviewText] = useState<string>("");
     const photoInputRef = useRef<HTMLInputElement | null>(null);  
     const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
+    const [photoFiles, setPhotoFiles] = useState<File[]>([]);
 
     useEffect(() => {
         const foundOrder = orderDummyData.find((item) => item.id === id);
@@ -61,56 +38,98 @@ function StyleReview() {
     }; 
 
     const handleMultipleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const files = e.target.files;
-        if (!files) return;
+      const files = e.target.files;
+      if (!files) return;
 
-        const fileArray = Array.from(files);
+      const remain = 5 - photoFiles.length;
+      const newFiles = Array.from(files).slice(0, Math.max(0, remain));
 
-        fileArray.forEach((file) => {
-            const reader = new FileReader();
-            reader.onload = () => {
-                if (reader.result) {
-                    setPhotoPreviewImages(prev => [...prev, reader.result as string].slice(0, 5));
-                }
-            };
-            reader.readAsDataURL(file);
-        });
+      setPhotoFiles((prev) => [...prev, ...newFiles].slice(0, 5));
 
-        e.target.value = "";
+      newFiles.forEach((file) => {
+        const reader = new FileReader();
+        reader.onload = () => {
+          if (reader.result) {
+            setPhotoPreviewImages((prev) => [...prev, reader.result as string].slice(0, 5));
+          }
+        };
+        reader.readAsDataURL(file);
+      });
+
+      e.target.value = ""; 
     };
 
     const handleRemoveImage = (index: number) => {
         setPhotoPreviewImages(prev => prev.filter((_, i) => i !== index));
+        setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
     };
 
-    const handleRegister = () => {
-        if (!order) {
-            alert("등록할 수 없습니다.")
-            return;
-        }
+    // const handleRegister = () => {
+    //     if (!order) {
+    //         alert("등록할 수 없습니다.")
+    //         return;
+    //     }
 
-        const existingReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
-        const newReview: ReviewData = {
-            id: order.id,
-            brand: order.brand,
-            productName: order.productName,
-            option: order.options,
-            rating,
-            reviewText,
-            photos: photoPreviewImages,
-            date: new Date().toISOString()
-        };
+    //     const existingReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
+    //     const newReview: ReviewData = {
+    //         id: order.id,
+    //         brand: order.brand,
+    //         productName: order.productName,
+    //         option: order.options,
+    //         rating,
+    //         reviewText,
+    //         photos: photoPreviewImages,
+    //         date: new Date().toISOString()
+    //     };
 
-        const updatedReviews = editReview
-            ? existingReviews.map((r: ReviewData) =>
-                r.id === editReview.id ? newReview : r
-              )
-            : [...existingReviews, newReview];
-        localStorage.setItem("reviews", JSON.stringify(updatedReviews));
-        alert(editReview ? "리뷰가 수정되었습니다!" : "리뷰가 등록되었습니다!");
+    //     const updatedReviews = editReview
+    //         ? existingReviews.map((r: ReviewData) =>
+    //             r.id === editReview.id ? newReview : r
+    //           )
+    //         : [...existingReviews, newReview];
+    //     localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+    //     alert(editReview ? "리뷰가 수정되었습니다!" : "리뷰가 등록되었습니다!");
+    //     navigate("/myPage/review");
+    // };
+    const handleRegister = async () => {
+      if (!order) {
+        alert("등록할 수 없습니다.");
+        return;
+      }
+      if (rating <= 0) {
+        alert("별점을 선택해주세요.");
+        return;
+      }
+      if (reviewText.trim().length < 20) {
+        alert("본문은 20자 이상 입력해주세요.");
+        return;
+      }
+      // if (photoFiles.length < 1) {
+      //   alert("사진을 1장 이상 첨부해주세요.");
+      //   return;
+      // }
+
+      const productId = "1";
+
+      const body: CreateReviewBody = {
+        rating,
+        title: "test",
+        comment: reviewText.trim(),
+        purchaseSize: (order as any).options?.size ?? "",
+        purchaseColor: (order as any).options?.color ?? "",
+      };
+
+      try {
+        await createProductReview(productId, body);
+        alert("리뷰가 등록되었습니다!");
         navigate("/myPage/review");
+      } catch (err) {
+        console.error(err);
+        console.log(body);
+        alert("리뷰 등록에 실패했습니다. 잠시 후 다시 시도해주세요.");
+      } finally {
+      }
     };
-
 
     if (!order) {
         return <div>주문 정보를 찾을 수 없습니다.</div>;
@@ -118,11 +137,6 @@ function StyleReview() {
 
     return (
         <PageWrapper>
-            <Starfield />
-            <HeaderWrapper>
-                <Header />
-            </HeaderWrapper>
-
             <ContentWrapper>
               <GlassForm>
                 <FormInner>
@@ -221,20 +235,14 @@ function StyleReview() {
 
 export { StyleReview };
 
-
 const PageWrapper = styled.div`
   position: relative;
   z-index: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  flex: 1;
+  min-height: auto; 
   overflow-x: hidden;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
 `;
 
 const ContentWrapper = styled.div`
