@@ -1,5 +1,5 @@
 export * from "@/shared/types/auth/authContext.d";
-
+export type { BasiliumJwtPayload } from "@/shared/types/auth/basiliumJwtPayload.d";
 export * from "@/shared/types/product/option.d";
 export type {
   ProductServerResponseType,
@@ -15,14 +15,16 @@ export type { Product } from "@/shared/types/product/products.d";
 export type { ProductDetail } from "@/shared/types/product/productDetail.d";
 export type { ProductPrice } from "@/shared/types/product/productPrice.d";
 export type { DiscountQuote } from "@/shared/types/product/discountQuote.d";
-export type { ClaimableCoupon } from "@/shared/types/product/claimableCoupon";
+export type * from "@/shared/types/product/coupon";
+export type * from "@/shared/types/order/quantity";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
+export type { LikeButtonProps } from "@/shared/types/user/like.d";
 
 export { type CartItem } from "./cart/cart.d";
 
-export * from "@/shared/types/payment/payment.d";
+export type * from "@/shared/types/payment/payment.d";
 
 export { type FileItem } from "@/shared/types/file/File.d";
 
