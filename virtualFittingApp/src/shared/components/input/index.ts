@@ -24,7 +24,6 @@ export {
   PasswordInput,
   EmailAddressInput,
   AddressInput,
-  PhoneNumberInput,
   BirthdayInput,
   SignUpTextInfoInput,
   SignUpPhoneNumberInput,
