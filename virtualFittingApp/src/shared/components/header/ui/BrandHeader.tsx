@@ -2,25 +2,14 @@ import * as S from "@/shared/components/header/ui/css/BrandHeader.css";
 import { useNavigate } from "react-router-dom";
 import {
   CardIcon,
-  ClothesIcon,
-  CouponIcon,
   GraphIcon,
   HomeIcon,
   LogoutIcon,
-  RightArrowIcon,
   SettingIcon,
   ShopIcon,
 } from "../../icon";
-import { atom, useRecoilState } from "recoil";
-
-const productDropdown = atom({
-  key: "productDropdown",
-  default: false,
-});
 
 function BrandHeader() {
-  const [isProductClicked, setIsProductClicked] =
-    useRecoilState(productDropdown);
   const router = useNavigate();
 
   const onClickBrandHomepage = () => {
@@ -37,7 +26,7 @@ function BrandHeader() {
         <S.Navigation to={"/brand/dashboard"}>
           {({ isActive }: { isActive: boolean }) => (
             <S.InfoBox isActive={isActive}>
-              <HomeIcon width="20px" height="20px" fill="none" />
+              <HomeIcon width="20px" height="20px" fill="gray" />
               <S.InfoText>Home</S.InfoText>
             </S.InfoBox>
           )}
@@ -58,37 +47,14 @@ function BrandHeader() {
             </S.InfoBox>
           )}
         </S.Navigation>
-        <S.DropdownContainer>
-          <S.DropdownBox
-            clicked={isProductClicked}
-            onClick={() => setIsProductClicked((prev) => !prev)}
-          >
-            <div>
+        <S.Navigation to={"/brand/product/list"}>
+          {({ isActive }: { isActive: boolean }) => (
+            <S.InfoBox isActive={isActive}>
               <ShopIcon width="20px" height="20px" fill="gray" />
               <S.InfoText>Product</S.InfoText>
-            </div>
-            <RightArrowIcon width="20px" height="20px" fill="gray" />
-          </S.DropdownBox>
-          <S.DropdownNavigation
-            to={"/brand/product"}
-            clicked={isProductClicked}
-          >
-            {({ isActive }: { isActive: boolean }) => (
-              <S.InfoBox isActive={isActive}>
-                <ClothesIcon width="20px" height="20px" fill="gray" />
-                <S.InfoText>Goods</S.InfoText>
-              </S.InfoBox>
-            )}
-          </S.DropdownNavigation>
-          <S.DropdownNavigation to={"/brand/coupon"} clicked={isProductClicked}>
-            {({ isActive }: { isActive: boolean }) => (
-              <S.InfoBox isActive={isActive}>
-                <CouponIcon width="20px" height="20px" fill="gray" />
-                <S.InfoText>Coupon</S.InfoText>
-              </S.InfoBox>
-            )}
-          </S.DropdownNavigation>
-        </S.DropdownContainer>
+            </S.InfoBox>
+          )}
+        </S.Navigation>
         <S.Navigation to={"/brand/analytics"}>
           {({ isActive }: { isActive: boolean }) => (
             <S.InfoBox isActive={isActive}>
