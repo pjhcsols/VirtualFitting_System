@@ -7,17 +7,21 @@
  */
 
 import styled from "styled-components";
-import { ICON_SEARCH } from "../../../constants";
-import { KeyboardEvent } from "react";
-import { search_product } from "../api/search.action";
+import { ICON_SEARCH } from "@/shared/constants";
+import type { ChangeEvent, KeyboardEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-function SearchBar() {
+interface ISearchBar {
+  onChangeFunc: (e: ChangeEvent<HTMLInputElement>) => void;
+  onSearchFunc: (value: string) => Promise<any>;
+}
+
+function SearchBar({ onChangeFunc, onSearchFunc }: ISearchBar) {
   const router = useNavigate();
 
   const onClickSearch = async (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {
-      const res = await search_product("test");
+      const res = await onSearchFunc("test");
       if (res) {
         router("/admin");
       }
@@ -26,7 +30,7 @@ function SearchBar() {
   return (
     <Wrapper>
       <SearchIcon src={ICON_SEARCH} alt="search_Icon" />
-      <SearchInput onClick={onClickSearch} />
+      <SearchInput onChange={onChangeFunc} onKeyDown={onClickSearch} />
     </Wrapper>
   );
 }
