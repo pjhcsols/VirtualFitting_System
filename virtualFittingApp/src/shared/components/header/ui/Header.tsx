@@ -1,26 +1,33 @@
-import { useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-function Header() {
+
+function Header({ theme = 'light' }) {
   const router = useNavigate();
 
   return (
-    <Wrapper>
-      <LogoContainer>
-        <LogoTitle onClick={() => router("/")}>
-          Basilium
-        </LogoTitle>
+    <Wrapper theme={theme}>
+      <LogoContainer onClick={() => router("/")}>
+        <LogoTitle theme={theme}>Basilium</LogoTitle>
       </LogoContainer>
-      <RouterList>
-        <HeaderContent onClick={() => router("/store")}>
-          스토어
-        </HeaderContent>
-        <HeaderContent onClick={() => router("/shopping-cart")}>
-          장바구니
-        </HeaderContent>
-        <HeaderContent onClick={() => router("/myPage")}>
-          마이
-        </HeaderContent>
-      </RouterList>
+      <nav>
+        <RouterList>
+          <li>
+            <HeaderContent to="/store" theme={theme}>
+              스토어
+            </HeaderContent>
+          </li>
+          <li>
+            <HeaderContent to="/shopping-cart" theme={theme}>
+              장바구니
+            </HeaderContent>
+          </li>
+          <li>
+            <HeaderContent to="/myPage" theme={theme}>
+              마이
+            </HeaderContent>
+          </li>
+        </RouterList>
+      </nav>
     </Wrapper>
   );
 }
@@ -30,52 +37,94 @@ const Wrapper = styled.header`
   position: sticky;
   top: 0;
   left: 0;
-  padding: 0 40px;
   width: 100%;
-  height: 52px;
+  height: 48px;
+  padding: 0 40px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(5px);
-  -webkit-backdrop-filter: blur(5px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  
+  background: ${props => props.theme === 'dark' ? 'rgba(41, 46, 73, 0.85)' : 'rgba(255, 255, 255, 0.8)'};
+  
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  
+  border-bottom: 1px solid ${props => props.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.07)'};
   z-index: 50;
+  
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 `;
 
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
+  cursor: pointer;
 `;
 
 const LogoTitle = styled.h1`
   font-family: "Prata-Regular";
-  font-size: 24px;
-  color: #000000;
+  font-size: 20px;
   text-transform: uppercase;
-  cursor: pointer;
   white-space: nowrap;
   margin: 0;
   padding: 0;
+  
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#000000'};
+  transition: color 0.3s ease;
 `;
 
 const RouterList = styled.ul`
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 20px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
 `;
 
-const HeaderContent = styled.li`
-  list-style: none;
-  font-family: "Prata-Regular";
+const HeaderContent = styled(NavLink)`
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  position: relative;
+  
   font-size: 14px;
-  font-weight: 700;
-  color: black;
+  font-weight: 400;
   cursor: pointer;
 
+  text-decoration: none; 
+  
+  color: ${props => props.theme === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.8)'};
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+  }
+
   &:hover {
-    opacity: 0.7;
+    color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &.active {
+    color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+  }
+
+  &.active::after {
+    transform: scaleX(1);
   }
 `;
 
