@@ -73,7 +73,7 @@ const Wrapper = styled.header`
   width: 100vw;
   height: 100px;
   display: flex;
-  justify-content: center;
+  justify-content: center;padding: 0 5rem;
   align-items: center;
   background: transparent;
   z-index: 50;
@@ -91,7 +91,7 @@ const HeaderContainer = styled.nav`
 
 const HeaderLogo = styled.span`
   font-family: "Prata-Regular";
-  font-size: 1.5rem;
+  font-size: 20px;
   font-weight: 700;
   color: white;
 `;

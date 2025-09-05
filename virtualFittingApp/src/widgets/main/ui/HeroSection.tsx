@@ -111,9 +111,9 @@ const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0 5rem;
+  padding: 0 20px;
   width: 100%;
-  min-height: 5rem;
+  height: 48px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

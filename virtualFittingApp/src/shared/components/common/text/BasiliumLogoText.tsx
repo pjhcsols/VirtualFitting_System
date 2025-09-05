@@ -21,8 +21,7 @@ const BasiliumLogoBox = styled.div`
 
 const BasiliumLogoTextSpan = styled.span`
   font-family: "Prata-Regular";
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 20px;
   color: white;
   text-transform: uppercase;
 `;
