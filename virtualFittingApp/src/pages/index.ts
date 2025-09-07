@@ -16,7 +16,7 @@ export * from "@/pages/order-list";
 
 export * from "@/pages/search";
 
-export * from "@/pages/shopping-cart";
+export * from "@/pages/cart";
 
 export * from "@/pages/admin";
 

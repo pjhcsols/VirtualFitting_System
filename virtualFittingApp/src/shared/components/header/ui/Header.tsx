@@ -1,8 +1,11 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
+import { useRecoilValue } from 'recoil';
+import { cartItemCountState } from '@/entities';
 
 function Header({ theme = 'light' }) {
   const router = useNavigate();
+  const cartItemCount = useRecoilValue(cartItemCountState);
 
   return (
     <Wrapper theme={theme}>
@@ -17,9 +20,12 @@ function Header({ theme = 'light' }) {
             </HeaderContent>
           </li>
           <li>
-            <HeaderContent to="/shopping-cart" theme={theme}>
-              장바구니
-            </HeaderContent>
+            <CartLinkWrapper>
+              <HeaderContent to="/shopping-cart" theme={theme}>
+                장바구니
+              </HeaderContent>
+              {cartItemCount > 0 && <CartBadge>{cartItemCount}</CartBadge>}
+            </CartLinkWrapper>
           </li>
           <li>
             <HeaderContent to="/myPage" theme={theme}>
@@ -31,6 +37,7 @@ function Header({ theme = 'light' }) {
     </Wrapper>
   );
 }
+
 
 const Wrapper = styled.header`
   box-sizing: border-box;
@@ -126,6 +133,29 @@ const HeaderContent = styled(NavLink)`
   &.active::after {
     transform: scaleX(1);
   }
+`;
+
+const CartLinkWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+const CartBadge = styled.span`
+  position: absolute;
+  top: -6px;
+  right: -12px;
+  background-color: #ff4d4d; /* 눈에 띄는 빨간색 */
+  color: white;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 11px;
+  font-weight: bold;
+  pointer-events: none; /* 뱃지가 클릭을 방해하지 않도록 함 */
 `;
 
 export { Header };
