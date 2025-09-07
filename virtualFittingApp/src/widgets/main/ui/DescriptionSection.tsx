@@ -1,5 +1,5 @@
 import styled, { keyframes } from "styled-components";
-import { PNG_HOODIE, PNG_HOODIE2, PNG_HOODIE3, BREAKPOINTS } from "@/shared";
+import { PNG_HOODIE, PNG_HOODIE2, PNG_HOODIE3 } from "@/shared";
 
 const hoodieImages = [
   { id: 1, src: PNG_HOODIE, name: "Classic Hoodie" },
