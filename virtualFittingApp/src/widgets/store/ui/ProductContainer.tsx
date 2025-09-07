@@ -40,6 +40,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     setSelectedSize,
     setMainImage,
     setSelectedPaymentMethod,
+    handleAddToCart,
     handlePurchaseClick,
     handleDownloadCoupon,
     handleSelectCoupon,
@@ -172,26 +173,12 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           </S.CouponDisplayBox>
         )}
         <S.ButtonBox>
-          <AddButton
-            product={{
-              id: product.productId.toString(),
-              name: product.productName,
-              brand: product.brandUser.firmName,
-              image: selectedProductImages[0],
-              price: price.original,
-              discountedPrice: price.discounted ?? price.original,
-              discountRate: discountRate,
-              color: selectedColor,
-              size: selectedSize,
-              quantity,
-            }}
-          />
+          <AddButton onClick={handleAddToCart} />
           <PurchaseButton onClick={handlePurchaseClick} />
         </S.ButtonBox>
         {showPaymentTab && (
           <S.TabOverlay onClick={() => setShowPaymentTab(false)}>
             <S.TabContent onClick={e => e.stopPropagation()}>
-              <S.CloseButton onClick={() => setShowPaymentTab(false)}>×</S.CloseButton>
               <h3>결제 수단 선택</h3>
               <S.PaymentMethodContainer>
                   {['CARD', 'TRANSFER', 'VIRTUAL_ACCOUNT'].map(method => (
