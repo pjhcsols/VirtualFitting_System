@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { ColorPopup } from "./ColorPopUp";
-import { LikeButton } from "@/shared";
+// import { LikeButton } from "@/features";
 import { BREAKPOINTS } from "@/shared";
 import { COLOR_MAP } from "@/shared";
 import { fetchProductPrice } from "@/pages/store/api/products.action";
@@ -36,7 +36,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
       <ImageBox>
         <img src={product.productPhotoUrls[0]} alt={product.productName} />
         <LikeButtonWrapper>
-          <LikeButton />
+          {/* <LikeButton productId={product.productId} isInitiallyLiked={product.isLiked} /> */}
         </LikeButtonWrapper>
         <ColorSwatches>
           {visibleColors.map((color: string, index: number) => (
@@ -251,11 +251,6 @@ const ExtraIcon = styled.div`
   font-family: "pretendard";
   color: black;
   cursor: pointer;
-`;
-
-const ExtraText = styled.div`
-  font-size: 0.75em;
-  color: black;
 `;
 
 export { ProductCard };

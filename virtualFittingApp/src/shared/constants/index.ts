@@ -23,6 +23,8 @@ import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
 import Hoodie from "/img/clothes/hoodie.png";
+import Hoodie2 from "/img/clothes/hoodie2.png";
+import Hoodie3 from "/img/clothes/hoodie3.png";
 
 import type {
   CategoryType,
@@ -39,6 +41,8 @@ export const IMG_TEST_CLOTHES = TestImg;
 export const IMG_GRADIENT = Gradient;
 
 export const PNG_HOODIE = Hoodie;
+export const PNG_HOODIE2 = Hoodie2;
+export const PNG_HOODIE3 = Hoodie3;
 
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;

@@ -98,12 +98,6 @@ const StarContainer = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 0;
-  background: radial-gradient(
-    circle at 30% 30%,
-    #292e49 0%,
-    #536976 50%,
-    #bbd2c5 100%
-  );
 `;
 
 const HeaderContainer = styled.div`
@@ -111,9 +105,9 @@ const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0 20px;
+  height: 80px;
+  padding: 0 40px;
   width: 100%;
-  height: 48px;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;

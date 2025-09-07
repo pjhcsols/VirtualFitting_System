@@ -11,7 +11,6 @@ function BasiliumLogoText() {
 export { BasiliumLogoText };
 
 const BasiliumLogoBox = styled.div`
-  min-width: 10rem;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
@@ -21,7 +20,7 @@ const BasiliumLogoBox = styled.div`
 
 const BasiliumLogoTextSpan = styled.span`
   font-family: "Prata-Regular";
-  font-size: 20px;
+  font-size: 2em;;
   color: white;
   text-transform: uppercase;
 `;
