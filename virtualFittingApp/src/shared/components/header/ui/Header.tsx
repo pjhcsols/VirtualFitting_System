@@ -21,7 +21,7 @@ function Header({ theme = 'light' }) {
           </li>
           <li>
             <CartLinkWrapper>
-              <HeaderContent to="/shopping-cart" theme={theme}>
+              <HeaderContent to="/cart" theme={theme}>
                 장바구니
               </HeaderContent>
               {cartItemCount > 0 && <CartBadge>{cartItemCount}</CartBadge>}
