@@ -14,3 +14,14 @@ export type ClaimableCoupon = {
   hasAvailable: boolean;
   alreadyUsedOnce: boolean;
 };
+
+export interface DownloadCouponRequestBody {
+  campaignId: number;
+}
+
+export interface DownloadCouponResponseData {
+  walletId: number;
+  campaignId: number;
+  percent: number;
+  maxDiscountPrice: number;
+}

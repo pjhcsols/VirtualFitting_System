@@ -24,8 +24,6 @@ export * from "@/shared/components/searchBar";
 
 export * from "@/shared/components/selectBar";
 
-export * from "@/shared/components/shopping-cart";
-
 export * from "@/shared/components/socialLogin";
 
 export * from "@/shared/components/logo3D";
