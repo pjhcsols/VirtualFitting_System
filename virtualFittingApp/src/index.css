@@ -41,6 +41,12 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: "Pretendard";
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+::-webkit-scrollbar {
+  display: none;
 }
 
 a {
