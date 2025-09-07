@@ -109,20 +109,6 @@ function AddressInput({ value, onChange }: SignUpInputType) {
   );
 }
 
-function PhoneNumberInput({ value, onChange }: SignUpInputType) {
-  return (
-    <InputWrapper>
-      <SignUpAddressInput
-        name="phoneNumber"
-        value={value}
-        onChange={onChange}
-        required
-      />
-      <DefaultOutline>PhoneNumber</DefaultOutline>
-    </InputWrapper>
-  );
-}
-
 function BirthdayInput({ value, onChange }: SignUpInputType) {
   return (
     <InputWrapper>
@@ -142,7 +128,6 @@ export {
   PasswordInput,
   EmailAddressInput,
   AddressInput,
-  PhoneNumberInput,
   BirthdayInput,
   SignUpTextInfoInput,
   SignUpPhoneNumberInput,

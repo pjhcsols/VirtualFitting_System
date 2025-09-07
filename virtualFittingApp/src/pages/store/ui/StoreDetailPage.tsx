@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
-import { fetchOnSaleProducts, fetchProductDetailByColor, fetchProductColors } from "../api/products.action";
+import { fetchProductDetailByColor, fetchProductColors } from "../api/products.action";
 import type { ProductDetail } from "@/shared";
 
 import { BREAKPOINTS } from "@/shared";
@@ -14,71 +14,87 @@ import {
 } from "@/widgets";
 
 function StoreDetailPage() {
-  const { id } = useParams();
-  const [searchParams] = useSearchParams();
+  const { id } = useParams<{ id: string }>();
+  const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-  
 
-  const [color, setColor] = useState<string | null>(null);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const [activeTab, setActiveTab] = useState<"description" | "size" | "review" | "qna">("description");
+  const activeTab = searchParams.get("tab") || "description";
+  const setActiveTab = (tab: string) => {
+    setSearchParams({ tab: tab, color: searchParams.get("color") || "" });
+  };
 
   useEffect(() => {
     if (!id) return;
 
     const loadProduct = async () => {
+      setLoading(true);
       try {
-        const productList = await fetchOnSaleProducts();
-        const currentProduct = productList.find(p => p.productId === Number(id));
-        if (!currentProduct) {
-          console.error("상품 없음");
-          return;
+        const colors = await fetchProductColors(Number(id));
+        
+        if (!colors || colors.length === 0) {
+          throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
         }
+        setProductColors(colors);
 
-        const colorsResponse = await fetchProductColors(Number(id));
-        setProductColors(colorsResponse); 
-
-        let requestedColor = searchParams.get("color");
-        if (!requestedColor || !colorsResponse.includes(requestedColor)) {
-          requestedColor = colorsResponse[0];
-          navigate(`?color=${requestedColor}`, { replace: true });
+        let colorToLoad = searchParams.get("color");
+        if (!colorToLoad || !colors.includes(colorToLoad)) {
+            colorToLoad = colors[0];
         }
-
-        const detailData = await fetchProductDetailByColor(Number(id), requestedColor);
+        
+        const detailData = await fetchProductDetailByColor(Number(id), colorToLoad);
+        if (!detailData) {
+          throw new Error(`'${colorToLoad}' 색상의 상세 정보를 찾을 수 없습니다.`);
+        }
         setProduct(detailData);
-        setColor(requestedColor);
+        
+        const currentTab = searchParams.get("tab") || "description";
+        const currentUrlColor = searchParams.get("color");
+        if (currentUrlColor !== colorToLoad) {
+            navigate(`/store/${id}?color=${colorToLoad}&tab=${currentTab}`, { replace: true });
+        }
 
       } catch (error) {
-        console.error(error);
+        console.error("Failed to load product details:", error);
+        navigate('/not-found');
+      } finally {
+        setLoading(false);
       }
     };
 
     loadProduct();
-  }, [id, searchParams]);
+  }, [id, searchParams, navigate]);
 
-  if (!product || !color) return <div>Loading...</div>;
+  if (loading || !product) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <Wrapper>
-      <ProductContainer product={product} productColors={productColors} onColorChange={(c) => {
-        navigate(`?color=${c}`);
-      }} />
+      <ProductContainer
+        product={product}
+        productColors={productColors}
+        onColorChange={(newColor) => {
+          navigate(`/store/${id}?color=${newColor}&tab=${activeTab}`);
+        }}
+      />
       
       <ContentArea>
-      <TabMenu>
-        <TabButton $active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
-        <TabButton $active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
-        <TabButton $active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
-        <TabButton $active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
-      </TabMenu>
-      <Divider />
+        <TabMenu>
+          <TabButton $active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
+          <TabButton $active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
+          <TabButton $active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
+          <TabButton $active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
+        </TabMenu>
+        <Divider />
       
         {activeTab === "description" && <DetailDescription />}
         {activeTab === "size" && <SizeInfo />}
         {activeTab === "review" && <ReviewContent />}
-        {/* {activeTab === "qna" && <만들어야함>} */}
+        {/* {activeTab === "qna" && <QnaContent />} */}
       </ContentArea>
     </Wrapper>
   );

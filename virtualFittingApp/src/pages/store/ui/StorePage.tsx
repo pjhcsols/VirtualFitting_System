@@ -12,15 +12,22 @@ import type { Product } from "@/shared";
 function StorePage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadProducts = async () => {
       const data = await fetchOnSaleProducts({ page: 0, size: 20, sort: "productId,desc" });
-      setProducts(data);
-      console.log(data);
+      if (data) {
+        setProducts(data);
+      }
+      setLoading(false);
     };
     loadProducts();
   }, []);
+
+  if (loading) {
+    return <LoadingIndicator>Loading products...</LoadingIndicator>;
+  }
 
   return (
     <Wrapper>
@@ -39,6 +46,15 @@ function StorePage() {
     </Wrapper>
   );
 }
+
+const LoadingIndicator = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+  font-size: 1.2rem;
+  color: #888;
+`;
 
 const Wrapper = styled.div`
   width: 100%;

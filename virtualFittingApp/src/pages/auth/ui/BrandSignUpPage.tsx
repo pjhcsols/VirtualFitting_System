@@ -52,7 +52,6 @@ function BrandSignUpPage() {
           onChangeFirmWebUrl={onChangeFirmWebUrl}
         />
       )}
-      {step === 2 && <div></div>}
       <ButtonContainer>
         <PrevButton onClick={step === 1 ? onSubmitSignUp : onClickNextStep}>
           {step === 1 ? "신청" : "다음"}

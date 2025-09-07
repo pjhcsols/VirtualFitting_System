@@ -1,17 +1,12 @@
 import styled from "styled-components";
 import { ICON_MINUS, ICON_PLUS } from "@/shared";
+import type { QuantityBoxProps } from "@/shared";
 
-type QuantityBoxProps = {
-  quantity: number;
-  setQuantity: React.Dispatch<React.SetStateAction<number>>;
-  unitPrice: number;
-};
-
-function QuantityBox({ quantity, setQuantity, unitPrice }: QuantityBoxProps) {
+function QuantityBox({ quantity, setQuantity, unitPrice, discountedPrice }: QuantityBoxProps) {
   const increase = () => setQuantity((q) => q + 1);
   const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
 
-  const totalPrice = unitPrice * quantity;
+  const hasDiscount = discountedPrice !== undefined && discountedPrice < unitPrice;
 
   return (
     <QuantityBoxWrapper>
@@ -24,18 +19,25 @@ function QuantityBox({ quantity, setQuantity, unitPrice }: QuantityBoxProps) {
           <Icon src={ICON_PLUS} alt="plus" />
         </QuantityButton>
       </QuantityBoxContainer>
-      <PriceText>{totalPrice.toLocaleString()}원</PriceText>
+      <PriceContainer>
+        {hasDiscount && (
+          <OriginalTotalPrice>
+            {(unitPrice * quantity).toLocaleString()}원
+          </OriginalTotalPrice>
+        )}
+        <FinalTotalPrice>
+          {((discountedPrice ?? unitPrice) * quantity).toLocaleString()}원
+        </FinalTotalPrice>
+      </PriceContainer>
     </QuantityBoxWrapper>
   );
 }
-
 
 const QuantityBoxWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  font-family: "Pretendard", sans-serif;
 `;
 
 const QuantityBoxContainer = styled.div`
@@ -79,7 +81,19 @@ const QuantityText = styled.div`
   border-right: 1px solid #e4e4e4;
 `;
 
-const PriceText = styled.div`
+const PriceContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+`;
+
+const OriginalTotalPrice = styled.div`
+  font-size: 13px;
+  color: #aaa;
+  text-decoration: line-through;
+`;
+
+const FinalTotalPrice = styled.div`
   font-weight: bold;
   font-size: 16px;
   color: black;

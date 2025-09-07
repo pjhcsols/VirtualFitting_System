@@ -57,10 +57,10 @@ function useBrandSignup() {
     });
   };
 
-  const onChangePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
+  const onChangePhoneNumber = (value: string) => {
     setBrandUserSignUp({
       ...brandUserSignUp,
-      phoneNumber: e.target.value,
+      phoneNumber: value,
     });
   };
 

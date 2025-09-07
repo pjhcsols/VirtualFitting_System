@@ -1,4 +1,4 @@
-export type Coupon = {
+export type ClaimableCoupon = {
   campaignId: number;
   scope: "BRAND" | "PRODUCT";
   percent: number;
