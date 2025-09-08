@@ -26,6 +26,10 @@ public class ProductOption {
     @Column(name = "option_quantity", nullable = false)
     private Long optionQuantity;
 
+    @Version
+    @Column(name = "version", nullable = false, columnDefinition = "bigint default 0")
+    private Long version;
+
     public void assignProduct(Product product) {
         this.product = product;
     }

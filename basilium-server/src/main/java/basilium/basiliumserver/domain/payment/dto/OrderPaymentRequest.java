@@ -5,7 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
+/*
 @Getter @Setter
 @NoArgsConstructor
 public class OrderPaymentRequest {
@@ -27,3 +27,6 @@ public class OrderPaymentRequest {
         // Getters and Setters
     }
 }
+
+
+ */

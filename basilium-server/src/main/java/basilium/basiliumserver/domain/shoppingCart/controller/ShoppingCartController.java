@@ -1,5 +1,5 @@
 package basilium.basiliumserver.domain.shoppingCart.controller;
-
+/*
 import basilium.basiliumserver.domain.shoppingCart.service.ShoppingCartService;
 import basilium.basiliumserver.global.auth.support.AuthUser;
 import basilium.basiliumserver.domain.user.entity.NormalUser;
@@ -39,3 +39,6 @@ public class ShoppingCartController {
         return ResponseEntity.ok("장바구니 등록이 완료되었습니다.");
     }
 }
+
+
+ */

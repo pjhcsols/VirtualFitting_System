@@ -1,5 +1,6 @@
 package basilium.basiliumserver.domain.review.controller;
 
+import basilium.basiliumserver.domain.review.controller.apiDocs.ReviewApiDocs;
 import basilium.basiliumserver.domain.review.dto.ReviewDto;
 import basilium.basiliumserver.domain.review.service.ReviewService;
 import basilium.basiliumserver.global.apiResponse.ApiResponse;
@@ -19,7 +20,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/b1/products/{productId}/reviews")
 @RequiredArgsConstructor
-public class ReviewController {
+public class ReviewController implements ReviewApiDocs {
 
     private final ReviewService reviewService;
 
@@ -48,7 +49,31 @@ public class ReviewController {
         return ResponseEntity.ok(ApiResponse.success(resp));
     }
 
+    /*
+    오류 수정: 리뷰 조회할때 image가 없는데 다른 기능 전부 다 이렇게 조립되어서 반환되는지 파악 필요, 이미지가 없으면 조립해서 주지말고 그냥 반환값에서 빼면된다.
+    {
+  "timestamp": "2025-09-03T21:00:52.990333+09:00",
+  "status": 200,
+  "code": "OK",
+  "message": "요청에 성공하였습니다.",
+  "data": {
+    "reviewId": 6,
+    "maskedUserId": "exam***",
+    "purchaseSize": "M",
+    "purchaseColor": "BLACK",
+    "rating": 5,
+    "title": "gk",
+    "comment": "gd",
+    "imageUrls": [
+      "basilium.co.kr/b1/images/userReviewImageStorage/normal_example_20250903210052_1."
+    ],
+    "createdAt": "2025-09-03T21:00:52.985066",
+    "updatedAt": "2025-09-03T21:00:52.985066"
+  }
+}
+     */
     /** 생성 */
+    /** 생성 (멀티파트 전용) */
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ApiResponse<ReviewDto.Response>> createReview(
             @PathVariable Long productId,

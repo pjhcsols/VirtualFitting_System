@@ -1,3 +1,4 @@
+// src/main/java/basilium/basiliumserver/domain/payment/repository/PaymentReadRepository.java
 package basilium.basiliumserver.domain.payment.repository;
 
 import basilium.basiliumserver.domain.payment.entity.Payment;
@@ -10,10 +11,8 @@ import java.util.Optional;
 
 public interface PaymentReadRepository extends JpaRepository<Payment, Long> {
 
-    // 리뷰 10% 적립시 단일 라인 조회
     Optional<Payment> findByIdAndStatus(Long id, PaymentStatus status);
 
-    // ✅ 주문 소유자(userNumber) 조회: Order 엔티티 의존 제거 → Payment에서 조회
     @Query("""
            select distinct p.normalUser.userNumber
              from Payment p
@@ -21,7 +20,6 @@ public interface PaymentReadRepository extends JpaRepository<Payment, Long> {
            """)
     Optional<Long> findAnyUserNumberByOrderId(@Param("orderId") String orderId);
 
-    // ✅ 주문 순결제 합계(승인합 - 환불누계) — enum은 FQCN으로 고정
     @Query("""
            select coalesce(sum(p.amount),0) - coalesce(sum(p.refundedAmountTotal),0)
              from Payment p

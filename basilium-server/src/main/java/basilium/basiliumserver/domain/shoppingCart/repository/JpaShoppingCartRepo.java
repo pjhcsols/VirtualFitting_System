@@ -1,6 +1,6 @@
 package basilium.basiliumserver.domain.shoppingCart.repository;
 
-
+/*
 import basilium.basiliumserver.domain.payment.repository.dao.OrderListDAO;
 import basilium.basiliumserver.domain.shoppingCart.entity.ShoppingCart;
 import jakarta.persistence.EntityManager;
@@ -35,3 +35,6 @@ public class JpaShoppingCartRepo {
         em.persist(shoppingCart);
     }
 }
+
+
+ */

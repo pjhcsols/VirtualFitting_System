@@ -18,10 +18,16 @@ import java.util.Map;
 public class KafkaConfig {
 
     public static final String PRODUCT_UPDATE_TOPIC = "product-update-topic";
+    public static final String PRODUCT_UPDATE_BATCH_TOPIC = "product-update-batch-topic"; //신규
 
     @Bean
     public NewTopic productUpdateTopic() {
         return new NewTopic(PRODUCT_UPDATE_TOPIC, 1, (short) 1);
+    }
+
+    @Bean
+    public NewTopic productUpdateBatchTopic() {
+        return new NewTopic(PRODUCT_UPDATE_BATCH_TOPIC, 1, (short) 1);
     }
 
     @Bean

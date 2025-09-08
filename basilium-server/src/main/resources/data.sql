@@ -1086,25 +1086,67 @@ WHERE EXISTS (SELECT 1 FROM wallet_ledger wl WHERE wl.unique_key = 'PAYMENT:2025
 
 
 /* payment */
-/* 4) payment 시드: 멱등(imp_u_id로 중복 방지) + FK 확인 */
+-- === Payment #1: 유저(example, user_number=2)가 상품 1(BLACK, M) 1개를 카드로 승인 ===
 INSERT INTO payment (
-    normal_user_number, product_id, size, color, total_cnt,
-    status, amount, payment_key, payment_type, currency,
-    approved_at, callback_received_at, reserve_task_id, imp_u_id, order_id
-)
-SELECT
-    nu.user_number, p.product_id, 'L', 'black', 1,
-    'APPROVED', 30000, 'PG-KEY-001', 'CARD', 'KRW',
-    NOW(), NOW(),
-    UNHEX(REPLACE('4b9a9f33-8a2f-46f0-9b5b-2b7a4a0a5e11','-','')),
-    'SEED-IMP-0001', '20250829120000-1'
-FROM normal_user nu
-         JOIN product p ON p.product_id = 1
-WHERE nu.id = 'test'
-  AND NOT EXISTS (SELECT 1 FROM payment WHERE imp_u_id = 'SEED-IMP-0001');
+    id, order_id, normal_user_number, status, currency, intent_expires_at,
+    points_to_use, amount, refunded_total,
+    payment_key, payment_type,
+    pg_error_code, pg_error_message,
+    created_at, approved_at, callback_received_at, imp_u_id
+) VALUES (
+             1, '20250903-200000-UUID-EXAMPLE-2', 2, 'APPROVED', 'KRW', NULL,
+             0, 19000, 0,
+             'paykey-example-0001', 'CARD',
+             NULL, NULL,
+             '2025-09-03 20:00:00', '2025-09-03 20:01:00', '2025-09-03 20:01:00', NULL
+         );
 
+INSERT INTO payment_intent_line (
+    id, payment_id, product_id, size, color, qty,
+    unit_after_brand, line_base,
+    coupon_wallet_id, coupon_discount, line_after_coupon,
+    alloc_point, final_line_payable,
+    reserve_task_id, status, created_at, approved_at
+) VALUES (
+             1, 1, 1, 'M', 'BLACK', 1,
+             19000, 19000,
+             NULL, 0, 19000,
+             0, 19000,
+             NULL, 'APPROVED', '2025-09-03 20:00:30', '2025-09-03 20:01:00'
+         );
 
-commit;
+COMMIT;
+
+-- === Payment #2: 유저(test, user_number=1)가 상품 2(WHITE, L) 1개를 카드로 승인 ===
+INSERT INTO payment (
+    id, order_id, normal_user_number, status, currency, intent_expires_at,
+    points_to_use, amount, refunded_total,
+    payment_key, payment_type,
+    pg_error_code, pg_error_message,
+    created_at, approved_at, callback_received_at, imp_u_id
+) VALUES (
+             2, '20250903-200500-UUID-TEST-1', 1, 'APPROVED', 'KRW', NULL,
+             0, 53000, 0,
+             'paykey-test-0001', 'CARD',
+             NULL, NULL,
+             '2025-09-03 20:05:00', '2025-09-03 20:05:40', '2025-09-03 20:05:40', NULL
+         );
+
+INSERT INTO payment_intent_line (
+    id, payment_id, product_id, size, color, qty,
+    unit_after_brand, line_base,
+    coupon_wallet_id, coupon_discount, line_after_coupon,
+    alloc_point, final_line_payable,
+    reserve_task_id, status, created_at, approved_at
+) VALUES (
+             2, 2, 2, 'L', 'WHITE', 1,
+             53000, 53000,
+             NULL, 0, 53000,
+             0, 53000,
+             NULL, 'APPROVED', '2025-09-03 20:05:10', '2025-09-03 20:05:40'
+         );
+
+COMMIT;
 
 
 

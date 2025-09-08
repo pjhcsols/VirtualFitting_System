@@ -1,5 +1,5 @@
 package basilium.basiliumserver.domain.shoppingCart.service;
-
+/*
 import basilium.basiliumserver.domain.payment.dto.OrderListDTO;
 import basilium.basiliumserver.domain.payment.repository.dao.OrderListDAO;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
@@ -58,3 +58,5 @@ public class ShoppingCartService {
         shoppingCartRepo.save(shoppingCart);
     }
 }
+
+ */

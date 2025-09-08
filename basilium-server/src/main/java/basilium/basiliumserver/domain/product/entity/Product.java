@@ -262,9 +262,11 @@ public class Product {
     @PrePersist
     @PreUpdate
     private void calculateTotalQuantity() {
-        this.totalQuantity = (productOptions != null)
-                ? productOptions.stream().mapToLong(ProductOption::getOptionQuantity).sum()
-                : 0L;
+        this.totalQuantity = Optional.ofNullable(productOptions)
+                .orElseGet(java.util.Set::of)
+                .stream()
+                .mapToLong(ProductOption::getOptionQuantity)
+                .sum();
     }
 
     public Set<ProductOption> getProductOptions() {

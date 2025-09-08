@@ -6,12 +6,17 @@ import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.product.sse.SseController;
 import basilium.basiliumserver.domain.user.entity.BrandUser;
 import basilium.basiliumserver.domain.user.repository.BrandUserRepository;
-import jakarta.transaction.Transactional;
+import basilium.basiliumserver.global.apiResponse.BasiliumCustomException;
+import basilium.basiliumserver.global.apiResponse.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -374,29 +379,54 @@ public class ProductService {
     /**
      * 결제 처리: 특정 옵션의 재고 차감 및 전체 재고 업데이트
      */
-    @Transactional
-    public void processPaymentProductQuantity(Long productId, Size productSize, Color productColor, Long purchaseQuantity) {
+    @Transactional(propagation = Propagation.MANDATORY)
+    public void processPaymentProductQuantity(
+            Long productId,
+            Size productSize,
+            Color productColor,
+            Long purchaseQuantity
+    ) {
         runWithLogging(() -> {
             Product product = productRepository.findByIdWithDetails(productId)
-                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상품 ID: " + productId));
+                    .orElseThrow(() -> new BasiliumCustomException(
+                            ErrorCode.RESOURCE_NOT_FOUND, "유효하지 않은 상품 ID: " + productId));
+
             ProductOption option = product.getProductOptions().stream()
-                    .filter(opt -> opt.getId().getProductSize().equals(productSize) &&
-                            opt.getId().getProductColor().equals(productColor))
+                    .filter(opt -> opt.getId().getProductSize().equals(productSize)
+                            && opt.getId().getProductColor().equals(productColor))
                     .findFirst()
-                    .orElseThrow(() -> new IllegalArgumentException("상품 옵션을 찾을 수 없습니다."));
-            if (option.getOptionQuantity() < purchaseQuantity) {
-                throw new IllegalArgumentException("선택한 옵션의 재고가 부족합니다.");
+                    .orElseThrow(() -> new BasiliumCustomException(
+                            ErrorCode.RESOURCE_NOT_FOUND,
+                            "상품 옵션을 찾을 수 없습니다. productId=%s, size=%s, color=%s"
+                                    .formatted(productId, productSize, productColor)));
+
+            final long qty = java.util.Optional.ofNullable(purchaseQuantity)
+                    .filter(q -> q > 0)
+                    .orElseThrow(() -> new BasiliumCustomException(
+                            ErrorCode.INVALID_INPUT_VALUE, "purchaseQuantity는 양의 정수여야 합니다."));
+
+            if (option.getOptionQuantity() < qty) {
+                throw new BasiliumCustomException(
+                        ErrorCode.OUT_OF_STOCK,
+                        "재고 부족: 남은=%d, 요청=%d".formatted(option.getOptionQuantity(), qty));
             }
-            option.updateQuantity(option.getOptionQuantity() - purchaseQuantity);
-            log.info("[상품 재고 차감] 상품 ID: {}, 차감 수량: -{}", productId, purchaseQuantity);
-            SseController.updateInventory(productId);
+            option.updateQuantity(option.getOptionQuantity() - qty);
+
+            // SSE는 커밋 후에만 발행(롤백시 잘못된 브로드캐스트 방지)
+            TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronization() {
+                        @Override public void afterCommit() {
+                            SseController.updateInventory(productId);
+                        }
+                    });
+            log.info("[상품 재고 차감] productId={}, size={}, color={}, -{}", productId, productSize, productColor, qty);
         }, "결제 처리 중 오류 발생 (상품 ID: " + productId + "): ");
     }
 
     /**
      * 상품 복구: 결제 시 차감된 수량 복구
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    //@Transactional
     public void restoreProductQuantity(Long productId, Size productSize, Color productColor, Long count) {
         runWithLogging(() -> {
             Product product = productRepository.findByIdWithDetails(productId)

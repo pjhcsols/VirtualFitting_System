@@ -1,11 +1,6 @@
-package basilium.basiliumserver.domain.payment.repository;
-
-import basilium.basiliumserver.domain.payment.entity.Payment;
+package basilium.basiliumserver.domain.payment.repository.dao;
+/*
 import basilium.basiliumserver.domain.payment.repository.dao.OrderListDAO;
-import jakarta.persistence.EntityManager;
-import java.util.List;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Repository;
 
 @RequiredArgsConstructor
 @Repository
@@ -26,3 +21,6 @@ public class JpaPaymentRepository {
         em.persist(transaction);
     }
 }
+
+
+ */

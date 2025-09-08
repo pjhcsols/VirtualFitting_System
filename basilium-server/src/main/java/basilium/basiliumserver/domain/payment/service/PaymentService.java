@@ -1,383 +1,398 @@
 package basilium.basiliumserver.domain.payment.service;
 
-import basilium.basiliumserver.domain.payment.dto.OrderListDTO;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.RequestTaskInfo;
-import basilium.basiliumserver.domain.payment.repository.dao.OrderListDAO;
+import basilium.basiliumserver.domain.payment.dto.payment.RequestTaskInfo;
+import basilium.basiliumserver.domain.payment.dto.payment.ReserveAckResponse;
+import basilium.basiliumserver.domain.payment.dto.payment.ReservationStatusResponse;
+import basilium.basiliumserver.domain.payment.entity.ReserveStatus;
 import basilium.basiliumserver.domain.product.entity.Color;
-import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.entity.Size;
-import basilium.basiliumserver.domain.product.repository.ProductRepository;
-import basilium.basiliumserver.domain.user.repository.NormalUserRepository;
-import basilium.basiliumserver.domain.payment.kafkaPaymentInventory.PaymentInventoryResponse;
-import basilium.basiliumserver.domain.payment.dto.OrderPaymentRequest;
-import basilium.basiliumserver.domain.payment.entity.Payment;
-import basilium.basiliumserver.domain.user.entity.NormalUser;
-import basilium.basiliumserver.domain.payment.repository.JpaPaymentRepository;
+import basilium.basiliumserver.domain.product.service.ProductService;
 import basilium.basiliumserver.domain.product.sse.SseController;
+import basilium.basiliumserver.properties.KafkaPaymentReservationProperties;
+import jakarta.annotation.PreDestroy;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.*;
-
-import basilium.basiliumserver.domain.product.service.ProductService;
-import lombok.RequiredArgsConstructor;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-//mq
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
-
-//order와 puchaseTrancsaction 분리
 @Service
-@RequiredArgsConstructor
 @Slf4j
+@RequiredArgsConstructor
 public class PaymentService {
 
-    private final JpaPaymentRepository jpaPaymentRepository;
-    private final NormalUserRepository normalUserRepository;
-    private final ProductRepository productRepository;
+    private final KafkaPaymentReservationProperties props;
     private final ProductService productService;
+    @Qualifier("paymentReservationScheduler")
+    private final ScheduledThreadPoolExecutor scheduler;
 
-    //kafka mq
-    // 예약 작업을 관리할 스케줄러 및 작업 맵
-    // key: compositeKey = userId-productId-count-productSize-productColor
-    private final ScheduledThreadPoolExecutor scheduler = new ScheduledThreadPoolExecutor(1);
-    private final ConcurrentHashMap<String, ConcurrentHashMap<UUID, ScheduledFuture<?>>> scheduledTasks = new ConcurrentHashMap<>();
+    /** TTL/ETA */
+    public int ttlMinutes() { return (int) Math.max(1, props.getTtlMinutes()); }
+    public LocalDateTime defaultExpiresAtNow() { return LocalDateTime.now().plusMinutes(ttlMinutes()); }
 
-    // 결제 요청 정보를 저장하는 맵: taskId -> RequestTaskInfo
-    private final ConcurrentHashMap<UUID, RequestTaskInfo> requestTaskMap = new ConcurrentHashMap<>();
+    /* =========================
+     *   In-memory (맵 2개)
+     * ========================= */
 
-    // composite key 생성 (매개변수 순서: userId, productId, count, productSize, productColor)
-    private String getCompositeKey(String userId, Long productId, Long count, Size productSize, Color productColor) {
-        return userId + "-" + productId + "-" + count + "-" + productSize.name() + "-" + productColor.name();
+    /** RID -> 번들(아이템/타이머/ETA/시그니처키) */
+    private final ConcurrentHashMap<String, Bundle> ridBundles = new ConcurrentHashMap<>();
+
+    /** 전역 인덱스: (CompositeKey | SignatureKey) -> RID */
+    private final ConcurrentHashMap<IndexKey, String> index = new ConcurrentHashMap<>();
+
+    /** 번들 정의 */
+    static final class Bundle {
+        final ConcurrentHashMap<CompositeKey, RequestTaskInfo> items = new ConcurrentHashMap<>();
+        final AtomicBoolean scheduled = new AtomicBoolean(false); // 타이머 1회 보장
+        final AtomicReference<Optional<ScheduledFuture<?>>> futureRef = new AtomicReference<>(Optional.empty());
+        volatile LocalDateTime expiresAt;
+        final AtomicReference<SignatureKey> signatureKey = new AtomicReference<>(); // 배치 완전일치 인덱스 제거용
+
+        // 감사 로그 누적 버퍼(아이템 추가 시 O(1) append; 출력 시 루프 없음)
+        final StringBuilder auditListBuf = new StringBuilder(256);
+
+        // 선점 로그는 RID 당 1회 (CAS 보장)
+        final AtomicBoolean preLoggedOnce = new AtomicBoolean(false);
+
+        // 파라미터(b)로 동기화 금지 → 전용 락 객체 사용
+        final Object auditLock = new Object();
+    }
+
+
+    /* =========================
+     *     키 타입 (타입 안전)
+     * ========================= */
+
+    /** 마커 인터페이스 */
+    private sealed interface IndexKey permits CompositeKey, SignatureKey {}
+
+    /** 단건 중복 체크용 키: userId+product+count+size+color */
+    private record CompositeKey(String userId, Long productId, Long count, Size size, Color color)
+            implements IndexKey {}
+
+    /** 옵션식별 키: productId + size + color (배치 합산용) */
+    private record OptionKey(Long productId, Size size, Color color) {}
+
+    /** 배치 완전일치용 키: userId + (옵션→합계수량) 맵(불변, 순서무관) */
+    private record SignatureKey(String userId, Map<OptionKey, Long> parts) implements IndexKey {
+        // ✅ 컴팩트 생성자 대신 "캐노니컬 생성자"로 정의
+        public SignatureKey(String userId, Map<OptionKey, Long> parts) {
+            this.userId = Objects.requireNonNull(userId, "userId");
+            // 불변/순서무관 보장 (Map.copyOf)
+            this.parts  = Map.copyOf(java.util.Objects.requireNonNull(parts, "parts"));
+        }
+    }
+
+
+
+    /* =========================
+     *           Utils
+     * ========================= */
+
+    /** 상세 감사 로그 전용 로거(별도 appender 권장) */
+    private static final Logger AUDIT = LoggerFactory.getLogger("payment-audit");
+
+    private void snapshot(String tag) {
+        // ★ DEBUG 아닐 땐 즉시 리턴 (루프/스트림 계산 없음)
+        //if (!log.isDebugEnabled()) return;
+        if (!log.isInfoEnabled()) return;
+
+        final int ridCnt  = ridBundles.size();
+        final int itemCnt = ridBundles.values().stream().mapToInt(b -> b.items.size()).sum();
+        final int idxSize = index.size();
+        final int qSize   = scheduler.getQueue().size();
+        log.info("[STATE@{}] rid={}, items={}, index={}, schedulerQueue={}", tag, ridCnt, itemCnt, idxSize, qSize);
+    }
+
+    /** 요청 멀티셋을 (옵션기준 합산)한 SignatureKey 생성 — 문자열/구분자 전혀 없음 */
+    public SignatureKey buildSignatureKey(String userId, List<RequestTaskInfo> items) {
+        final List<RequestTaskInfo> safe = Optional.ofNullable(items).orElseGet(List::of);
+        if (safe.isEmpty()) {
+            return new SignatureKey(userId, Map.of());
+        }
+        var merged = new HashMap<OptionKey, Long>(Math.max(4, safe.size() * 2));
+        for (var it : safe) {
+            var ok = new OptionKey(it.getProductId(), it.getProductSize(), it.getProductColor());
+            merged.merge(ok, it.getCount(), Long::sum);
+        }
+        return new SignatureKey(userId, merged);
+    }
+
+
+    /* =========================
+     *   Duplicate Probe (O(1))
+     * ========================= */
+
+    /** 단건 사양 O(1) 조회 */
+    public Optional<String> existingRidFor(String userId, Long productId, Long count, Size size, Color color) {
+        return Optional.ofNullable(index.get(new CompositeKey(userId, productId, count, size, color)));
+    }
+
+    /** 배치 "완전 동일 멀티셋" O(1) 조회 (순서무관, 옵션합산 기준) */
+    public Optional<String> existingRidForAny(String userId, List<RequestTaskInfo> items) {
+        return Optional.ofNullable(index.get(buildSignatureKey(userId, items)));
+    }
+
+    /** 배치 시그니처 선점 (경쟁 시 기존 RID 반환) */
+    public Optional<String> registerSignatureIfAbsent(SignatureKey sigKey, String rid) {
+        return Optional.ofNullable(index.putIfAbsent(sigKey, rid));
+    }
+
+    /** 번들에 시그니처 바인딩 (정리/만료 시 인덱스 제거용) */
+    public void bindRidSignature(String rid, SignatureKey sigKey) {
+        java.util.Optional.ofNullable(sigKey).ifPresent(sk ->
+                java.util.Optional.ofNullable(ridBundles.get(rid)).ifPresent(b -> {
+                    b.signatureKey.set(sk);                 // ← AtomicReference 사용
+                    auditPreReserveOnce(rid, b, sk.userId());
+                })
+        );
+    }
+
+    /* =========================
+     *        Public APIs
+     * ========================= */
+
+    /**
+     * 예약 등록(단건/배치 공용):
+     * - 동일 CompositeKey가 이미 있으면 기존 RID/ETA 그대로 반환(연장 없음)
+     * - 신규면 RID 번들에 추가, 타이머 없으면 생성(1회 보장)
+     */
+    public ReserveAckResponse addReservation(String rid, RequestTaskInfo info) {
+        Objects.requireNonNull(rid, "rid");
+        Objects.requireNonNull(info, "info");
+
+        var ck = new CompositeKey(info.getUserId(), info.getProductId(), info.getCount(),
+                info.getProductSize(), info.getProductColor());
+
+        // 1) 전역 중복 검사
+        String existing = index.putIfAbsent(ck, rid);
+        if (existing != null) {
+            LocalDateTime eta = Optional.ofNullable(ridBundles.get(existing))
+                    .map(b -> b.expiresAt)
+                    .orElseGet(this::defaultExpiresAtNow);
+
+            var item = ReserveAckResponse.Item.builder()
+                    .productId(info.getProductId())
+                    .count(info.getCount())
+                    .productSize(info.getProductSize())
+                    .productColor(info.getProductColor())
+                    .build();
+            snapshot("addReservation-duplicate");
+            return ReserveAckResponse.single(existing, eta, item);
+        }
+
+        // 2) 신규 등록
+        final var bundle = ridBundles.computeIfAbsent(rid, r -> new Bundle());
+        bundle.items.put(ck, info);
+        appendAuditItem(bundle, info); // 감사 버퍼에 O(1) 누적
+
+        // 3) 타이머 1회 보장
+        if (bundle.scheduled.compareAndSet(false, true)) {
+            final long ttl = ttlMinutes();
+            bundle.expiresAt = LocalDateTime.now().plusMinutes(ttl);
+
+            final Runnable task = () -> {
+                snapshot("timer-run-before");
+                try {
+                    // 복구 상세 로그(루프 없이 버퍼 그대로) — 만료 시 1회
+                    auditRestoreOnce(rid, bundle);
+                    // 만료 → 복구 + 인덱스 제거
+                    bundle.items.forEach((key, v) -> {
+                        try {
+                            productService.restoreProductQuantity(v.getProductId(), v.getProductSize(), v.getProductColor(), v.getCount());
+                            SseController.updateInventory(v.getProductId());
+                        } catch (Exception ex) {
+                            log.error("[restore-on-expire] rid={}, key={}, ex={}", rid, key, ex.toString(), ex);
+                        } finally {
+                            index.remove(key);
+                        }
+                    });
+                    Optional.ofNullable(bundle.signatureKey.get())
+                            .ifPresent(sk -> index.remove(sk, rid));
+                    log.info("[RID EXPIRE] rid={}, restoredItems={}", rid, bundle.items.size());
+                } finally {
+                    ridBundles.remove(rid, bundle);
+                    bundle.items.clear(); // GC 힌트
+                    snapshot("timer-run-after");
+                }
+            };
+
+            var f = scheduler.schedule(task, ttl, TimeUnit.MINUTES);
+            bundle.futureRef.set(Optional.ofNullable(f));
+        }
+
+        var item = ReserveAckResponse.Item.builder()
+                .productId(info.getProductId())
+                .count(info.getCount())
+                .productSize(info.getProductSize())
+                .productColor(info.getProductColor())
+                .build();
+        snapshot("addReservation-ok");
+        return ReserveAckResponse.single(rid, bundle.expiresAt, item);
     }
 
     /**
-     * 요청 정보를 처음 받을 때 호출합니다.
-     *
-     * @param taskId 클라이언트에 발급한 UUID
-     * @param info   사용자·상품·수량·옵션 정보
-     * @return 중복 요청이면 기존 taskId와 남은 시간을 담은 Optional, 신규면 Optional.empty()
+     * 결제 확정(멱등):
+     * - success=true  → 복구 없이 인덱스만 제거
+     * - success=false → 전부 복구 후 제거
+     * - RID 없음 → 조용히 반환
      */
-    public Optional<PaymentInventoryResponse> addRequestTask(UUID taskId, RequestTaskInfo info) {
-        // 1) compositeKey 생성
-        String compositeKey = getCompositeKey(info.getUserId(), info.getProductId(), info.getCount(), info.getProductSize(), info.getProductColor());
-
-        // 2) scheduledTasks 에 실제 저장된 맵 가져오기
-        var tasks = scheduledTasks.get(compositeKey);
-
-        if (tasks != null && !tasks.isEmpty()) {
-            // 첫 번째 예약된 taskId와 남은 시간 계산
-            Map.Entry<UUID, ScheduledFuture<?>> entry = tasks.entrySet().iterator().next();
-            UUID existingTaskId = entry.getKey();
-            long delaySec = entry.getValue().getDelay(TimeUnit.SECONDS);
-
-            log.warn("해당 결제가 이미 진행중입니다: {}", info);
-            return Optional.of(new PaymentInventoryResponse(existingTaskId, LocalDateTime.now().plusSeconds(delaySec)));
-        }
-
-        // 3) 신규 요청인 경우에만 info 저장
-        requestTaskMap.put(taskId, info);
-        return Optional.empty();
-    }
-
-/*
-    // 이게 원본
-    public void addRequestTask(UUID taskId, RequestTaskInfo info) {
-        requestTaskMap.put(taskId, info);
-    }
-
- */
-
-    public List<OrderListDTO> userOrderHistory(Long userId) {
-        List<OrderListDAO> list = jpaPaymentRepository.userOrderHistory(userId);
-        List<OrderListDTO> newList = new ArrayList<>();
-        for (OrderListDAO item : list) {
-            OrderListDTO temp = new OrderListDTO();
-            temp.setSize(item.getSize());
-            temp.setColor(item.getColor());
-            temp.setPrice(item.getPrice());
-            temp.setPhotoUrl(jpaPaymentRepository.productPhotoUrl(item.getProductId()));
-            temp.setCreationTime(item.getCreationTime());
-            temp.setProductName(item.getProductName());
-            temp.setPrice(item.getPrice());
-            temp.setProductId(item.getProductId());
-            temp.setTotalCnt(item.getTotalCnt());
-            newList.add(temp);
-        }
-
-        return newList;
-    }
-
-    @Transactional
-    public void processPayment(String userId, String impUid, OrderPaymentRequest request) {
-        try {
-            List<Payment> transactions = new ArrayList<>();
-
-            request.getInventoryList().forEach(item -> {
-                Payment transaction = new Payment();
-                transaction.setColor(item.getColor());
-                transaction.setSize(item.getSize());
-                transaction.setPaymentType("CARD");
-                transaction.setTotalCnt(item.getCnt());
-                transaction.setImpUId(impUid); // Here we use the impUid parameter directly
-                NormalUser user = normalUserRepository.findById(userId).get();
-                transaction.setNormalUser(user);
-                Product product = productRepository.findById(item.getProductId()).get();
-                transaction.setProduct(product);
-                transactions.add(transaction);
+    public void finalizeByRid(String rid, boolean success) {
+        Objects.requireNonNull(rid, "rid");
+        Optional.ofNullable(ridBundles.remove(rid)).ifPresent(b -> {
+            b.futureRef.get().ifPresent(f -> {
+                try { f.cancel(false); }
+                catch (Exception e) { log.debug("future cancel failed for rid={}", rid, e); }
             });
 
-            for (Payment transaction : transactions) {
-                jpaPaymentRepository.savePurchaseTransaction(transaction); // Using the standard save method from JpaRepository
-                System.out.println(transaction.toString());
+            if (success) {
+                b.items.keySet().forEach(index::remove);
+                Optional.ofNullable(b.signatureKey.get())
+                        .ifPresent(sk -> index.remove(sk, rid));
+                log.info("[finalize SUCCESS] rid={}, items={}", rid, b.items.size());
+                b.items.clear();
+                snapshot("finalize-success");
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
-    //kafka mq
-    /**
-     * 예약 복구 작업 등록 – 동일한 composite key가 이미 존재하면 기존 예약 작업을 재사용합니다.
-     */
-    //requestTaskMap 제거가 안되는느낌 <- 확실히 제거안됨 자동 복구되었는데 복구 성공 실패 응답이 가능함
-    // scheduledTasks는 제대로 제거가 되는지 확인 할것
-    public PaymentInventoryResponse scheduleRestoration(String userId, Long productId, Long count, UUID taskId, Size productSize, Color productColor) {
-        String compositeKey = getCompositeKey(userId, productId, count, productSize, productColor);
-        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(compositeKey, new ConcurrentHashMap<>());
-        if (!tasks.containsKey(taskId)) {
-            ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-                productService.restoreProductQuantity(productId, productSize, productColor, count);
-                removeScheduledTask(compositeKey, taskId);
-                requestTaskMap.remove(taskId);
-                log.info("[상품 재고 복구 실행] productId: {}, 복구 수량: {}", productId, count);
-                SseController.updateInventory(productId);
-            }, 1, TimeUnit.MINUTES);
+            // ⬇⬇ 복구 상세 로그(루프 없이 버퍼 그대로) — 실패 확정 시 1회
+            auditRestoreOnce(rid, b);
 
-            addScheduledTask(compositeKey, taskId, scheduledTask);
-            log.info("scheduledTasks = {}", scheduledTasks); // 지우기
-            long delay = scheduledTask.getDelay(TimeUnit.SECONDS);
-            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
-            return new PaymentInventoryResponse(taskId, delayTime);
-        } else {
-            log.info("이미 예약된 작업이 존재합니다. compositeKey: {}, taskId: {}", compositeKey, taskId);
-            ScheduledFuture<?> existingTask = tasks.get(taskId);
-            long delay = existingTask.getDelay(TimeUnit.SECONDS);
-            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay);
-            return new PaymentInventoryResponse(taskId, delayTime);
-        }
-    }
-
-    // 컴포즈키를 스케줄러에서 들고오기 가능할듯
-    public void processPaymentResponse(UUID taskId, boolean success) {
-        RequestTaskInfo info = requestTaskMap.get(taskId);
-        if (info == null) {
-            log.warn("해당 taskId에 대한 요청 정보가 없습니다: {}", taskId);
-            return;
-        }
-        String compositeKey = getCompositeKey(info.getUserId(), info.getProductId(), info.getCount(), info.getProductSize(), info.getProductColor());
-        if (success) {
-            cancelScheduledTask(compositeKey, taskId);
-            log.info("[결제 성공] 예약 작업 취소됨. compositeKey: {}", compositeKey);
-        } else {
-            log.info("[결제 실패] 즉시 재고 복구 실행. compositeKey: {}", compositeKey);
-            restoreProductQuantity(info.getProductId(), info.getProductSize(), info.getProductColor(), info.getCount());
-            cancelScheduledTask(compositeKey, taskId);
-            SseController.updateInventory(info.getProductId());
-        }
-        requestTaskMap.remove(taskId);
-    }
-
-
-    private void addScheduledTask(String compositeKey, UUID taskId, ScheduledFuture<?> task) {
-        scheduledTasks.computeIfAbsent(compositeKey, k -> new ConcurrentHashMap<>()).put(taskId, task);
-    }
-
-    //메모리 할당 해제
-    private void removeScheduledTask(String compositeKey, UUID taskId) {
-        scheduledTasks.computeIfPresent(compositeKey, (key, tasks) -> {
-            log.info("[서비스-예약 스케줄러 메모리 해제 전]:Getting scheduled tasks - size: {}", scheduledTasks.size());
-            tasks.remove(taskId);
-            log.info("[서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
-            return tasks.isEmpty() ? null : tasks;
+            b.items.forEach((k, v) -> {
+                try {
+                    productService.restoreProductQuantity(v.getProductId(), v.getProductSize(), v.getProductColor(), v.getCount());
+                    SseController.updateInventory(v.getProductId());
+                } catch (Exception ex) {
+                    log.error("[restore-on-finalize] rid={}, key={}, ex={}", rid, k, ex.toString(), ex);
+                } finally {
+                    index.remove(k);
+                }
+            });
+            Optional.ofNullable(b.signatureKey.get())
+                    .ifPresent(sk -> index.remove(sk, rid));
+            log.info("[finalize FAIL→RESTORE] rid={}, restoredItems={}", rid, b.items.size());
+            b.items.clear();
+            snapshot("finalize-fail");
         });
     }
 
-    //메모리 할당 해제 + 작업취소
-    private void cancelScheduledTask(String compositeKey, UUID taskId) {
-        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.get(compositeKey);
-        if (tasks != null) {
-            log.info("[서비스-취소 스케줄러 메모리 해제 전]: Getting scheduled tasks - size: {}", scheduledTasks.size());
-            ScheduledFuture<?> task = tasks.remove(taskId);
-            if (task != null) {
-                task.cancel(false);
-            }
+    /** 롤백 전용: 차감이 없던 배치 실패 시 예약만 제거(복구 없음) */
+    /** 롤백 전용(무복구 취소) — 요구사항상 상세 로그는 선점/복구 2회만 찍으므로 여기선 상세 로그 X */
+    public void cancelAllNoRestore(String rid) {
+        java.util.Optional.ofNullable(ridBundles.remove(rid)).ifPresent(b -> {
+            b.futureRef.get().ifPresent(f -> {
+                try { f.cancel(false); }
+                catch (Exception e) { log.debug("future cancel failed for rid={} (rollback)", rid, e); }
+            });
+            b.items.keySet().forEach(index::remove);
+            java.util.Optional.ofNullable(b.signatureKey.get())
+                    .ifPresent(sk -> index.remove(sk, rid));
+            log.info("[rollback CANCEL(Transactional rollback 자동 복구 / 결제 재고 복구 Scheduler 취소)] rid={}, removedItems={}", rid, b.items.size());
+            b.items.clear();
+            snapshot("rollback-cancel");
+        });
+    }
+
+
+    /** (옵션) ETA 조회 */
+    public Optional<LocalDateTime> getExpiresAt(String rid) {
+        return Optional.ofNullable(ridBundles.get(rid)).map(b -> b.expiresAt);
+    }
+
+    /** (옵션) 상태 조회 */
+    public ReservationStatusResponse getStatus(String rid) {
+        return Optional.ofNullable(ridBundles.get(rid))
+                .map(b -> new ReservationStatusResponse(rid, ReserveStatus.ACTIVATED, Optional.ofNullable(b.expiresAt)))
+                .orElseGet(() -> new ReservationStatusResponse(rid, ReserveStatus.INACTIVE, Optional.empty()));
+    }
+
+    @PreDestroy
+    void shutdown() {
+        try {
+            ridBundles.values().forEach(b ->
+                    b.futureRef.get().ifPresent(f -> {
+                        try { f.cancel(false); }
+                        catch (Exception e) { log.debug("ignore cancel failure on shutdown", e); }
+                    })
+            );
+            ridBundles.clear();
+            index.clear();
+            log.info("[shutdown] PaymentService maps cleared.");
+        } finally {
+            snapshot("shutdown");
         }
     }
 
-    @Transactional
-    public void restoreProductQuantity(Long productId, Size productSize, Color productColor, Long count) {
-        productService.restoreProductQuantity(productId, productSize, productColor, count);
+
+    /* =========================
+     *     Audit Helpers (루프 없음)
+     * ========================= */
+
+    /** 아이템 1건을 감사 버퍼에 누적 — O(1), 루프 없음 */
+    //필요한 이유?
+    private static void appendAuditItem(Bundle b, RequestTaskInfo it) {
+        synchronized (b.auditLock) {
+            if (b.auditListBuf.isEmpty()) {
+                b.auditListBuf.append('[');
+            } else {
+                b.auditListBuf.append(", ");
+            }
+            b.auditListBuf
+                    .append("productId=").append(it.getProductId())
+                    .append(", size=").append(it.getProductSize())
+                    .append(", color=").append(it.getProductColor())
+                    .append(", 수량:").append(it.getCount());
+        }
     }
 
+
+    /** 선점 상세 로그 — RID당 최초 1회만 */
+    // 변경 4) 선점 로그 메서드 시그니처 단순화(배치 완료 시점에서 userId 전달)
+    private void auditPreReserveOnce(String rid, Bundle b, String userId) {
+        if (!AUDIT.isInfoEnabled() || !b.preLoggedOnce.compareAndSet(false, true)) return;
+
+        final String listStr;
+        synchronized (b.auditLock) {
+            if (b.auditListBuf.isEmpty() || b.auditListBuf.charAt(b.auditListBuf.length() - 1) == ']') {
+                listStr = b.auditListBuf.toString();
+            } else {
+                listStr = b.auditListBuf.append(']').toString();
+            }
+        }
+        AUDIT.info("[결제 재고 선점 사전 요청] userId={}, reserveTaskOrderPayId={}, expiresAt={}, list: {}",
+                userId, rid, b.expiresAt, listStr);
+    }
+
+    /** 복구 상세 로그 — 만료/실패 확정 시 1회 */
+    private void auditRestoreOnce(String rid, Bundle b) {
+        if (!AUDIT.isInfoEnabled()) return;
+
+        final String listStr;
+        synchronized (b.auditLock) {
+            if (b.auditListBuf.isEmpty()) {
+                listStr = "[]";
+            } else if (b.auditListBuf.charAt(b.auditListBuf.length() - 1) == ']') {
+                listStr = b.auditListBuf.toString();
+            } else {
+                listStr = b.auditListBuf.append(']').toString();
+            }
+        }
+
+        final String userId = Optional.ofNullable(b.signatureKey.get())
+                .map(SignatureKey::userId)
+                .orElse("unknown");
+
+        AUDIT.info("[결제 재고 선점 복구 요청] userId={}, reserveTaskOrderPayId={}, expiresAt={}, list: {}",
+                userId, rid, b.expiresAt, listStr);
+    }
 }
-
-/*
-    private void removeControllerMap(UUID taskId) {
-        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 전: Getting request task maps - size: {}", requestTaskMaps.size());
-        requestTaskMaps.remove(taskId);
-        log.info("[컨트롤러-request]:requestTaskMaps 메모리 해제 후: Getting request task maps - size: {}", requestTaskMaps.size());
-    }
- */
-
- /*
-    // 예약된 작업을 추가하고 타이머 정보를 반환하는 메서드
-    public String scheduleRestoration(Long productId, Long count, UUID taskId) {
-        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(productId, new ConcurrentHashMap<>());
-        if (!tasks.containsKey(taskId)) { // 이미 해당 작업이 예약되어 있는지 확인
-            ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-                productService.restoreProductQuantity(productId, count);
-                removeScheduledTask(productId, taskId); // 서비스 메모리 누수 해결
-                log.info("[상품 수량 복구, 결제 시간 5분 초과] productId: {}, count: {}", productId, count);
-                log.info("[서비스-예약 스케줄러 메모리 해제 후]: Getting scheduled tasks - size: {}", scheduledTasks.size());
-                SseController.updateInventory(productId);
-                PaymentController.removeControllerMap(taskId); // 컨트롤러 메모리 누수 해결
-            }, 1, TimeUnit.MINUTES); // 실제 운영시 5분으로 설정 // 5분 지나면 클라이언트에게 결제 종료 메시지 보내기
-
-            addScheduledTask(productId, taskId, scheduledTask);
-
-            long delay = scheduledTask.getDelay(TimeUnit.SECONDS);
-            LocalDateTime delayTime = LocalDateTime.now().plusSeconds(delay); //변환
-            return String.format("요청 ID: %s, 예정된 실행까지 남은 시간: %s", taskId.toString(), delayTime);
-            //return String.format("요청 ID: %s, 예정된 실행까지 남은 시간: %d 초", taskId.toString(), delay);
-        } else {
-            // 이미 예약된 작업이 있을 경우 해당 작업의 남은 시간을 반환
-            ScheduledFuture<?> existingTask = tasks.get(taskId);
-            long delay = existingTask.getDelay(TimeUnit.SECONDS);
-            return String.format("이미 예약된 작업입니다. 예정된 실행까지 남은 시간: %d 초", delay);
-        }
-    }
-
-     */
-
-// 예약된 작업을 추가하는 메서드
-    /*
-    public void scheduleRestoration(Long productId, Long count, UUID taskId) {
-        ConcurrentHashMap<UUID, ScheduledFuture<?>> tasks = scheduledTasks.getOrDefault(productId, new ConcurrentHashMap<>());
-        if (!tasks.containsKey(taskId)) { // 이미 해당 작업이 예약되어 있는지 확인
-            ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-                productService.restoreProductQuantity(productId, count);
-                removeScheduledTask(productId, taskId); //서비스 메모리 누수 해결
-                log.info("[상품 수량 복구, 결제 시간 5분 초과] productId: {}, count: {}", productId, count);
-                log.info("[서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
-                SseController.updateInventory(productId);
-                PaymentController.removeControllerMap(taskId); //컨트롤러 메모리 누수 해결
-            }, 1, TimeUnit.MINUTES); // 실제 운영시 5분으로 설정 //5분 지나면 클라이언트에게 결제 종료 메시지 보내기
-            addScheduledTask(productId, taskId, scheduledTask);
-        }
-    }
-
-     */
-
-
-    /*
-    //프론트 결제창 5분 설정하기
-    public void scheduleRestoration(Long productId, Long count) {
-
-        ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-            productService.restoreProductQuantity(productId, count);
-            scheduledTasks.remove(productId);
-            log.info("[상품 수량 복구, 결제 시간 5분 초과] Restoration scheduled for productId: {}, count: {}", productId, count);
-            SseController.updateInventory(productId); //sse를 통한 구독한 재고 변경 실시간 전송
-        }, 1, TimeUnit.MINUTES); //5분 설정하기(테스트용1분)
-
-        scheduledTasks.put(productId, scheduledTask);
-    }
-
-    public void processPaymentResponse(Long productId, Long count, boolean success) {
-        //결제 성공 응답
-        //결제가 성공했을 경우에는 해당 상품에 대한 예약된 스케줄링된 작업을 취소합니다.
-        //scheduledTasks 맵에서 해당 상품에 대한 스케줄링된 작업을 제거합니다.
-        //취소할 작업이 존재하고, 이를 취소할 수 있으면(scheduledTask != null) 작업을 취소합니다.
-        if (success) {
-            ScheduledFuture<?> scheduledTask = scheduledTasks.remove(productId);
-            if (scheduledTask != null) {
-                scheduledTask.cancel(false); //한번은 취소되는데 두번 스케줄러에 쌓여있을때 삭제안됨
-            }
-            log.info("[결제성공(true) scheduledTask: 상품 수량 복구 취소->일괄 처리 작업 취소] ");
-        } else {
-            //결제 실패 응답
-            log.info("[결제취소(false)응답: 상품 수량 즉시 복구] ");
-            restoreProductQuantity(productId, count);
-            log.info("Restoration scheduled for productId: {}, count: {}", productId, count);
-            // 변경된 부분: 결제 실패 시에는 재고를 즉시 복구하고 프론트에게 재고 수량을 알려줍니다.
-
-            //sse를 통한 구독한 재고 변경 실시간 전송
-            SseController.updateInventory(productId);
-            // 스케줄링된 작업을 취소합니다.
-            ScheduledFuture<?> scheduledTask = scheduledTasks.remove(productId);
-            if (scheduledTask != null) {
-                scheduledTask.cancel(false);
-            }
-            log.info("[결제실패(false)응답: scheduledTask: 상품 수량 복구 완료->일괄 처리 작업 취소] ");
-        }
-    }
-
-    public void restoreProductQuantity(Long productId, Long count) {
-        productService.restoreProductQuantity(productId, count);
-    }
-
-     */
-
-
-
-    /*
-    //rabbit mq
-    public void scheduleRestoration(Long productId, Long count) {
-        ScheduledFuture<?> scheduledTask = scheduler.schedule(() -> {
-            productService.restoreProductQuantity(productId, count);
-            scheduledTasks.remove(productId);
-        }, 10, TimeUnit.MINUTES);
-
-        scheduledTasks.put(productId, scheduledTask);
-    }
-
-    public void processPaymentResponse(Long productId, Long count, boolean success) {
-        if (success) {
-            // 결제 성공 시, 복구 작업 취소
-            ScheduledFuture<?> scheduledTask = scheduledTasks.remove(productId);
-            if (scheduledTask != null) {
-                scheduledTask.cancel(false);
-            }
-        } else {
-            // 결제 실패 시, 이미 예약된 복구 작업은 그대로 두고 이후 자동 실행되도록
-            scheduleRestoration(productId, count);
-        }
-    }
-
-     */
-
-// 특정 작업을 취소하는 메서드
-    /*
-    public void processPaymentResponse(Long productId, Size productSize, Color productColor, Long count, boolean success, UUID taskId) {
-        if (success) {
-            cancelScheduledTask(productId, taskId); //서비스 메모리 누수 해결
-            log.info("[true 서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
-            log.info("[결제성공(true): 상품 수량 복구 취소->일괄 처리 작업 취소] ");
-        } else {
-            log.info("[결제취소(false)응답: 상품 수량 즉시 복구] ");
-            restoreProductQuantity(productId, productSize, productColor, count);
-            cancelScheduledTask(productId, taskId); //서비스 메모리 누수 해결
-            log.info("[false 서비스-예약 스케줄러 메모리 해제 후]:Getting scheduled tasks - size: {}", scheduledTasks.size());
-            SseController.updateInventory(productId);
-            log.info("[결제실패(false)응답: 상품 수량 복구 완료->일괄 처리 작업 취소] ");
-        }
-    }
-
-     */

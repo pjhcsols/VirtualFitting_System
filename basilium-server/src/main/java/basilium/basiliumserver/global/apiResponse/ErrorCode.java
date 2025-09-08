@@ -41,6 +41,13 @@ public enum ErrorCode {
     // 409 Conflict
     DUPLICATE_RESOURCE(409, "CONFLICT", "데이터가 이미 존재합니다."),
     CONFLICT(409, "CONFLICT", "데이터가 이미 존재합니다."),
+    OUT_OF_STOCK(409, "OUT_OF_STOCK", "재고가 부족합니다."),
+
+    // ===== Reservation Domain =====
+    RESERVATION_NOT_FOUND(404, "RESERVATION_NOT_FOUND", "예약을 찾을 수 없습니다."),
+    RESERVATION_ITEM_NOT_FOUND(404, "RESERVATION_ITEM_NOT_FOUND", "예약 항목을 찾을 수 없습니다."),
+    DUPLICATE_RESERVATION(409, "DUPLICATE_RESERVATION", "이미 예약이 존재합니다."),
+
 
     // 500 Internal Server Error
     SERVER_ERROR(500, "INTERNAL_SERVER_ERROR", "서버 내부 오류가 발생했습니다.");
