@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function PayButton() {
   return <PayBtn>
@@ -22,7 +22,7 @@ const PayBtn = styled.button`
   background: black;
   flex-direction: row;
 
-  // @media (max-width: ${md}px) {
+  // @media (max-width: ${BREAKPOINTS.md}px) {
   //     width: 50%;
   //   }
 `;

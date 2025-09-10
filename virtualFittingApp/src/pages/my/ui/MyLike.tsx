@@ -1,5 +1,6 @@
 import React, { Suspense} from "react";
 import styled from "styled-components";
+import { Header } from "@/widgets/header";
 import { LikeContentList } from "@/pages/my/ui/LikeContentList";
 import { BREAKPOINTS } from "@/shared";
 

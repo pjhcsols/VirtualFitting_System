@@ -1,5 +1,3 @@
-// export { default as CheckoutWidget } from './ui/CheckoutWidget';
-export * from './ui/PaymentFaulurePopup';
-export { SuccessPage } from './ui/SuccessPage';
-export { FailPage } from './ui/FailPage';
+export { PaymentSuccessPage } from './ui/PaymentSuccessPage';
+export { PaymentFailPage } from './ui/PaymentFailPage';
 export * from './api/payment.action';

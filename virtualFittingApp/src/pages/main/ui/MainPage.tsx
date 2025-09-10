@@ -1,6 +1,8 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
+
+import { HeroSection, DescriptionSection } from "@/widgets";
 import { HeroSection, AiServiceSection } from "@/widgets";
 import { useEffect, useRef } from "react";
 
@@ -72,16 +74,14 @@ function MainPage() {
       root
     >
       <MainSection>
-        {/* <StarContainer>
-          <Canvas>
-            <RotatingStars />
-          </Canvas>
-        </StarContainer> */}
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
             <Hero>
               <HeroSection />
             </Hero>
+            <AIIntroduction>
+              <DescriptionSection />
+            </AIIntroduction>
           </ModelContainer>
           <section></section>
           <section></section>
@@ -95,12 +95,16 @@ function MainPage() {
 export { MainPage };
 
 const Wrapper = styled(ReactLenis)``;
-
 const MainSection = styled.section`
   box-sizing: border-box;
   width: 100%;
   transition: 0.3s padding ease-out;
-  background: linear-gradient(to bottom, #292e49, #536976 50%, #bbd2c5 100%);
+  background: radial-gradient(
+    circle at 25% 25%,
+    #292e49 0%,
+    #536976 50%,
+    #bbd2c5 100%
+  );
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
@@ -114,12 +118,6 @@ const Article = styled.article`
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-`;
-
-const StarContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
 `;
 
 const ModelContainer = styled.section`

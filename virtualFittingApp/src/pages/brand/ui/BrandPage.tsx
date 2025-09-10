@@ -1,7 +1,8 @@
 import { useEffect, useRef } from "react";
 
 import * as S from "@/pages/brand/ui/css/BrandPage.css";
-import { BasiliumNoAnimationLogo, BrandLandingHeader, PopLogo } from "@/shared";
+import { BasiliumNoAnimationLogo, PopLogo } from "@/shared";
+import { BrandLandingHeader } from "./BrandLandingHeader";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";

@@ -1,3 +1,1 @@
-export * from "@/shared/components/product/ui/StoreProduct";
-export * from "@/shared/components/product/ui/ProductSmallCard";
-export * from "@/shared/components/product/ui/ProductOrderList";
+export * from "@/entities/product/ui/product-image-thumbnail/product-image-thumbnail";

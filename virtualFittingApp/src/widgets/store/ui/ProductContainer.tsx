@@ -1,7 +1,11 @@
 import { type ProductDetail, COLOR_MAP } from "@/shared";
 import { useProductContainer } from "../hooks/useProductContainer";
 import * as S from "./ProductContainer.styles";
-import { ProductSmallCard, AddButton, AIButton, PurchaseButton, QuantityBox, ICON_SHARE } from "@/shared";
+import { PurchaseButton, ICON_SHARE } from "@/shared";
+import { AddToCartButton } from "@/features/add-to-cart";
+import { AITryOnButton } from "@/features/ai-try-on";
+import { SelectQuantity } from "@/features/select-quantiy";
+import { ProductImageThumbnail } from "@/entities/product";
 
 type ProductContainerProps = {
   product: ProductDetail;
@@ -40,6 +44,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     setSelectedSize,
     setMainImage,
     setSelectedPaymentMethod,
+    handleAddToCart,
     handlePurchaseClick,
     handleDownloadCoupon,
     handleSelectCoupon,
@@ -56,7 +61,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
     <S.ProductBox>
       <S.ProductSmallImagesContainer>
         {selectedProductImages.map((src, i) => (
-          <ProductSmallCard
+          <ProductImageThumbnail
             key={i}
             imageSrc={src}
             onMouseEnter={() => setMainImage(src)}
@@ -150,7 +155,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
               {selectedColor} · {selectedSize}
             </S.OptionText>
           </S.OptionTop>
-          <QuantityBox
+          <SelectQuantity
             unitPrice={price.original}
             discountedPrice={price.discounted}
             quantity={quantity}
@@ -172,26 +177,12 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           </S.CouponDisplayBox>
         )}
         <S.ButtonBox>
-          <AddButton
-            product={{
-              id: product.productId.toString(),
-              name: product.productName,
-              brand: product.brandUser.firmName,
-              image: selectedProductImages[0],
-              price: price.original,
-              discountedPrice: price.discounted ?? price.original,
-              discountRate: discountRate,
-              color: selectedColor,
-              size: selectedSize,
-              quantity,
-            }}
-          />
+          <AddToCartButton onClick={handleAddToCart} />
           <PurchaseButton onClick={handlePurchaseClick} />
         </S.ButtonBox>
         {showPaymentTab && (
           <S.TabOverlay onClick={() => setShowPaymentTab(false)}>
             <S.TabContent onClick={e => e.stopPropagation()}>
-              <S.CloseButton onClick={() => setShowPaymentTab(false)}>×</S.CloseButton>
               <h3>결제 수단 선택</h3>
               <S.PaymentMethodContainer>
                   {['CARD', 'TRANSFER', 'VIRTUAL_ACCOUNT'].map(method => (
@@ -221,7 +212,7 @@ function ProductContainer({ product, productColors, onColorChange }: ProductCont
           </S.TabOverlay>
         )}
         <S.ButtonBox>
-          <AIButton />
+          <AITryOnButton />
         </S.ButtonBox>
       </S.ProductInfoBox>
     </S.ProductBox>

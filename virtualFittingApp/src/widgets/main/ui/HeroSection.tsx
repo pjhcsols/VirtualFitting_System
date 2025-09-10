@@ -98,12 +98,6 @@ const StarContainer = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 0;
-  background: radial-gradient(
-    circle at 30% 30%,
-    #292e49 0%,
-    #536976 50%,
-    #bbd2c5 100%
-  );
 `;
 
 const HeaderContainer = styled.div`
@@ -111,9 +105,9 @@ const HeaderContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
-  padding: 0 5rem;
+  height: 80px;
+  padding: 0 40px;
   width: 100%;
-  min-height: 5rem;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
@@ -148,37 +142,6 @@ const ButtonContainer = styled.div`
   justify-content: center;
   align-items: center;
   gap: 2rem;
-`;
-
-const DefaultGlassButton = styled.div`
-  padding: 12px 32px;
-  border: none;
-  border-radius: 15px;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-    box-shadow:
-      0 12px 40px rgba(31, 38, 135, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  }
-  &:after {
-    transform: translateY(0);
-    box-shadow:
-      0 4px 16px rgba(31, 38, 135, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
-  }
 `;
 
 const LoginButton = styled(NavLink)`

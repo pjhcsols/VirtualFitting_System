@@ -16,7 +16,7 @@ import {
 function StoreDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  const navigate = useNavigate(); //
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
@@ -130,7 +130,7 @@ const TabMenu = styled.div`
   gap: 64px;
 `;
 
-const TabButton = styled.button<{ $active: boolean }>`
+const TabButton = styled.button<{ $active: boolean }>` //navlink
   padding: 8px 32px;
   border: none;
   background: transparent;

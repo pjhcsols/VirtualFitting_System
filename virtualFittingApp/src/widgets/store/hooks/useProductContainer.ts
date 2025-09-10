@@ -10,6 +10,8 @@ import {
 } from "@/shared";
 import { createPaymentReservation, createPaymentIntent } from "@/features";
 import { fetchDiscountQuote, fetchClaimableCoupons, downloadCoupon } from "@/pages/store/api/products.action";
+import { useSetRecoilState } from 'recoil';
+import { cartState } from '@/entities';
 
 declare const TossPayments: any;
 const clientKey = "test_ck_ORzdMaqN3wxZAZWjPQWgV5AkYXQG";
@@ -40,6 +42,8 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
   const [paymentLoading, setPaymentLoading] = useState(false);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('CARD');
 
+  const setCartItems = useSetRecoilState(cartState);
+
   useEffect(() => {
     const accessToken = cookies['access-token'];
     fetchDiscountQuote({ productId: product.productId, userId: accessToken })
@@ -51,15 +55,21 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
 
   const refreshCoupons = async () => {
     try {
-        const accessToken = cookies['access-token'];
-        const data = await fetchClaimableCoupons(product.productId, accessToken);
-        if (data) {
+      const accessToken = cookies['access-token'];
+      const data = await fetchClaimableCoupons(product.productId, accessToken);
+      if (data) {
         setCoupons(data);
-        }
+      } else {
+        setCoupons([]);
+      }
     } catch (error) { 
-        console.error("Failed to refetch claimable coupons", error); 
+      console.error("Failed to refetch claimable coupons", error); 
     }
   };
+
+  useEffect(() => {
+    refreshCoupons();
+  }, [product.productId]);
 
   const sizesSorted = useMemo(() => product.productOptions
     .filter(po => po.productColor === selectedColor)
@@ -97,6 +107,37 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
     }
   };
 
+  const handleAddToCart = () => {
+    if (!price) return;
+
+    const newItem = {
+      id: `${product.productId}-${selectedColor}-${selectedSize}`,
+      productId: product.productId,
+      name: product.productName,
+      brand: product.brandUser.firmName,
+      image: selectedProductImages[0],
+      price: price.discounted ?? price.original,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+    };
+
+    setCartItems((prevItems) => {
+      const existingItem = prevItems.find(item => item.id === newItem.id);
+
+      if (existingItem) {
+        return prevItems.map(item =>
+          item.id === newItem.id
+            ? { ...item, quantity: item.quantity + newItem.quantity }
+            : item
+        );
+      } else {
+        return [...prevItems, newItem];
+      }
+    });
+  };
+
+
   const handleDownloadCoupon = async (campaignId: number) => {
     const authUserId = cookies['access-token'];
 
@@ -109,12 +150,12 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
     try {
       const result = await downloadCoupon({ campaignId, authUserId });
       if (result) {
-        alert("쿠폰이 발급되었습니다!");
+        alert("쿠폰이 발급되었습니다.");
         setDownloadedCoupon(result); 
         refreshCoupons();
       }
     } catch (error) {
-      console.error("Coupon download failed in component", error);
+      console.error("쿠폰 다운로드에 실패하였습니다.", error);
     }
   };
 
@@ -184,6 +225,6 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
     price, coupons, selectedCoupon, quantity, showCouponPopup, showPaymentTab, paymentLoading,
     selectedColor, selectedSize, mainImage, finalPrice, sizesSorted, selectedProductImages, selectedPaymentMethod,
     setQuantity, setShowCouponPopup, setShowPaymentTab, setSelectedPaymentMethod, setSelectedSize, setMainImage, setSelectedColor,
-    handlePurchaseClick, handleDownloadCoupon, handleSelectCoupon, handlePurchase, handleColorChange,
+    handleAddToCart, handlePurchaseClick, handleDownloadCoupon, handleSelectCoupon, handlePurchase, handleColorChange,
   };
 };

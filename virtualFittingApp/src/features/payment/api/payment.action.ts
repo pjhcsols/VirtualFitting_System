@@ -2,8 +2,9 @@ import { API_BASILIUM } from "@/shared";
 import { 
   PaymentRequestParams, 
   PaymentResponse, 
-  PaymentResultParams, 
-  PaymentData,
+  // PaymentResultParams, 
+  // PaymentData,
+  PaymentConfirmParams,
   PaymentIntentRequest, 
   PaymentIntentData,
   ApiResponse,
@@ -24,20 +25,18 @@ export const createPaymentReservation = async (
   }
 };
 
-export async function handlePaymentResponse(params: PaymentResultParams): Promise<string> {
+export const confirmFinalPayment = async (params: PaymentConfirmParams): Promise<any> => {
   try {
-    const response = await API_BASILIUM.post("/b1/payment/response", null, {
-      params: {
-        taskId: params.taskId,
-        success: params.success,
-      },
+    const response = await API_BASILIUM.get("/b1/payment/success", {
+      params: params
     });
+    console.log("[결제 최종 승인] API 응답 성공:", response.data);
     return response.data;
   } catch (error) {
-    console.error("Payment result processing failed:", error);
+    console.error("Payment confirmation failed:", error);
     throw error;
   }
-}
+};
 
 export const createPaymentIntent = async (
   paymentIntent: PaymentIntentRequest

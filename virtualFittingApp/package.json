@@ -23,6 +23,7 @@
     "@tosspayments/payment-widget-sdk": "^0.12.0",
     "@types/js-cookie": "^3.0.6",
     "axios": "^1.7.9",
+    "compose-function": "^3.0.3",
     "dayjs": "^1.11.13",
     "emailjs-com": "^3.2.0",
     "eslint-config-prettier": "^10.0.2",

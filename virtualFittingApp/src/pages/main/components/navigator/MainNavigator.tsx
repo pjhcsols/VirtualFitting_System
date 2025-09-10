@@ -1,29 +1,39 @@
-import { PretendardText } from "@/shared/components/common";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 function MainNavigator() {
   const [active, setActive] = useState<number>(0);
-
-  const pageSectionContent = ["01", "02", "03", "04", "05"];
+  
+  const sectionCount = 5;
 
   const handleClick = (index: number) => {
-    setActive(index);
     window.scrollTo({
       top: window.innerHeight * index,
       behavior: "smooth",
     });
   };
 
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      const windowHeight = window.innerHeight;
+      const currentSection = Math.round(scrollPosition / windowHeight);
+      setActive(currentSection);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   return (
     <Wrapper>
-      {pageSectionContent.map((item, key) => {
-        return (
-          <ContentBox active={key === active} onClick={() => handleClick(key)}>
-            <PretendardText key={key}>{item}</PretendardText>
-          </ContentBox>
-        );
-      })}
+      {Array.from({ length: sectionCount }).map((_, index) => (
+        <DotWrapper key={index} onClick={() => handleClick(index)}>
+          <Dot $active={index === active} />
+        </DotWrapper>
+      ))}
     </Wrapper>
   );
 }
@@ -32,28 +42,33 @@ export { MainNavigator };
 
 const Wrapper = styled.div`
   position: fixed;
-  top: 0;
-  right: 0;
-  min-width: 10rem;
-  min-height: 100vh;
+  top: 50%;
+  right: 2rem;
+  transform: translateY(-50%);
   display: flex;
-  flex-flow: column wrap;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
+  flex-direction: column;
+  align-items: center; 
+  gap: 1.5rem;
   z-index: 20;
 `;
 
-const ContentBox = styled.div<{ active: boolean }>`
-  width: 3rem;
-  height: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 100%;
-  transition: 0.15s all ease;
-  background-color: ${(props) => props.active && "#fff"};
-  &:hover {
-    background-color: #d9d9d9;
+const DotWrapper = styled.div`
+  cursor: pointer;
+
+  &:hover div {
+    transform: scale(1.2);
   }
+`;
+
+const Dot = styled.div<{ $active: boolean }>`
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  
+  background-color: ${props => props.$active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.35)'};
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  transition: all 0.3s ease;
+  transform: scale(${props => props.$active ? 1.2 : 1});
 `;

@@ -1,5 +1,6 @@
 import React, { Suspense} from "react";
 import styled from "styled-components";
+import { Header } from "@/widgets/header";
 import { ReviewContentList } from "@/pages/my/ui/ReviewContentList";
 
 function MyReview() {

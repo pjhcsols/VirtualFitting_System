@@ -42,6 +42,13 @@ export interface PaymentResultParams {
   success: boolean;
 }
 
+export interface PaymentConfirmParams {
+  paymentKey: string;
+  orderId: string;
+  amount: number;
+  paymentType: string;
+}
+
 export interface PaymentIntentLine {
   productId: number;
   size: string;

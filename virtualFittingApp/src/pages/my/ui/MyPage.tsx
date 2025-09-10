@@ -1,24 +1,32 @@
-import { useState, useEffect} from "react";
+import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
+import { Header } from "@/widgets/header";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON } from "@/pages/my/constants";
 import { getMaskedUserName } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 import Cookies from "js-cookie";
 import { ARROW_ICON } from "@/pages/my/constants";
-import { fetchUserInfo } from "../api/get.action";
+import * as THREE from "three";
+import { Stars } from "@react-three/drei";
+import { Canvas, useFrame } from "@react-three/fiber";
 
 function MyPage() {
   const navigate = useNavigate();
   const userId = Cookies.get("userId") as string;
   const [reviewCount, setReviewCount] = useState(0);
 
-  useEffect(() => {
-    const loadUserInfo = async () => {
-      const res = await fetchUserInfo();
-    }
-    loadUserInfo();
-  }, [])
+  const RotatingStars = () => {
+    const stars = useRef<THREE.Points>(null);
+
+    useFrame(() => {
+      if (stars.current) {
+        stars.current.rotation.x = stars.current.rotation.y += 0.00005;
+      }
+    });
+
+    return <Stars ref={stars} />;
+  };
 
   useEffect(() => {
     const storedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
@@ -27,8 +35,15 @@ function MyPage() {
 
   return (
     <PageWrapper>
+      <StarBackground>
+        <Canvas>
+          <RotatingStars />
+        </Canvas>
+      </StarBackground>
+      <HeaderWrapper>
+        <Header />
+      </HeaderWrapper>
       <ContentWrapper>
-        <PageTitle>MY</PageTitle>
         <GlassPanel>
           <UserInfoSection>
             <UserInfo onClick={() => navigate("/mypage/detail")}>
@@ -92,20 +107,35 @@ export { MyPage };
 const PageWrapper = styled.div`
   position: relative;
   width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
-  flex: 1;
+`;
+
+const StarBackground = styled.div`
+  position: absolute;
+  width: 100%;
+  height: 100%;
+`;
+
+const HeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  align-self: stretch;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   flex: 1;
   width: 100%;
   padding: 20px;
+  margin-top: 50px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -244,16 +274,4 @@ const GlassPanel = styled.div`
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.3),
     0 10px 30px rgba(0, 0, 0, 0.15);
-`;
-
-const PageTitle = styled.h1`
-  width: 100%;
-  max-width: 1000px;  
-  padding-left: 24px;  
-  margin: 4px 0 16px;  
-  font-size: 28px;
-  font-weight: 700;
-  text-align: left;
-  color: rgba(255,255,255,0.9);
-  letter-spacing: 0.5px;
 `;
