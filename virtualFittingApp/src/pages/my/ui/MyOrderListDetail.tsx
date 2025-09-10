@@ -1,5 +1,4 @@
 import styled from "styled-components";
-import { Header } from "@/shared";
 import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";
@@ -9,10 +8,7 @@ function MyOrderListDetail() {
     
     return (
         <PageWrapper>
-            <HeaderWrapper>
-                <Header />
-            </HeaderWrapper>
-                <OrderDetailContent />
+            <OrderDetailContent />
             <ContentWrapper>
                 <InnerContent>
                 </InnerContent>
@@ -27,13 +23,8 @@ export { MyOrderListDetail };
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  flex: 1;
+  min-height: auto; 
 `;
 
 const ContentWrapper = styled.div`

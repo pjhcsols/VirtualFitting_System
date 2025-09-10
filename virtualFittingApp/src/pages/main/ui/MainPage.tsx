@@ -1,7 +1,9 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
+
 import { HeroSection, DescriptionSection } from "@/widgets";
+import { HeroSection, AiServiceSection } from "@/widgets";
 import { useEffect, useRef } from "react";
 
 import ReactLenis, { type LenisRef } from "lenis/react";
