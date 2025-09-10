@@ -1,18 +1,8 @@
-import { useState, useEffect } from "react";
-import type { CartItem } from "@/shared";
 import styled from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 import { CartPurchaseSummary, CartItemList } from "@/widgets";
 
 function ShoppingCartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-
-  useEffect(() => {
-    const storedCart = localStorage.getItem("cart");
-    if (storedCart) {
-      setCartItems(JSON.parse(storedCart));
-    }
-  }, []);
 
   return (
     <Wrapper>

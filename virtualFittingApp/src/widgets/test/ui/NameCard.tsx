@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 function NameCard() {
@@ -87,11 +87,6 @@ const Brand = styled.div`
 const Name = styled.div`
   font-size: 24px;
   font-weight: 700;
-`;
-
-const Title = styled.div`
-  font-size: 16px;
-  opacity: 0.8;
 `;
 
 const InfoGroup = styled.div`

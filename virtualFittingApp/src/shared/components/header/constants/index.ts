@@ -1,11 +1,3 @@
-import {
-  CardIcon,
-  GraphIcon,
-  HomeIcon,
-  SettingIcon,
-  ShopIcon,
-} from "../../icon";
-
 export const CART_ICON = "/svg/cart.svg";
 export const BAG_ICON = "/svg/bag.svg";
 export const USER_ICON = "/svg/user.svg";

@@ -2,7 +2,6 @@ import styled from "styled-components";
 
 import type { ProductInputType } from "@/pages/admin/types/Product";
 import { Link } from "react-router-dom";
-import { useStoreProduct } from "../hooks/useStoreProduct";
 
 type StoreProductType = {
   product: ProductInputType;

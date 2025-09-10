@@ -36,7 +36,6 @@ import {
   ShoppingCartPage,
   StoreDetailPage,
   StorePage,
-  OrderListPage,
 } from "@/pages";
 import {
   MainLayout,
@@ -44,7 +43,6 @@ import {
   BrandLayout,
   ShoppingCartLayout,
   StoreLayout,
-  OrderListLayout,
   MyPageLayout,
   PaymentLayout,
 } from "@/shared";
@@ -103,9 +101,6 @@ function App() {
           <Route path="/payment" element={<PaymentLayout />}>
             <Route path="success" element={<PaymentSuccessPage />} />
             <Route path="fail" element={<PaymentFailPage />} />
-          </Route>
-          <Route path="/order" element={<OrderListLayout />}>
-            <Route index element={<OrderListPage />} />
           </Route>
           <Route path="/mypage" element={<MyPageLayout />}>
             <Route index element={<MyPage />} /> {/* /mypage */}

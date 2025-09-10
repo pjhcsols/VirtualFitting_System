@@ -12,8 +12,6 @@ export * from "@/pages/brand";
 
 export * from "@/pages/store";
 
-export * from "@/pages/order-list";
-
 export * from "@/pages/search";
 
 export * from "@/pages/cart";

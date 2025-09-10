@@ -5,10 +5,6 @@ import { images } from "../constants";
 function Carousel() {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const prevImage = () => {
-    setCurrentIndex((prev) => (prev === 0 ? images.length - 1 : prev - 1));
-  };
-
   const nextImage = () => {
     setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
   };

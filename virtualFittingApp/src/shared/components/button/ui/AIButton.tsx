@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { ICON_AI, IMG_GRADIENT } from "@/shared";
-import { xlDouble, xl, lg, md, sm } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 
 function AIButton() {
   return <AIBtn>
@@ -25,7 +25,7 @@ const AIBtn = styled.button`
   background: white;
   flex-direction: row;
 
-  @media (max-width: ${lg}px) {
+  @media (max-width: ${BREAKPOINTS.lg}px) {
       width: 100%;
     }
 `;
