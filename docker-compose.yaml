@@ -1,0 +1,8 @@
+services:
+  basilium-web:
+    build:
+      context: ./basilium-client
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./basilium-client:/app
