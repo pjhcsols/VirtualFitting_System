@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./basilium-web
+        working-directory: ./basilium-client
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
