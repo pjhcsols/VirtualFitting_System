@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./basilium-client
+        working-directory: ./virtualFittingApp
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
