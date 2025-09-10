@@ -1,7 +1,5 @@
 export * from "@/pages/main";
 
-export * from "@/pages/about";
-
 export * from "@/pages/signup";
 
 export * from "@/pages/login";

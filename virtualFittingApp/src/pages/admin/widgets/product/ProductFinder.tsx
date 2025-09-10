@@ -1,7 +1,8 @@
 import { ChangeEvent, useState } from "react";
 import { findProduct } from "../../api/admin.action";
-import { Product, ProductCard, SearchBar } from "@/shared";
+import { Product, SearchBar } from "@/shared";
 import styled from "styled-components";
+import { ProductCard } from "@/entities/product";
 
 function ProductFinder() {
   const [searchProduct, setSearchProduct] = useState<string>("");

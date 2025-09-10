@@ -7,9 +7,6 @@ export * from "@/shared/action";
 // * config
 export * from "@/shared/config";
 
-// * layout
-export * from "@/shared/layout";
-
 // * types
 export * from "@/shared/types";
 

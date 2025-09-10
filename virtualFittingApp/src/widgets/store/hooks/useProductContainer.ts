@@ -121,7 +121,6 @@ export const useProductContainer = (product: ProductDetail, onColorChange?: (col
       size: selectedSize,
       quantity: quantity,
     };
-    console.log("✅ [1단계] 장바구니에 추가하려는 아이템:", newItem);
 
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(item => item.id === newItem.id);

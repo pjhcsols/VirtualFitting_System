@@ -2,8 +2,8 @@ import { API_BASILIUM } from "@/shared";
 import { 
   PaymentRequestParams, 
   PaymentResponse, 
-  PaymentResultParams, 
-  PaymentData,
+  // PaymentResultParams, 
+  // PaymentData,
   PaymentConfirmParams,
   PaymentIntentRequest, 
   PaymentIntentData,

@@ -2,7 +2,6 @@ import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
 import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
-import Gradient from "/img/aibutton/gradient.png";
 
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
@@ -10,14 +9,9 @@ import RightArrow from "/svg/RightArrow.svg";
 import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
-import Plus from "/svg/plus.svg";
-import Minus from "/svg/minus.svg";
-import AI from "/svg/ai.svg";
-import UnLiked from "/svg/like.svg";
-import Liked from "/svg/liked.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
-import BasiliumSVGLogo from "/svg/BasiliumLogo.svg";
+import BasiliumSVGLogo from "/svg/BasiliumLogo.svg?url";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
@@ -31,14 +25,13 @@ import type {
   Color,
   Material,
   Size,
-  SizeTable,
+  // SizeTable,
 } from "@/shared/types";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
 export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
-export const IMG_GRADIENT = Gradient;
 
 export const PNG_HOODIE = Hoodie;
 export const PNG_HOODIE2 = Hoodie2;
@@ -51,17 +44,11 @@ export const ICON_RIGHT_ARROW = RightArrow;
 export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
-export const ICON_PLUS = Plus;
-export const ICON_MINUS = Minus;
 export const ICON_SHARE = Share;
 export const ICON_LOADING = Loading;
-export const ICON_AI = AI;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
-
-export const ICON_LIKED = Liked;
-export const ICON_UNLIKED = UnLiked;
 
 export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
 export const ICON_BASILIUM_ASSET_2 = Basilium3DLogoIcon_2;
@@ -231,12 +218,12 @@ export const materialList: Material[] = [
   "SILK",
 ];
 
-export const SizeTableTitles: (keyof SizeTable)[] = [
-  "productTotalLength",
-  "productChest",
-  "productShoulder",
-  "productArm",
-];
+// export const SizeTableTitles: (keyof SizeTable)[] = [
+//   "productTotalLength",
+//   "productChest",
+//   "productShoulder",
+//   "productArm",
+// ];
 
 export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];
 
@@ -266,21 +253,6 @@ export const BREAKPOINTS = {
 };
 
 export type BreakpointKey = keyof typeof BREAKPOINTS;
-
-// 2XL
-export const xlDouble = 1536;
-
-// XL
-export const xl = 1280;
-
-// lg
-export const lg = 1024;
-
-// md
-export const md = 768;
-
-// sm
-export const sm = 640;
 
 export * from "@/shared/constants/color/Colors";
 

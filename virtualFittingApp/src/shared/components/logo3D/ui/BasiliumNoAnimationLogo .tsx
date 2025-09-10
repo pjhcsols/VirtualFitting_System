@@ -3,7 +3,7 @@ import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 function Basilium3DLogoModel() {
-  const { scene } = useGLTF("/BasiliumLogo.gltf");
+  const { scene } = useGLTF("/animations/BasiliumLogo.gltf");
 
   return <primitive object={scene} scale={[2, 2, 2]} />;
 }

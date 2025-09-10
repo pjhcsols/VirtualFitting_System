@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import type { OrderItem } from "../types/order";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
+import { Header } from "@/widgets/header";
 import alertImg from "@/pages/my/ui/alert.png";
 import { STAR_EMPTY_ICON, STAR_FILLED_ICON, ADD_ICON, CANCEL_ICON } from "@/pages/my/constants";
 import type { ReviewData } from "../types/review";

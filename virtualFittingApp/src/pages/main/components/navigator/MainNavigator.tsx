@@ -31,7 +31,7 @@ function MainNavigator() {
     <Wrapper>
       {Array.from({ length: sectionCount }).map((_, index) => (
         <DotWrapper key={index} onClick={() => handleClick(index)}>
-          <Dot active={index === active} />
+          <Dot $active={index === active} />
         </DotWrapper>
       ))}
     </Wrapper>
@@ -60,15 +60,15 @@ const DotWrapper = styled.div`
   }
 `;
 
-const Dot = styled.div<{ active: boolean }>`
+const Dot = styled.div<{ $active: boolean }>`
   width: 12px;
   height: 12px;
   border-radius: 50%;
   
-  background-color: ${props => props.active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.35)'};
+  background-color: ${props => props.$active ? 'rgba(255, 255, 255, 0.8)' : 'rgba(255, 255, 255, 0.35)'};
   border: 1px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   transition: all 0.3s ease;
-  transform: scale(${props => props.active ? 1.2 : 1});
+  transform: scale(${props => props.$active ? 1.2 : 1});
 `;

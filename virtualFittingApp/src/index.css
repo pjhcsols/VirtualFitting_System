@@ -2,22 +2,22 @@
   font-size: 16px;
   font-family: "Prata-Regular";
   font-weight: normal;
-  src: url("/font/Prata-Regular.ttf") format("truetype");
+  src: url("./assets/fonts/Prata-Regular.ttf") format("truetype");
 }
 
 @font-face {
   font-size: 16px;
   font-family: "Pretendard";
-  src: url("/font/PretendardVariable.woff2") format("woff2");
+  src: url("./assets/fonts/PretendardVariable.woff2") format("woff2");
 }
 
 @font-face {
   font-size: 16px;
   font-family: "studio-sans";
   font-weight: normal;
-  src: url(/font/StudioSans-Bold.otf) url(/font/StudioSans-ExtraBold.otf)
-    url(/font/StudioSans-ExtraLight.otf) url(/font/StudioSans-Light.otf)
-    url(/font/StudioSans-Medium.otf) url(/font/StudioSans.otf) format("oft");
+  src: url("./assets/fonts/StudioSans-Bold.otf") url("./assets/fonts/StudioSans-ExtraBold.otf")
+    url("./assets/fonts/StudioSans-ExtraLight.otf") url("./assets/fonts/StudioSans-Light.otf")
+    url("./assets/fonts/StudioSans-Medium.otf") url("./assets/fonts/StudioSans.otf") format("oft");
 }
 
 :root {

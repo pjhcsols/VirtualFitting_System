@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import { Header } from "@/widgets/header";
 import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";

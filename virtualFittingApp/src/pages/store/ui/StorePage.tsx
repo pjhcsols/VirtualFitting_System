@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
 import { BREAKPOINTS } from "@/shared";
-import { ProductCard } from "@/shared/components/product-card";
+import { ProductCard } from "@/entities/product";
 import { Carousel } from "@/widgets";
 
 import { fetchOnSaleProducts } from "../api/products.action";
