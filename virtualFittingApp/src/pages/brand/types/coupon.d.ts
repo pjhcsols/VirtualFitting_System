@@ -6,13 +6,13 @@ export type ServerCouponDto = {
   percent: number;
   minOrderPrice: number;
   maxDiscountPrice: number;
-  startAt: string; // LocalDateTime
-  endAt: string; // LocalDateTime
+  startAt: string;
+  endAt: string;
   perUserLimit: number;
   totalIssuable: number;
   issuedCount: number;
   status: "SCHEDULED";
-  createdAt: string; // LocalDateTime
+  createdAt: string;
 };
 
 export type ClientCouponDto = {
@@ -21,8 +21,8 @@ export type ClientCouponDto = {
   percent: number;
   minOrderPrice: number;
   maxDiscountPrice: number;
-  startAt: string; // LocalDateTime
-  endAt: string; // LocalDateTime
+  startAt: string;
+  endAt: string;
   perUserLimit: number;
   totalIssuable: number;
 };

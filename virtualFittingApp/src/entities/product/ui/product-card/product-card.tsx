@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { ColorPopup } from "./color-pop-up";
 import { BREAKPOINTS } from "@/shared";
 import { COLOR_MAP } from "@/shared";
-import { fetchProductPrice } from "@/pages/store/api/products.action";
+import { fetchProductPrice } from "@/entities/product/api";
 
 type ProductCardProps = {
   product: any;

@@ -78,13 +78,14 @@ export { OrderDetailContent };
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: auto; 
+  background: #fff;
+  min-height: 100vh;
   overflow-x: hidden;
 `;
 
 const ContentWrapper = styled.div`
   padding: 100px 20px 20px;
+  background: #fff;
   display: flex;
   flex-direction: column;
   align-items: center;

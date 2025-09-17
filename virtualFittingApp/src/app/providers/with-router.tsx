@@ -2,12 +2,12 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MyPage } from "@/pages/my";
 import { MyOrderList } from "@/pages/my/ui/MyOrderList";
-import { MyCancel } from "@/pages/my/ui/MyCancel";
-import { MyLike } from "@/pages/my/ui/MyLike";
 import { MyOrderListDetail } from "@/pages/my/ui/MyOrderListDetail";
-import { MyReview } from "@/pages/my";
-import { StyleReview } from "@/pages/my";
-import { PaymentFailPage, PaymentSuccessPage } from "@/features";
+import { PaymentFailPage, PaymentSuccessPage, PaymentPage } from "@/pages/payment";
+import { MyCancelListPage } from "@/pages/my-cancel-list";
+import { MyLikeListPage } from "@/pages/my-like-list";
+import { MyReviewListPage } from "@/pages/my-review-list";
+import { WriteReviewPage } from "@/pages/write-review";
 
 import {
   MainPage,
@@ -92,17 +92,19 @@ const Routing = () => (
         <Route path=":id" element={<StoreDetailPage />} />
         </Route>
         <Route path="/payment" element={<PaymentLayout />}>
+        <Route index element={<PaymentPage />} />
         <Route path="success" element={<PaymentSuccessPage />} />
         <Route path="fail" element={<PaymentFailPage />} />
         </Route>
+
         <Route path="/mypage" element={<MyPageLayout />}>
-        <Route index element={<MyPage />} /> {/* /mypage */}
-        <Route path="order" element={<MyOrderList />} /> {/* /mypage/order */}
+        <Route index element={<MyPage />} />
+        <Route path="order" element={<MyOrderList />} />
         <Route path="order/:id" element={<MyOrderListDetail />} />
-        <Route path="cancel" element={<MyCancel />} />
-        <Route path="like" element={<MyLike />} />
-        <Route path="review" element={<MyReview />} />
-        <Route path="review/:id" element={<StyleReview />} />
+        <Route path="cancel" element={<MyCancelListPage />} />
+        <Route path="like" element={<MyLikeListPage />} />
+        <Route path="review" element={<MyReviewListPage />} />
+        <Route path="review/:id" element={<WriteReviewPage />} />
         </Route>
     </Routes>
 );

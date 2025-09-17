@@ -11,18 +11,9 @@ export type {
   BrandProductSimpleType,
 } from "@/shared/types/product/product.d";
 export * from "@/shared/types/product/category.d";
-export type { Product } from "@/shared/types/product/products.d";
-export type { ProductDetail } from "@/shared/types/product/productDetail.d";
-export type { ProductPrice } from "@/shared/types/product/productPrice.d";
-export type { DiscountQuote } from "@/shared/types/product/discountQuote.d";
-export type * from "@/shared/types/product/coupon";
 
 export * from "@/shared/types/user/grade.d";
 export * from "@/shared/types/user/user.d";
-
-export { type CartItem } from "./cart/cart.d";
-
-export type * from "@/shared/types/payment/payment.d";
 
 export { type FileItem } from "@/shared/types/file/File.d";
 

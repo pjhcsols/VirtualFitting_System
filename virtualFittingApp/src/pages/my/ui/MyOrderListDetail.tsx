@@ -9,7 +9,10 @@ function MyOrderListDetail() {
     
     return (
         <PageWrapper>
-            <OrderDetailContent />
+            <HeaderWrapper>
+                <Header />
+            </HeaderWrapper>
+                <OrderDetailContent />
             <ContentWrapper>
                 <InnerContent>
                 </InnerContent>
@@ -24,8 +27,13 @@ export { MyOrderListDetail };
 const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  flex: 1;
-  min-height: auto; 
+  height: 100vh;
+`;
+
+const HeaderWrapper = styled.div`
+  position: sticky;
+  top: 0;
+  z-index: 100;
 `;
 
 const ContentWrapper = styled.div`

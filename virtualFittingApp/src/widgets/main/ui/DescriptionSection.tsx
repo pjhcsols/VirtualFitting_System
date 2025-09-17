@@ -1,21 +1,29 @@
-import styled, { keyframes } from "styled-components";
-import { PNG_HOODIE, PNG_HOODIE2, PNG_HOODIE3 } from "@/shared";
+import styled, { keyframes, css } from "styled-components";
+import { HOODIE_IMAGES } from "../model/constants";
 
-const hoodieImages = [
-  { id: 1, src: PNG_HOODIE, name: "Classic Hoodie" },
-  { id: 2, src: PNG_HOODIE2, name: "Street Vibe Hoodie" },
-  { id: 3, src: PNG_HOODIE3, name: "Minimalist Hoodie" },
-  { id: 4, src: PNG_HOODIE, name: "Classic Hoodie" },
-  { id: 5, src: PNG_HOODIE2, name: "Street Vibe Hoodie" },
-  { id: 6, src: PNG_HOODIE3, name: "Minimalist Hoodie" },
-];
+const imageTrack = [...HOODIE_IMAGES, ...HOODIE_IMAGES];
 
-const imageTrack = [...hoodieImages, ...hoodieImages];
+const fadeInUp = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
 
-function DescriptionSection() {
+function DescriptionSection({ shouldAnimate }: { shouldAnimate: boolean }) {
   return (
     <Wrapper>
-      <BasiliumText>BASILIUM</BasiliumText>
+      <BasiliumText>
+        {"BASILIUM".split("").map((char, index) => (
+          <Letter key={index} $delay={index * 0.1} $shouldAnimate={shouldAnimate}>
+            {char}
+          </Letter>
+        ))}
+      </BasiliumText>
       <CarouselWrapper>
         <CardTrack>
           {imageTrack.map((hoodie, index) => (
@@ -93,8 +101,20 @@ const DescriptionBox = styled.div`
 const BasiliumText = styled.span`
   font-family: "Prata-Regular";
   font-size: 10em;;
-  color: white;
+  color: #FAF9F6;
   text-transform: uppercase;
+  display: inline-block;
+`;
+
+const Letter = styled.span<{ $delay: number; $shouldAnimate: boolean }>`
+  display: inline-block;
+  opacity: 0;
+  ${(props) =>
+    props.$shouldAnimate &&
+    css`
+      animation: ${fadeInUp} 0.5s forwards;
+      animation-delay: ${props.$delay}s;
+    `}
 `;
 
 const Title = styled.h2`
@@ -109,7 +129,7 @@ const Text = styled.p`
   font-family: 'Inter Tight', 'Pretendard', sans-serif;
   font-size: 1rem;
   line-height: 1.2;
-  color: #fff;
+  color: #FAF9F6;
   margin: 0;
 `;
 

@@ -16,5 +16,3 @@ export {
 
 export * from "@/shared/components/button/ui/ShareButton";
 export { LoginButton } from "@/shared/components/button/ui/LoginButton";
-export * from "@/shared/components/button/ui/PayButton";
-export * from "@/shared/components/button/ui/PurchaseButton";

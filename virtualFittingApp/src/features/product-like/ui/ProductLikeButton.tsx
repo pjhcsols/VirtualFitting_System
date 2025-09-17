@@ -1,6 +1,6 @@
 import { useState } from "react";
-import iconLiked from "../assets/icon-liked.svg";
-import iconUnliked from "../assets/icon-unliked.svg";
+import icon_liked from "../assets/icon-liked.svg";
+import icon_unliked from "../assets/icon-unliked.svg";
 import styled from "styled-components";
 
 type ProductLikeButtonProps = {
@@ -23,7 +23,7 @@ export const ProductLikeButton = ({
 
   return (
     <IconImage
-      src={liked ? iconLiked : iconUnliked}
+      src={liked ? icon_liked : icon_unliked}
       alt={liked ? "좋아요 취소" : "좋아요"}
       onClick={handleClick}
     />

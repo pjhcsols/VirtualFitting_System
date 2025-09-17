@@ -40,20 +40,20 @@ function HeroSection() {
           <Basilium3DLogo />
         </ModelContainer>
         <InfoContainer>
-          <PrataText size={"4rem"} weight={700} color="#fff">
+          <PrataText size={"4rem"} $weight={700} color="#fff">
             WEAR CROWN
           </PrataText>
-          <PrataText size={"1.5rem"} weight={500} color="#fff">
+          <PrataText size={"1.5rem"} $weight={500} color="#fff">
             RULE YOUR STYLE
           </PrataText>
           <ButtonContainer>
             <LoginButton to={"/login"}>
-              <PrataText size={"0.8rem"} weight={500} color="#fff">
+              <PrataText size={"0.8rem"} $weight={500} color="#fff">
                 LOGIN
               </PrataText>
             </LoginButton>
             <LoginButton to={"/store"}>
-              <PrataText size={"0.8rem"} weight={500} color="#fff">
+              <PrataText size={"0.8rem"} $weight={500} color="#fff">
                 STORE
               </PrataText>
             </LoginButton>

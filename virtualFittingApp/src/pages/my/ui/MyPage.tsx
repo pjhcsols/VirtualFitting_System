@@ -1,12 +1,10 @@
 import { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
-import { Header } from "@/widgets/header";
 import { useNavigate } from "react-router-dom";
-import { MYUSER_ICON } from "@/pages/my/constants";
+import { MYUSER_ICON, ARROW_ICON } from "../constants";
 import { getMaskedUserName } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 import Cookies from "js-cookie";
-import { ARROW_ICON } from "@/pages/my/constants";
 import * as THREE from "three";
 import { Stars } from "@react-three/drei";
 import { Canvas, useFrame } from "@react-three/fiber";
@@ -41,7 +39,6 @@ function MyPage() {
         </Canvas>
       </StarBackground>
       <HeaderWrapper>
-        <Header />
       </HeaderWrapper>
       <ContentWrapper>
         <GlassPanel>
@@ -64,7 +61,7 @@ function MyPage() {
               쿠폰
               <ReviewCount>0개</ReviewCount>
             </Stat>
-            <Stat onClick={() => navigate("/myPage/review")}>
+            <Stat onClick={() => navigate("/mypage/review")}>
               후기작성
               <ReviewCount>{reviewCount}개</ReviewCount>
             </Stat>
@@ -75,7 +72,7 @@ function MyPage() {
               좋아요
               <ArrowImg
                 src={ARROW_ICON}
-                onClick={() => navigate("/myPage/like")}
+                onClick={() => navigate("/mypage/like")}
                 alt=">"
               />
             </MenuItem>
@@ -83,7 +80,7 @@ function MyPage() {
               주문내역
               <ArrowImg
                 src={ARROW_ICON}
-                onClick={() => navigate("/myPage/order")}
+                onClick={() => navigate("/mypage/order")}
                 alt=">"
               />
             </MenuItem>
@@ -91,7 +88,7 @@ function MyPage() {
               취소/반품/교환 내역
               <ArrowImg
                 src={ARROW_ICON}
-                onClick={() => navigate("/myPage/cancel")}
+                onClick={() => navigate("/mypage/cancel")}
                 alt=">"
               />
             </MenuItem>

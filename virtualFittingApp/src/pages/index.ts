@@ -2,8 +2,6 @@ export * from "@/pages/main";
 
 export * from "@/pages/signup";
 
-export * from "@/pages/login";
-
 export * from "@/pages/my";
 
 export * from "@/pages/brand";

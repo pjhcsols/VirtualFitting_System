@@ -1,4 +1,4 @@
-import React, { memo, useRef } from "react";
+import { memo, useRef } from "react";
 import styled from "styled-components";
 import * as THREE from "three";
 import { Stars } from "@react-three/drei";

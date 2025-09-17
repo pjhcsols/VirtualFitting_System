@@ -2,21 +2,22 @@ import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
-import { fetchProductDetailByColor, fetchProductColors } from "../api/products.action";
-import type { ProductDetail } from "@/shared";
+import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
+import type { ProductDetail } from "@/entities/product";
 
 import { BREAKPOINTS } from "@/shared";
 import {
-  DetailDescription,
-  SizeInfo,
-  ProductContainer,
-  ReviewContent,
-} from "@/widgets";
+  ProductDetails
+} from "@/widgets/product-details";
+
+import { ProductDescription } from "@/widgets/product-description";
+import { ProductReviews } from "@/widgets/product-reviews";
+import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 
 function StoreDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate(); //
+  const navigate = useNavigate();
 
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
@@ -74,7 +75,7 @@ function StoreDetailPage() {
 
   return (
     <Wrapper>
-      <ProductContainer
+      <ProductDetails
         product={product}
         productColors={productColors}
         onColorChange={(newColor) => {
@@ -91,9 +92,9 @@ function StoreDetailPage() {
         </TabMenu>
         <Divider />
       
-        {activeTab === "description" && <DetailDescription />}
-        {activeTab === "size" && <SizeInfo />}
-        {activeTab === "review" && <ReviewContent />}
+        {activeTab === "description" && <ProductDescription />}
+        {activeTab === "size" && <ProductSizingInfo />}
+        {activeTab === "review" && <ProductReviews />}
         {/* {activeTab === "qna" && <QnaContent />} */}
       </ContentArea>
     </Wrapper>
@@ -130,7 +131,7 @@ const TabMenu = styled.div`
   gap: 64px;
 `;
 
-const TabButton = styled.button<{ $active: boolean }>` //navlink
+const TabButton = styled.button<{ $active: boolean }>`
   padding: 8px 32px;
   border: none;
   background: transparent;

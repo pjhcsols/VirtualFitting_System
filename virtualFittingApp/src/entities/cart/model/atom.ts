@@ -1,5 +1,5 @@
 import { atom, selector } from 'recoil';
-import type { CartItem } from '@/shared';
+import type { CartItem } from './types';
 
 export const cartState = atom<CartItem[]>({
   key: 'cartState',

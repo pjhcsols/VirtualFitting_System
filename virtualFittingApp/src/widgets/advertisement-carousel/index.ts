@@ -1,0 +1,1 @@
+export * from "@/widgets/advertisement-carousel/ui/advertisement-carousel";

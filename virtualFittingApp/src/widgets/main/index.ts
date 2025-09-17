@@ -1,2 +1,2 @@
-export * from "@/widgets/main/ui/HeroSection";
-export * from "@/widgets/main/ui/DescriptionSection";
+export * from "./ui/HeroSection";
+export * from "./ui/DescriptionSection";
