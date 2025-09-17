@@ -1,16 +1,11 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 
-
-import { HeroSection, DescriptionSection } from "@/widgets";
-import { HeroSection, AiServiceSection } from "@/widgets";
-import { useEffect, useRef } from "react";
+import { HeroSection, DescriptionSection } from "@/widgets/main";
+import { useEffect, useRef, useState } from "react";
 
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import { Stars } from "@react-three/drei";
-import { useFrame } from "@react-three/fiber";
-import * as THREE from "three";
 import styled from "styled-components";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -18,27 +13,15 @@ gsap.registerPlugin(ScrollTrigger);
 function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
-
-  const RotatingStars = () => {
-    const stars = useRef<THREE.Points>(null);
-
-    useFrame(() => {
-      if (stars.current) {
-        stars.current.rotation.x += 0.00015;
-        stars.current.rotation.y += 0.00015;
-        stars.current.rotation.x = stars.current.rotation.y += 0.00015;
-      }
-    });
-
-    return <Stars ref={stars} />;
-  };
+  const aiIntroductionRef = useRef<HTMLDivElement>(null);
+  const [isDescriptionSectionVisible, setIsDescriptionSectionVisible] = useState(false);
 
   useEffect(() => {
     const slider = sliderRef.current;
     if (slider) {
       const tl = gsap.timeline({
         defaults: {
-          ease: "none",
+          ease: "power2.inOut",
         },
         scrollTrigger: {
           trigger: slider,
@@ -67,6 +50,29 @@ function MainPage() {
     return () => gsap.ticker.remove(update);
   }, []);
 
+  useEffect(() => {
+    const aiIntroElement = aiIntroductionRef.current;
+    if (aiIntroElement) {
+      const st = ScrollTrigger.create({
+        trigger: aiIntroElement,
+        start: "top center",
+        end: "bottom center",
+        onEnter: () => {
+          console.log('AIIntroduction entered viewport');
+          setIsDescriptionSectionVisible(true);
+        },
+        onLeaveBack: () => {
+          console.log('AIIntroduction left viewport (scrolling back)');
+          setIsDescriptionSectionVisible(false);
+        },
+      });
+
+      return () => {
+        st.kill();
+      };
+    }
+  }, []);
+
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
@@ -79,8 +85,8 @@ function MainPage() {
             <Hero>
               <HeroSection />
             </Hero>
-            <AIIntroduction>
-              <DescriptionSection />
+            <AIIntroduction ref={aiIntroductionRef}>
+              <DescriptionSection shouldAnimate={isDescriptionSectionVisible} />
             </AIIntroduction>
           </ModelContainer>
           <section></section>

@@ -1,12 +1,13 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
+import { MYPAGE_GRADIENT } from "@/shared/styles/Theme";
 import { Header } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared"
 
 function StoreLayout() {
   return (
     <Wrapper>
-      <Header />
+      <Header theme="dark" /> 
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
@@ -23,6 +24,7 @@ const Wrapper = styled.main`
   justify-content: flex-start;
   align-items: flex-start;
   background-color: #fffafa;
+  background: ${MYPAGE_GRADIENT};
 `;
 
 const ContentWrapper = styled.article`
@@ -32,8 +34,8 @@ const ContentWrapper = styled.article`
   display: flex;
   justify-content: flex-start;
   align-items: flex-start;
-  background: white;
 
+background: ${MYPAGE_GRADIENT};
   @media (max-width: ${BREAKPOINTS.sm}px) {
     padding: 70px 16px;
   }

@@ -1,7 +1,6 @@
 import styled from "styled-components";
-import type { CartItem } from "@/shared";
 import { useRecoilState } from 'recoil';
-import { cartState } from '@/entities';
+import { cartState, type CartItem } from '@/entities/cart';
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();

@@ -47,7 +47,7 @@ function OrderListContent() {
             <RightSection>
               <TitleLine>
                 <Brand>{order.brand}</Brand>
-                <OrderDetail onClick={() => navigate(`/myPage/order/${order.id}`)}>
+                <OrderDetail onClick={() => navigate(`/mypage/order/${order.id}`)}>
                   주문 상세
                 </OrderDetail>
               </TitleLine>

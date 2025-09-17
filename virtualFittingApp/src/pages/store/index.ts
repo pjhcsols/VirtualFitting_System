@@ -1,2 +1,2 @@
-export * from "@/pages/store/ui/StorePage";
-export * from "@/pages/store/ui/StoreDetailPage";
+export * from "./ui/StorePage";
+export * from "./ui/StoreDetailPage";

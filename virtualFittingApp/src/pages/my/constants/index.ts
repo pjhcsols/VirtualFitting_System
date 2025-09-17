@@ -1,14 +1,2 @@
 export const MYUSER_ICON = "/svg/myUser.svg";
-export const CAMERA_ICON = "/svg/camera.svg";
-export const MALE_ICON = "/svg/male.svg";
-export const FEMALE_ICON = "/svg/female.svg";
-export const STAR_FILLED_ICON = "/svg/starFilled.svg";
-export const STAR_EMPTY_ICON = "/svg/starEmpty.svg";
-export const ADD_ICON = "/svg/addIcon.svg";
-export const CANCEL_ICON = "/svg/cancel.svg";
-export const ELLIPSIS_ICON = "/svg/ellipsisIcon.svg";
-export const UP_ICON = "/svg/buttonDown.svg";
-export const DOWN_ICON = "/svg/buttonUp.svg";
 export const ARROW_ICON = "/svg/arrow.svg";
-export const PEN_ICON = "/svg/pencil.svg";
-export const CIRCLE_ICON = "/svg/pencil.svg";

@@ -1,12 +1,10 @@
 import Basilium3DLogo from "/img/logo/Basilium3DLogo.png";
-import WarningImg from "/img/warning/Warning.png";
 import TestImg from "/img/clothes/testPants.png";
 import BasiliumIcon from "/img/logo/BasiliumLogo.svg";
 
 import SearchIcon from "/svg/SearchIcon.svg";
 import LeftArrow from "/svg/LeftArrow.svg";
 import RightArrow from "/svg/RightArrow.svg";
-import ReviewImg from "/svg/pencil.svg";
 import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Share from "/svg/share.svg";
@@ -16,9 +14,7 @@ import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
 import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
 import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
-import Hoodie from "/img/clothes/hoodie.png";
-import Hoodie2 from "/img/clothes/hoodie2.png";
-import Hoodie3 from "/img/clothes/hoodie3.png";
+
 
 import type {
   CategoryType,
@@ -29,19 +25,13 @@ import type {
 } from "@/shared/types";
 
 export const IMG_BASILIUM_3D_LOGO = Basilium3DLogo;
-export const IMG_WARNING = WarningImg;
 
 export const IMG_TEST_CLOTHES = TestImg;
-
-export const PNG_HOODIE = Hoodie;
-export const PNG_HOODIE2 = Hoodie2;
-export const PNG_HOODIE3 = Hoodie3;
 
 export const ICON_BASILIUM = BasiliumIcon;
 export const ICON_SEARCH = SearchIcon;
 export const ICON_LEFT_ARROW = LeftArrow;
 export const ICON_RIGHT_ARROW = RightArrow;
-export const ICON_REVIEW = ReviewImg;
 export const ICON_CLOSE = CloseIcon;
 export const ICON_UPLOAD = UploadIcon;
 export const ICON_SHARE = Share;

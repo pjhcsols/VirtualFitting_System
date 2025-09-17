@@ -4,8 +4,6 @@ export * from "@/shared/components/card";
 
 export * from "@/shared/components/checkbox";
 
-export * from "@/shared/components/liked-carousel";
-
 export * from "@/shared/components/pagination";
 
 export * from "@/shared/components/product";

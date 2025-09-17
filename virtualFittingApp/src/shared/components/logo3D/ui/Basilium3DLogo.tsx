@@ -1,9 +1,9 @@
 import { Center, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
-import * as THREE from "three";
+import { useState } from "react";
 
 function Basilium3DLogoModel() {
-  const { scene } = useGLTF("/animations/BasiliumLogo.gltf");
+  const { scene } = useGLTF("/animations/BasiliumLogo.glb");
 
   return <primitive object={scene} scale={[2, 2, 2]} />;
 }
@@ -19,31 +19,60 @@ function CameraSetting() {
 
 type CameraSettingType = {
   fov: number;
-  aspect: number;
   near: number;
   far: number;
 };
 
 function Basilium3DLogo() {
+  const [contextLost, setContextLost] = useState(false);
+
   const cameraSetting: CameraSettingType = {
-    fov: 85, // FOv ( 시야각 )
-    aspect: window.innerWidth / window.innerHeight, // 종횡비 ( 가로 / 세로 )
-    near: 0.1, // 카메라의 시점이 시작되는 지점
-    far: 1000, // 카메라의 시점이 끝나는 지점
+    fov: 85,
+    near: 0.1,
+    far: 1000,
   };
   return (
-    <Canvas
-      shadows
-      style={{ height: "50vh" }}
-      camera={{
-        fov: cameraSetting.fov,
-        aspect: cameraSetting.aspect,
-        near: cameraSetting.near,
-        far: cameraSetting.far,
-      }}
-    >
-      <Model />
-    </Canvas>
+    <div style={{ position: "relative", height: "50vh", width: "100%" }}>
+      {contextLost && (
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            color: "white",
+            backgroundColor: "rgba(0,0,0,0.7)",
+            zIndex: 1,
+          }}
+        >
+        </div>
+      )}
+      <Canvas
+        shadows
+        style={{ height: "100%" }}
+        camera={{
+          fov: cameraSetting.fov,
+          near: cameraSetting.near,
+          far: cameraSetting.far,
+        }}
+        onCreated={({ gl }) => {
+          gl.domElement.addEventListener("webglcontextlost", (event) => {
+            console.error("WebGL context lost!", event);
+            setContextLost(true);
+          });
+          gl.domElement.addEventListener("webglcontextrestored", () => {
+            console.log("WebGL context restored.");
+            setContextLost(false);
+          });
+        }}
+      >
+        <Model />
+      </Canvas>
+    </div>
   );
 }
 

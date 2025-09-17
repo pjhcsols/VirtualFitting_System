@@ -4,10 +4,10 @@ import { useNavigate } from "react-router-dom";
 
 import { BREAKPOINTS } from "@/shared";
 import { ProductCard } from "@/entities/product";
-import { Carousel } from "@/widgets";
+import { AdvertisementCarousel } from "@/widgets/advertisement-carousel";
 
-import { fetchOnSaleProducts } from "../api/products.action";
-import type { Product } from "@/shared";
+import { fetchOnSaleProducts } from "@/entities/product/api";
+import type { Product } from "@/entities/product";
 
 function StorePage() {
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function StorePage() {
   return (
     <Wrapper>
       <CarouselContainer>
-        <Carousel />
+        <AdvertisementCarousel />
       </CarouselContainer>
       <ProductGrid>
         {products.map((product) => (
@@ -63,7 +63,6 @@ const Wrapper = styled.div`
 
 const CarouselContainer = styled.div`
   width: 100%;
-  height: 100%;
 `;
 
 const ProductGrid = styled.div`

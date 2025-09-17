@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRecoilValue } from 'recoil';
-import { cartItemCountState } from '@/entities';
+import { cartItemCountState } from '@/entities/cart';
 
 function Header({ theme = 'light' }) {
   const router = useNavigate();
@@ -28,7 +28,7 @@ function Header({ theme = 'light' }) {
             </CartLinkWrapper>
           </li>
           <li>
-            <HeaderContent to="/myPage" theme={theme}>
+            <HeaderContent to="/mypage" theme={theme}>
               마이
             </HeaderContent>
           </li>

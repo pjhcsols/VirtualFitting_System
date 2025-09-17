@@ -6,7 +6,7 @@ import { BREAKPOINTS } from "@/shared";
 function CartLayout() {
   return (
     <Wrapper>
-      <Header />
+      <Header theme="dark" /> 
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>

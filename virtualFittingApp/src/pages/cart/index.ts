@@ -1,1 +1,1 @@
-export * from "@/pages/cart/ui/ShoppingCartPage";
+export * from "./ui/ShoppingCartPage";

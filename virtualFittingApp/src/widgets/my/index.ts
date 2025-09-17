@@ -1,1 +1,0 @@
-export * from "@/widgets/my/ui/ReviewCard";

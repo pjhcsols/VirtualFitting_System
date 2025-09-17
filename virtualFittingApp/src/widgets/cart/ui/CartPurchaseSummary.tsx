@@ -1,8 +1,8 @@
-import { PayButton } from "@/shared";
+import { InitiateCheckoutCartButton } from "@/features/initiate-checkout-cart";
 import styled from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 import { useRecoilValue } from 'recoil';
-import { cartTotalsState } from '@/entities';
+import { cartTotalsState } from '@/entities/cart';
 
 function CartPurchaseSummary() {
   const totals = useRecoilValue(cartTotalsState);
@@ -30,7 +30,7 @@ function CartPurchaseSummary() {
           </PriceRow>
         </PriceInfoList>
         <SizeBoxBottom>
-          <PayButton />
+          <InitiateCheckoutCartButton />
         </SizeBoxBottom>
       </CartSummaryContainer>
     </Wrapper>

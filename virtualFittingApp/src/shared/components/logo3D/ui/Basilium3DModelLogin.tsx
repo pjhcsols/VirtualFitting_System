@@ -1,5 +1,6 @@
 import { Center, PerspectiveCamera, useGLTF } from "@react-three/drei";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { useEffect, useRef } from "react";   
 import * as THREE from "three";
 
 function Basilium3DLogoModel() {
@@ -9,14 +10,14 @@ function Basilium3DLogoModel() {
 }
 
 function CameraSetting() {
-  const { camera } = useThree();
+  const three = useThree();
+  if (!three || !three.camera) return null;
+  const { camera } = three;
   return useFrame(({ clock }) => {
-    // 시간 기반으로 카메라 Y 위치를 변경
-    const time = clock.getElapsedTime(); // 경과된 시간
-    const amplitude = 0.15; // 위아래 움직임의 크기
-    const frequency = 0.2; // 초당 움직임 주기 (1Hz = 1초)
-
-    // Y 위치를 sin 함수로 설정
+    const time = clock.getElapsedTime();
+    const amplitude = 0.15;
+    const frequency = 0.2;
+    
     camera.position.y =
       amplitude * (5 + Math.sin(2 * Math.PI * frequency * time));
     camera.position.x = -0.2;
@@ -40,10 +41,35 @@ function Model() {
 }
 
 function Basilium3DModelLogin() {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+
+    const handleContextLost = (event: Event) => {
+      event.preventDefault();
+      console.warn("WebGL context lost!", event);
+    };
+
+    const handleContextRestored = () => {
+      console.info("WebGL context restored successfully at " + new Date().toLocaleTimeString());
+    };
+
+    canvas.addEventListener("webglcontextlost", handleContextLost, false);
+    canvas.addEventListener("webglcontextrestored", handleContextRestored, false);
+
+    return () => {
+      canvas.removeEventListener("webglcontextlost", handleContextLost, false);
+      canvas.removeEventListener("webglcontextrestored", handleContextRestored, false);
+    };
+  }, []);
+
   return (
     <Canvas
       shadows
-      camera={{ position: [0, 0, 0], fov: 0.0001, near: 2, far: 10 }}
+      camera={{ position: [0, 0, 5], fov: 75, near: 0.1, far: 1000 }}
+      ref={canvasRef}
     >
       <Model />
     </Canvas>

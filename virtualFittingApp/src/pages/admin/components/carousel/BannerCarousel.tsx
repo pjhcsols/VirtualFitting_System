@@ -30,7 +30,6 @@ const sampleImages = [
   },
 ];
 
-// Styled Components
 const CarouselContainer = styled.div`
   width: 100%;
   max-width: 1024px;

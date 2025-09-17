@@ -20,7 +20,10 @@ export const fetchUserInfo = async () => {
       Cookies.set("userId", userId as string);
     }
 
-    const res = await API_BASILIUM.get("/b1/normalUsers/me");
+    const res = await API_BASILIUM.get("b1/normalUsers/me", {
+      params: { userId },
+    });
+
     if (res.status === 200) {
       return res.data;
     }
@@ -37,7 +40,7 @@ export const getReviewAPI = async ({
   productId: string;
 }) => {
   try {
-    const res = await API_BASILIUM.get(`/b1/products/${productId}/reviews`);
+    const res = await API_BASILIUM.get(`/products/${productId}/reviews`);
     if (res.status === 200) {
       return res.data;
     } else {
