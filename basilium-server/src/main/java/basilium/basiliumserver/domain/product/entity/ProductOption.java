@@ -6,6 +6,8 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Optional;
+
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 @Entity
 @Getter
@@ -34,8 +36,17 @@ public class ProductOption {
         this.product = product;
     }
 
+    /*
     public void updateQuantity(Long newQuantity) {
         this.optionQuantity = newQuantity;
+    }
+     */
+
+    public void updateQuantity(Long newQuantity) {
+        final long old = Optional.ofNullable(this.optionQuantity).orElseGet(() -> 0L);
+        this.optionQuantity = Optional.ofNullable(newQuantity)
+                .orElseThrow(() -> new IllegalArgumentException("optionQuantity는 null일 수 없습니다."));
+        Optional.ofNullable(product).ifPresent(p -> p.applyOptionDelta(this.optionQuantity - old));
     }
 
     // ProductOptionUpdateRequest를 기반으로 옵션 업데이트

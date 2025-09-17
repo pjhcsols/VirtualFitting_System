@@ -12,6 +12,7 @@ import basilium.basiliumserver.global.apiResponse.ErrorCode;
 import basilium.basiliumserver.global.auth.support.AuthUser;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +38,7 @@ public class ProductController implements ProductApiDocs {
     }
 
     // 상품 수정 (PATCH /api/products/{id})
+    @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")
     // 브랜드 유저 자신 상품만 수정가능하게 수정 -> 검증 로직이 현재 없다. // userId로 product 검증하기 추가
     @PatchMapping("/{id}")
     public ResponseEntity<String> updateProduct(@PathVariable("id") Long productId,
@@ -116,6 +118,7 @@ public class ProductController implements ProductApiDocs {
     // ========================
 
     // 상품 옵션 수정 (PATCH /b1/products/{productId}/options)
+    @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")
     @PatchMapping("/{productId}/options")
     public ResponseEntity<String> updateProductOption(@PathVariable Long productId,
                                                       @RequestBody ProductOptionDTO optionUpdateRequest) {

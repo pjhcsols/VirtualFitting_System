@@ -269,6 +269,26 @@ public class Product {
                 .sum();
     }
 
+    public void applyOptionDelta(long delta) {
+        final long base = Optional.ofNullable(this.totalQuantity).orElseGet(() -> 0L);
+        this.totalQuantity = base + delta;
+    }
+
+    public boolean removeProductOption(Size size, Color color) {
+        for (var it = this.productOptions.iterator(); it.hasNext();) {
+            var opt = it.next();
+            if (opt.getId().getProductSize().equals(size)
+                    && opt.getId().getProductColor().equals(color)) {
+
+                long oldQty = Optional.ofNullable(opt.getOptionQuantity()).orElse(0L);
+                it.remove();                    // 실제 컬렉션에서 안전하게 제거
+                applyOptionDelta(-oldQty);      // 총수량 즉시 반영(성능 최적화)
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Set<ProductOption> getProductOptions() {
         return Collections.unmodifiableSet(productOptions);
     }

@@ -249,12 +249,16 @@ public class ProductService {
         runWithLogging(() -> {
             Product product = productRepository.findByIdWithDetails(productId)
                     .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 상품 ID: " + productId));
-            boolean removed = product.getProductOptions().removeIf(option ->
-                    option.getId().getProductSize().name().equals(productSize) &&
-                            option.getId().getProductColor().name().equals(productColor));
+
+            boolean removed = product.removeProductOption(
+                    Size.valueOf(productSize),
+                    Color.valueOf(productColor)
+            );
+
             if (!removed) {
-                throw new IllegalArgumentException("삭제할 상품 옵션을 찾을 수 없습니다.");
+                throw new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "삭제할 상품 옵션을 찾을 수 없습니다.");
             }
+
         }, "상품 옵션 삭제 중 오류 발생 (상품 ID: " + productId + "): ");
     }
 
