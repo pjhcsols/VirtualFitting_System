@@ -5,6 +5,7 @@ import { useBrandUser } from "../hooks/useBrandUser";
 
 function AdminBrand() {
   const { brandUsers } = useBrandUser();
+  console.log(brandUsers);
 
   return (
     <Wrapper>

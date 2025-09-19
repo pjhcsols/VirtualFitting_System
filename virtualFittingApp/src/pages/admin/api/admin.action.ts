@@ -1,7 +1,7 @@
 "use server";
 
 import { BrandUserType } from "@/pages/brand";
-import { API_BASILIUM, BasiliumResponse, Product } from "@/shared";
+import { API_BASILIUM, BasiliumResponse, ServerProductDto } from "@/shared";
 import { type AxiosResponse } from "axios";
 
 interface IBrandUsers extends BasiliumResponse {
@@ -27,7 +27,7 @@ interface IFindProduct {
 }
 
 interface IFindProductResponse extends AxiosResponse {
-  data: Product[];
+  data: ServerProductDto[];
 }
 
 export const findProduct = async ({
@@ -37,7 +37,7 @@ export const findProduct = async ({
     `/b1/products/on-sale?productName=${productName}`,
   );
   if (res.status === 200) {
-    return res;
+    return res.data;
   }
   throw new CustomException(500, "상품을 가져올 수 없습니다! 서버 문제 발생!");
 };

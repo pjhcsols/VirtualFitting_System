@@ -19,6 +19,7 @@ function useBrandUser() {
     fetchData();
   }, []);
   return {
+    errMsg,
     brandUsers,
   };
 }

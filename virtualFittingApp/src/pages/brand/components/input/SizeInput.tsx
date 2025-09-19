@@ -17,7 +17,7 @@ function SizeInput({ sizeValue }: ISizeInput) {
         <HeaderColumn>총장</HeaderColumn>
         <HeaderColumn>재고</HeaderColumn>
       </Header>
-      {sizes.map((item, key) => {
+      {sizes.map((item: Size, key) => {
         return <Column key={key}></Column>;
       })}
     </Wrapper>

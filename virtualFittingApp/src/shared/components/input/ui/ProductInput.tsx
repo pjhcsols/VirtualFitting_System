@@ -41,11 +41,10 @@ function ProductDescription({ text, onChange, placeholder }: InputType) {
 }
 
 type ProductMaterialType = {
-  isClicked: boolean;
   children: React.ReactNode;
 };
 
-function ProductMaterial({ isClicked, children }: ProductMaterialType) {
+function ProductMaterial({ children }: ProductMaterialType) {
   return <ProductMaterialButton>{children}</ProductMaterialButton>;
 }
 
@@ -139,10 +138,6 @@ const ProductNameInputBox = styled.div`
 const ProductName = styled(DefaultInput)``;
 
 const ProductNamePlaceholder = styled(DefaultOutline)``;
-
-const ProductPrice = styled(DefaultInput)``;
-
-const ProductDesc = styled(DefaultInput)``;
 
 const ProductColorButton = styled(DefaultButton)<{
   color?: string;

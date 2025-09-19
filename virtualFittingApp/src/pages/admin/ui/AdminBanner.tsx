@@ -295,24 +295,6 @@ const EditContainer = styled.div`
   gap: 0.5rem;
 `;
 
-const EditInput = styled.input`
-  flex: 1;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  outline: none;
-  transition: border-color 0.2s ease;
-
-  &:focus {
-    border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-  }
-
-  &::placeholder {
-    color: #9ca3af;
-  }
-`;
-
 const EditButton = styled.button<{ variant: "save" | "cancel" }>`
   padding: 0.5rem 1rem;
   border: none;

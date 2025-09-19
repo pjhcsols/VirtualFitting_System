@@ -1,13 +1,12 @@
-import { type ChangeEvent, Dispatch, SetStateAction, useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import type { NormalUserSignUpRequestDto } from "../types/login";
 import { NormalUserSignUp } from "../api/normalAuth.action";
 import { useNavigate } from "react-router-dom";
 import { Dayjs } from "dayjs";
 
-function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
+function useNormalSignUp() {
   const router = useNavigate();
 
-  const [step, setStep] = useState<number>(0);
   const [phoneNumber, setPhoneNumber] = useState({
     part1: "",
     part2: "",
@@ -117,42 +116,6 @@ function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
     }
   };
 
-  const onBlur = (name: string) => {
-    switch (name) {
-      case "signupId":
-        setStep(1);
-        break;
-      case "password":
-        setStep(2);
-        break;
-      case "gender":
-        setStep(3);
-        break;
-      case "name":
-      case "nickname":
-      case "address":
-      case "emailAddress":
-      case "birthDate":
-        setStep(4);
-        setIsCompleted(true);
-        break;
-      case "totalLength":
-      case "chest":
-      case "shoulder":
-      case "arm":
-      case "pantsTotalLength":
-      case "waistWidth":
-      case "hipWidth":
-      case "thighWidth":
-      case "rise":
-      case "hemWidth":
-      case "height":
-      case "width":
-        setStep(5);
-        break;
-    }
-  };
-
   const onChangeDatePicker = (value: Dayjs | null) => {
     if (value === null) {
       return;
@@ -196,7 +159,6 @@ function useNormalSignUp(setIsCompleted: Dispatch<SetStateAction<boolean>>) {
     onClickGender,
     onChangePhoneNumber,
     onChangeDatePicker,
-    onBlur,
     onChange,
     onSubmitSignUp,
   };

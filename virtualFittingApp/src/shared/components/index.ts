@@ -28,8 +28,6 @@ export * from "@/shared/components/modal";
 
 export * from "@/shared/components/text";
 
-export * from "@/shared/components/draggable";
-
 export * from "@/shared/components/table";
 
 export * from "@/shared/components/icon";

@@ -5,6 +5,9 @@ import { API_BASILIUM, BasiliumResponse } from "@/shared";
 export const DELETE_BRAND_USER = async () => {
   try {
     const res = await API_BASILIUM.delete("/b1/superUsers/me/banners/");
+    if (res.status === 204) {
+      return true;
+    }
   } catch (err) {
     return false;
   }
@@ -24,6 +27,9 @@ export const POST_BANNERS = async ({ banners }: { banners: File[] | null }) => {
         "Content-Type": "multipart/form-data",
       },
     });
+    if (res.status === 201) {
+      return res.data;
+    }
   } catch (err) {
     return false;
   }

@@ -1,18 +1,16 @@
 import { API_BASILIUM } from "@/shared";
-import { 
-  PaymentRequestParams, 
-  PaymentResponse, 
-  PaymentResultParams, 
-  PaymentData,
+import {
+  PaymentRequestParams,
+  PaymentResponse,
   PaymentConfirmParams,
-  PaymentIntentRequest, 
+  PaymentIntentRequest,
   PaymentIntentData,
 } from "../model/types";
 
 import { ApiResponse } from "@/shared/types/api";
 
 export const createPaymentReservation = async (
-  params: PaymentRequestParams
+  params: PaymentRequestParams,
 ): Promise<PaymentResponse | null> => {
   try {
     const response = await API_BASILIUM.post("/b1/payment/request", null, {
@@ -26,10 +24,12 @@ export const createPaymentReservation = async (
   }
 };
 
-export const confirmFinalPayment = async (params: PaymentConfirmParams): Promise<any> => {
+export const confirmFinalPayment = async (
+  params: PaymentConfirmParams,
+): Promise<any> => {
   try {
     const response = await API_BASILIUM.get("/b1/payment/success", {
-      params: params
+      params: params,
     });
     console.log("[결제 최종 승인] API 응답 성공:", response.data);
     return response.data;
@@ -40,16 +40,19 @@ export const confirmFinalPayment = async (params: PaymentConfirmParams): Promise
 };
 
 export const createPaymentIntent = async (
-  paymentIntent: PaymentIntentRequest
+  paymentIntent: PaymentIntentRequest,
 ): Promise<ApiResponse<PaymentIntentData> | null> => {
   console.log("createPaymentIntent called with:", paymentIntent);
   try {
-    const response = await API_BASILIUM.post("/b1/payment/intents", paymentIntent);
+    const response = await API_BASILIUM.post(
+      "/b1/payment/intents",
+      paymentIntent,
+    );
     console.log("[결제 의도 생성] API 응답 성공:", response.data);
     return response.data;
   } catch (error) {
     console.error("Payment intent creation failed:", error);
-    
+
     return null;
   }
 };

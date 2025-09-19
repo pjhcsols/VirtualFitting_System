@@ -81,13 +81,4 @@ const TextInput = styled.input`
   border-radius: 1000px;
 `;
 
-const StepButton = styled.button`
-  width: 320px;
-  height: 32px;
-  border-radius: 1000px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
 export { UserSignUpDetailPage };
