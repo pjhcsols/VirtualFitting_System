@@ -5,7 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.UUID;
 
 public class PaymentViewDtos {
 
@@ -51,7 +50,6 @@ public class PaymentViewDtos {
         private Long plannedAllocatedPoint;
         private Long finalLinePayable;
 
-        private UUID reserveTaskId;
         private PaymentStatus status;
         private LocalDateTime createdAt;
         private LocalDateTime approvedAt;

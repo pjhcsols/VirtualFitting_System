@@ -1106,13 +1106,13 @@ INSERT INTO payment_intent_line (
     unit_after_brand, line_base,
     coupon_wallet_id, coupon_discount, line_after_coupon,
     alloc_point, final_line_payable,
-    reserve_task_id, status, created_at, approved_at
+     status, created_at, approved_at
 ) VALUES (
              1, 1, 1, 'M', 'BLACK', 1,
              19000, 19000,
              NULL, 0, 19000,
              0, 19000,
-             NULL, 'APPROVED', '2025-09-03 20:00:30', '2025-09-03 20:01:00'
+            'APPROVED', '2025-09-03 20:00:30', '2025-09-03 20:01:00'
          );
 
 COMMIT;
@@ -1137,13 +1137,13 @@ INSERT INTO payment_intent_line (
     unit_after_brand, line_base,
     coupon_wallet_id, coupon_discount, line_after_coupon,
     alloc_point, final_line_payable,
-    reserve_task_id, status, created_at, approved_at
+    status, created_at, approved_at
 ) VALUES (
              2, 2, 2, 'L', 'WHITE', 1,
              53000, 53000,
              NULL, 0, 53000,
              0, 53000,
-             NULL, 'APPROVED', '2025-09-03 20:05:10', '2025-09-03 20:05:40'
+             'APPROVED', '2025-09-03 20:05:10', '2025-09-03 20:05:40'
          );
 
 COMMIT;

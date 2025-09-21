@@ -173,6 +173,8 @@ public interface PaymentApiDocs {
     )
     @GetMapping("/success")
     ResponseEntity<ApiResponse<Void>> success(
+            @Parameter(description = "인증 사용자 ID(일반 유저). SecurityContext에서 주입", required = true, example = "10001")
+            @AuthUser String authUserId,
             @Parameter(description = "결제 수단 타입(e.g. CARD)", required = true, example = "CARD")
             @RequestParam String paymentType,
             @Parameter(description = "PG 승인 금액", required = true, example = "12345")
@@ -193,6 +195,8 @@ public interface PaymentApiDocs {
     )
     @GetMapping("/fail")
     ResponseEntity<ApiResponse<Void>> fail(
+            @Parameter(description = "인증 사용자 ID(일반 유저). SecurityContext에서 주입", required = true, example = "10001")
+            @AuthUser String authUserId,
             @Parameter(description = "PG 실패 코드", required = true, example = "AMOUNT_MISMATCH")
             @RequestParam String code,
             @Parameter(description = "PG 실패 메시지", required = true, example = "PG금액과 서버금액 불일치")

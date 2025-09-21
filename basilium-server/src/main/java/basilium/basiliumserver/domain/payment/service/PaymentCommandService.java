@@ -104,6 +104,17 @@ public class PaymentCommandService {
         NormalUser me = normalUserRepo.findById(authUserId)
                 .orElseThrow(() -> new BasiliumCustomException(ErrorCode.MEMBER_NOT_FOUND, "일반 유저를 찾을 수 없습니다: " + authUserId));
 
+        /*
+        long couponLines = req.getLines().stream()
+                .map(CreateIntentLine::getCouponWalletId)
+                .filter(java.util.Objects::nonNull)
+                .count();
+        if (couponLines > 1) {
+            throw new BasiliumCustomException(ErrorCode.BAD_REQUEST, "주문당 쿠폰은 1개만 사용할 수 있습니다.");
+        }
+         */
+
+
         // 동시요청 경쟁 최소화를 위해 먼저 존재여부 체크 (UNIQUE 위반은 전역 핸들러가 CONFLICT로 나가게 유지)
         paymentRepo.findByOrderId(req.getOrderId()).ifPresent(p -> {
             throw new BasiliumCustomException(ErrorCode.CONFLICT, "이미 존재하는 orderId");
@@ -178,8 +189,7 @@ public class PaymentCommandService {
                     payment,
                     c.product(), c.size(), c.color(),
                     c.qty(), c.unitAfterBrand(), c.lineBase(),
-                    c.couponWalletId(), c.couponDiscount(), c.lineAfterCoupon(),
-                    null // reserveTaskId는 상위 Payment(orderId)에 묶여 있어 개별 라인에 불필요
+                    c.couponWalletId(), c.couponDiscount(), c.lineAfterCoupon()
             ));
         }
         lineRepo.saveAll(lines);
@@ -197,6 +207,65 @@ public class PaymentCommandService {
 
 
     /* ===== 2) 결제 성공(승인) 처리 ===== */
+    @Transactional
+    public void approve(String orderId, String paymentKey, String paymentType, long pgAmountFromPg) {
+        Payment payment = paymentRepo.findByOrderId(orderId)
+                .orElseThrow(() -> new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "Payment 없음: " + orderId));
+
+        if (payment.getStatus() != PaymentStatus.INIT)
+            throw new BasiliumCustomException(ErrorCode.CONFLICT, "승인 가능한 상태가 아님");
+
+        // NORMAL 호출 경로면 소유자 검증(서버-서버 HMAC 경로는 ROLE_NORMAL이 아님)
+        var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        boolean isNormal = auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_NORMAL"));
+        if (isNormal) {
+            String principal = String.valueOf(auth.getPrincipal());
+            if (!String.valueOf(payment.getNormalUser().getUserNumber()).equals(principal)) {
+                throw new BasiliumCustomException(ErrorCode.ACCESS_DENIED, "본인 결제가 아닙니다.");
+            }
+        }
+
+        List<PaymentIntentLine> lines = lineRepo.findAllByOrderId(orderId);
+        if (lines.isEmpty())
+            throw new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "라인 없음");
+
+        long serverTotal = lines.stream().mapToLong(PaymentIntentLine::getFinalLinePayable).sum();
+        long serverPgAmount = Math.max(0L, serverTotal - payment.getPointsToUse());
+        if (pgAmountFromPg != serverPgAmount) {
+            payment.failInit("AMOUNT_MISMATCH", "PG금액과 서버금액 불일치");
+            paymentRepo.save(payment);
+            throw new BasiliumCustomException(ErrorCode.CONFLICT, "금액 불일치");
+        }
+
+        // ① 포인트 선 차감(멱등) — 실패 시 전체 트랜잭션 롤백 → Payment는 APPROVE 되지 않음
+        long points = java.util.Optional.ofNullable(payment.getPointsToUse()).orElse(0L);
+        if (points > 0) {
+            String uk = "PAYMENT:" + payment.getOrderId();
+            walletService.debit(payment.getNormalUser().getUserNumber(), points,
+                    WalletLedgerRefType.PAYMENT, payment.getOrderId(), uk);
+        }
+
+        // ② 라인 APPROVE
+        java.time.LocalDateTime now = java.time.LocalDateTime.now();
+        for (PaymentIntentLine l : lines) {
+            if (l.getStatus() == PaymentStatus.INIT) l.approve(l.getFinalLinePayable(), now);
+        }
+        lineRepo.saveAll(lines);
+
+        // ③ 쿠폰 USED 확정 (라인당 1개 최대 — createIntent에서 주문당 1개로 더 강하게 막음)
+        for (PaymentIntentLine l : lines) {
+            Long walletId = l.getCouponWalletId();
+            if (walletId == null) continue;
+            int updated = couponWalletRepo.consumeAvailable(walletId, payment.getOrderId());
+            if (updated != 1)
+                throw new BasiliumCustomException(ErrorCode.CONFLICT, "쿠폰 이미 사용됨/상태 불일치");
+        }
+
+        // ④ Payment APPROVE
+        payment.approve(paymentKey, paymentType, serverPgAmount, now);
+        paymentRepo.save(payment);
+    }
+    /*
     @Transactional
     public void approve(String orderId, String paymentKey, String paymentType, long pgAmountFromPg) {
         Payment payment = paymentRepo.findByOrderId(orderId)
@@ -251,6 +320,8 @@ public class PaymentCommandService {
         }
         // (예약 취소는 카프카 예약 서비스의 /payment/response(true)에서 처리)
     }
+
+     */
 
     /* ===== 3) 결제 실패 처리 ===== */
     @Transactional

@@ -5,10 +5,13 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.BatchSize;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.ArrayList;
 import java.util.List;
 
+//변경된 칼럼만 UPDATE
+@DynamicUpdate
 // 테이블 분리 가능
 @Entity
 @Table(name = "super_user")
@@ -61,14 +64,26 @@ public class SuperUser extends User {
     }
 
     /** 프로필 업데이트 (더티체킹) */
-    public void updateProfile(String name,
-                              String position,
-                              String department,
-                              String jobRole) {
-        this.name = name;
-        this.position = position;
-        this.department = department;
-        this.jobRole = jobRole;
+    public void updateAll(
+            String newLoginId,
+            String newEncodedPassword,
+            String newEmail,
+            String newPhone,
+            String newName,
+            String newPosition,
+            String newDepartment,
+            String newJobRole
+    ) {
+        // User(부모)의 보호(protected) 필드는 setter 없이 직접 갱신
+        this.id           = newLoginId;
+        this.password     = newEncodedPassword;
+        this.emailAddress = newEmail;
+        this.phoneNumber  = newPhone;
+
+        this.name       = newName;
+        this.position   = newPosition;
+        this.department = newDepartment;
+        this.jobRole    = newJobRole;
     }
 
     public void addBanner(String fileName) {

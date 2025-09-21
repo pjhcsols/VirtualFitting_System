@@ -192,8 +192,10 @@ public class PaymentController implements PaymentApiDocs {
     }
 
     /** PG 성공 콜백 */
+    @PreAuthorize("hasRole('NORMAL') and #authUserId == authentication.principal")
     @GetMapping("/success")
     public ResponseEntity<ApiResponse<Void>> success(
+            @AuthUser String authUserId,
             @RequestParam String paymentType,
             @RequestParam long amount,
             @RequestParam String orderId,
@@ -204,8 +206,10 @@ public class PaymentController implements PaymentApiDocs {
     }
 
     /** PG 실패 콜백 */
+    @PreAuthorize("hasRole('NORMAL') and #authUserId == authentication.principal")
     @GetMapping("/fail")
     public ResponseEntity<ApiResponse<Void>> fail(
+            @AuthUser String authUserId,
             @RequestParam String code,
             @RequestParam String message,
             @RequestParam String orderId

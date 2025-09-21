@@ -150,7 +150,6 @@ public class PaymentQueryService {
                         .lineAfterCoupon(l.getLineAfterCoupon())
                         .plannedAllocatedPoint(l.getPlannedAllocatedPoint())
                         .finalLinePayable(l.getFinalLinePayable())
-                        .reserveTaskId(l.getReserveTaskId())
                         .status(l.getStatus())
                         .createdAt(l.getCreatedAt())
                         .approvedAt(l.getApprovedAt())

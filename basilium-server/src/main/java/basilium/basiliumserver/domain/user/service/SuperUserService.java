@@ -2,7 +2,7 @@
 package basilium.basiliumserver.domain.user.service;
 
 import basilium.basiliumserver.domain.user.dto.MyBannerDto;
-import basilium.basiliumserver.domain.user.entity.JoinStatus;
+import basilium.basiliumserver.domain.user.dto.SuperUserDto;
 import basilium.basiliumserver.domain.user.entity.Provider;
 import basilium.basiliumserver.domain.user.entity.SuperUser;
 import basilium.basiliumserver.domain.user.repository.SuperUserRepository;
@@ -15,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +23,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -32,6 +32,7 @@ public class SuperUserService {
     private final SuperUserRepository superUserRepository;
     private final FileStorageService storage;
     private final ImageProperties imageProperties;
+    private final PasswordEncoder passwordEncoder;
 
     /** 반드시 ROLE_SUPER인지 확인 */
     private void ensureSuper() {
@@ -51,32 +52,82 @@ public class SuperUserService {
         return superUserRepository.findAll(pageable);
     }
 
+    /** 회원가입(Grade·Provider는 @PrePersist에서 자동 설정) */
+    /** 회원가입: 중복검증 → 비번해시 → 생성자 저장 (배너는 가입 시 무시) */
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public void signUp(SuperUserDto.Signup dto) {
+        final String loginId = dto.getId().trim();
+        final String email   = dto.getEmailAddress().trim().toLowerCase();
+        final String phone   = dto.getPhoneNumber().trim();
+        final String hashed  = passwordEncoder.encode(dto.getPassword().trim());
+
+        if (superUserRepository.existsByIdIs(loginId))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 아이디입니다.");
+        if (superUserRepository.existsByEmailAddress(email))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 이메일입니다.");
+        if (superUserRepository.existsByPhoneNumber(phone))
+            throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 전화번호입니다.");
+
+        SuperUser su = new SuperUser(
+                loginId, hashed, email, phone,
+                dto.getName(), dto.getPosition(), dto.getDepartment(), dto.getJobRole()
+        );
+        superUserRepository.save(su);
+    }
+
+
     /** 프로필 수정 */
     @Transactional
-    public void modifyProfile(String userId, SuperUser updated) {
+    public void modifyProfile(String currentLoginId, SuperUserDto.UpdateProfile dto) {
         ensureSuper();
-        SuperUser existing = superUserRepository.findById(userId)
+
+        final String NF_MSG = "수정할 슈퍼유저가 없습니다: "; // 메시지 상수화(중복 제거)
+
+        // 배너 컬렉션까지 필요하면 @EntityGraph 메서드 사용 가능
+        SuperUser existing = superUserRepository.findById(currentLoginId)
                 .orElseThrow(() -> new BasiliumCustomException(
-                        ErrorCode.RESOURCE_NOT_FOUND,
-                        "수정할 슈퍼유저가 없습니다: " + userId
+                        ErrorCode.RESOURCE_NOT_FOUND, NF_MSG + currentLoginId
                 ));
-        existing.updateProfile(
-                updated.getName(),
-                updated.getPosition(),
-                updated.getDepartment(),
-                updated.getJobRole()
+
+        // 1) 변경 의도 있는 값에 한정하여 중복 대조
+        Optional.ofNullable(dto.getId())
+                .map(String::trim)
+                .filter(newId -> !newId.equals(existing.getId()))
+                .filter(superUserRepository::existsByIdIs)
+                .ifPresent(x -> { throw new BasiliumCustomException(
+                        ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 아이디입니다."); });
+
+        Optional.ofNullable(dto.getEmailAddress())
+                .map(s -> s.trim().toLowerCase())
+                .filter(newEmail -> !newEmail.equals(existing.getEmailAddress()))
+                .filter(superUserRepository::existsByEmailAddress)
+                .ifPresent(x -> { throw new BasiliumCustomException(
+                        ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 이메일입니다."); });
+
+        Optional.ofNullable(dto.getPhoneNumber())
+                .map(String::trim)
+                .filter(newPhone -> !newPhone.equals(existing.getPhoneNumber()))
+                .filter(superUserRepository::existsByPhoneNumber)
+                .ifPresent(x -> { throw new BasiliumCustomException(
+                        ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 전화번호입니다."); });
+
+        // 2) 인라인 계산 + 단발 도메인 메서드 호출(@DynamicUpdate로 변경 칼럼만 UPDATE)
+        existing.updateAll(
+                Optional.ofNullable(dto.getId()).map(String::trim).orElse(existing.getId()),
+                Optional.ofNullable(dto.getPassword())
+                        .map(String::trim)
+                        .filter(pw -> !pw.isEmpty())
+                        .map(passwordEncoder::encode)
+                        .orElse(existing.getPassword()),
+                Optional.ofNullable(dto.getEmailAddress()).map(s -> s.trim().toLowerCase()).orElse(existing.getEmailAddress()),
+                Optional.ofNullable(dto.getPhoneNumber()).map(String::trim).orElse(existing.getPhoneNumber()),
+                Optional.ofNullable(dto.getName()).orElse(existing.getName()),
+                Optional.ofNullable(dto.getPosition()).orElse(existing.getPosition()),
+                Optional.ofNullable(dto.getDepartment()).orElse(existing.getDepartment()),
+                Optional.ofNullable(dto.getJobRole()).orElse(existing.getJobRole())
         );
     }
 
-    /** 회원가입(Grade·Provider는 @PrePersist에서 자동 설정) */
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public JoinStatus join(SuperUser candidate) {
-        if (superUserRepository.findById(candidate.getId()).isPresent()) {
-            return JoinStatus.DUPLICATE;
-        }
-        superUserRepository.save(candidate);
-        return JoinStatus.SUCCESS;
-    }
 
     @Transactional
     public String updateBanner(String userId,
@@ -105,7 +156,7 @@ public class SuperUserService {
         if (oldFileNameOpt.filter(banners::contains).isPresent()) {
             // 교체: 새 파일 저장 → 리스트 교체 → 기존 파일 삭제
             int idx = banners.indexOf(oldFileNameOpt.get());
-            String newName = storage.storeIndexed(file, dir, role, userId, ts, 1);
+            String newName = storage.storeIndexed(file, dir, role, userId, ts, idx + 1);
             String old     = banners.get(idx);
 
             banners.set(idx, newName);
@@ -176,12 +227,8 @@ public class SuperUserService {
 
         // 3) 응답 DTO
         return newNames.stream()
-                .map(fn -> new MyBannerDto(
-                        u.getUserNumber(),
-                        fn,
-                        imageProperties.getDomainSuperDir() + fn
-                ))
-                .collect(java.util.stream.Collectors.toUnmodifiableList());
+                .map(fn -> new MyBannerDto(u.getUserNumber(), fn, imageProperties.getDomainSuperDir() + fn))
+                .toList();
     }
 
     /** 내 배너 리스트 조회 */
@@ -198,15 +245,9 @@ public class SuperUserService {
             return Collections.emptyList();
         }
 
-        List<MyBannerDto> dtos = files.stream()
-                .map(fn -> new MyBannerDto(
-                        u.getUserNumber(),
-                        fn,
-                        imageProperties.getDomainSuperDir() + fn
-                ))
-                .collect(Collectors.toList());
-
-        return Collections.unmodifiableList(dtos);
+        return files.stream()
+                .map(fn -> new MyBannerDto(u.getUserNumber(), fn, imageProperties.getDomainSuperDir() + fn))
+                .toList();
     }
 
     /** 단일 배너 삭제 */

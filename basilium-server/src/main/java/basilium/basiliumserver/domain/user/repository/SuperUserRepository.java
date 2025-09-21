@@ -20,13 +20,18 @@ public interface SuperUserRepository extends JpaRepository<SuperUser, Long> {
 
     Optional<SuperUser> findByEmailAddress(String emailAddress);
 
+    // 중복 검사용(로그인 ID, 이메일, 전화)
+    boolean existsByIdIs(String id);
+    boolean existsByEmailAddress(String emailAddress);
+    boolean existsByPhoneNumber(String phoneNumber);
+
     @NotNull
     @EntityGraph(attributePaths = "bannerImageFileUrls")
     Page<SuperUser> findAll(@NotNull Pageable pageable);
 
     @Query("select u from SuperUser u where u.id = :id")
     @EntityGraph(attributePaths = "bannerImageFileUrls")
-    Optional<SuperUser> findById(String id);
+    Optional<SuperUser> findById(@Param("id") String id);
 
     @Query("select u.userImageUrl from SuperUser u where u.userImageUrl is not null")
     List<String> getAllUserImageUrls();

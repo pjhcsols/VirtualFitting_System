@@ -10,15 +10,13 @@ import org.hibernate.annotations.BatchSize;
 
 import java.time.LocalDateTime;
 import java.util.Objects;
-import java.util.UUID;
 
 @Entity
 @Table(
         name = "payment_intent_line",
         indexes = {
                 @Index(name = "idx_pil_payment_status", columnList = "payment_id,status"),
-                @Index(name = "idx_pil_product", columnList = "product_id"),
-                @Index(name = "idx_pil_reserve_task", columnList = "reserve_task_id")
+                @Index(name = "idx_pil_product", columnList = "product_id")
         }
 )
 @Getter
@@ -72,10 +70,6 @@ public class PaymentIntentLine {
     @Column(name = "final_line_payable", nullable = false)
     private Long finalLinePayable;
 
-    /** 재고 예약 식별자(옵션) */
-    @Column(name = "reserve_task_id", columnDefinition = "BINARY(16)")
-    private UUID reserveTaskId; // 어차피 reserveTaskOrderPayId로 통합되어서 낱개별로 필요없다. 지우기 어차피 payment에 있음
-
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 16)
     private PaymentStatus status; // INIT/APPROVED/CANCELLED/EXPIRED
@@ -94,8 +88,7 @@ public class PaymentIntentLine {
                               long lineBase,
                               Long couponWalletId,
                               long couponDiscount,
-                              long lineAfterCoupon,
-                              UUID reserveTaskId) {
+                              long lineAfterCoupon) {
 
         this.payment = Objects.requireNonNull(payment);
         this.product = Objects.requireNonNull(product);
@@ -113,7 +106,6 @@ public class PaymentIntentLine {
         this.plannedAllocatedPoint = 0L;
         this.finalLinePayable = this.lineAfterCoupon;
 
-        this.reserveTaskId = reserveTaskId;
         this.status = PaymentStatus.INIT;
         this.createdAt = LocalDateTime.now();
     }
@@ -127,10 +119,9 @@ public class PaymentIntentLine {
                                              long lineBase,
                                              Long couponWalletId,
                                              long couponDiscount,
-                                             long lineAfterCoupon,
-                                             UUID reserveTaskId) {
+                                             long lineAfterCoupon) {
         return new PaymentIntentLine(payment, product, size, color, quantity,
-                unitAfterBrand, lineBase, couponWalletId, couponDiscount, lineAfterCoupon, reserveTaskId);
+                unitAfterBrand, lineBase, couponWalletId, couponDiscount, lineAfterCoupon);
     }
 
     public void allocatePoint(long alloc) {
