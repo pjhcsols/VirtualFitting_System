@@ -1,28 +1,66 @@
 import { useState, useEffect } from "react";
 import styled from "styled-components";
-import { DUMMY_IMAGES } from "../model/constants";
+import { fetchBanners } from "@/entities/advertisement";
+import type { Banner } from "@/entities/advertisement";
 
 function AdvertisementCarousel() {
+  const [banners, setBanners] = useState<Banner[]>([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const nextImage = () => {
-    setCurrentIndex((prev) => (prev === DUMMY_IMAGES.length - 1 ? 0 : prev + 1));
-  };
+  useEffect(() => {
+    const loadBanners = async () => {
+      setLoading(true);
+      try {
+        const data = await fetchBanners("super_ad");
+        if (data) {
+          setBanners(data);
+        }
+      } catch (error) {
+        console.error("Failed to load banners:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadBanners();
+  }, []);
 
   useEffect(() => {
+    if (banners.length === 0) return;
+
+    const nextImage = () => {
+      setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+    };
+
     const intervalId = setInterval(nextImage, 5000);
     return () => clearInterval(intervalId);
-  }, []);
+  }, [banners.length]);
 
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
+  
+  if (loading) {
+    return <Wrapper><LoadingIndicator>Loading Banners...</LoadingIndicator></Wrapper>;
+  }
+
+  if (banners.length === 0) {
+    return <Wrapper><EmptyMessage>표시할 배너가 없습니다.</EmptyMessage></Wrapper>;
+  }
+
+  const currentBannerUrl = banners[currentIndex]?.url;
+  // [seah] 나중에 수정해돌라고 부탁해야됨!
+  const imageUrl = currentBannerUrl && !currentBannerUrl.startsWith('http') 
+    ? `http://${currentBannerUrl}` 
+    : currentBannerUrl;
 
   return (
     <Wrapper>
-        <Image src={DUMMY_IMAGES[currentIndex]} alt="carousel image" />
-        <Pagination>
-        {DUMMY_IMAGES.map((_, index) => (
+      <Image src={imageUrl} alt={`Banner ${currentIndex + 1}`} />
+      
+      <Pagination>
+        {banners.map((_, index) => (
           <Dot
             key={index}
             $isActive={index === currentIndex}
@@ -60,16 +98,28 @@ const Pagination = styled.div`
 `;
 
 const Dot = styled.div<{ $isActive: boolean }>`
-  width: 6px;
-  height: 6px;
+  width: 8px;
+  height: 8px;
   border-radius: 50%;
-  background-color: ${(props) => (props.$isActive ? "#fff" : "#888")};
+  background-color: ${(props) => (props.$isActive ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.5)")};
   cursor: pointer;
   transition: background-color 0.3s ease;
 
   &:hover {
-    background-color: #fff;
+    background-color: rgba(255, 255, 255, 0.8);
   }
 `;
+
+const LoadingIndicator = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-size: 1.2rem;
+`;
+
+const EmptyMessage = styled(LoadingIndicator)``;
 
 export { AdvertisementCarousel };
