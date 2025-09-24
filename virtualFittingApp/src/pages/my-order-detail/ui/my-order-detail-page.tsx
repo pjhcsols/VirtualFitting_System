@@ -1,17 +1,15 @@
-import { Suspense } from "react";
 import styled from "styled-components";
-import { OrderList } from "@/widgets/order-list";
+import { OrderDetails } from "@/widgets/order-details";
 import { BREAKPOINTS } from "@/shared";
 
-export function MyOrderListPage() {
+export function MyOrderDetailPage() {
   return (
     <PageWrapper>
       <ContentWrapper>
-        {/* <InnerContent>
-          <Suspense fallback={<div>주문 목록을 불러오는 중...</div>}> */}
-            <OrderList />
-          {/* </Suspense>
-        </InnerContent> */}
+        <InnerContent>
+           <h1>주문 상세 정보</h1>
+          <OrderDetails />
+        </InnerContent>
       </ContentWrapper>
     </PageWrapper>
   );
@@ -29,13 +27,12 @@ const ContentWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100%;
-  flex-grow: 1;
 `;
 
 const InnerContent = styled.div`
   width: 100%;
   max-width: 800px;
-  padding: 30px 30px;
+  padding: 30px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {

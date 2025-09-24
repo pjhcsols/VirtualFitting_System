@@ -1,27 +1,22 @@
-import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
-import { formatSimpleDate } from '@/shared/lib/date.util';
-import { BREAKPOINTS } from '@/shared';
+import { formatSimpleDate } from '@/shared/lib';
 import type { OrderItem } from '../model/types';
+import styled from 'styled-components';
+import { BREAKPOINTS } from '@/shared';
 
 type Props = { order: OrderItem };
 
-export function CanceledOrderCard({ order }: Props) {
+export function OrderSummaryCard({ order }: Props) {
   const navigate = useNavigate();
 
   return (
-    <GlassCard>
-      <CardHeader>
-        <DateText>{formatSimpleDate(order.date)}</DateText>
-        <CategoryText>{order.category} 요청</CategoryText>
-      </CardHeader>
-
+    <CardWrapper>
+      <DateText>{formatSimpleDate(order.date)}</DateText>
       <Divider />
-
       <OrderCard>
         <ImageBox
           src={order.productImageUrl}
-          alt="상품 이미지"
+          alt={order.productName}
         />
         <RightSection>
           <TitleLine>
@@ -37,30 +32,20 @@ export function CanceledOrderCard({ order }: Props) {
           <Price>{order.price.toLocaleString()}원</Price>
         </RightSection>
       </OrderCard>
-
       <ButtonWrapper>
-        {order.category === "교환" ? (
-          <>
-            <ActionButton>교환 상세</ActionButton>
-            <ActionButton>교환 배송 조회</ActionButton>
-            <ActionButton>회수 배송 조회</ActionButton>
-          </>
-        ) : (
-          <>
-            <ActionButton>문의하기</ActionButton>
-            <ActionButton>배송조회</ActionButton>
-            <ActionButton>상세보기</ActionButton>
-          </>
-        )}
+        <ActionButton>배송 조회</ActionButton>
+        <ActionButton>재구매</ActionButton>
+        <ActionButton>문의하기</ActionButton>
       </ButtonWrapper>
-    </GlassCard>
+    </CardWrapper>
   );
 }
 
-const GlassCard = styled.div`
+export const CardWrapper = styled.div`
   border-radius: 16px;
   padding: 24px;
   overflow: hidden;
+  margin-bottom: 24px; /* 카드 간의 간격 */
 
   background: rgba(200, 200, 200, 0.15);
   backdrop-filter: blur(16px) saturate(160%);
@@ -75,37 +60,27 @@ const GlassCard = styled.div`
   }
 `;
 
-const CardHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-`;
-
-const DateText = styled.p`
+export const DateText = styled.p`
   font-weight: 600;
   font-size: 15px;
   color: #fff;
+  margin-bottom: 16px;
 `;
 
-const CategoryText = styled.p`
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.7);
-`;
-
-const Divider = styled.hr`
+export const Divider = styled.hr`
   margin: 0 0 16px 0;
   border: none;
   height: 1px;
   background-color: rgba(255, 255, 255, 0.2);
 `;
 
-const OrderCard = styled.div`
+export const OrderCard = styled.div`
   display: flex;
   gap: 16px;
   width: 100%;
 `;
 
-const ImageBox = styled.img`
+export const ImageBox = styled.img`
   width: 72px;
   height: 86px;
   background-color: #d9d9d9;
@@ -113,28 +88,28 @@ const ImageBox = styled.img`
   object-fit: cover;
 `;
 
-const RightSection = styled.div`
+export const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   flex: 1;
-  gap: 1px;
+  gap: 4px; /* 요소 간 간격 조정 */
 `;
 
-const TitleLine = styled.div`
+export const TitleLine = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-const Brand = styled.div`
+export const Brand = styled.div`
   font-weight: 600;
-  font-size: 13px;
+  font-size: 14px;
   color: #fff;
 `;
 
-const OrderDetail = styled.div`
+export const OrderDetail = styled.div`
   font-size: 13px;
   color: rgba(255, 255, 255, 0.8);
   text-decoration: underline;
@@ -146,27 +121,28 @@ const OrderDetail = styled.div`
   }
 `;
 
-const ProductName = styled.div`
-  font-size: 13px;
+export const ProductName = styled.div`
+  font-size: 14px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
   text-align: left;
 `;
 
-const OptionText = styled.div`
+export const OptionText = styled.div`
   font-size: 13px;
-  color: #rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.8);
   text-align: left;
 `;
 
-const Price = styled.div`
+export const Price = styled.div`
   font-weight: 700;
-  font-size: 13px;
+  font-size: 14px;
   color: #fff;
   text-align: left;
+  margin-top: auto; /* 가격을 항상 하단에 위치시킴 */
 `;
 
-const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.div`
   display: flex;
   gap: 8px;
   margin-top: 16px;
@@ -174,15 +150,14 @@ const ButtonWrapper = styled.div`
   justify-content: flex-start;
 `;
 
-const ActionButton = styled.button`
+export const ActionButton = styled.button`
   flex: 1 1 auto;
   padding: 0 16px;
   height: 40px;
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
-  background-color: transparent;
-  color: rgba(255, 255, 255, 0.9);
   background-color: #353b60ff;
+  color: rgba(255, 255, 255, 0.9);
   font-size: 13px;
   cursor: pointer;
   transition: background-color 0.2s ease, border-color 0.2s ease;
@@ -192,4 +167,3 @@ const ActionButton = styled.button`
     border-color: rgba(255, 255, 255, 0.5);
   }
 `;
-

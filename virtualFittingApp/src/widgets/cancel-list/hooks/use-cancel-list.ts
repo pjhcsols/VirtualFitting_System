@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { orderDummyData } from '@/entities/order';
 import type { OrderItem } from '@/entities/order';
 // import { fetchCancelListApi } from '../api/cancel.api';
+// [민준] 나중에 연동하슈.
 
 export const useCancelList = () => {
   const [activeTab, setActiveTab] = useState<string>("전체");
