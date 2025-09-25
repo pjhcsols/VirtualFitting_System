@@ -191,15 +191,6 @@ const SignUpIdInput = styled(DefaultInput).attrs({ type: "text" })``;
 
 const SignUpEmailInput = styled(DefaultInput).attrs({ type: "email" })``;
 
-const SignUpGenderInput = styled.div`
-  width: 10rem;
-  height: 3rem;
-  border: 1px solid #121519;
-  cursor: pointer;
-`;
-
 const SignUpAddressInput = styled(DefaultInput).attrs({ type: "text" })``;
-
-const SignUpNicknameInput = styled(DefaultInput).attrs({ type: "text" })``;
 
 const SignUpBirthdayInput = styled.input.attrs({ type: "datetime-local" })``;

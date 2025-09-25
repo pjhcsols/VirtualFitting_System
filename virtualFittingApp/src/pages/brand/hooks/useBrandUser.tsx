@@ -55,9 +55,7 @@ function useBrandUser() {
 
   const onSubmitBusinessRegistration = async () => {
     try {
-      const res = await isValidBrandRegistration(
-        brandUser.businessRegistration,
-      );
+      await isValidBrandRegistration(brandUser.businessRegistration);
       const businessRegistrationResponse = await modifyBrandUserInfo(brandUser);
       setBrandUser(businessRegistrationResponse.data);
     } catch (err) {
@@ -88,7 +86,7 @@ function useBrandUser() {
   const onSubmitFile = async () => {
     if (!certificateFile) return;
     try {
-      const res = await postBrandRegistrationFile(certificateFile);
+      await postBrandRegistrationFile(certificateFile);
       alert("파일 업로드를 성공하였습니다.");
       setIsCertified({
         ...isCertified,

@@ -1,4 +1,4 @@
-import type { Color, Material, Size, SizeTable } from "@/shared/types";
+import type { Color, Material, Size } from "@/shared/types";
 
 export const palleteList: Color[] = [
   "BLACK",
@@ -17,13 +17,6 @@ export const materialList: Material[] = [
   "WOOL",
   "FABRIC",
   "SILK",
-];
-
-export const SizeTableTitles: (keyof SizeTable)[] = [
-  "productTotalLength",
-  "productChest",
-  "productShoulder",
-  "productArm",
 ];
 
 export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];

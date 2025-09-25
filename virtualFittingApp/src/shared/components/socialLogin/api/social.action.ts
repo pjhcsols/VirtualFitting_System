@@ -16,7 +16,7 @@ export const busniessRegisterAPI = async (request: string) => {
     };
     const res = await API_BASILIUM_CLOUD.post(
       `/v1/status?serviceKey=${CLOUD_API_KEY}`,
-      req
+      req,
     );
     if (res.status === 201) {
       return res.data;
@@ -48,9 +48,7 @@ const redirectUrl = import.meta.env.REACT_APP_KAKAO_REDIRECT_URL as string;
 
 export const KakaoLoginAPI = () => {
   const kakaoAuthUrl = `https://kauth.kakao.com/oauth/authorize?client_id=${restApiKey}&redirect_uri=${redirectUrl}&response_type=code`;
-  const onClickKakaoLogin = () => {
-    window.location.href = kakaoAuthUrl;
-  };
+  return kakaoAuthUrl;
 };
 
 const naverClientID = import.meta.env.REACT_APP_NAVER_CLIENT_ID as string;

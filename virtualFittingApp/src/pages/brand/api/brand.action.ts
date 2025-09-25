@@ -4,7 +4,7 @@ import {
   API_BASILIUM,
   BasiliumResponse,
   ClientProductDto,
-  ProductServerResponseType,
+  ServerProductDto,
 } from "@/shared";
 import type { BrandUserType } from "@/pages/brand/types/brandUser";
 import axios from "axios";
@@ -46,13 +46,13 @@ export const GET_BRAND_PRODUCT_LIST = async ({
   page,
 }: PaginationBrandProductListType) => {
   try {
-    const res = await API_BASILIUM.get<ProductServerResponseType[]>(
+    const res = await API_BASILIUM.get<ServerProductDto[]>(
       `/b1/products/brand?page=${page}&size=${size}`,
     );
     if (res.status === 200) {
       return res.data;
     }
-  } catch (err: any) {
+  } catch (err) {
     // Axios 의 Typeguard 를 이용해 Error Handling
     if (axios.isAxiosError(err)) {
       console.error(err.message);

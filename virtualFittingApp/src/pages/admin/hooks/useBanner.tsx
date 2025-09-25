@@ -23,6 +23,7 @@ function useBanner() {
 
   return {
     banners,
+    onDeleteBanner,
     setBanners,
   };
 }

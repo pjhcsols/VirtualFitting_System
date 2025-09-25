@@ -1,24 +1,35 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
 import BasiliumLogo from "/public/svg/BasiliumLogo.svg";
 
-import { AdminHeaderOptions } from "../constants";
-
 function AdminHeader() {
+  const router = useNavigate();
+
+  const onClickHome = () => {
+    router("/admin");
+  };
+
   return (
     <Wrapper>
+      <ContentContainer>
+        <ContentBox to={"/admin/user"}>
+          <ContentText>USER</ContentText>
+        </ContentBox>
+        <ContentBox to={"/admin/brand"}>
+          <ContentText>BRAND</ContentText>
+        </ContentBox>
+      </ContentContainer>
       <LogoContainer>
-        <Logo />
+        <Logo onClick={onClickHome} />
       </LogoContainer>
       <ContentContainer>
-        {AdminHeaderOptions.map((item, key) => {
-          return (
-            <ContentBox key={key} to={item.href}>
-              <ContentText>{item.title}</ContentText>
-            </ContentBox>
-          );
-        })}
+        <ContentBox to={"/admin/banner"}>
+          <ContentText>BANNER</ContentText>
+        </ContentBox>
+        <ContentBox to={"/admin/product"}>
+          <ContentText>Product</ContentText>
+        </ContentBox>
       </ContentContainer>
     </Wrapper>
   );
@@ -28,16 +39,16 @@ export { AdminHeader };
 
 const Wrapper = styled.header`
   box-sizing: border-box;
-  padding: 1rem;
-  min-width: 18rem;
-  min-height: 95vh;
+  padding: 0 8rem;
+  width: 100vw;
+  min-height: 80px;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   justify-content: flex-start;
-  align-items: flex-start;
-  background-color: #f5f6f8;
-  border-radius: 1rem;
+  align-items: center;
+  background-color: transparent;
   gap: 2rem;
+  border-bottom: 1px solid #d9d9d9;
 `;
 
 const LogoContainer = styled.div`
@@ -51,31 +62,29 @@ const Logo = styled.img.attrs({ src: BasiliumLogo, alt: "basilium-logo" })`
   width: 3rem;
   height: 3rem;
   object-fit: contain;
+  cursor: pointer;
 `;
 
 const ContentContainer = styled.div`
   box-sizing: border-box;
   width: 100%;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: row wrap;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   gap: 0.2rem;
 `;
 
 const ContentBox = styled(Link)`
   box-sizing: border-box;
   padding: 1rem;
-  width: 100%;
-  min-height: 1rem;
+  width: 160px;
+  min-height: 40px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
   border-radius: 1rem;
   transition: 0.2s all ease;
-  &:hover {
-    background-color: #ffffff;
-  }
 `;
 
 const ContentText = styled.span`

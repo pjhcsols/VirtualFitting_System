@@ -14,11 +14,9 @@ type NormalUserSignUpType = {
   onChangeDatePicker: (value: Dayjs | null) => void;
   onClickGender: (gender: "MALE" | "FEMALE") => void;
   onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-  onBlur: (name: string) => void;
 };
 
 function NormalUserSignUp({
-  onBlur,
   onChange,
   onChangePhoneNumber,
   onChangeDatePicker,
@@ -35,7 +33,6 @@ function NormalUserSignUp({
           name="signupId"
           value={signUpInfo.id}
           onChange={onChange}
-          onBlur={() => onBlur("signupId")}
         />
       </InputContainer>
       <InputContainer>
@@ -45,7 +42,6 @@ function NormalUserSignUp({
           name="password"
           value={signUpInfo.password}
           onChange={onChange}
-          onBlur={() => onBlur("password")}
         />
       </InputContainer>
       <InputContainer>
@@ -55,7 +51,6 @@ function NormalUserSignUp({
           name="name"
           value={signUpInfo.name}
           onChange={onChange}
-          onBlur={() => onBlur("name")}
         />
       </InputContainer>
       <PhoneNumberGenderContainer>
@@ -101,7 +96,6 @@ function NormalUserSignUp({
           name="nickname"
           value={signUpInfo.nickname}
           onChange={onChange}
-          onBlur={() => onBlur("nickname")}
         />
       </InputContainer>
       <InputContainer>
@@ -111,7 +105,6 @@ function NormalUserSignUp({
           name="address"
           value={signUpInfo.address}
           onChange={onChange}
-          onBlur={() => onBlur("address")}
         />
       </InputContainer>
       <InputContainer>

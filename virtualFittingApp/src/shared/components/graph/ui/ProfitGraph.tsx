@@ -1,7 +1,5 @@
 import styled from "styled-components";
 
-type ProfitGraphType = {};
-
 function ProfitGraph() {
   return (
     <GraphWrapper>

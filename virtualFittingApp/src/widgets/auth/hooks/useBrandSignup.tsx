@@ -57,13 +57,6 @@ function useBrandSignup() {
     });
   };
 
-  const onChangePhoneNumber = (value: string) => {
-    setBrandUserSignUp({
-      ...brandUserSignUp,
-      phoneNumber: value,
-    });
-  };
-
   const onChangeRegistration = (e: ChangeEvent<HTMLInputElement>) => {
     setBrandUserSignUp({
       ...brandUserSignUp,
@@ -141,6 +134,7 @@ function useBrandSignup() {
 
   return {
     brandUserSignUp,
+    setBrandUserSignUp,
     step,
     businessRegistration,
     stateMsg,
@@ -151,7 +145,6 @@ function useBrandSignup() {
     onChangeId,
     onChangePassword,
     onChangeEmail,
-    onChangePhoneNumber,
     onChangeRegistration,
     onChangeFirmName,
     onChangeFirmAddress,

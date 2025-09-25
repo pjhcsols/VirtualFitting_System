@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import type { OrderItem } from "../types/order";
 import { orderDummyData } from "@/pages/my/constants/dummy/dummyData";
@@ -8,72 +8,65 @@ import { formatSimpleDate } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 
 function OrderDetailContent() {
-    const navigate = useNavigate();
-    const location = useLocation();
+  const { id } = useParams();
+  const [order, setOrder] = useState<OrderItem | null>(null);
 
-    const { id } = useParams();
-    const [order, setOrder] = useState<OrderItem | null>(null);
+  useEffect(() => {
+    const foundOrder = orderDummyData.find((item) => item.id === id);
+    setOrder(foundOrder || null);
+  }, [id]);
 
-    useEffect(() => {
-        const foundOrder = orderDummyData.find((item) => item.id === id);
-        setOrder(foundOrder || null);
+  if (!order) {
+    return <div>주문 정보를 찾을 수 없습니다.</div>;
+  }
 
-    }, [id]);
+  return (
+    <PageWrapper>
+      <ContentWrapper>
+        <FormInner>
+          <Content>
+            <ContentLabel>{formatSimpleDate(order.date)}</ContentLabel>
+            <ContentText>주문번호 : 0000111112222</ContentText>
+          </Content>
+          <Divider />
 
-    if (!order) {
-        return <div>주문 정보를 찾을 수 없습니다.</div>;
-    }
+          <Content>
+            <ContentLabel>김**</ContentLabel>
+            <RightSection>
+              <ContentText>주소</ContentText>
+              <ContentText>전화번호</ContentText>
+            </RightSection>
+          </Content>
+          <Divider />
 
-    return (
-        <PageWrapper>
-            <ContentWrapper>
-                <FormInner>
-                     <Content>
-                        <ContentLabel>{formatSimpleDate(order.date)}</ContentLabel>
-                        <ContentText>
-                            주문번호 : 0000111112222
-                        </ContentText>
-                    </Content>
-                    <Divider/>
-
-                    <Content>
-                        <ContentLabel>김**</ContentLabel>
-                        <RightSection>
-                            <ContentText>
-                                주소
-                            </ContentText>
-                            <ContentText>
-                                전화번호
-                            </ContentText>
-                        </RightSection>
-                    </Content>
-                    <Divider/>
-
-                    <Content>
-                        <ContentLabel>주문상품</ContentLabel>
-                    </Content>
-                    <OrderCard>
-                        <ImageBox src={order.productImageUrl || alertImg} alt="상품 이미지" />
-                        <RightSection>
-                        <TitleLine>
-                            <Brand>{order.brand}</Brand>
-                        </TitleLine>
-                        <ProductName>{order.productName}</ProductName>
-                        <OptionText>
-                            {order.options.color} / {order.options.size} / {order.options.quantity}개
-                        </OptionText>
-                        <Price>{order.price.toLocaleString()}원</Price>
-                        </RightSection>
-                    </OrderCard>
-                    <Divider />   
-                </FormInner>
-            </ContentWrapper>
-        </PageWrapper>
-    );
+          <Content>
+            <ContentLabel>주문상품</ContentLabel>
+          </Content>
+          <OrderCard>
+            <ImageBox
+              src={order.productImageUrl || alertImg}
+              alt="상품 이미지"
+            />
+            <RightSection>
+              <TitleLine>
+                <Brand>{order.brand}</Brand>
+              </TitleLine>
+              <ProductName>{order.productName}</ProductName>
+              <OptionText>
+                {order.options.color} / {order.options.size} /{" "}
+                {order.options.quantity}개
+              </OptionText>
+              <Price>{order.price.toLocaleString()}원</Price>
+            </RightSection>
+          </OrderCard>
+          <Divider />
+        </FormInner>
+      </ContentWrapper>
+    </PageWrapper>
+  );
 }
 
 export { OrderDetailContent };
-
 
 const PageWrapper = styled.div`
   display: flex;
@@ -213,7 +206,3 @@ const Price = styled.div`
   margin-top: 4px;
   text-align: left;
 `;
-
-
-
-

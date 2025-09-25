@@ -2,6 +2,7 @@ export * from "@/shared/types/auth/authContext.d";
 export type { BasiliumJwtPayload } from "@/shared/types/auth/basiliumJwtPayload.d";
 export * from "@/shared/types/product/option.d";
 export type {
+  ServerProductDto,
   // ProductServerResponseType,
   ClientProductDto,
   Color,
