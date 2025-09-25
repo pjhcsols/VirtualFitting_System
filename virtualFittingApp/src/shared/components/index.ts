@@ -22,8 +22,6 @@ export * from "@/shared/components/precaution";
 
 export * from "@/shared/components/input";
 
-export * from "@/shared/components/column";
-
 export * from "@/shared/components/modal";
 
 export * from "@/shared/components/text";

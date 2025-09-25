@@ -1,12 +1,11 @@
 import { ChangeEvent, useState } from "react";
-import styled, { keyframes } from "styled-components";
+import styled from "styled-components";
 import { UserSignUpType } from "../types/signup";
 import { checkPassword } from "../utils/checker.util";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
 
 function UserSignUpPage() {
-  const router = useNavigate();
   const [userInfo, setUserInfo] = useState<UserSignUpType>({
     id: 0,
     birthDate: "",

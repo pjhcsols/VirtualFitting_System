@@ -66,7 +66,7 @@ type ProductSizeType = {
 };
 
 function ProductSize({ isClicked, children }: ProductSizeType) {
-  return <ProductSizeButton>{children}</ProductSizeButton>;
+  return <ProductSizeButton clicked={isClicked}>{children}</ProductSizeButton>;
 }
 
 export {
@@ -158,7 +158,7 @@ const ProductMaterialButton = styled(DefaultButton)`
   color: black;
 `;
 
-const ProductSizeButton = styled(DefaultButton)`
+const ProductSizeButton = styled(DefaultButton)<{ clicked: boolean }>`
   font-size: 0.65rem;
   font-weight: 500;
   color: black;

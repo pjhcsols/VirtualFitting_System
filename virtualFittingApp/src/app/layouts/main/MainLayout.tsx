@@ -1,12 +1,10 @@
 import { MainNavigator } from "@/pages/main/components";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { Header } from "@/widgets/header";
 
 function MainLayout() {
   return (
     <Wrapper>
-      <Header theme="dark" /> 
       <MainNavigator />
       <Outlet />
     </Wrapper>
