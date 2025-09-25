@@ -1,14 +1,10 @@
 import styled from 'styled-components';
 import { Suspense } from 'react';
-import { StarryBackground } from '@/widgets/starry-background';
 import { ReviewList } from '@/widgets/review-list';
 
 export function MyReviewListPage() {
   return (
     <PageWrapper>
-      <StarryBackground />
-      <HeaderWrapper>
-      </HeaderWrapper>
       <ContentWrapper>
         <Suspense fallback={<div>불러오는 중...</div>}>
           <ReviewList />
@@ -24,12 +20,6 @@ const PageWrapper = styled.div`
   display: flex;
   flex-direction: column;
   min-height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
 `;
 
 const ContentWrapper = styled.div`

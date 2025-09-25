@@ -33,20 +33,3 @@ export const fetchUserInfo = async () => {
     throw error;
   }
 };
-
-export const getReviewAPI = async ({
-  productId,
-}: {
-  productId: string;
-}) => {
-  try {
-    const res = await API_BASILIUM.get(`/products/${productId}/reviews`);
-    if (res.status === 200) {
-      return res.data;
-    } else {
-      return false;
-    }
-  } catch (err) {
-    return err;
-  }
-};

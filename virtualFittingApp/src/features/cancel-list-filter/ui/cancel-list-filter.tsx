@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
+import {StickyTabWrapper, ToggleButton} from "@/features/review-list-filter/ui/review-list-filter";
 
 const TABS = ["전체", "취소/반품", "교환"];
 
@@ -11,71 +12,37 @@ type Props = {
 export function CancelListFilter({ activeTab, onTabClick }: Props) {
   return (
     <StickyTabWrapper>
-      <TabInner>
+      <ButtonGroup role="tablist" aria-label="리뷰 상태 필터">
         {TABS.map((tab) => (
-          <TabText
+          <ToggleButton
             key={tab}
-            onClick={() => onTabClick(tab)}
+            role="tab"
+            aria-selected={activeTab === tab}
             $active={activeTab === tab}
+            onClick={() => onTabClick(tab)}
           >
-            {tab}
-          </TabText>
+          {tab}
+          </ToggleButton>
         ))}
-      </TabInner>
+      </ButtonGroup>
     </StickyTabWrapper>
   );
 }
 
-const StickyTabWrapper = styled.div`
-  position: sticky;
-  z-index: 100;
-  width: 100%;
-  background: rgba(41, 46, 73, 0.85);
-  backdrop-filter: blur(10px) saturate(140%);
-  -webkit-backdrop-filter: blur(10px) saturate(140%);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.25);
-`;
 
-const TabInner = styled.div`
-  display: flex;
-  gap: 24px;
-  max-width: 800px;
-  width: 100%;
-  padding: 10px 0;
-  margin: 0 auto;
+const ButtonGroup = styled.div`
+  display: inline-flex;
+  gap: 0;                 
+  margin: 10px 0;
+  margin-right: 460px;
+  padding: 4px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.25);
+  background: rgba(200,200,200,0.12);
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 10px 16px;
-    max-width: 100%;
-  }
-`;
-
-const TabText = styled.span<{ $active: boolean }>`
-  padding: 4px 2px;
-  position: relative;
-  
-  font-size: 14px;
-  font-weight: 400;
-  cursor: pointer;
-
-  color: ${(props) => (props.$active ? 'rgb(255, 255, 255)' : 'rgba(255, 255, 255, 0.85)')};
-  transition: color 0.3s ease;
-
-  &::after {
-    content: '';
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 2px;
-    background-color: rgb(255, 255, 255);
-    
-    transform: scaleX(${(props) => (props.$active ? 1 : 0)});
-    transform-origin: center;
-    transition: transform 0.3s ease-out;
-  }
-
-  &:hover {
-    color: rgb(255, 255, 255);
+    margin: 8px 16px;
+    width: calc(100% - 32px);
+    justify-content: space-between;
   }
 `;

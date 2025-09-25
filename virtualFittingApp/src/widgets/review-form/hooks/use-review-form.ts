@@ -3,6 +3,7 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import type { OrderItem } from "@/entities/order";
 import type { ReviewData } from '@/entities/review';
 import { orderDummyData } from "@/entities/order";
+import { postProductReview } from "@/pages/my/api/review.aciton";
 
 export const useReviewForm = () => {
   const navigate = useNavigate();
@@ -11,11 +12,18 @@ export const useReviewForm = () => {
 
   const editReview: ReviewData | undefined = location.state?.reviewData;
 
+  const [title, setTitle] = useState<string>("");
+
   const [order, setOrder] = useState<OrderItem | null>(null);
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>("");
+  
   const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
+  const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
+
+  const [height, setHeight] = useState<number | undefined>();
+  const [weight, setWeight] = useState<number | undefined>();
 
   useEffect(() => {
     const foundOrder = orderDummyData.find((item) => item.id === id);
@@ -36,58 +44,94 @@ export const useReviewForm = () => {
     const files = e.target.files;
     if (!files) return;
 
-    const fileArray = Array.from(files).slice(0, 5 - photoPreviewImages.length);
+    // 최대 5장 제한 반영
+    const remain = 5 - photoFiles.length;
+    const picked = Array.from(files).slice(0, remain);
 
-    fileArray.forEach((file) => {
+    // 프리뷰 생성
+    picked.forEach((file) => {
       const reader = new FileReader();
       reader.onload = () => {
         if (reader.result) {
-          setPhotoPreviewImages(prev => [...prev, reader.result as string]);
+          setPhotoPreviewImages((prev) => [...prev, reader.result as string]);
         }
       };
       reader.readAsDataURL(file);
     });
+
+    // 실제 업로드 파일 저장
+    setPhotoFiles((prev) => [...prev, ...picked]);
   };
 
   const handleRemoveImage = (index: number) => {
-    setPhotoPreviewImages(prev => prev.filter((_, i) => i !== index));
+    setPhotoPreviewImages((prev) => prev.filter((_, i) => i !== index));
+    setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  const handleRegister = () => {
-    if (!order) {
-      alert("주문 정보를 찾을 수 없습니다.");
-      return;
-    }
-    if (reviewText.length < 20) {
-      alert("리뷰를 20자 이상 작성해주세요.");
-      return;
-    }
+  // const handleRegister = () => {
+  //   if (!order) {
+  //     alert("주문 정보를 찾을 수 없습니다.");
+  //     return;
+  //   }
+  //   if (reviewText.length < 20) {
+  //     alert("리뷰를 20자 이상 작성해주세요.");
+  //     return;
+  //   }
 
-    const existingReviews: ReviewData[] = JSON.parse(localStorage.getItem("reviews") || "[]");
-    const newReview: ReviewData = {
-      id: order.id,
-      brand: order.brand,
-      productName: order.productName,
-      option: order.options,
-      rating,
-      reviewText,
-      photos: photoPreviewImages,
-      date: new Date().toISOString()
-    };
+  //   const existingReviews: ReviewData[] = JSON.parse(localStorage.getItem("reviews") || "[]");
+  //   const newReview: ReviewData = {
+  //     id: order.id,
+  //     brand: order.brand,
+  //     productName: order.productName,
+  //     option: order.options,
+  //     rating,
+  //     reviewText,
+  //     photos: photoPreviewImages,
+  //     date: new Date().toISOString()
+  //   };
 
-    const updatedReviews = editReview
-      ? existingReviews.map((r) => r.id === editReview.id ? newReview : r)
-      : [...existingReviews, newReview];
+  //   const updatedReviews = editReview
+  //     ? existingReviews.map((r) => r.id === editReview.id ? newReview : r)
+  //     : [...existingReviews, newReview];
     
-    localStorage.setItem("reviews", JSON.stringify(updatedReviews));
-    alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
-    navigate("/mypage/review");
+  //   localStorage.setItem("reviews", JSON.stringify(updatedReviews));
+  //   alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
+  //   navigate("/mypage/review");
+  // };
+
+  const handleRegister = async () => {
+    if (!order) return alert("주문 정보를 찾을 수 없습니다.");
+    if (reviewText.trim().length < 20) return alert("리뷰를 20자 이상 작성해주세요.");
+
+    try {
+       const body = {
+        purchaseSize: order.options.size,
+        purchaseColor: order.options.color,
+        rating,
+        title: title.trim() || `${order.productName} 리뷰`,
+        comment: reviewText.trim(),
+      };
+
+      await postProductReview(order.id, body, photoFiles);
+
+      alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
+      console.log(body);
+      navigate("/mypage/review");
+    } catch (err: any) {
+      // 사용자 birthDate, address 없으면 400
+      console.error(err);
+      alert(err?.response?.data?.message ?? "리뷰 등록 중 오류가 발생했습니다.");
+    }
   };
 
   return {
     order,
     rating,
     setRating,
+    height, 
+    setHeight,
+    weight, 
+    setWeight,
     reviewText,
     setReviewText,
     photoPreviewImages,

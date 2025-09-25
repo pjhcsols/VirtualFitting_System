@@ -223,21 +223,21 @@ export const MenuBox = styled.div`
   right: 0;
   min-width: 100px;
   padding: 5px;
-  background: white;
-  border: 1px solid #ddd;
+  background: rgba(200,200,200,0.12);
+  border: none;
   border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   z-index: 10;
 `;
 
 export const MenuItem = styled.div`
-  padding: 8px 12px;
-  font-size: 14px;
-  color: #333;
+  padding: 8px 10px;
+  font-size: 12px;
+  color: #fff;
   cursor: pointer;
   border-radius: 4px;
+  transition: background .2s ease, color .2s ease;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: rgba(255,255,255,0.08);
   }
 `;
