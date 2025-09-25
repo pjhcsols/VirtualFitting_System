@@ -4,6 +4,7 @@ import { useReviewList } from '../hooks/use-review-list';
 import { ReviewListFilter } from "@/features/review-list-filter";
 import { ReviewCard } from '@/entities/review';
 import { ReviewableOrderCard } from '@/entities/order';
+import { ReviewActions } from '@/features/review-actions/ReviewActions';
 
 export function ReviewList() {
   const { filteredOrders, activeTab, setActiveTab, handleDeleteReview } = useReviewList();
@@ -25,7 +26,10 @@ export function ReviewList() {
                     onDelete={handleDeleteReview}
                   />
                 ) : (
-                  <ReviewableOrderCard order={order} />
+                  <>
+                    <ReviewableOrderCard order={order} />
+                    <ReviewActions order={order} />
+                  </>
                 )}
               </GlassCard>
             ))}

@@ -1,51 +1,45 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { MYUSER_ICON, ARROW_ICON } from "../constants";
 import { getMaskedUserName } from "@/shared";
 import { BREAKPOINTS } from "@/shared";
 import Cookies from "js-cookie";
-import * as THREE from "three";
-import { Stars } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { fetchUserInfo } from "@/pages/my/api/get.action";
 
 function MyPage() {
   const navigate = useNavigate();
-  const userId = Cookies.get("userId") as string;
+  const [userId, setUserId] = useState<string | null>(Cookies.get("userId") ?? null);
   const [reviewCount, setReviewCount] = useState(0);
-
-  const RotatingStars = () => {
-    const stars = useRef<THREE.Points>(null);
-
-    useFrame(() => {
-      if (stars.current) {
-        stars.current.rotation.x = stars.current.rotation.y += 0.00005;
-      }
-    });
-
-    return <Stars ref={stars} />;
-  };
 
   useEffect(() => {
     const storedReviews = JSON.parse(localStorage.getItem("reviews") || "[]");
     setReviewCount(storedReviews.length);
   }, []);
 
+  useEffect(() => {
+    let mounted = true;
+    (async () => {
+      try {
+        const info = await fetchUserInfo(); 
+        const userId = Cookies.get("userId") ?? info?.data?.id ?? null;
+        if (mounted) setUserId(userId);
+      } catch (e) {
+        console.error("유저 정보 불러오기 실패", e);
+        if (mounted) setUserId(null);
+      } 
+    })();
+    return () => { mounted = false; };
+  }, []);
+
   return (
     <PageWrapper>
-      <StarBackground>
-        <Canvas>
-          <RotatingStars />
-        </Canvas>
-      </StarBackground>
-      <HeaderWrapper>
-      </HeaderWrapper>
       <ContentWrapper>
         <GlassPanel>
           <UserInfoSection>
             <UserInfo onClick={() => navigate("/mypage/detail")}>
               <Avatar src={MYUSER_ICON} alt="유저 이미지" />
-              <UserName>{getMaskedUserName(userId)}</UserName>
+              <UserName>{getMaskedUserName(userId ?? "")}</UserName>
               <ArrowImg2 src={ARROW_ICON} alt=">" />
             </UserInfo>
           </UserInfoSection>
@@ -110,20 +104,6 @@ const PageWrapper = styled.div`
   align-items: center;
 `;
 
-const StarBackground = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 10;
-  width: 100%;
-  align-self: stretch;
-`;
-
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -132,7 +112,7 @@ const ContentWrapper = styled.div`
   flex: 1;
   width: 100%;
   padding: 20px;
-  margin-top: 50px;
+  margin-bottom: 40px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {

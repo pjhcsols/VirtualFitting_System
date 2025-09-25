@@ -1,12 +1,10 @@
 import styled from 'styled-components';
-import { StarryBackground } from '@/widgets/starry-background';
 import { ReviewForm } from '@/widgets/review-form';
 import { BREAKPOINTS } from '@/shared';
 
 export function WriteReviewPage() {
   return (
     <PageWrapper>
-      <StarryBackground />
       <ContentWrapper>
         <ReviewForm />
       </ContentWrapper>
