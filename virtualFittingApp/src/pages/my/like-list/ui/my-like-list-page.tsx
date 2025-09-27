@@ -1,13 +1,11 @@
 import styled from 'styled-components';
 import { Suspense } from 'react';
-import { StarryBackground } from '@/widgets/starry-background';
 import { LikeList } from "@/widgets/like-list";
 import { BREAKPOINTS } from '@/shared';
 
 export function MyLikeListPage() {
   return (
     <PageWrapper>
-      <StarryBackground />
       <HeaderWrapper>
       </HeaderWrapper>
       <ContentWrapper>

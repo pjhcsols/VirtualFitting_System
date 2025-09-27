@@ -1,7 +1,5 @@
-import { Suspense } from "react";
 import styled from "styled-components";
 import { OrderList } from "@/widgets/order-list";
-import { BREAKPOINTS } from "@/shared";
 
 export function MyOrderListPage() {
   return (
@@ -32,14 +30,14 @@ const ContentWrapper = styled.div`
   flex-grow: 1;
 `;
 
-const InnerContent = styled.div`
-  width: 100%;
-  max-width: 800px;
-  padding: 30px 30px;
-  box-sizing: border-box;
+// const InnerContent = styled.div`
+//   width: 100%;
+//   max-width: 800px;
+//   padding: 30px 30px;
+//   box-sizing: border-box;
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 20px 16px;
-    max-width: 100%;
-  }
-`;
+//   @media (max-width: ${BREAKPOINTS.md}px) {
+//     padding: 20px 16px;
+//     max-width: 100%;
+//   }
+// `;

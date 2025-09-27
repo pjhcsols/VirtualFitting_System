@@ -1,11 +1,9 @@
 import styled from 'styled-components';
-import { StarryBackground } from '@/widgets/starry-background';
-import { CancelList } from "@/widgets/cancle-list";
+import { CancelList } from "@/widgets/cancel-list";
 
 export function MyCancelListPage() {
   return (
     <PageWrapper>
-      <StarryBackground />
       <ContentWrapper>
         <CancelList />
       </ContentWrapper>
