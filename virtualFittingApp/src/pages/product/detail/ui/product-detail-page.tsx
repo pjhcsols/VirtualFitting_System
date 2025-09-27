@@ -6,15 +6,13 @@ import { fetchProductDetailByColor, fetchProductColors } from "@/entities/produc
 import type { ProductDetail } from "@/entities/product";
 
 import { BREAKPOINTS } from "@/shared";
-import {
-  ProductDetails
-} from "@/widgets/product-details";
 
+import { ProductDetails } from "@/widgets/product-details";
 import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 
-function StoreDetailPage() {
+function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -24,8 +22,10 @@ function StoreDetailPage() {
   const [loading, setLoading] = useState(true);
 
   const activeTab = searchParams.get("tab") || "description";
-  const setActiveTab = (tab: string) => {
-    setSearchParams({ tab: tab, color: searchParams.get("color") || "" });
+  const color = searchParams.get("color");
+
+  const handleTabChange = (tab: string) => {
+    setSearchParams({ tab: tab, color: color || "" });
   };
 
   useEffect(() => {
@@ -35,15 +35,16 @@ function StoreDetailPage() {
       setLoading(true);
       try {
         const colors = await fetchProductColors(Number(id));
-        
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
         }
         setProductColors(colors);
 
-        let colorToLoad = searchParams.get("color");
+        let colorToLoad = color;
         if (!colorToLoad || !colors.includes(colorToLoad)) {
-            colorToLoad = colors[0];
+          colorToLoad = colors[0];
+          navigate(`/products/${id}?color=${colorToLoad}&tab=${activeTab}`, { replace: true });
+          return;
         }
         
         const detailData = await fetchProductDetailByColor(Number(id), colorToLoad);
@@ -51,12 +52,6 @@ function StoreDetailPage() {
           throw new Error(`'${colorToLoad}' 색상의 상세 정보를 찾을 수 없습니다.`);
         }
         setProduct(detailData);
-        
-        const currentTab = searchParams.get("tab") || "description";
-        const currentUrlColor = searchParams.get("color");
-        if (currentUrlColor !== colorToLoad) {
-            navigate(`/store/${id}?color=${colorToLoad}&tab=${currentTab}`, { replace: true });
-        }
 
       } catch (error) {
         console.error("Failed to load product details:", error);
@@ -67,7 +62,7 @@ function StoreDetailPage() {
     };
 
     loadProduct();
-  }, [id, searchParams, navigate]);
+  }, [id, color, navigate]);
 
   if (loading || !product) {
     return <div>Loading...</div>;
@@ -79,27 +74,27 @@ function StoreDetailPage() {
         product={product}
         productColors={productColors}
         onColorChange={(newColor) => {
-          navigate(`/store/${id}?color=${newColor}&tab=${activeTab}`);
+          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
         }}
       />
       
       <ContentArea>
         <TabMenu>
-          <TabButton $active={activeTab === "description"} onClick={() => setActiveTab("description")}>상세설명</TabButton>
-          <TabButton $active={activeTab === "size"} onClick={() => setActiveTab("size")}>사이즈표</TabButton>
-          <TabButton $active={activeTab === "review"} onClick={() => setActiveTab("review")}>리뷰</TabButton>
-          <TabButton $active={activeTab === "qna"} onClick={() => setActiveTab("qna")}>문의하기</TabButton>
+          <TabButton $active={activeTab === "description"} onClick={() => handleTabChange("description")}>상세설명</TabButton>
+          <TabButton $active={activeTab === "size"} onClick={() => handleTabChange("size")}>사이즈표</TabButton>
+          <TabButton $active={activeTab === "review"} onClick={() => handleTabChange("review")}>리뷰</TabButton>
+          <TabButton $active={activeTab === "qna"} onClick={() => handleTabChange("qna")}>문의하기</TabButton>
         </TabMenu>
         <Divider />
       
         {activeTab === "description" && <ProductDescription />}
         {activeTab === "size" && <ProductSizingInfo />}
         {activeTab === "review" && <ProductReviews />}
-        {/* {activeTab === "qna" && <QnaContent />} */}
       </ContentArea>
     </Wrapper>
   );
 }
+
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -109,6 +104,7 @@ const Wrapper = styled.div`
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+  position: relative;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 16px 16px;
@@ -135,7 +131,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   padding: 8px 32px;
   border: none;
   background: transparent;
-  color: ${({ $active }) => ($active ? "#000" : "#777")};
+  color: ${({ $active }) => ($active ? "#c3c3c3ff" : "#ffffffff")};
   font-size: 15px;
   font-weight: ${({ $active }) => ($active ? 700 : 500)};
   cursor: pointer;
@@ -152,4 +148,4 @@ const ContentArea = styled.div`
   margin-top: 16px;
 `;
 
-export { StoreDetailPage };
+export { ProductDetailPage };

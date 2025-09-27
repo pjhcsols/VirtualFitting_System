@@ -6,10 +6,10 @@ import { BREAKPOINTS } from "@/shared";
 import { ProductCard } from "@/entities/product";
 import { AdvertisementCarousel } from "@/widgets/advertisement-carousel";
 
-import { fetchOnSaleProducts } from "@/entities/product/api";
+import { fetchOnSaleProducts } from "@/entities/product";
 import type { Product } from "@/entities/product";
 
-function StorePage() {
+function ProductListPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -39,7 +39,7 @@ function StorePage() {
           <ProductCard
             key={product.productId}
             product={product}
-            onClick={() => navigate(`/store/${product.productId}`)}
+            onClick={() => navigate(`/products/${product.productId}`)}
           />
         ))}
       </ProductGrid>
@@ -57,6 +57,7 @@ const LoadingIndicator = styled.div`
 `;
 
 const Wrapper = styled.div`
+  position: relative;
   width: 100%;
   min-height: 100vh;
 `;
@@ -67,9 +68,9 @@ const CarouselContainer = styled.div`
 
 const ProductGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(1, 1fr);
-  padding: 5em 1.5em;
-  gap: 0;
+  grid-template-columns: repeat(2, 1fr);
+  padding: 40px 20px;
+  gap: 16px;
   margin: 0 auto;
   max-width: 1000px;
 
@@ -92,4 +93,4 @@ const ProductGrid = styled.div`
   }
 `;
 
-export { StorePage };
+export { ProductListPage };
