@@ -2,11 +2,13 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared"
+import { Starfield } from "@/shared/components/star";
 
 function PaymentLayout() {
   return (
     <Wrapper>
-      <Header />
+      <Starfield />
+      <Header theme="dark"/>
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
@@ -16,13 +18,13 @@ function PaymentLayout() {
 
 const Wrapper = styled.main`
   position: relative;
+  box-sizing: border-box;
   max-width: 100vw;
   min-height: 100vh;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: #fffafa;
 `;
 
 const ContentWrapper = styled.article`
@@ -39,5 +41,7 @@ const ContentWrapper = styled.article`
   }
 
 `;
+
+
 
 export { PaymentLayout };
