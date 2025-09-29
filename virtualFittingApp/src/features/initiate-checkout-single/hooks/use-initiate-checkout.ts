@@ -1,75 +1,37 @@
 import { useState } from 'react';
-import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { createPaymentReservation } from '@/entities/payment/api';
-import type { ProductColorPayment, ProductSizePayment, PaymentMethod } from '@/entities/payment';
-
-export interface CheckoutInfo {
-  productId: number;
-  productName: string;
-  productColor: ProductColorPayment;
-  productSize: ProductSizePayment;
-  quantity: number;
-  finalPrice: number;
-  couponWalletId?: number;
-  paymentMethod: PaymentMethod;
-}
+import { useRecoilValue } from 'recoil'; // ✅ 1. Recoil 훅 import
+import { authState } from '@/entities/auth';   // ✅ 2. authState atom import
+import type { CartItem } from '@/entities/cart';
 
 export const useInitiateCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
+  
+  // ✅ 3. Recoil의 로그인 상태를 실시간으로 구독합니다.
+  const isLoggedIn = useRecoilValue(authState);
 
-  const initiateCheckout = async (info: CheckoutInfo) => {
+  const initiateCheckout = (item: CartItem) => {
     setIsLoading(true);
     try {
-      const accessToken = cookies['access-token'];
-      if (!accessToken) {
+      // ✅ 4. 이제 cookies 대신, 항상 최신 상태를 반영하는 isLoggedIn 변수를 확인합니다.
+      if (!isLoggedIn) {
         alert("로그인이 필요한 서비스입니다.");
+        navigate('/login');
         return;
       }
+      
+      console.log("주문서 페이지로 이동하는 데이터:", item);
+      navigate('/checkout', { state: { item: item } });
 
-      const reservationResponse = await createPaymentReservation({
-        productId: info.productId,
-        productColor: info.productColor,
-        productSize: info.productSize,
-        count: info.quantity,
-        userId: accessToken
-      });
-
-      const reservationData = reservationResponse?.data;
-      if (!reservationData?.reserveTaskOrderPayId) {
-        throw new Error("결제 예약에 실패했습니다.");
-      }
-      navigate('/payment', {
-         state: {
-           intentInfo: {
-             orderId: reservationData.reserveTaskOrderPayId,
-             currency: info.finalPrice,
-             lines: [{
-               productId: info.productId,
-               size: info.productSize,
-               color: info.productColor,
-               quantity: info.quantity,
-               couponWalletId: info.couponWalletId
-             }],
-             expiresAt: reservationData.expiresAt,
-             pointsToUse: 0
-           },
-           paymentInfo: {
-             orderName: info.productName,
-             paymentMethod: info.paymentMethod
-           }
-         }
-       });
+    } catch (error: any) {
+      console.error("Checkout initiation failed:", error);
+      alert(`주문서 생성 중 오류가 발생했습니다: ${error.message}`);
+    } finally {
+      setIsLoading(false);
+    }
+  };
  
-     } catch (error: any) {
-       console.error("Checkout initiation failed:", error);
-       alert(`결제 준비 중 오류가 발생했습니다: ${error.message || "알 수 없는 오류"}`);
-     } finally {
-       setIsLoading(false);
-     }
-   };
- 
-   return { initiateCheckout, isLoading };
+  return { initiateCheckout, isLoading };
 };
+
