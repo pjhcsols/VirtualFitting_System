@@ -1,8 +1,8 @@
 import styled from "styled-components";
 import { useState } from "react";
 import { useProductCoupon } from '../hooks/use-product-coupon';
-import { GlassBox } from "@/shared/components/glass-box";
 import { GlassButton } from '@/shared/components/glass-button';
+import { GlassBox } from "@/shared/components/glass-box";
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { Portal } from "@/shared/ui/Portal";
 
@@ -15,7 +15,6 @@ interface ProductCouponProps {
 export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCouponProps) => {
   const { coupons, isLoading } = useProductCoupon(productId);
   const [showPopup, setShowPopup] = useState(false);
-  
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
 
   const handleApply = () => {
@@ -43,7 +42,7 @@ export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCoupon
               ) : coupons.length > 0 ? (
                 <CouponList>
                   {coupons.map(coupon => {
-                    const isUsable = coupon.hasAvailable && finalPrice >= coupon.minOrderPrice;
+                    const isUsable = coupon.remainingCanClaim > 0 && finalPrice >= coupon.minOrderPrice;
                     return (
                       <CouponItemLabel key={coupon.campaignId} disabled={!isUsable}>
                         <RadioButton 
@@ -85,7 +84,7 @@ export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCoupon
 const PopupOverlay = styled.div`
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: #292e49d0;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
