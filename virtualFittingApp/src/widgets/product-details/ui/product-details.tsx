@@ -21,7 +21,7 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
     quantity,
     selectedColor,
     selectedSize,
-    finalPrice,
+    // finalPrice,
     sizesSorted,
     selectedProductImages,
     setQuantity,

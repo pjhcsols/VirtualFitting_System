@@ -1,5 +1,9 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCookies } from 'react-cookie';
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth'; 
+import { useNavigate } from "react-router-dom";
+
 import { 
   SIZE_ORDER
 } from "@/shared";
@@ -7,11 +11,14 @@ import { fetchDiscountQuote } from "@/entities/discount";
 import type { ProductDetail } from "@/entities/product/model/types";
 import type { ProductColorPayment, ProductSizePayment } from "@/entities/payment/model/types";
 
+
 import { useAddToCart } from '@/features/add-to-cart';
 import { useInitiateCheckout } from "@/features/initiate-checkout-single";
 
 export const useProductDetails = (product: ProductDetail, onColorChange?: (color: string) => void) => {
   const [cookies] = useCookies(['access-token']);
+  const isLoggedIn = useRecoilValue(authState);
+  const navigate = useNavigate();
 
   const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
   const [quantity, setQuantity] = useState(1);
@@ -85,6 +92,13 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   };
 
   const handlePurchaseClick = () => {
+
+    if (!isLoggedIn) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate('/login');
+      return;
+    }
+
     if (!price) return;
 
     initiateCheckout({
