@@ -1,5 +1,5 @@
 import { useOrderDetails } from "../hooks/use-order-details";
-import { formatSimpleDate } from "@/shared/lib";
+import { formatSimpleDate } from "@/shared/lib/date.util";
 import alertImg from "@/shared/assets/images/alert-fallback.png";
 import * as S from "./order-details.styled";
 

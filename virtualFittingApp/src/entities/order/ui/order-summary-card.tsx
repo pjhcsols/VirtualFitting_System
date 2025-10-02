@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { formatSimpleDate } from '@/shared/lib';
+import { formatSimpleDate } from '@/shared/lib/date.util';
 import type { OrderItem } from '../model/types';
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
@@ -45,7 +45,7 @@ export const CardWrapper = styled.div`
   border-radius: 16px;
   padding: 24px;
   overflow: hidden;
-  margin-bottom: 24px; /* 카드 간의 간격 */
+  margin-bottom: 24px;
 
   background: rgba(200, 200, 200, 0.15);
   backdrop-filter: blur(16px) saturate(160%);
@@ -93,7 +93,7 @@ export const RightSection = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   flex: 1;
-  gap: 4px; /* 요소 간 간격 조정 */
+  gap: 4px;
 `;
 
 export const TitleLine = styled.div`
@@ -139,7 +139,7 @@ export const Price = styled.div`
   font-size: 14px;
   color: #fff;
   text-align: left;
-  margin-top: auto; /* 가격을 항상 하단에 위치시킴 */
+  margin-top: auto;
 `;
 
 export const ButtonWrapper = styled.div`
