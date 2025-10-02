@@ -26,11 +26,6 @@ export function ReviewableOrderCard({ order }: ReviewableOrderCardProps) {
           </OptionText>
         </RightSection>
       </OrderCard>
-      <ButtonWrapper>
-        <ActionButton onClick={() => navigate(`/mypage/review/${order.id}`)}>
-          스타일 리뷰
-        </ActionButton>
-      </ButtonWrapper>
     </div>
   );
 }
@@ -83,27 +78,4 @@ export const OptionText = styled.div`
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.6);
   text-align: left;
-`;
-
-export const ButtonWrapper = styled.div`
-  display: flex;
-  margin-top: 16px;
-  justify-content: flex-start;
-`;
-
-export const ActionButton = styled.button`
-  width: 100%;
-  height: 40px;
-  border: none;
-  border-radius: 6px;
-  background-color: #292E49;
-  color: rgba(255, 255, 255, 0.9);
-  font-size: 14px;
-  font-family: "Prata-Regular";
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-
-  &:hover {
-    background-color: #3a416a;
-  }
 `;
