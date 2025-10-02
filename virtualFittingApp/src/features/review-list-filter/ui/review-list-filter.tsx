@@ -86,7 +86,7 @@ export const ButtonGroup = styled.div`
   margin: 10px 0;
   margin-right: 570px;
   padding: 4px;
-  border-radius: 12px;
+  border-radius: 30px;
   border: 1px solid rgba(255,255,255,0.25);
   background: rgba(200,200,200,0.12);
 
@@ -107,7 +107,7 @@ export const ToggleButton = styled.button<{ $active: boolean }>`
   border: 0;
   cursor: pointer;
   transition: background .2s ease, color .2s ease;
-  border-radius: 10px;
+  border-radius: 30px;
 
   &:hover {
     background: ${({ $active }) => ($active ? '#292E49' : 'rgba(255,255,255,0.08)')};

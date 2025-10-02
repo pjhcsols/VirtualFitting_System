@@ -4,6 +4,7 @@ import type { OrderItem } from "@/entities/order";
 import type { ReviewData } from '@/entities/review';
 import { orderDummyData } from "@/entities/order";
 import { postProductReview } from "@/pages/my/api/review.aciton";
+import type { BodySize } from "@/pages/my/types/user";
 
 export const useReviewForm = () => {
   const navigate = useNavigate();
@@ -22,8 +23,21 @@ export const useReviewForm = () => {
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
 
-  const [height, setHeight] = useState<number | undefined>();
-  const [weight, setWeight] = useState<number | undefined>();
+  const initialSize: BodySize = {
+    height: 0,
+    weight: 0,
+    totalLength: 0,
+    chest: 0,
+    shoulder: 0,
+    arm: 0,
+    pantsTotalLength: 0,
+    waistWidth: 0,
+    hipWidth: 0,
+    rise: 0,
+    hemWidth: 0,
+  };
+  const [sizes, setSizes] = useState<BodySize>(initialSize);
+
 
   useEffect(() => {
     const foundOrder = orderDummyData.find((item) => item.id === id);
@@ -35,6 +49,13 @@ export const useReviewForm = () => {
       setPhotoPreviewImages(editReview.photos || []);
     }
   }, [id, editReview]);
+
+  const handleSizeChange = (field: keyof BodySize, value: number) => {
+    setSizes(prev => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
   const handlePhotoUploadClick = () => {
     photoInputRef.current?.click();
@@ -113,7 +134,6 @@ export const useReviewForm = () => {
       };
 
       await postProductReview(order.id, body, photoFiles);
-
       alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
       console.log(body);
       navigate("/mypage/review");
@@ -128,19 +148,18 @@ export const useReviewForm = () => {
     order,
     rating,
     setRating,
-    height, 
-    setHeight,
-    weight, 
-    setWeight,
     reviewText,
     setReviewText,
     photoPreviewImages,
     photoInputRef,
     editReview,
+    sizes,
+    setSizes,
     handlePhotoUploadClick,
     handleImageChange,
     handleRemoveImage,
     handleRegister,
+    handleSizeChange,
   };
 };
 
