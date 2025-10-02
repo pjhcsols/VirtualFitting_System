@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useCancelList } from "../hooks/use-cancle-list";
+import { useCancelList } from "../hooks/use-cancel-list";
 import { CancelListFilter } from "@/features/cancel-list-filter";
 import { CanceledOrderCard } from '@/entities/order';
 import { BREAKPOINTS } from '@/shared';

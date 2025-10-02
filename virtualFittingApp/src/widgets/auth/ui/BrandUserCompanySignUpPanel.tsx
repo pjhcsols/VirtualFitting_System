@@ -1,7 +1,7 @@
-import { BREAKPOINTS, FileItem } from "@/shared";
+import { BREAKPOINTS } from "@/shared";
 import styled from "styled-components";
 import { BrandUserSignUpRequestDto } from "../types/login";
-import { Dispatch, type ChangeEvent, SetStateAction } from "react";
+import { type ChangeEvent } from "react";
 
 type BrandUserCompanySignUpPanelType = {
   brandUserInfo: BrandUserSignUpRequestDto;

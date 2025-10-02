@@ -1,8 +1,8 @@
-import { type SizeTable } from "@/shared/types/product/product";
+import { type ProductSizeOptionType } from "@/shared/types/product/product";
 import styled from "styled-components";
 
 type SizeTableType = {
-  sizeDatas: SizeTable[];
+  sizeDatas: ProductSizeOptionType[];
 };
 
 function SizeTable({ sizeDatas }: SizeTableType) {
@@ -18,14 +18,14 @@ function SizeTable({ sizeDatas }: SizeTableType) {
         </Column>
       </TableHeader>
       <TableBody>
-        {sizeDatas.map((item: SizeTable, key: number) => {
+        {sizeDatas.map((item: ProductSizeOptionType, key: number) => {
           return (
             <Column key={key}>
-              <ColumnData>{item.productSize}</ColumnData>
-              <ColumnData>{item.productArm}</ColumnData>
-              <ColumnData>{item.productChest}</ColumnData>
-              <ColumnData>{item.productShoulder}</ColumnData>
-              <ColumnData>{item.productTotalLength}</ColumnData>
+              <ColumnData>{item.id.productSize}</ColumnData>
+              <ColumnData>{item.arm}</ColumnData>
+              <ColumnData>{item.chest}</ColumnData>
+              <ColumnData>{item.shoulder}</ColumnData>
+              <ColumnData>{item.totalLength}</ColumnData>
             </Column>
           );
         })}

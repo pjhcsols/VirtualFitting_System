@@ -3,4 +3,3 @@ export { ProductImageUploader } from "@/pages/brand/components/input/ProductImag
 export { TextInput } from "@/pages/brand/components/input/TextInput";
 export { NumberInput } from "@/pages/brand/components/input/NumberInput";
 export { ProductOptionUploader } from "@/pages/brand/components/input/ProductOptionUploader";
-export { SizeInput } from "@/pages/brand/components/input/SizeInput";

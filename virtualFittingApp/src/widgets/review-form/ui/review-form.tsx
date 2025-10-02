@@ -41,6 +41,12 @@ export function ReviewForm() {
             />
           ))}
         </RatingSection>
+
+        <ReviewLabel>신체 사이즈</ReviewLabel>
+        <SizeForm>
+          <SizeInput placeholder="키   cm" />
+          <SizeInput placeholder="몸무게 kg" />
+        </SizeForm>
         
         <ReviewTextWrapper>
           <ReviewLabel>
@@ -116,6 +122,7 @@ export const FormInner = styled.div`
 export const FooterInner = styled.div`
   width: 100%;
   padding: 10px 0;
+  margin-top: 35px;
   box-sizing: border-box;
 `;
 
@@ -133,6 +140,7 @@ export const RatingSection = styled.div`
   align-items: center;
   gap: 6px;
   width: 100%;
+  margin-bottom: 20px;
 `;
 
 export const StarImage = styled.img`
@@ -144,7 +152,7 @@ export const StarImage = styled.img`
 
 export const ReviewTextWrapper = styled.div`
   width: 100%;
-  margin-top: 35px;
+  margin-top: 40px;
 `;
 
 export const ImageWrapper = styled.div`
@@ -242,8 +250,8 @@ export const RemoveButton = styled.button`
   right: 4px;
   background: rgba(0,0,0,0.5);
   border: none;
-  width: 24px;
-  height: 24px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -281,7 +289,30 @@ export const AddIconImage = styled.img`
 `;
 
 export const CancelIconImage = styled.img`
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 20px;
+`;
+
+const SizeForm = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
+const SizeInput = styled.input`
+  width: 70px;
+  padding: 10px;
+  background: rgba(200, 200, 200, 0.15);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  text-align: center;
+  resize: none;
+  outline: none;
+  
+  &::placeholder {
+    color: rgba(255,255,255,0.5);
+  }
 `;
 

@@ -15,7 +15,6 @@ function BrandSignUpPage() {
     onChangeEmail,
     onChangeId,
     onChangePassword,
-    onChangePhoneNumber,
     onChangeFirmAddress,
     onChangeFirmEmail,
     onChangeFirmName,
@@ -39,7 +38,6 @@ function BrandSignUpPage() {
           onChangeEmail={onChangeEmail}
           onChangeId={onChangeId}
           onChangePassword={onChangePassword}
-          onChangePhoneNumber={onChangePhoneNumber}
         />
       )}
       {step === 1 && (

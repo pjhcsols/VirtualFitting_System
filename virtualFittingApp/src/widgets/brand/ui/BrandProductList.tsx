@@ -3,11 +3,11 @@ import { Suspense } from "react";
 import {
   BrandProductCard,
   ICON_BASILIUM_ASSET_2,
-  ProductServerResponseType,
+  ServerProductDto,
 } from "@/shared";
 
 type BrandPrudctListType = {
-  datas: ProductServerResponseType[] | undefined;
+  datas: ServerProductDto[] | undefined;
 };
 
 function BrandProductList({ datas }: BrandPrudctListType) {
@@ -33,7 +33,7 @@ function BrandProductList({ datas }: BrandPrudctListType) {
             />
           </S.NoDataContainer>
         ) : (
-          datas?.map((item: ProductServerResponseType, key: number) => (
+          datas?.map((item: ServerProductDto, key: number) => (
             <BrandProductCard
               key={key}
               productId={item.productId}

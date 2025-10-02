@@ -12,7 +12,6 @@ export const getBanners = async (): Promise<IBanner> => {
     "/b1/superUsers/me/banners?adminId=super_ad",
   );
   if (res.status === 200) {
-    console.log(res);
     return res.data;
   }
   throw new CustomException(400, "배너를 받아들여올 수 없습니다.");

@@ -52,7 +52,7 @@ function HeroSection() {
                 LOGIN
               </PrataText>
             </LoginButton>
-            <LoginButton to={"/store"}>
+            <LoginButton to={"/products"}>
               <PrataText size={"0.8rem"} $weight={500} color="#fff">
                 STORE
               </PrataText>

@@ -1,11 +1,8 @@
 import { ConfirmForm, NormalUserSignUp, useNormalSignUp } from "@/widgets";
-import gsap from "gsap";
 import { useState } from "react";
 import styled from "styled-components";
 
 function NormalSignUpPage() {
-  const tl = gsap.timeline();
-
   const [signUpStep, setSignUpStep] = useState<0 | 1 | 2>(0);
   const [isCompleted, setIsCompleted] = useState<boolean>(false);
   const {
@@ -15,9 +12,8 @@ function NormalSignUpPage() {
     onChangePhoneNumber,
     onChangeDatePicker,
     onChange,
-    onBlur,
     onSubmitSignUp,
-  } = useNormalSignUp(setIsCompleted);
+  } = useNormalSignUp();
 
   const onClickNextButton = async () => {
     if (!isCompleted) {
@@ -48,7 +44,6 @@ function NormalSignUpPage() {
           signUpInfo={signUpInfo}
           phoneNumber={phoneNumber}
           onClickGender={onClickGender}
-          onBlur={onBlur}
           onChange={onChange}
           onChangeDatePicker={onChangeDatePicker}
           onChangePhoneNumber={onChangePhoneNumber}

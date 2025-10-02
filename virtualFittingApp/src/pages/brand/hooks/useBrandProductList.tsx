@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { GET_BRAND_PRODUCT_LIST } from "../api/brand.action";
-import { ProductServerResponseType } from "@/shared";
+import { ServerProductDto } from "@/shared";
 
 function useBrandProductList({ page, size }: { page: number; size: number }) {
-  const [data, setData] = useState<ProductServerResponseType[]>();
+  const [data, setData] = useState<ServerProductDto[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
 

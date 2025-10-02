@@ -1,12 +1,12 @@
 import { ChangeEvent, useState } from "react";
 import { findProduct } from "../../api/admin.action";
-import { Product, SearchBar } from "@/shared";
+import { ServerProductDto, SearchBar } from "@/shared";
 import styled from "styled-components";
 import { ProductCard } from "@/entities/product";
 
 function ProductFinder() {
   const [searchProduct, setSearchProduct] = useState<string>("");
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, setProducts] = useState<ServerProductDto[]>([]);
 
   const onChangeSearchBar = (e: ChangeEvent<HTMLInputElement>) => {
     const { value } = e.target;
@@ -37,7 +37,7 @@ function ProductFinder() {
         />
       </SearchContainer>
       <ProductContainer>
-        {products.map((item: Product, key: number) => {
+        {products.map((item: ServerProductDto, key: number) => {
           return <ProductCard product={item} key={key} />;
         })}
       </ProductContainer>
