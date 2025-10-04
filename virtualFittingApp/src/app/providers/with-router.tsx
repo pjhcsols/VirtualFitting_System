@@ -18,19 +18,19 @@ import {
   AdminLogin,
   BrandSignUpPage,
   FailedPage,
-  Loginpage,
+  LoginPage,
   NormalSignUpPage,
   SuccessSignUpPage,
   AdminHome,
   AdminBanner,
   AdminBrandUsers,
-  AdminProduct,
   AdminUser,
   BasiliumRedirect,
   BrandPage,
   ShoppingCartPage,
   StoreDetailPage,
   StorePage,
+  AuthLobby,
 } from "@/pages";
 
 import { MainLayout } from "@/app/layouts/main/MainLayout";
@@ -40,6 +40,9 @@ import { StoreLayout } from "../layouts/store/StoreLayout";
 import { MyPageLayout } from "../layouts/my/MyLayout";
 import { PaymentLayout } from "../layouts/payment/PaymentLayout";
 import { SignUpLayout } from "@/app/layouts/auth";
+import { BrandLayout } from "../layouts/brand";
+import { BrandLobby } from "@/pages/brand/ui/lobby";
+import { BrandProduct } from "@/pages/brand/ui/product";
 
 const Routing = () => (
   <Routes>
@@ -47,11 +50,12 @@ const Routing = () => (
       <Route index element={<MainPage />} />
     </Route>
     <Route path="login">
-      <Route index element={<Loginpage />} />
+      <Route index element={<LoginPage />} />
       <Route path="admin" element={<AdminLogin />} />
     </Route>
     <Route path="signup" element={<SignUpLayout />}>
-      <Route index element={<NormalSignUpPage />} />
+      <Route index element={<AuthLobby />} />
+      <Route path="normal" element={<NormalSignUpPage />} />
       <Route path="brand" element={<BrandSignUpPage />} />
       <Route path="success" element={<SuccessSignUpPage />} />
       <Route path="failed" element={<FailedPage />} />
@@ -61,11 +65,15 @@ const Routing = () => (
       <Route path="banner" element={<AdminBanner />} />
       <Route path="brand" element={<AdminBrandUsers />} />
       <Route path="user" element={<AdminUser />} />
-      <Route path="product" element={<AdminProduct />} />
+      {/* <Route path="product" element={<AdminProduct />} /> */}
       <Route path="*" element={<BasiliumRedirect />} />
     </Route>
     <Route path="brand">
       <Route index element={<BrandPage />} />
+      <Route element={<BrandLayout />}>
+        <Route path="dashboard" element={<BrandLobby />} />
+        <Route path="products" element={<BrandProduct />} />
+      </Route>
       <Route path="*" element={<BasiliumRedirect />} />
     </Route>
     <Route path="/cart" element={<CartLayout />}>

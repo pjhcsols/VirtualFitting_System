@@ -41,12 +41,16 @@ type PaginationBrandProductListType = {
   page: number;
 };
 
-export const GET_BRAND_PRODUCT_LIST = async ({
+interface IBrandProductList extends BasiliumResponse {
+  data: ServerProductDto[];
+}
+
+export const getBrandProductList = async ({
   size,
   page,
 }: PaginationBrandProductListType) => {
   try {
-    const res = await API_BASILIUM.get<ServerProductDto[]>(
+    const res = await API_BASILIUM.get<IBrandProductList>(
       `/b1/products/brand?page=${page}&size=${size}`,
     );
     if (res.status === 200) {

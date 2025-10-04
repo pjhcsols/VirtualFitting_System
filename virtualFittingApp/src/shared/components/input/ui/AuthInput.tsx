@@ -15,20 +15,6 @@ function LoginInput({ value, onChange }: LoginInputType) {
   );
 }
 
-function PasswordInput({ value, onChange }: LoginInputType) {
-  return (
-    <InputWrapper>
-      <PasswordInputContainer
-        name="password"
-        value={value}
-        onChange={onChange}
-        required
-      />
-      <DefaultOutline>PASSWORD</DefaultOutline>
-    </InputWrapper>
-  );
-}
-
 type SignUpInputType = {
   title: string;
   value: string;
@@ -125,7 +111,6 @@ function BirthdayInput({ value, onChange }: SignUpInputType) {
 
 export {
   LoginInput,
-  PasswordInput,
   EmailAddressInput,
   AddressInput,
   BirthdayInput,

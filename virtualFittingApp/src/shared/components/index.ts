@@ -24,8 +24,8 @@ export * from "@/shared/components/input";
 
 export * from "@/shared/components/modal";
 
-export * from "@/shared/components/text";
-
 export * from "@/shared/components/table";
 
 export * from "@/shared/components/icon";
+
+export * from "@/shared/components/common";

@@ -1,27 +1,23 @@
-import { type MouseEvent } from "react";
+import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
-type ButtonType = {
-  onClick: (e: MouseEvent<HTMLDivElement>) => void;
-};
-
-function AuthLoginButton({ onClick }: ButtonType) {
+function AuthLoginButton() {
   return (
-    <LoginButtonWrapper onClick={onClick}>
+    <LoginButtonWrapper>
       <ButtonText>LOGIN</ButtonText>
     </LoginButtonWrapper>
   );
 }
 
-function AuthSignUpButton({ onClick }: ButtonType) {
+function AuthSignUpButton() {
   return (
-    <SignUpButtonWrapper onClick={onClick}>
+    <SignUpButtonWrapper to={"/signup"}>
       <SignUpButtonText>SIGNUP</SignUpButtonText>
     </SignUpButtonWrapper>
   );
 }
 
-const ButtonWrapper = styled.div`
+const ButtonWrapper = styled(NavLink)`
   width: 100%;
   height: 2.5rem;
   display: flex;

@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 
 import styled from "styled-components";
-import BasiliumLogo from "/public/svg/BasiliumLogo.svg";
+import BasiliumLogo from "@/assets/svg/logo/BasiliumLogo.svg";
 
 function AdminHeader() {
   const router = useNavigate();
