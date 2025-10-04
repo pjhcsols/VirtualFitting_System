@@ -1,10 +1,13 @@
 import styled from "styled-components";
+import { useState } from "react";
 import { useReviewForm } from '../hooks/use-review-form';
 import { ReviewableOrderCard } from "@/entities/order";
 import icon_star_filled from "@/shared/assets/icons/icon-star-filled.svg";
 import icon_star_unfilled from "@/shared/assets/icons/icon-star-unfilled.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
 import icon_cancel from "@/shared/assets/icons/icon-cancel.svg";
+import { DOWN_ICON, UP_ICON } from "@/pages/my/constants";
+import { BREAKPOINTS } from '@/shared';
 
 export function ReviewForm() {
   const {
@@ -16,11 +19,17 @@ export function ReviewForm() {
     photoPreviewImages,
     photoInputRef,
     editReview,
+    sizes,
+    setSizes,
     handlePhotoUploadClick,
     handleImageChange,
     handleRemoveImage,
     handleRegister,
+    handleSizeChange,
   } = useReviewForm();
+
+  const [showSizeForm, setShowSizeForm] = useState<boolean>(false);
+
 
   if (!order) {
     return <div>주문 정보를 찾을 수 없습니다.</div>;
@@ -44,8 +53,16 @@ export function ReviewForm() {
 
         <ReviewLabel>신체 사이즈</ReviewLabel>
         <SizeForm>
-          <SizeInput placeholder="키   cm" />
-          <SizeInput placeholder="몸무게 kg" />
+          <SizeInput 
+            placeholder="키   cm"
+            value={sizes.height || ""}
+            onChange={(e) => handleSizeChange("height", Number(e.target.value))}
+          />
+          <SizeInput
+            placeholder="몸무게  kg"
+            value={sizes.weight || ""}
+            onChange={(e) => handleSizeChange("weight", Number(e.target.value))}
+          />
         </SizeForm>
         
         <ReviewTextWrapper>
@@ -89,6 +106,66 @@ export function ReviewForm() {
             ref={photoInputRef}
           />
         </ImageWrapper>
+
+        <FormField>
+          <LabelWithIcon onClick={() => setShowSizeForm(prev => !prev)}>
+            선택사항
+            <ToggleIcon
+              src={showSizeForm ? DOWN_ICON : UP_ICON}
+              alt="토글 아이콘"
+            />
+          </LabelWithIcon>
+
+          {showSizeForm && (
+            <SizeGrid>
+              <SizeInput
+                placeholder="총장  cm" 
+                value={sizes.totalLength || ""}
+                onChange={(e) => handleSizeChange("totalLength", Number(e.target.value))}
+              />
+              <SizeInput
+                placeholder="어깨  cm"
+                value={sizes.shoulder || ""}
+                onChange={(e) => handleSizeChange("shoulder", Number(e.target.value))}
+              />
+              <SizeInput
+                placeholder="가슴둘레 cm"
+                value={sizes.chest || ""}
+                onChange={(e) => handleSizeChange("chest", Number(e.target.value))}
+              />
+              <SizeInput
+                placeholder="팔길이  cm"
+                value={sizes.arm || ""}
+                onChange={(e) => handleSizeChange("arm", Number(e.target.value))}
+              />  
+              <SizeInput
+                placeholder="바지총장  cm"
+                value={sizes.pantsTotalLength || ""}
+                onChange={(e) => handleSizeChange("pantsTotalLength", Number(e.target.value))}
+              /> 
+              <SizeInput
+                placeholder="허리둘레  cm"
+                value={sizes.waistWidth || ""}
+                onChange={(e) => handleSizeChange("waistWidth", Number(e.target.value))}
+              />
+              <SizeInput
+                placeholder="엉덩이둘레  cm"
+                value={sizes.hipWidth || ""}
+                onChange={(e) => handleSizeChange("hipWidth", Number(e.target.value))}
+              />
+              <SizeInput
+                placeholder="밑위길이  cm"
+                value={sizes.rise || ""}
+                onChange={(e) => handleSizeChange("rise", Number(e.target.value))}
+              />
+              <SizeInput 
+                placeholder="밑단너비  cm"
+                value={sizes.hemWidth || ""}
+                onChange={(e) => handleSizeChange("hemWidth", Number(e.target.value))}
+              />
+            </SizeGrid>
+          )}
+        </FormField>
       </FormInner>
 
       <FooterInner>
@@ -299,15 +376,17 @@ const SizeForm = styled.div`
 `;
 
 const SizeInput = styled.input`
-  width: 70px;
-  padding: 10px;
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+  padding: 10px 12px;
   background: rgba(200, 200, 200, 0.15);
   color: #fff;
   border: none;
   border-radius: 6px;
   font-size: 14px;
   font-family: "Prata-Regular";
-  text-align: center;
+  text-align: left;
   resize: none;
   outline: none;
   
@@ -315,4 +394,42 @@ const SizeInput = styled.input`
     color: rgba(255,255,255,0.5);
   }
 `;
+
+const FormField = styled.div`
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  margin-top: 30px;
+  align-items: start;
+  column-gap: 14px;
+  width: 100%;
+  padding: 6px 0;
+`;
+
+const SizeGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);   
+  gap: 10px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    grid-template-columns: repeat(2, 1fr); 
+  }
+`;
+
+const LabelWithIcon = styled.label`
+  width: 120px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  color: rgba(255,255,255,0.9);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  gap: 6px;
+`;
+
+const ToggleIcon = styled.img`
+  width: 16px;
+  height: 16px;
+`;
+
+
 

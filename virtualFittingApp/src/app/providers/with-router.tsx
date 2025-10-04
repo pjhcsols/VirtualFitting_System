@@ -24,7 +24,7 @@ import {
   AdminHome,
   AdminBanner,
   AdminBrandUsers,
-  AdminProduct,
+  // AdminProduct,
   AdminUser,
   BasiliumRedirect,
   BrandPage,
@@ -61,7 +61,7 @@ const Routing = () => (
       <Route path="banner" element={<AdminBanner />} />
       <Route path="brand" element={<AdminBrandUsers />} />
       <Route path="user" element={<AdminUser />} />
-      <Route path="product" element={<AdminProduct />} />
+      {/* <Route path="product" element={<AdminProduct />} /> */}
       <Route path="*" element={<BasiliumRedirect />} />
     </Route>
     <Route path="brand">

@@ -1,22 +1,13 @@
 import styled from "styled-components";
-import { Header } from "@/widgets/header";
-import { useParams } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";
 
 function MyOrderListDetail() {
-    const {id} = useParams();
-    
     return (
         <PageWrapper>
-            <HeaderWrapper>
-                <Header />
-            </HeaderWrapper>
-                <OrderDetailContent />
-            <ContentWrapper>
-                <InnerContent>
-                </InnerContent>
-            </ContentWrapper>
+          <ContentWrapper>
+            <OrderDetailContent />
+          </ContentWrapper>
         </PageWrapper>
     );
 }
@@ -25,33 +16,27 @@ export { MyOrderListDetail };
 
 
 const PageWrapper = styled.div`
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
-  height: 100vh;
-`;
-
-const HeaderWrapper = styled.div`
-  position: sticky;
-  top: 0;
-  z-index: 100;
+  min-height: 100vh;
+  overflow-x: hidden;
 `;
 
 const ContentWrapper = styled.div`
-  margin-top: 70px;
+  padding: 24px 20px 100px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-`;
-
-const InnerContent = styled.div`
+  margin: 0 auto;
+  padding-bottom: 70px;
   width: 100%;
   max-width: 800px;
-  padding: 30px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 20px 16px;
     max-width: 100%;
+    padding: 88px 16px 20px;
   }
 `;
