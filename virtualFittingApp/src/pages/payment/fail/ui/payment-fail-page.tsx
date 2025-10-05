@@ -105,7 +105,6 @@ const ButtonContainer = styled.div`
   margin-top: 1rem;
 `;
 
-// 디버그 박스 스타일
 const DebugBox = styled.div`
   width: 100%;
   padding: 1rem;

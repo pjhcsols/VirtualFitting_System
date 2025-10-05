@@ -72,7 +72,6 @@ export const useConfirmCheckout = () => {
       if (!intentData) {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
       }
-      
 
       sessionStorage.setItem('paymentMethod', checkoutData.paymentMethod);
       const tossPayments: TossPaymentsInstance = await loadTossPayments(clientKey);

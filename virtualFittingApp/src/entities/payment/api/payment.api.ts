@@ -14,4 +14,3 @@ export const fetchReservationStatus = async (
     return null;
   }
 };
-

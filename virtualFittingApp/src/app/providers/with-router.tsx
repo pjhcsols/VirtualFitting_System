@@ -6,7 +6,6 @@ import {
   PaymentPage,
 } from "@/pages/payment";
 
-
 import { ProductDetailPage } from "@/pages/product/detail";
 import { ProductListPage } from "@/pages/product/list";
 import { MyDashboardPage } from "@/pages/my/dashboard";
@@ -29,7 +28,6 @@ import {
   AdminHome,
   AdminBanner,
   AdminBrandUsers,
-  // AdminProduct,
   AdminUser,
   BasiliumRedirect,
   BrandPage,
@@ -42,6 +40,10 @@ import { ProductLayout } from "../layouts/product/product-layout";
 import { MyPageLayout } from "../layouts/my/MyLayout";
 import { PaymentLayout } from "../layouts/payment/payment-layout";
 import { SignUpLayout } from "@/app/layouts/auth";
+import { BrandLayout } from "../layouts/brand";
+import { BrandLobby } from "@/pages/brand/ui/lobby";
+import { BrandProduct } from "@/pages/brand/ui/product";
+
 
 const Routing = () => (
   <Routes>
@@ -63,11 +65,14 @@ const Routing = () => (
       <Route path="banner" element={<AdminBanner />} />
       <Route path="brand" element={<AdminBrandUsers />} />
       <Route path="user" element={<AdminUser />} />
-      {/* <Route path="product" element={<AdminProduct />} /> */}
       <Route path="*" element={<BasiliumRedirect />} />
     </Route>
     <Route path="brand">
       <Route index element={<BrandPage />} />
+      <Route element={<BrandLayout />}>
+        <Route path="dashboard" element={<BrandLobby />} />
+        <Route path="products" element={<BrandProduct />} />
+      </Route>
       <Route path="*" element={<BasiliumRedirect />} />
     </Route>
     <Route path="/cart" element={<CartLayout />}>

@@ -1,4 +1,3 @@
-import React from 'react';
 import styled from 'styled-components';
 import { useRecoilValue } from 'recoil';
 import { cartState, cartTotalsState } from '@/entities/cart';
@@ -16,7 +15,6 @@ function CartPurchaseSummary() {
       alert("장바구니에 상품이 없습니다.");
       return;
     }
-    // 장바구니에 담긴 모든 아이템을 state로 전달하며 checkout 페이지로 이동
     navigate('/payment', { state: { items: cartItems } });
   };
 
@@ -51,8 +49,6 @@ function CartPurchaseSummary() {
           <Checkbox type="checkbox" id="cart-agreement" defaultChecked />
           <AgreementLabel htmlFor="cart-agreement">주문 내용을 확인했으며 결제에 동의합니다.</AgreementLabel>
         </AgreementBox>
-
-        {/* InitiateCheckoutCartButton 대신 GlassButton을 직접 사용 */}
         <GlassButton
           size="large"
           width="100%"
@@ -65,9 +61,6 @@ function CartPurchaseSummary() {
     </StyledGlassBox>
   );
 };
-
-
-// --- Styled Components (PaymentSummary와 동일한 스타일) ---
 
 const StyledGlassBox = styled(GlassBox)`
   width: 100%;
@@ -92,14 +85,14 @@ const Title = styled.h3`
 const AmountList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px; /* 간격 조정 */
+  gap: 16px;
 `;
 
 const AmountRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px; /* 폰트 크기 통일 */
+  font-size: 16px;
 `;
 
 const Label = styled.span`
@@ -130,7 +123,7 @@ const TotalAmountRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  font-weight: 700; /* 굵기 통일 */
+  font-weight: 700;
 `;
 
 const TotalLabel = styled.span`
@@ -138,7 +131,7 @@ const TotalLabel = styled.span`
 `;
 
 const TotalValue = styled.span`
-  font-size: 22px; /* 총 결제 금액 강조 */
+  font-size: 22px;
 `;
 
 const AgreementBox = styled.div`

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { useRecoilState } from 'recoil';
 import { cartState, type CartItem } from '@/entities/cart';
 import { GlassBox } from '@/shared/components/glass-box';
-import { OrderItemCard } from '@/entities/order-item'; // ✅ OrderItemCard를 재사용합니다.
+import { OrderItemCard } from '@/entities/order-item';
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();

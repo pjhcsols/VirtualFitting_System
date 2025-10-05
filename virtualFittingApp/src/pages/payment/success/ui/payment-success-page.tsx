@@ -80,7 +80,7 @@ export function PaymentSuccessPage() {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: calc(100vh - 80px); /* 헤더 높이를 뺀 나머지 영역 */
+  height: calc(100vh - 80px);
   display: flex;
   justify-content: center;
   align-items: center;
