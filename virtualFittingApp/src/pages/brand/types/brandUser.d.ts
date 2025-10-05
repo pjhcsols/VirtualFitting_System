@@ -4,8 +4,8 @@ export type BrandUserType = {
   password: string;
   emailAddress: string;
   phoneNumber: string;
-  userGrade: string;
-  loginType: strign;
+  userGrade: TUserGrade;
+  loginType: TLoginType;
   userImageUrl: string;
   userProfileImageUrl: string;
   firmName: string;
@@ -18,6 +18,8 @@ export type BrandUserType = {
   saleAllowed: boolean;
 };
 
+export type BrandUserTypeKey = keyof BrandUserType;
+
 export type BrandSigninUserType = {
   email: string;
   password: string;
@@ -28,3 +30,15 @@ export type RedisProductDto = {
   productDesc: string;
   productPrice: number;
 };
+
+type TUserGrade = "BRONZE" | "SILVER" | "GOLD" | "PLATINUM" | "DIAMOND";
+
+type TLoginType = "NORMAL";
+
+export type TPhoneNumerPart = {
+  prefix: string;
+  middle: string;
+  suffix: string;
+};
+
+export type TPhoneNumberKey = keyof TPhoneNumerPart;

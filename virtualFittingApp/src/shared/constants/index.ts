@@ -9,12 +9,9 @@ import CloseIcon from "/svg/closeIcon.svg";
 import UploadIcon from "/svg/UploadAsset.svg";
 import Share from "/svg/share.svg";
 import Loading from "/svg/loading.svg";
-import BasiliumSVGLogo from "/svg/BasiliumLogo.svg?url";
+import BasiliumSVGLogo from "@/assets/svg/logo/BasiliumLogo.svg";
 import UploadSVGLogo from "/svg/UploadIcon.svg";
 import EmailSVGLogo from "/svg/Email.svg";
-import BasiliumAsset1 from "/svg/basiliumAsset_1.svg";
-import Basilium3DLogoIcon_2 from "/svg/Basilium3DLogoIcon-2.svg";
-
 
 import type {
   CategoryType,
@@ -39,9 +36,6 @@ export const ICON_LOADING = Loading;
 export const ICON_BASILIUM_LOGO = BasiliumSVGLogo;
 export const ICON_UPLOAD_ICON = UploadSVGLogo;
 export const ICON_EMAIL = EmailSVGLogo;
-
-export const ICON_BASILIUM_ASSET_1 = BasiliumAsset1;
-export const ICON_BASILIUM_ASSET_2 = Basilium3DLogoIcon_2;
 
 export const AnimationProps = {
   initial: {
@@ -218,7 +212,7 @@ export const materialList: Material[] = [
 export const OptionTitles = ["SIZE", "INFO", "FAQ", "고객지원"];
 
 export const Sizes: Size[] = ["S", "M", "L", "XL", "XX"];
-export const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"]
+export const SIZE_ORDER = ["XXS", "XS", "S", "M", "L", "XL", "XXL"];
 
 export const CheckOptions: string[] = [
   "사진이 올바르게 업로드 되어있습니다.",
@@ -251,4 +245,3 @@ export * from "@/shared/constants/category/Category";
 export * from "@/shared/constants/product/Product";
 
 export * from "@/shared/constants/icon/Icon";
-

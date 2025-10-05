@@ -18,7 +18,6 @@ export {
 
 export {
   LoginInput,
-  PasswordInput,
   EmailAddressInput,
   AddressInput,
   BirthdayInput,
