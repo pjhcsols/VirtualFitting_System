@@ -1,1 +1,1 @@
-export * from "./ui/AITryOnButton";
+export * from "./ui/ai-try-on";

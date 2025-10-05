@@ -31,7 +31,6 @@ const PopupContainer = styled.div`
   width: 80px;
   bottom: 8px;
   right: 16px;
-  background: white;
   display: flex;
   flex-direction: column;
   z-index: 10;
@@ -39,15 +38,19 @@ const PopupContainer = styled.div`
 `;
 
 const Popup = styled.div`
-  background-color: white;
-  padding: 0.5em 0.5em;
-  border: 1px solid black;
-  width: 80%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  padding: 0.5em;
+  width: 100%;
 `;
 
 const ColorList = styled.div`
   display: flex;
   flex-direction: column;
+  gap: 4px;
 `;
 
 const ColorItem = styled.div`
@@ -61,11 +64,11 @@ const ColorCircle = styled.div<{ $color: string }>`
   height: 12px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
-  border: 1px solid black;
+  border: 1px solid rgba(255, 255, 255, 0.4);
 `;
 
 const ColorName = styled.span`
   font-size: 12px;
   font-family: 'Inter', sans-serif;
-  color: black;
+  color: white;
 `;

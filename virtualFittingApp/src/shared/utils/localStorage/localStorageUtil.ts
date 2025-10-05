@@ -1,4 +1,4 @@
-export const saveLikeStatus = (productId: string) => {
+export const saveLikeStatus = (productId: number) => {
   const likedProducts = JSON.parse(localStorage.getItem("likedProducts") || "[]");
   if (!likedProducts.includes(productId)) {
     likedProducts.push(productId);
@@ -6,13 +6,13 @@ export const saveLikeStatus = (productId: string) => {
   localStorage.setItem("likedProducts", JSON.stringify(likedProducts));
 };
 
-export const removeLikeStatus = (productId: string) => {
+export const removeLikeStatus = (productId: number) => {
   const likedProducts = JSON.parse(localStorage.getItem("likedProducts") || "[]");
-  const updatedLikes = likedProducts.filter((id: string) => id !== productId);
+  const updatedLikes = likedProducts.filter((id: number) => id !== productId);
   localStorage.setItem("likedProducts", JSON.stringify(updatedLikes));
 };
 
-export const isLiked = (productId: string): boolean => {
+export const isLiked = (productId: number): boolean => {
   const likedProducts = JSON.parse(localStorage.getItem("likedProducts") || "[]");
   return likedProducts.includes(productId);
 };

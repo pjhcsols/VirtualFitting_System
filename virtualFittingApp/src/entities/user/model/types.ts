@@ -1,3 +1,5 @@
+import type { ApiResponse } from "@/shared/types/api";
+
 declare global {
   interface Window {
     daum: any;
@@ -47,3 +49,36 @@ export type EmailVerificationInputProps = {
   onChange: (code: string) => void;
   onVerify: () => void;
 };
+
+export interface DeliveryInfo {
+  deliveryInfoId: number;
+  defaultDeliveryAddress: string;
+  firstDeliveryAddress: string;
+  second_delivery_address: string;
+}
+
+export interface UserDetail {
+  id: string;
+  emailAddress: string;
+  phoneNumber: string;
+  name: string;
+  nickname: string;
+  gender: string;
+  birthDate: string;
+  address: string;
+  totalLength: number;
+  chest: number;
+  shoulder: number;
+  arm: number;
+  pantsTotalLength: number;
+  waistWidth: number;
+  hipWidth: number;
+  thighWidth: number;
+  rise: number;
+  hemWidth: number;
+  height: number;
+  weight: number;
+  deliveryInfo: DeliveryInfo;
+}
+
+export type UserDetailResponse = ApiResponse<UserDetail>;

@@ -11,7 +11,7 @@ export const useLikeList = () => {
     const fetchLikedItems = async () => {
       try {
         setIsLoading(true);
-        const userId = localStorage.getItem("userId"); // 🚨 주의: localStorage는 이상적인 방식이 아닙니다.
+        const userId = localStorage.getItem("userId");
         if (!userId) {
           setLikedItems([]);
           return;

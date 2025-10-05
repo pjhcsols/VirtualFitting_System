@@ -15,9 +15,12 @@ export function LikedProductCard({ item }: Props) {
 const Card = styled.div`
   display: flex;
   flex-direction: column;
-  border: 1px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
 const Image = styled.img`
@@ -32,4 +35,5 @@ const ProductName = styled.p`
   font-weight: 500;
   font-family: "Prata-Regular";
   text-align: center;
+  color: #fff;
 `;

@@ -1,20 +1,23 @@
 import { useState, useEffect, useMemo } from "react";
 import { useCookies } from 'react-cookie';
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth'; 
 import { useNavigate } from "react-router-dom";
+
 import { 
   SIZE_ORDER
 } from "@/shared";
-import { fetchDiscountQuote } from "@/entities/product/api";
-import type { PaymentMethod } from "@/entities/payment/model/types";
+import { fetchDiscountQuote } from "@/entities/discount";
 import type { ProductDetail } from "@/entities/product/model/types";
 import type { ProductColorPayment, ProductSizePayment } from "@/entities/payment/model/types";
 
-import { useProductCoupon } from '@/features/product-coupon';
+
 import { useAddToCart } from '@/features/add-to-cart';
 import { useInitiateCheckout } from "@/features/initiate-checkout-single";
 
 export const useProductDetails = (product: ProductDetail, onColorChange?: (color: string) => void) => {
   const [cookies] = useCookies(['access-token']);
+  const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
   const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
@@ -24,17 +27,16 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   const [selectedSize, setSelectedSize] = useState(() => 
     product.productOptions.find(opt => opt.productColor === product.productImages.productColor)?.productSize as ProductSizePayment
   );
-  const [mainImage, setMainImage] = useState(product.productImages.productPhotoUrls[0] ?? '');
+  const [mainImage, setMainImage] = useState(product.productImages.productPhotoUrls?.[0] ?? '');
 
   const [showPaymentTab, setShowPaymentTab] = useState(false);
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>('CARD');
   
   const { initiateCheckout, isLoading: paymentLoading } = useInitiateCheckout();
 
   useEffect(() => {
     setSelectedColor(product.productImages.productColor as ProductColorPayment); 
     setSelectedSize(product.productOptions.find(opt => opt.productColor === product.productImages.productColor)?.productSize as ProductSizePayment);
-    setMainImage(product.productImages.productPhotoUrls[0] ?? '');
+    setMainImage(product.productImages.productPhotoUrls?.[0] ?? '');
   }, [product]);
 
   useEffect(() => {
@@ -51,28 +53,17 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     .map(po => po.productSize as ProductSizePayment)
     .sort((a, b) => (SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b))), [product.productOptions, selectedColor]);
 
-  const selectedProductImages = product.productImages.productPhotoUrls;
+  const selectedProductImages = product.productImages?.productPhotoUrls ?? [];
 
-  const { 
-    coupons, 
-    selectedCoupon, 
-    downloadedCoupon, 
-    showCouponPopup, 
-    setShowCouponPopup,
-    handleDownloadCoupon, 
-    handleSelectCoupon 
-  // } = useProductCoupon(product.productId, (coupon) => {
-  // });
-  } = useProductCoupon(product.productId);
 
-  const finalPrice = useMemo(() => {
-    if (!price) return 0;
-    const basePrice = (price.discounted ?? price.original) * quantity;
-    if (!selectedCoupon) return basePrice;
-    let couponDiscount = basePrice * (selectedCoupon.percent / 100);
-    if (couponDiscount > selectedCoupon.maxDiscountPrice) couponDiscount = selectedCoupon.maxDiscountPrice;
-    return Math.round(basePrice - couponDiscount);
-  }, [price, quantity, selectedCoupon]);
+  // const finalPrice = useMemo(() => {
+  //   if (!price) return 0;
+  //   const basePrice = (price.discounted ?? price.original) * quantity;
+  //   if (!selectedCoupon) return basePrice;
+  //   let couponDiscount = basePrice * (selectedCoupon.percent / 100);
+  //   if (couponDiscount > selectedCoupon.maxDiscountPrice) couponDiscount = selectedCoupon.maxDiscountPrice;
+  //   return Math.round(basePrice - couponDiscount);
+  // }, [price, quantity, selectedCoupon]);
 
   const handleColorChange = (color: string) => {
     setSelectedColor(color as ProductColorPayment);
@@ -82,43 +73,53 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     onColorChange?.(color);
   };
 
-  const { handleAddToCart } = useAddToCart({
-    product,
-    price,
-    selectedColor,
-    selectedSize,
-    quantity,
-    selectedProductImages,
-  });
+  const { addToCart } = useAddToCart();
+    const handleAddToCart = () => {
+    if (!price) return;
+    const newItem = {
+      id: `${product.productId}-${selectedColor}-${selectedSize}`,
+      productId: product.productId,
+      name: product.productName,
+      brand: product.brandUser.firmName,
+      image: selectedProductImages[0],
+      price: price.original,
+      discountedPrice: price.discounted,
+      color: selectedColor,
+      size: selectedSize,
+      quantity: quantity,
+    };
+    addToCart(newItem);
+  };
 
   const handlePurchaseClick = () => {
-    const accessToken = cookies['access-token'];
-    if (!accessToken) {
+
+    if (!isLoggedIn) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
-    } else {
-      setShowPaymentTab(true);
+      return;
     }
-  };
 
-  const handlePurchase = () => {
-    if (!finalPrice) return;
+    if (!price) return;
+
     initiateCheckout({
+      id: `${product.productId}-${selectedColor}-${selectedSize}`,
       productId: product.productId,
-      productName: product.productName,
-      productColor: selectedColor,
-      productSize: selectedSize,
+      name: product.productName,
+      brand: product.brandUser.firmName,
+      image: selectedProductImages[0],
+      price: price.original,
+      discountedPrice: price.discounted,
+      color: selectedColor,
+      size: selectedSize,
       quantity: quantity,
-      finalPrice: finalPrice,
-      couponWalletId: downloadedCoupon?.walletId,
-      paymentMethod: selectedPaymentMethod,
     });
   };
+  
 
   return {
-    price, coupons, selectedCoupon, quantity, showCouponPopup, showPaymentTab, paymentLoading,
-    selectedColor, selectedSize, mainImage, finalPrice, sizesSorted, selectedProductImages, selectedPaymentMethod,
-    setQuantity, setShowCouponPopup, setShowPaymentTab, setSelectedPaymentMethod, setSelectedSize, setMainImage,
-    handleAddToCart, handlePurchaseClick, handleDownloadCoupon, handleSelectCoupon, handlePurchase, handleColorChange,
+    price, quantity, showPaymentTab, paymentLoading,
+    selectedColor, selectedSize, mainImage, sizesSorted, selectedProductImages, 
+    setQuantity, setShowPaymentTab, setSelectedSize, setMainImage,
+    handleAddToCart, handlePurchaseClick, handleColorChange,
   };
 };

@@ -1,30 +1,20 @@
-import styled from "styled-components";
-import { BREAKPOINTS } from "@/shared";
+import { GlassButton } from "@/shared/components/glass-button";
 
-function InitiateCheckoutCartButton() {
-  return <Wrapper>
-    결제하기
-    </Wrapper>;
+type InitiateCheckoutCartButtonProps = {
+  onClick?: () => void;
+  disabled?: boolean;
+  totalAmount: number;
+};
+
+export function InitiateCheckoutCartButton({ onClick, disabled, totalAmount }: InitiateCheckoutCartButtonProps) {
+  return (
+    <GlassButton 
+      onClick={onClick} 
+      disabled={disabled} 
+      size="large" 
+      width="100%"
+    >
+      {totalAmount.toLocaleString()}원 주문하기
+    </GlassButton>
+  );
 }
-
-const Wrapper = styled.button`
-  width: 100%;
-  height: 52px;
-  border: 1px solid black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-family: "pretendard";
-  font-weight: 400;
-  font-size: 16px;
-  cursor: pointer;
-  color: white;
-  background: black;
-  flex-direction: row;
-
-  // @media (max-width: ${BREAKPOINTS.md}px) {
-  //     width: 50%;
-  //   }
-`;
-
-export { InitiateCheckoutCartButton };

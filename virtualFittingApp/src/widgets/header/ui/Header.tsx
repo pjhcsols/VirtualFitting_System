@@ -1,21 +1,26 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRecoilValue } from 'recoil';
-import { cartItemCountState } from '@/entities/cart';
+import { cartTotalQuantityState } from '@/entities/cart';
 
-function Header({ theme = 'light' }) {
+type HeaderProps = { 
+  theme?: 'light' | 'dark';
+  $sticky?: boolean;
+}
+
+function Header({ theme = 'light', $sticky = true }: HeaderProps) {
   const router = useNavigate();
-  const cartItemCount = useRecoilValue(cartItemCountState);
+  const cartItemCount = useRecoilValue(cartTotalQuantityState);
 
   return (
-    <Wrapper theme={theme}>
+    <Wrapper theme={theme} $sticky={$sticky} >
       <LogoContainer onClick={() => router("/")}>
         <LogoTitle theme={theme}>Basilium</LogoTitle>
       </LogoContainer>
       <nav>
         <RouterList>
           <li>
-            <HeaderContent to="/store" theme={theme}>
+            <HeaderContent to="/products" theme={theme}>
               스토어
             </HeaderContent>
           </li>
@@ -39,9 +44,9 @@ function Header({ theme = 'light' }) {
 }
 
 
-const Wrapper = styled.header`
+const Wrapper = styled.header<{ $sticky?: boolean; }>`
   box-sizing: border-box;
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
@@ -51,12 +56,12 @@ const Wrapper = styled.header`
   justify-content: space-between;
   align-items: center;
   
-  background: ${props => props.theme === 'dark' ? 'rgba(41, 46, 73, 0.85)' : 'rgba(255, 255, 255, 0.8)'};
+  background: ${props => props.theme === 'dark' ? 'rgba(41, 46, 73, 0.85)' : 'transparent'};
   
   backdrop-filter: saturate(180%) blur(20px);
   -webkit-backdrop-filter: saturate(180%) blur(20px);
   
-  border-bottom: 1px solid ${props => props.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(0, 0, 0, 0.07)'};
+  border-bottom: 1px solid ${props => props.theme === 'dark' ? 'rgba(255, 255, 255, 0.1)' : 'rgba(255, 255, 255, 0.1)'};
   z-index: 50;
   
   -webkit-font-smoothing: antialiased;
@@ -77,7 +82,7 @@ const LogoTitle = styled.h1`
   margin: 0;
   padding: 0;
   
-  color: ${props => props.theme === 'dark' ? '#ffffff' : '#000000'};
+  color: ${props => props.theme === 'dark' ? '#ffffff' : '#ffffff'};
   transition: color 0.3s ease;
 `;
 
@@ -102,7 +107,7 @@ const HeaderContent = styled(NavLink)`
 
   text-decoration: none; 
   
-  color: ${props => props.theme === 'dark' ? 'rgba(255, 255, 255, 0.85)' : 'rgba(0, 0, 0, 0.8)'};
+  color: rgba(255, 255, 255, 0.85);
   transition: color 0.3s ease;
 
   &::after {
@@ -112,14 +117,14 @@ const HeaderContent = styled(NavLink)`
     bottom: 0;
     width: 100%;
     height: 1px;
-    background-color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+    background-color: rgb(255, 255, 255);
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 0.3s ease-out;
   }
 
   &:hover {
-    color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+    color: rgb(255, 255, 255);
   }
 
   &:hover::after {
@@ -127,7 +132,7 @@ const HeaderContent = styled(NavLink)`
   }
 
   &.active {
-    color: ${props => props.theme === 'dark' ? 'rgb(255, 255, 255)' : 'rgb(0, 0, 0)'};
+    color: rgb(255, 255, 255);
   }
 
   &.active::after {

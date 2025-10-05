@@ -1,34 +1,25 @@
 export type ProductSizePayment = "XX" | "S" | "M" | "L" | "XL" | "F";
-
-export type PaymentMethod = 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT';
-
-export type ProductColorPayment =
-  | "BLACK"
-  | "WHITE"
-  | "GRAY"
-  | "BLUE"
-  | "RED"
-  | "YELLOW"
-  | "GREEN"
-  | "ORANGE";
+export type ProductColorPayment = "BLACK" | "WHITE" | "GRAY" | "BLUE" | "RED" | "YELLOW" | "GREEN" | "ORANGE";
 
 export interface PaymentRequestParams {
-  userId: string; 
+  userId: string;
   productId: number;
   count: number;
   productSize: ProductSizePayment;
   productColor: ProductColorPayment;
 }
 
-export interface PaymentData {
+export interface ReservedItem {
+  productId: number;
+  count: number;
+  productSize: ProductSizePayment;
+  productColor: ProductColorPayment;
+}
+
+export interface PaymentReservationData {
   reserveTaskOrderPayId: string;
   expiresAt: string;
-  items: {
-    productId: number;
-    count: number;
-    productSize: ProductSizePayment;
-    productColor: ProductColorPayment;
-  }[];
+  items: ReservedItem[];
 }
 
 export interface PaymentResponse {
@@ -36,19 +27,24 @@ export interface PaymentResponse {
   status: number;
   code: string;
   message: string;
-  data: PaymentData;
+  data: PaymentReservationData;
 }
 
-export interface PaymentResultParams {
-  taskId: string;
-  success: boolean;
+export interface BatchPaymentRequestItem {
+  productId: number;
+  count: number;
+  productSize: ProductSizePayment;
+  productColor: ProductColorPayment;
 }
 
-export interface PaymentConfirmParams {
-  paymentKey: string;
-  orderId: string;
-  amount: number;
-  paymentType: string;
+export interface BatchPaymentRequestBody {
+  items: BatchPaymentRequestItem[];
+}
+
+export interface PaymentReservationStatus {
+  reserveTaskOrderPayId: string;
+  status: "ACTIVATED" | "INACTIVE";
+  expiresAt: string;
 }
 
 export interface PaymentIntentLine {
@@ -61,8 +57,8 @@ export interface PaymentIntentLine {
 
 export interface PaymentIntentRequest {
   orderId: string;
-  currency: number;
-  pointsToUse: number;
+  currency: string;
+  pointsToUse?: number;
   lines: PaymentIntentLine[];
   expiresAt: string;
 }
@@ -74,4 +70,17 @@ export interface PaymentIntentData {
   pointsToUse: number;
   pgAmount: number;
   intentExpiresAt: string;
+}
+
+export interface PaymentConfirmParams {
+  paymentKey: string;
+  orderId: string;
+  amount: number;
+  paymentType: string;
+}
+
+export interface PaymentFailParams {
+  code: string;
+  message: string;
+  orderId: string;
 }
