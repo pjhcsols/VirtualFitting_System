@@ -38,4 +38,9 @@ export const ActionButton = styled.button`
   font-size:14px;
   font-family:"Prata-Regular";
   cursor:pointer;
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: rgba(255, 255, 255, 0.5);
+  }
 `;
