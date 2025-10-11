@@ -43,4 +43,4 @@ jobs:
         env:
           aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
           aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
-        run: aws s3 sync --region ap-northeast-2 build s3://basilium-front --delete
+        run: aws s3 sync --region ap-northeast-2 dist s3://basilium-front --delete
