@@ -1030,6 +1030,23 @@ WHERE user_number = @user_number
   AND campaign_id IN (@campaign_brand, @campaign_product)
 ORDER BY claimed_at DESC;
 
+-- ===============================================
+-- 브랜드 쿠폰 (추가)
+-- 같은 브랜드(brand_user_number=1)에서 추가 캠페인 2개 더 생성
+INSERT INTO brand_coupon_campaign
+(brand_user_number, scope, product_id, percent, min_order, max_discount,
+ start_at, end_at, per_user_limit, total_issuable, issued_count, status, created_at, version)
+VALUES
+-- 브랜드 전체 18%
+(1, 'BRAND', NULL, 18, 0, 40000,
+ NOW() - INTERVAL 1 DAY, '2025-12-31 23:59:59',
+ 2, 10000, 0, 'ACTIVE', NOW(), 0),
+-- 특정 상품(상품ID=1) 35%
+(1, 'PRODUCT', 1, 35, 50000, 70000,
+ NOW() - INTERVAL 1 DAY, '2025-12-31 23:59:59',
+ 2, 3000, 0, 'ACTIVE', NOW(), 0);
+
+
 
 
 

@@ -62,7 +62,7 @@ public class BrandCouponCampaign {
     private Integer perUserLimit;
 
     @Column(name = "total_issuable", nullable = false)
-    private Long totalIssuable; //0이면 무제한 의미로 사용 가능 (정책에 따라)
+    private Long totalIssuable; //0이면 무제한 의미로 사용 가능한데 여기서는 불가능하게 설정함
 
     @Column(name = "issued_count", nullable = false)
     private Long issuedCount;

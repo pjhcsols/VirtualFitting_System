@@ -138,11 +138,85 @@ public class PaymentController implements PaymentApiDocs {
     }
 
     /* ---------- Helpers (컨트롤러 지역 유틸: 비즈니스 X) ---------- */
-
+/*
     private static String newRid(String userId) {
         String kst = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
                 .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
         return kst + "-" + UUID.randomUUID() + "-" + userId;
+    }
+*/
+
+    /** 총 ~30자: yyyyMMddHHmmss-<uuidhex[8..12]>-<userId> */
+    private static String newRid(String userId) {
+        String ts = LocalDateTime.now(ZoneId.of("Asia/Seoul"))
+                .format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
+        return ts + "-" + newUUID(ts, userId) + "-" + userId;
+    }
+
+    /** ts와 userId 길이에 맞춰 token 길이 n을 잡고, UUID에서 정확히 n자 hex를 loop 없이 생성 (Sonar-friendly) */
+    private static String newUUID(String ts, String userId) {
+        int lenUser = (userId != null ? userId.length() : 0);
+        int n = 30 - ts.length() - lenUser - 2; // 총 30자 = ts + '-' + token + '-' + userId
+        if (n <= 0) return "";        // userId가 길면 랜덤부 제거
+        if (n > 14) n = 14;           // 편향 없는 상한
+
+        final java.util.UUID u = java.util.UUID.randomUUID();
+        final long msb = u.getMostSignificantBits();
+        final long lsb = u.getLeastSignificantBits();
+
+        // v4 고정비트 회피: MSB 상위 12 nibble(>>>60..>>>16) + LSB의 >>>56, >>>52 (variant >>>60은 제외)
+        final char[] out = new char[n];
+        switch (n) {
+            case 14:
+                out[13] = hx((int)((lsb >>> 52) & 0xF));
+                // fall through
+            case 13:
+                out[12] = hx((int)((lsb >>> 56) & 0xF));
+                // fall through
+            case 12:
+                out[11] = hx((int)((msb >>> 16) & 0xF));
+                // fall through
+            case 11:
+                out[10] = hx((int)((msb >>> 20) & 0xF));
+                // fall through
+            case 10:
+                out[ 9] = hx((int)((msb >>> 24) & 0xF));
+                // fall through
+            case  9:
+                out[ 8] = hx((int)((msb >>> 28) & 0xF));
+                // fall through
+            case  8:
+                out[ 7] = hx((int)((msb >>> 32) & 0xF));
+                // fall through
+            case  7:
+                out[ 6] = hx((int)((msb >>> 36) & 0xF));
+                // fall through
+            case  6:
+                out[ 5] = hx((int)((msb >>> 40) & 0xF));
+                // fall through
+            case  5:
+                out[ 4] = hx((int)((msb >>> 44) & 0xF));
+                // fall through
+            case  4:
+                out[ 3] = hx((int)((msb >>> 48) & 0xF));
+                // fall through
+            case  3:
+                out[ 2] = hx((int)((msb >>> 52) & 0xF));
+                // fall through
+            case  2:
+                out[ 1] = hx((int)((msb >>> 56) & 0xF));
+                // fall through
+            case  1:
+                out[ 0] = hx((int)((msb >>> 60) & 0xF));
+                break;
+            default:
+                break; // n==0만 가능(위에서 return됨)
+        }
+        return new String(out);
+    }
+
+    private static char hx(int nib) {
+        return (char)(nib < 10 ? ('0' + nib) : ('a' + (nib - 10)));
     }
 
     // 요청 → 내부 info 목록
