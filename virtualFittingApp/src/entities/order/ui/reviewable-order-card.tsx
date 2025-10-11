@@ -1,17 +1,14 @@
-import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
-import { formatSimpleDate } from '@/shared/lib/date.util';
-import type { OrderItem } from '../model/types';
+import styled from "styled-components";
+import { formatSimpleDate } from "@/shared/lib/date.util";
+import type { OrderItem } from "../model/types";
 import img_alert from "@/shared/assets/images/alert-fallback.png";
 
 type ReviewableOrderCardProps = {
   order: OrderItem;
-  isFormHeader?: boolean; 
+  isFormHeader?: boolean;
 };
 
 export function ReviewableOrderCard({ order }: ReviewableOrderCardProps) {
-  const navigate = useNavigate();
-
   return (
     <div>
       <OrderCard>
@@ -22,7 +19,8 @@ export function ReviewableOrderCard({ order }: ReviewableOrderCardProps) {
           </TitleLine>
           <ProductName>{order.productName}</ProductName>
           <OptionText>
-            {order.options.color} / {order.options.size} / {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
+            {order.options.color} / {order.options.size} /{" "}
+            {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
           </OptionText>
         </RightSection>
       </OrderCard>

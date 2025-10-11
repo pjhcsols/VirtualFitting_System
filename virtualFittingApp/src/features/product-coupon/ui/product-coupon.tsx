@@ -1,20 +1,14 @@
-import { useProductCoupon } from '../hooks/use-product-coupon';
-import * as S from './product-coupon.styled';
-import type { ClaimableCoupon } from '@/entities/coupon';
+import { useProductCoupon } from "../hooks/use-product-coupon";
+import * as S from "./product-coupon.styled";
+import type { ClaimableCoupon } from "@/entities/coupon";
 
 type ProductCouponProps = {
   productId: number;
-  onSelect: (coupon: ClaimableCoupon | null) => void;
 };
 
-export function ProductCoupon({ productId, onSelect }: ProductCouponProps) {
-  const {
-    coupons,
-    showCouponPopup,
-    setShowCouponPopup,
-    handleDownloadCoupon,
-    handleSelectCoupon,
-  } = useProductCoupon(productId, onSelect);
+export function ProductCoupon({ productId }: ProductCouponProps) {
+  const { coupons, showCouponPopup, setShowCouponPopup, handleDownloadCoupon } =
+    useProductCoupon(productId);
 
   return (
     <>
@@ -27,15 +21,27 @@ export function ProductCoupon({ productId, onSelect }: ProductCouponProps) {
       {showCouponPopup && (
         <S.CouponPopupOverlay onClick={() => setShowCouponPopup(false)}>
           <S.CouponPopupContent onClick={(e) => e.stopPropagation()}>
-            <S.CloseButton onClick={() => setShowCouponPopup(false)}>×</S.CloseButton>
+            <S.CloseButton onClick={() => setShowCouponPopup(false)}>
+              ×
+            </S.CloseButton>
             <S.CouponItems>
-              {coupons.map(coupon => (
-                <S.CouponItem key={coupon.campaignId} disabled={!coupon.hasAvailable}>
+              {coupons.map((coupon) => (
+                <S.CouponItem
+                  key={coupon.campaignId}
+                  disabled={!coupon.hasAvailable}
+                >
                   <div>{coupon.scope} 쿠폰</div>
-                  <div>{coupon.percent}% / 최대 {coupon.maxDiscountPrice.toLocaleString()}원</div>
-                  <div>최소 주문 {coupon.minOrderPrice.toLocaleString()}원 이상</div>
+                  <div>
+                    {coupon.percent}% / 최대{" "}
+                    {coupon.maxDiscountPrice.toLocaleString()}원
+                  </div>
+                  <div>
+                    최소 주문 {coupon.minOrderPrice.toLocaleString()}원 이상
+                  </div>
                   {coupon.hasAvailable ? (
-                    <S.UseButton onClick={() => handleDownloadCoupon(coupon.campaignId)}>
+                    <S.UseButton
+                      onClick={() => handleDownloadCoupon(coupon.campaignId)}
+                    >
                       발급하기
                     </S.UseButton>
                   ) : (
@@ -56,7 +62,10 @@ type SelectedCouponDisplayProps = {
   onRemove: () => void;
 };
 
-export function SelectedCouponDisplay({ coupon, onRemove }: SelectedCouponDisplayProps) {
+export function SelectedCouponDisplay({
+  coupon,
+  onRemove,
+}: SelectedCouponDisplayProps) {
   if (!coupon) {
     return null;
   }
@@ -69,9 +78,7 @@ export function SelectedCouponDisplay({ coupon, onRemove }: SelectedCouponDispla
           {coupon.scope} 쿠폰 ({coupon.percent}%)
         </S.CouponDetails>
       </S.CouponInfo>
-      <S.CouponRemoveButton onClick={onRemove}>
-        ×
-      </S.CouponRemoveButton>
+      <S.CouponRemoveButton onClick={onRemove}>×</S.CouponRemoveButton>
     </S.CouponDisplayBox>
   );
 }
