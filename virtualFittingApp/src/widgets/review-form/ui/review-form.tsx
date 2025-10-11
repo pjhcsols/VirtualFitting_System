@@ -1,13 +1,13 @@
 import styled from "styled-components";
 import { useState } from "react";
-import { useReviewForm } from '../hooks/use-review-form';
+import { useReviewForm } from "../hooks/use-review-form";
 import { ReviewableOrderCard } from "@/entities/order";
 import icon_star_filled from "@/shared/assets/icons/icon-star-filled.svg";
 import icon_star_unfilled from "@/shared/assets/icons/icon-star-unfilled.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
 import icon_cancel from "@/shared/assets/icons/icon-cancel.svg";
 import { DOWN_ICON, UP_ICON } from "@/pages/my/constants";
-import { BREAKPOINTS } from '@/shared';
+import { BREAKPOINTS } from "@/shared";
 
 export function ReviewForm() {
   const {
@@ -20,7 +20,6 @@ export function ReviewForm() {
     photoInputRef,
     editReview,
     sizes,
-    setSizes,
     handlePhotoUploadClick,
     handleImageChange,
     handleRemoveImage,
@@ -29,7 +28,6 @@ export function ReviewForm() {
   } = useReviewForm();
 
   const [showSizeForm, setShowSizeForm] = useState<boolean>(false);
-
 
   if (!order) {
     return <div>주문 정보를 찾을 수 없습니다.</div>;
@@ -40,7 +38,7 @@ export function ReviewForm() {
       <FormInner>
         <ReviewableOrderCard order={order} />
         <Divider />
-        
+
         <RatingSection>
           {[1, 2, 3, 4, 5].map((star) => (
             <StarImage
@@ -53,7 +51,7 @@ export function ReviewForm() {
 
         <ReviewLabel>신체 사이즈</ReviewLabel>
         <SizeForm>
-          <SizeInput 
+          <SizeInput
             placeholder="키   cm"
             value={sizes.height || ""}
             onChange={(e) => handleSizeChange("height", Number(e.target.value))}
@@ -64,7 +62,7 @@ export function ReviewForm() {
             onChange={(e) => handleSizeChange("weight", Number(e.target.value))}
           />
         </SizeForm>
-        
+
         <ReviewTextWrapper>
           <ReviewLabel>
             본문 입력(필수)<LengthGuide>20자 이상</LengthGuide>
@@ -77,7 +75,7 @@ export function ReviewForm() {
           />
           <CharCount>{reviewText.length}/500</CharCount>
         </ReviewTextWrapper>
-        
+
         <ImageWrapper>
           <ReviewLabel>사진 첨부</ReviewLabel>
           <PictureList>
@@ -108,7 +106,7 @@ export function ReviewForm() {
         </ImageWrapper>
 
         <FormField>
-          <LabelWithIcon onClick={() => setShowSizeForm(prev => !prev)}>
+          <LabelWithIcon onClick={() => setShowSizeForm((prev) => !prev)}>
             선택사항
             <ToggleIcon
               src={showSizeForm ? DOWN_ICON : UP_ICON}
@@ -119,49 +117,67 @@ export function ReviewForm() {
           {showSizeForm && (
             <SizeGrid>
               <SizeInput
-                placeholder="총장  cm" 
+                placeholder="총장  cm"
                 value={sizes.totalLength || ""}
-                onChange={(e) => handleSizeChange("totalLength", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("totalLength", Number(e.target.value))
+                }
               />
               <SizeInput
                 placeholder="어깨  cm"
                 value={sizes.shoulder || ""}
-                onChange={(e) => handleSizeChange("shoulder", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("shoulder", Number(e.target.value))
+                }
               />
               <SizeInput
                 placeholder="가슴둘레 cm"
                 value={sizes.chest || ""}
-                onChange={(e) => handleSizeChange("chest", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("chest", Number(e.target.value))
+                }
               />
               <SizeInput
                 placeholder="팔길이  cm"
                 value={sizes.arm || ""}
-                onChange={(e) => handleSizeChange("arm", Number(e.target.value))}
-              />  
+                onChange={(e) =>
+                  handleSizeChange("arm", Number(e.target.value))
+                }
+              />
               <SizeInput
                 placeholder="바지총장  cm"
                 value={sizes.pantsTotalLength || ""}
-                onChange={(e) => handleSizeChange("pantsTotalLength", Number(e.target.value))}
-              /> 
+                onChange={(e) =>
+                  handleSizeChange("pantsTotalLength", Number(e.target.value))
+                }
+              />
               <SizeInput
                 placeholder="허리둘레  cm"
                 value={sizes.waistWidth || ""}
-                onChange={(e) => handleSizeChange("waistWidth", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("waistWidth", Number(e.target.value))
+                }
               />
               <SizeInput
                 placeholder="엉덩이둘레  cm"
                 value={sizes.hipWidth || ""}
-                onChange={(e) => handleSizeChange("hipWidth", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("hipWidth", Number(e.target.value))
+                }
               />
               <SizeInput
                 placeholder="밑위길이  cm"
                 value={sizes.rise || ""}
-                onChange={(e) => handleSizeChange("rise", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("rise", Number(e.target.value))
+                }
               />
-              <SizeInput 
+              <SizeInput
                 placeholder="밑단너비  cm"
                 value={sizes.hemWidth || ""}
-                onChange={(e) => handleSizeChange("hemWidth", Number(e.target.value))}
+                onChange={(e) =>
+                  handleSizeChange("hemWidth", Number(e.target.value))
+                }
               />
             </SizeGrid>
           )}
@@ -188,7 +204,9 @@ export const GlassForm = styled.div`
   backdrop-filter: blur(16px) saturate(160%);
   -webkit-backdrop-filter: blur(16px) saturate(160%);
   border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.3), 0 10px 30px rgba(0, 0, 0, 0.15);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.3),
+    0 10px 30px rgba(0, 0, 0, 0.15);
 `;
 
 export const FormInner = styled.div`
@@ -245,13 +263,13 @@ export const ReviewLabel = styled.div`
   font-family: "Prata-Regular";
   margin-bottom: 6px;
   width: 100%;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
 `;
 
 export const LengthGuide = styled.span`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
 `;
 
 export const ReviewTextarea = styled.textarea`
@@ -269,14 +287,14 @@ export const ReviewTextarea = styled.textarea`
   box-sizing: border-box;
 
   &::placeholder {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 `;
 
 export const CharCount = styled.div`
   font-size: 12px;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.6);
+  color: rgba(255, 255, 255, 0.6);
   margin-top: 4px;
   text-align: right;
   width: 100%;
@@ -285,14 +303,14 @@ export const CharCount = styled.div`
 export const RegisterButton = styled.button`
   width: 100%;
   padding: 12px;
-  background-color: #292E49;
+  background-color: #292e49;
   color: white;
   border: none;
   border-radius: 6px;
   font-size: 16px;
   font-family: "Prata-Regular";
   cursor: pointer;
-  
+
   &:hover {
     background-color: #3a416a;
   }
@@ -325,7 +343,7 @@ export const RemoveButton = styled.button`
   position: absolute;
   top: 4px;
   right: 4px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   border: none;
   width: 16px;
   height: 16px;
@@ -343,7 +361,7 @@ export const UploadBox = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   background: rgba(200, 200, 200, 0.15);
   cursor: pointer;
 `;
@@ -389,9 +407,9 @@ const SizeInput = styled.input`
   text-align: left;
   resize: none;
   outline: none;
-  
+
   &::placeholder {
-    color: rgba(255,255,255,0.5);
+    color: rgba(255, 255, 255, 0.5);
   }
 `;
 
@@ -407,11 +425,11 @@ const FormField = styled.div`
 
 const SizeGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(4, 1fr);   
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    grid-template-columns: repeat(2, 1fr); 
+    grid-template-columns: repeat(2, 1fr);
   }
 `;
 
@@ -419,7 +437,7 @@ const LabelWithIcon = styled.label`
   width: 120px;
   font-size: 14px;
   font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
   cursor: pointer;
@@ -430,6 +448,3 @@ const ToggleIcon = styled.img`
   width: 16px;
   height: 16px;
 `;
-
-
-
