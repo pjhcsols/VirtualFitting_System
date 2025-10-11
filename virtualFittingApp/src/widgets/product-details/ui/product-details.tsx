@@ -8,7 +8,10 @@ import { AITryOnButton } from "@/features/ai-try-on";
 import { SelectQuantity } from "@/features/select-quantiy";
 import { ProductImageThumbnail } from "@/entities/product";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
-import { ProductCoupon, SelectedCouponDisplay } from "@/features/product-coupon";
+import {
+  ProductCoupon,
+  SelectedCouponDisplay,
+} from "@/features/product-coupon";
 
 type ProductDetailsProps = {
   product: ProductDetail;
@@ -18,14 +21,18 @@ type ProductDetailsProps = {
 
 function getPaymentMethodName(method: string): string {
   const methodNames: { [key: string]: string } = {
-    'CARD': '신용카드',
-    'TRANSFER': '계좌이체',
-    'VIRTUAL_ACCOUNT': '가상계좌',
+    CARD: "신용카드",
+    TRANSFER: "계좌이체",
+    VIRTUAL_ACCOUNT: "가상계좌",
   };
   return methodNames[method] || method;
 }
 
-function ProductDetails({ product, productColors, onColorChange }: ProductDetailsProps) {
+function ProductDetails({
+  product,
+  productColors,
+  onColorChange,
+}: ProductDetailsProps) {
   const {
     price,
     selectedCoupon,
@@ -53,8 +60,11 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
 
   if (!price) return null;
 
-  const hasDiscount = price.discounted !== undefined && price.discounted < price.original;
-  const discountRate = hasDiscount ? Math.round(((price.original - price.discounted!) / price.original) * 100) : 0;
+  const hasDiscount =
+    price.discounted !== undefined && price.discounted < price.original;
+  const discountRate = hasDiscount
+    ? Math.round(((price.original - price.discounted!) / price.original) * 100)
+    : 0;
 
   return (
     <S.ProductBox>
@@ -78,26 +88,27 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
         <S.TopRow>
           {hasDiscount ? (
             <S.PriceGroup>
-              <S.DiscountPrice>{price.discounted!.toLocaleString()}원</S.DiscountPrice>
+              <S.DiscountPrice>
+                {price.discounted!.toLocaleString()}원
+              </S.DiscountPrice>
               <S.OriginalPriceBox>
-                <S.OriginalPrice>{price.original.toLocaleString()}원</S.OriginalPrice>
+                <S.OriginalPrice>
+                  {price.original.toLocaleString()}원
+                </S.OriginalPrice>
                 <S.DiscountRate>{discountRate}%</S.DiscountRate>
               </S.OriginalPriceBox>
             </S.PriceGroup>
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <ProductCoupon
-              productId={product.productId}
-              onSelect={handleSelectCoupon}
-            />
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <ProductCoupon productId={product.productId} />
             <S.IconImage src={ICON_SHARE} alt="share icon" />
           </div>
         </S.TopRow>
-        <SelectedCouponDisplay 
-          coupon={selectedCoupon} 
-          onRemove={() => handleSelectCoupon(null)} 
+        <SelectedCouponDisplay
+          coupon={selectedCoupon}
+          onRemove={() => handleSelectCoupon(null)}
         />
         <S.Description>{product.productDesc}</S.Description>
         <S.ColorBoxContainer>
@@ -105,7 +116,7 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
             {product.productMaterials.join(", ")} | {selectedColor}
           </S.SelectedColorText>
           <S.ColorSwatches>
-            {productColors.map(color => (
+            {productColors.map((color) => (
               <S.ColorCircle
                 key={color}
                 $color={COLOR_MAP[color] ?? "transparent"}
@@ -117,7 +128,7 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
         </S.ColorBoxContainer>
         <S.SizeBoxContainer>
           <S.SizeBox>
-            {sizesSorted.map(size => (
+            {sizesSorted.map((size) => (
               <S.SizeItem
                 key={size}
                 $selectedSize={selectedSize === size}
@@ -147,31 +158,39 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
         </S.ButtonBox>
         {showPaymentTab && (
           <S.TabOverlay onClick={() => setShowPaymentTab(false)}>
-            <S.TabContent onClick={e => e.stopPropagation()}>
+            <S.TabContent onClick={(e) => e.stopPropagation()}>
               <h3>결제 수단 선택</h3>
               <S.PaymentMethodContainer>
-                  {['CARD', 'TRANSFER', 'VIRTUAL_ACCOUNT'].map(method => (
-                      <S.PaymentMethodButton
-                          key={method}
-                          $selected={selectedPaymentMethod === method}
-                          onClick={() => setSelectedPaymentMethod(method as 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT')}
-                      >
-                          {getPaymentMethodName(method)}
-                      </S.PaymentMethodButton>
-                  ))}
+                {["CARD", "TRANSFER", "VIRTUAL_ACCOUNT"].map((method) => (
+                  <S.PaymentMethodButton
+                    key={method}
+                    $selected={selectedPaymentMethod === method}
+                    onClick={() =>
+                      setSelectedPaymentMethod(
+                        method as "CARD" | "TRANSFER" | "VIRTUAL_ACCOUNT",
+                      )
+                    }
+                  >
+                    {getPaymentMethodName(method)}
+                  </S.PaymentMethodButton>
+                ))}
               </S.PaymentMethodContainer>
 
               <S.PaymentInfo>
                 <div>상품명 : {product.productName}</div>
                 <div>총 결제금액 : {finalPrice.toLocaleString()}원</div>
-                <div>결제방법 : {getPaymentMethodName(selectedPaymentMethod)}</div>
+                <div>
+                  결제방법 : {getPaymentMethodName(selectedPaymentMethod)}
+                </div>
               </S.PaymentInfo>
 
               <S.PaymentButton
                 onClick={handlePurchase}
                 disabled={paymentLoading}
               >
-                {paymentLoading ? '결제 진행 중...' : `${finalPrice.toLocaleString()}원 결제하기`}
+                {paymentLoading
+                  ? "결제 진행 중..."
+                  : `${finalPrice.toLocaleString()}원 결제하기`}
               </S.PaymentButton>
             </S.TabContent>
           </S.TabOverlay>

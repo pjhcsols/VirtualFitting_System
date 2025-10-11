@@ -75,8 +75,6 @@ const SearchResultPage: React.FC = () => {
 
   return (
     <div className="searchResultPage">
-      <HeaderStore />
-      <SearchBar />
       {loading && (
         <div className="loading-container">
           <div className="loading-spinner"></div>
@@ -102,7 +100,6 @@ const SearchResultPage: React.FC = () => {
       )}
       {!loading && products.length === 0 && (
         <div className="no-search-result">
-          <img src={warningImg} alt="warning" className="warning-img" />
           검색 결과가 없습니다.
           <br />
           다른 검색어로 검색해주세요.

@@ -168,10 +168,6 @@ const DefaultInput = styled.input`
 
 const LoginInputContainer = styled(DefaultInput).attrs({ type: "text" })``;
 
-const PasswordInputContainer = styled(DefaultInput).attrs({
-  type: "password",
-})``;
-
 const SignUpIdInput = styled(DefaultInput).attrs({ type: "text" })``;
 
 const SignUpEmailInput = styled(DefaultInput).attrs({ type: "email" })``;

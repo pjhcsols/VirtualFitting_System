@@ -1,19 +1,19 @@
 import styled from "styled-components";
+import { Header } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared";
 import { OrderDetailContent } from "@/pages/my/ui/OrderDetailContent";
 
 function MyOrderListDetail() {
-    return (
-        <PageWrapper>
-          <ContentWrapper>
-            <OrderDetailContent />
-          </ContentWrapper>
-        </PageWrapper>
-    );
+  return (
+    <PageWrapper>
+      <Header />
+      <OrderDetailContent />
+      <ContentWrapper></ContentWrapper>
+    </PageWrapper>
+  );
 }
 
 export { MyOrderListDetail };
-
 
 const PageWrapper = styled.div`
   position: relative;

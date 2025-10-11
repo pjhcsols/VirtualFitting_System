@@ -13,7 +13,7 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
     padding: 5px 0;
     background-color: transparent;
     outline: none;
-    color: black;
+    color: white;
   }
   label {
     position: absolute;
@@ -27,7 +27,7 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
   input[type="text"]:valid ~ .label {
     top: -20px;
     font-size: 16px;
-    color: #333;
+    color: #ccc;
   }
   .underline {
     position: absolute;
@@ -35,7 +35,7 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
     left: 0;
     height: 2px;
     width: 100%;
-    background-color: #333;
+    background-color: #ccc;
     transform: scaleX(0);
     transition: all 0.3s ease;
   }

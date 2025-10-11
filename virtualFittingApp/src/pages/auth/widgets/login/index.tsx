@@ -1,16 +1,11 @@
-import {
-  AuthLoginButton,
-  AuthSignUpButton,
-  PasswordInput,
-  TextInput,
-} from "@/shared";
+import { PasswordInput, TextInput } from "@/shared";
 import * as S from "./style";
 import { useLogin } from "../../hooks/useLogin";
 
 function LoginForm() {
-  const { user, errMsg, onChange, onSubmit } = useLogin();
+  const { user, onChange, onSubmit } = useLogin();
   return (
-    <S.Wrapper>
+    <S.Wrapper onSubmit={onSubmit}>
       <S.Title>BASILIUM</S.Title>
       <S.InfoContainer>
         <TextInput
@@ -27,10 +22,13 @@ function LoginForm() {
           title="Password"
         />
       </S.InfoContainer>
-      <S.Divider />
       <S.ButtonContainer>
-        <AuthLoginButton />
-        <AuthSignUpButton />
+        <S.LoginButtonWrapper>
+          <S.ButtonText>로그인</S.ButtonText>
+        </S.LoginButtonWrapper>
+        <S.SignUpButtonWrapper to={"/signup"}>
+          <S.SignUpText>회원가입</S.SignUpText>
+        </S.SignUpButtonWrapper>
       </S.ButtonContainer>
     </S.Wrapper>
   );

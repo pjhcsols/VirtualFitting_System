@@ -1,5 +1,5 @@
 import { Stars } from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import { useRef } from "react";
 import * as THREE from "three";
 
@@ -12,11 +12,7 @@ function StarBackground() {
     }
   });
 
-  return (
-    <Canvas>
-      <Stars ref={stars} />
-    </Canvas>
-  );
+  return <Stars ref={stars} />;
 }
 
 export { StarBackground };

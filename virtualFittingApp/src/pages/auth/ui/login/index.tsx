@@ -1,15 +1,18 @@
 import * as S from "./style";
 
 import { Basilium3DLogo, StarBackground } from "@/shared";
-import { LoginForm } from "@/widgets";
-import { useLogin } from "@/pages/auth/hooks/useLogin";
+import { LoginForm } from "../../widgets/login";
+import { Canvas } from "@react-three/fiber";
 
 function LoginPage() {
-  const { user, errMsg, onChange, onSubmit } = useLogin();
   return (
     <S.Wrapper>
       <S.InfoContainer>
-        <StarBackground />
+        <S.StarBackground>
+          <Canvas>
+            <StarBackground />
+          </Canvas>
+        </S.StarBackground>
         <S.LeftContainer>
           <S.ModelContainer>
             <Basilium3DLogo />

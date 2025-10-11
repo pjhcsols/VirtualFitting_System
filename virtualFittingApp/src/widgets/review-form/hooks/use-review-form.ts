@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import type { OrderItem } from "@/entities/order";
-import type { ReviewData } from '@/entities/review';
+import type { ReviewData } from "@/entities/review";
 import { orderDummyData } from "@/entities/order";
 import { postProductReview } from "@/pages/my/api/review.aciton";
 import type { BodySize } from "@/pages/my/types/user";
@@ -13,12 +13,12 @@ export const useReviewForm = () => {
 
   const editReview: ReviewData | undefined = location.state?.reviewData;
 
-  const [title, setTitle] = useState<string>("");
+  let title = "";
 
   const [order, setOrder] = useState<OrderItem | null>(null);
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>("");
-  
+
   const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
@@ -38,7 +38,6 @@ export const useReviewForm = () => {
   };
   const [sizes, setSizes] = useState<BodySize>(initialSize);
 
-
   useEffect(() => {
     const foundOrder = orderDummyData.find((item) => item.id === id);
     setOrder(foundOrder || null);
@@ -51,7 +50,7 @@ export const useReviewForm = () => {
   }, [id, editReview]);
 
   const handleSizeChange = (field: keyof BodySize, value: number) => {
-    setSizes(prev => ({
+    setSizes((prev) => ({
       ...prev,
       [field]: value,
     }));
@@ -114,7 +113,7 @@ export const useReviewForm = () => {
   //   const updatedReviews = editReview
   //     ? existingReviews.map((r) => r.id === editReview.id ? newReview : r)
   //     : [...existingReviews, newReview];
-    
+
   //   localStorage.setItem("reviews", JSON.stringify(updatedReviews));
   //   alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
   //   navigate("/mypage/review");
@@ -122,10 +121,11 @@ export const useReviewForm = () => {
 
   const handleRegister = async () => {
     if (!order) return alert("주문 정보를 찾을 수 없습니다.");
-    if (reviewText.trim().length < 20) return alert("리뷰를 20자 이상 작성해주세요.");
+    if (reviewText.trim().length < 20)
+      return alert("리뷰를 20자 이상 작성해주세요.");
 
     try {
-       const body = {
+      const body = {
         purchaseSize: order.options.size,
         purchaseColor: order.options.color,
         rating,
@@ -140,7 +140,9 @@ export const useReviewForm = () => {
     } catch (err: any) {
       // 사용자 birthDate, address 없으면 400
       console.error(err);
-      alert(err?.response?.data?.message ?? "리뷰 등록 중 오류가 발생했습니다.");
+      alert(
+        err?.response?.data?.message ?? "리뷰 등록 중 오류가 발생했습니다.",
+      );
     }
   };
 
@@ -148,6 +150,10 @@ export const useReviewForm = () => {
     order,
     rating,
     setRating,
+    height,
+    setHeight,
+    weight,
+    setWeight,
     reviewText,
     setReviewText,
     photoPreviewImages,
@@ -162,4 +168,3 @@ export const useReviewForm = () => {
     handleSizeChange,
   };
 };
-
