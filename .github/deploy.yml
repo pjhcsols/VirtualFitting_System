@@ -1,0 +1,55 @@
+name: workflows
+on:
+  push:
+    branches:
+      - FE_SONU
+jobs:
+  build_and_test:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./virtualFittingApp
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: install bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.2.1
+
+      - name: Check bun version
+        run: bun --version
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run linter
+        run: bun run lint
+
+      - name: Check code formatting
+        run: bun run format:check
+
+      - name: Build
+        run: bun run build
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+          aws-region: ap-northeast-2
+
+      - name: Deploy to S3
+        env:
+          aws-access-key-id: ${{secrets.AWS_ACCESS_KEY_ID}}
+          aws-secret-access-key: ${{secrets.AWS_SECRET_ACCESS_KEY}}
+        run: aws s3 sync --region ap-northeast-2 build s3://basilium-client --delete
+
+      - name: Invalidate CloudFront Cache
+        run: aws cloudfront create-invalidation --distribution-id ${{secrets.DEV_AWS_DISTRIBUTION_ID}}
