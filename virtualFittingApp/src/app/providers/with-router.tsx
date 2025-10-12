@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
 import { MyPage } from "@/pages/my";
+import { MypageDetail } from "@/pages/my/ui/MyPageDetail";
 import { MyOrderList } from "@/pages/my/ui/MyOrderList";
 import { MyOrderListDetail } from "@/pages/my/ui/MyOrderListDetail";
 import {
@@ -91,6 +92,7 @@ const Routing = () => (
     </Route>
     <Route path="/mypage" element={<MyPageLayout />}>
       <Route index element={<MyPage />} />
+      <Route path="detail" element={<MypageDetail />} />
       <Route path="order" element={<MyOrderList />} />
       <Route path="order/:id" element={<MyOrderListDetail />} />
       <Route path="cancel" element={<MyCancelListPage />} />

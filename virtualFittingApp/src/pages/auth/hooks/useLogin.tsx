@@ -40,14 +40,14 @@ function useLogin() {
           );
           setErrMsg({
             ...errMsg,
-            userPassword: LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")?.message,
+            userPassword: LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")?.message ?? "",
           });
         }
         if (err.status === 404) {
           globalEventBus.emit("api-error", LOGIN_ERROR_STATUS.get("NO_USER"));
           setErrMsg({
             ...errMsg,
-            userPassword: LOGIN_ERROR_STATUS.get("NO_USER")?.message,
+            userPassword: LOGIN_ERROR_STATUS.get("NO_USER")?.message ?? "",
           });
         }
       }
