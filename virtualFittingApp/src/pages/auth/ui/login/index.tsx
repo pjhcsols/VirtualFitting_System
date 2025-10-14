@@ -19,7 +19,7 @@ function LoginPage() {
           </S.ModelContainer>
         </S.LeftContainer>
         <S.RightContainer>
-          {/* <LoginForm /> */}
+          <LoginForm />
         </S.RightContainer>
       </S.InfoContainer>
     </S.Wrapper>
