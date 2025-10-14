@@ -3,6 +3,8 @@ import { type LoginRequestDto } from "@/widgets/auth/types/login";
 import { userLogin } from "../api/auth.action";
 import { useNavigate } from "react-router-dom";
 import { type JwtPayload, jwtDecode } from "jwt-decode";
+import { useSetRecoilState } from 'recoil';
+import { authState } from '@/entities/auth'; 
 
 interface BasiliumJwtPayload extends JwtPayload {
   role: string;
@@ -15,6 +17,8 @@ function useLogin() {
     userId: "",
     userPassword: "",
   });
+
+  const setAuthState = useSetRecoilState(authState);
 
   const onChangeUserId = (e: ChangeEvent<HTMLInputElement>) => {
     setLoginInfo({
@@ -41,6 +45,9 @@ function useLogin() {
       alert("로그인에 실패하였습니다.");
       return;
     }
+
+    setAuthState(true);
+    
     alert("로그인에 성공하였습니다!");
     const decodedToken = jwtDecode<BasiliumJwtPayload>(res);
     if (decodedToken.role === "BRAND") {
@@ -48,7 +55,7 @@ function useLogin() {
     } else if (decodedToken.role === "SUPER") {
       router("/admin");
     } else {
-      router("/store");
+      router("/products");
     }
   };
 

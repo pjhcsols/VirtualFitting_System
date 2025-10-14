@@ -1,2 +1,2 @@
-export type { ReviewData } from "./model/types";
+export type { ReviewData, ReviewRequest } from "./model/types";
 export * from "./ui/review-card";

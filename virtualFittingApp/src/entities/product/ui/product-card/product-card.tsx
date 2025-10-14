@@ -1,9 +1,9 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { ColorPopup } from "./color-pop-up";
-import { BREAKPOINTS } from "@/shared";
 import { COLOR_MAP } from "@/shared";
-import { fetchProductPrice } from "@/entities/product/api";
+import { fetchProductPrice } from "@/entities/discount";
+import { GlassBox } from "@/shared/components/glass-box";
 
 type ProductCardProps = {
   product: any;
@@ -31,9 +31,8 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   }, [product.productId]);
 
   return (
-    <Card onClick={onClick}>
-      <ImageBox>
-        <img src={product.productPhotoUrls[0]} alt={product.productName} />
+    <Card onClick={onClick} borderRadius={"8px"}>
+      <ImageBox $imageUrl={product.productPhotoUrls[0]}>
         <ProductLikeButtonWrapper>
           {/* <ProductLikeButton productId={product.productId} isInitiallyLiked={product.isLiked} /> */}
         </ProductLikeButtonWrapper>
@@ -68,13 +67,12 @@ function ProductCard({ product, onClick }: ProductCardProps) {
                     {Math.round(((price.original - price.discounted) / price.original) * 100)}%
                   </DiscountRate>
                   <PriceRow>
+                    <Price>{price.discounted.toLocaleString()}원</Price>
                     <OriginalPrice>{price.original.toLocaleString()}원</OriginalPrice>
-                    <DiscountedPrice>{price.discounted.toLocaleString()}원</DiscountedPrice>
                   </PriceRow>
                 </>
               ) : (
                 <>
-                  <HiddenSpace />
                   <PriceRow>
                     <Price>{price.original.toLocaleString()}원</Price>
                   </PriceRow>
@@ -88,129 +86,82 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   );
   }
 
-const Card = styled.div`
+const Card = styled(GlassBox)`
   display: flex;
   flex-direction: column;
-  border: 1px solid black;
-
-  @media (max-width: ${BREAKPOINTS.sm - 1}px) {
-    &:not(:first-child) {
-      border-top: none;
-    }
-  }
-
-  @media (min-width: ${BREAKPOINTS.sm}px) and (max-width: ${BREAKPOINTS.md - 1}px) {
-    &:nth-child(even) {
-      border-left: none;
-    }
-
-    &:nth-child(n + 3) {
-      border-top: none;
-    }
-  }
-
-  @media (min-width: ${BREAKPOINTS.md}px) and (max-width: ${BREAKPOINTS.xl - 1}px) {
-    &:not(:nth-child(3n - 2)) {
-      border-left: none;
-    }
-
-    &:nth-child(n + 4) {
-      border-top: none;
-    }
-  }
-
-  @media (min-width: ${BREAKPOINTS.xl}px) {
-    &:not(:nth-child(4n - 3)) {
-      border-left: none;
-    }
-
-    &:nth-child(n + 5) {
-      border-top: none;
-    }
-  }
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 `;
 
-const ImageBox = styled.div`
+const ImageBox = styled.div<{ $imageUrl: string }>`
   width: 100%;
   aspect-ratio: 4 / 5;
-  overflow: hidden;
-  border-bottom: 1px solid black;
   position: relative;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: block;
-  }
+  z-index: -2;
+  background-image: url(${({ $imageUrl }) => $imageUrl});
+  background-size: cover;
+  background-position: center;
 `;
 
 const InfoBox = styled.div`
-  padding: 0.5em 0.5em;
+  padding: 12px;
+  aspect-ratio: 5 / 1;
 `;
 
 const Brand = styled.div`
   display: flex;
   font-family: "pretendard";
-  font-size: 0.75em;
-  font-weight: 400;
-  color: black;
+  font-size: 11px;
+  font-weight: 500;
+  color: #eee;
   text-decoration: underline;
   cursor: pointer;
 `;
 
 const Name = styled.div`
   display: flex;
-  font-family: "pretendard";
-  font-size: 0.8em;
-  font-weight: 400;
-  color: black;
+  font-size: 13px;
+  color: #fff;
 `;
 
 const PriceBox = styled.div`
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 0.2em;
+  flex-direction: row;
+  align-items: flex-start;
+  gap: 6px;
 `;
 
 const PriceRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 0.2em;
+  gap: 4px;
 `;
 
 const DiscountRate = styled.div`
-  font-size: 0.5em;
-  background-color: red;
+  font-size: 11px;
+  background-color: #ff4d4d;
   color: white;
-  padding: 0em 0.4em;
+  font-weight: 600;
+  margin-top: 2px;
+  padding: 0px 2px;
+  border-radius: 3px;
+  align-items: center;
 `;
 
 const OriginalPrice = styled.div`
-  font-size: 0.8em;
-  color: black;
+  font-size: 13px;
+  color: #ccc;
   text-decoration: line-through;
-  text-decoration-color: red;
-  font-family: "pretendard";
-`;
-
-const DiscountedPrice = styled.div`
-  font-size: 0.8em;
-  color: red;
-  font-weight: 400;
   font-family: "pretendard";
 `;
 
 const Price = styled.div`
-  font-size: 0.8em;
-  color: black;
+  font-size: 13px;
+  color: white;
   font-family: "pretendard";
-`;
-
-const HiddenSpace = styled.div`
-  visibility: hidden;
-  height: 0.5em;
+  font-weight: 600;
 `;
 
 const ColorSwatches = styled.div`
@@ -227,7 +178,7 @@ const ColorCircle = styled.div<{ $color: string }>`
   height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.$color};
-  border: 1px solid black;
+  border: 1px solid rgba(255, 255, 255, 0.5);
 `;
 
 const ProductLikeButtonWrapper = styled.div`
@@ -248,7 +199,8 @@ const ExtraIcon = styled.div`
   align-items: center;
   justify-content: center;
   font-family: "pretendard";
-  color: black;
+  color: white;
+  font-weight: 600;
   cursor: pointer;
 `;
 

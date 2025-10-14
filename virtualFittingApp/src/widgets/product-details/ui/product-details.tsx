@@ -1,3 +1,4 @@
+import { useState, useEffect } from "react";
 import { COLOR_MAP } from "@/shared";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
@@ -6,9 +7,7 @@ import { ICON_SHARE } from "@/shared";
 import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
 import { SelectQuantity } from "@/features/select-quantiy";
-import { ProductImageThumbnail } from "@/entities/product";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
-import { ProductCoupon, SelectedCouponDisplay } from "@/features/product-coupon";
 
 type ProductDetailsProps = {
   product: ProductDetail;
@@ -16,40 +15,45 @@ type ProductDetailsProps = {
   onColorChange?: (color: string) => void;
 };
 
-function getPaymentMethodName(method: string): string {
-  const methodNames: { [key: string]: string } = {
-    'CARD': '신용카드',
-    'TRANSFER': '계좌이체',
-    'VIRTUAL_ACCOUNT': '가상계좌',
-  };
-  return methodNames[method] || method;
-}
-
 function ProductDetails({ product, productColors, onColorChange }: ProductDetailsProps) {
   const {
     price,
-    selectedCoupon,
     quantity,
-    showPaymentTab,
-    paymentLoading,
     selectedColor,
     selectedSize,
-    mainImage,
-    finalPrice,
+    // finalPrice,
     sizesSorted,
     selectedProductImages,
-    selectedPaymentMethod,
     setQuantity,
-    setShowPaymentTab,
     setSelectedSize,
-    setMainImage,
-    setSelectedPaymentMethod,
     handleAddToCart,
     handlePurchaseClick,
-    handleSelectCoupon,
-    handlePurchase,
     handleColorChange,
   } = useProductDetails(product, onColorChange);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [isHovering, setIsHovering] = useState(false);
+
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [selectedProductImages]);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? selectedProductImages.length - 1 : prevIndex - 1
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
+  const goToSlide = (slideIndex: number) => {
+    setCurrentIndex(slideIndex);
+  };
+
 
   if (!price) return null;
 
@@ -58,16 +62,37 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
 
   return (
     <S.ProductBox>
-      <S.ProductSmallImagesContainer>
-        {selectedProductImages.map((src, i) => (
-          <ProductImageThumbnail
-            key={i}
-            imageSrc={src}
-            onMouseEnter={() => setMainImage(src)}
-          />
-        ))}
-      </S.ProductSmallImagesContainer>
-      <S.ProductImage src={mainImage} alt={product.productName} />
+      <S.ImageCarouselContainer
+        onMouseEnter={() => setIsHovering(true)}
+        onMouseLeave={() => setIsHovering(false)}
+      >
+        {selectedProductImages && selectedProductImages.length > 0 ? (
+          <>
+            {isHovering && selectedProductImages.length > 1 && (
+              <>
+                <S.CarouselButton onClick={goToPrevious} style={{ left: 10 }}>
+                  &#10094;
+                </S.CarouselButton>
+                <S.CarouselButton onClick={goToNext} style={{ right: 10 }}>
+                  &#10095;
+                </S.CarouselButton>
+              </>
+            )}
+            <S.ProductImage src={selectedProductImages[currentIndex]} alt={`${product.productName} - slide ${currentIndex + 1}`} />
+            <S.Pagination>
+              {selectedProductImages.map((_, slideIndex) => (
+                <S.Dot
+                  key={slideIndex}
+                  $isActive={currentIndex === slideIndex}
+                  onClick={() => goToSlide(slideIndex)}
+                />
+              ))}
+            </S.Pagination>
+          </>
+        ) : (
+          <S.ProductImage src="" alt="No Image Available" />
+        )}
+      </S.ImageCarouselContainer>
       <S.ProductInfoBox>
         <S.TopRow>
           <S.Brand>{product.brandUser.firmName}</S.Brand>
@@ -78,27 +103,19 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
         <S.TopRow>
           {hasDiscount ? (
             <S.PriceGroup>
+              <S.DiscountRate>{discountRate}%</S.DiscountRate>
               <S.DiscountPrice>{price.discounted!.toLocaleString()}원</S.DiscountPrice>
               <S.OriginalPriceBox>
                 <S.OriginalPrice>{price.original.toLocaleString()}원</S.OriginalPrice>
-                <S.DiscountRate>{discountRate}%</S.DiscountRate>
               </S.OriginalPriceBox>
             </S.PriceGroup>
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
             <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <ProductCoupon
-              productId={product.productId}
-              onSelect={handleSelectCoupon}
-            />
             <S.IconImage src={ICON_SHARE} alt="share icon" />
           </div>
         </S.TopRow>
-        <SelectedCouponDisplay 
-          coupon={selectedCoupon} 
-          onRemove={() => handleSelectCoupon(null)} 
-        />
         <S.Description>{product.productDesc}</S.Description>
         <S.ColorBoxContainer>
           <S.SelectedColorText>
@@ -145,37 +162,6 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
           <AddToCartButton onClick={handleAddToCart} />
           <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />
         </S.ButtonBox>
-        {showPaymentTab && (
-          <S.TabOverlay onClick={() => setShowPaymentTab(false)}>
-            <S.TabContent onClick={e => e.stopPropagation()}>
-              <h3>결제 수단 선택</h3>
-              <S.PaymentMethodContainer>
-                  {['CARD', 'TRANSFER', 'VIRTUAL_ACCOUNT'].map(method => (
-                      <S.PaymentMethodButton
-                          key={method}
-                          $selected={selectedPaymentMethod === method}
-                          onClick={() => setSelectedPaymentMethod(method as 'CARD' | 'TRANSFER' | 'VIRTUAL_ACCOUNT')}
-                      >
-                          {getPaymentMethodName(method)}
-                      </S.PaymentMethodButton>
-                  ))}
-              </S.PaymentMethodContainer>
-
-              <S.PaymentInfo>
-                <div>상품명 : {product.productName}</div>
-                <div>총 결제금액 : {finalPrice.toLocaleString()}원</div>
-                <div>결제방법 : {getPaymentMethodName(selectedPaymentMethod)}</div>
-              </S.PaymentInfo>
-
-              <S.PaymentButton
-                onClick={handlePurchase}
-                disabled={paymentLoading}
-              >
-                {paymentLoading ? '결제 진행 중...' : `${finalPrice.toLocaleString()}원 결제하기`}
-              </S.PaymentButton>
-            </S.TabContent>
-          </S.TabOverlay>
-        )}
         <S.ButtonBox>
           <AITryOnButton />
         </S.ButtonBox>
