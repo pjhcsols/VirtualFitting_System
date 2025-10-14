@@ -1,7 +1,20 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-import { PaymentFailPage, PaymentSuccessPage, PaymentPage } from "@/pages/payment";
 
+import { MyPage } from "@/pages/my";
+import { MypageDetail } from "@/pages/my/ui/MyPageDetail";
+import { MyOrderList } from "@/pages/my/ui/MyOrderList";
+import { MyOrderListDetail } from "@/pages/my/ui/MyOrderListDetail";
+import {
+  PaymentFailPage,
+  PaymentSuccessPage,
+  PaymentPage,
+} from "@/pages/payment";
+import { MyCancelListPage } from "@/pages/my-cancel-list";
+import { MyLikeListPage } from "@/pages/my-like-list";
+import { MyReviewListPage } from "@/pages/my-review-list";
+import { WriteReviewPage } from "@/pages/write-review";
+import { PaymentFailPage, PaymentSuccessPage, PaymentPage } from "@/pages/payment";
 import { ProductDetailPage } from "@/pages/product/detail";
 import { ProductListPage } from "@/pages/product/list";
 import { MyDashboardPage } from "@/pages/my/dashboard";
@@ -44,6 +57,61 @@ import { BrandProduct } from "@/pages/brand/ui/product";
 
 
 const Routing = () => (
+  <Routes>
+    <Route path="" element={<MainLayout />}>
+      <Route index element={<MainPage />} />
+    </Route>
+    <Route path="login">
+      <Route index element={<LoginPage />} />
+      <Route path="admin" element={<AdminLogin />} />
+    </Route>
+    <Route path="signup" element={<SignUpLayout />}>
+      <Route index element={<AuthLobby />} />
+      <Route path="normal" element={<NormalSignUpPage />} />
+      <Route path="brand" element={<BrandSignUpPage />} />
+      <Route path="success" element={<SuccessSignUpPage />} />
+      <Route path="failed" element={<FailedPage />} />
+    </Route>
+    <Route path="admin" element={<AdminLayout />}>
+      <Route index element={<AdminHome />} />
+      <Route path="banner" element={<AdminBanner />} />
+      <Route path="brand" element={<AdminBrandUsers />} />
+      <Route path="user" element={<AdminUser />} />
+      {/* <Route path="product" element={<AdminProduct />} /> */}
+      <Route path="*" element={<BasiliumRedirect />} />
+    </Route>
+    <Route path="brand">
+      <Route index element={<BrandPage />} />
+      <Route element={<BrandLayout />}>
+        <Route path="dashboard" element={<BrandLobby />} />
+        <Route path="products" element={<BrandProduct />} />
+      </Route>
+      <Route path="*" element={<BasiliumRedirect />} />
+    </Route>
+    <Route path="/cart" element={<CartLayout />}>
+      <Route index element={<ShoppingCartPage />} />
+    </Route>
+    <Route path="store" element={<StoreLayout />}>
+      <Route index element={<StorePage />} />
+      <Route path=":id" element={<StoreDetailPage />} />
+    </Route>
+    <Route path="/payment" element={<PaymentLayout />}>
+      <Route index element={<PaymentPage />} />
+      <Route path="success" element={<PaymentSuccessPage />} />
+      <Route path="fail" element={<PaymentFailPage />} />
+    </Route>
+    <Route path="/mypage" element={<MyPageLayout />}>
+      <Route index element={<MyPage />} />
+      <Route path="detail" element={<MypageDetail />} />
+      <Route path="order" element={<MyOrderList />} />
+      <Route path="order/:id" element={<MyOrderListDetail />} />
+      <Route path="cancel" element={<MyCancelListPage />} />
+      <Route path="like" element={<MyLikeListPage />} />
+      <Route path="review" element={<MyReviewListPage />} />
+      <Route path="review/:id" element={<WriteReviewPage />} />
+    </Route>
+  </Routes>
+
     <Routes>
         <Route path="" element={<MainLayout />}>
         <Route index element={<MainPage />} />
@@ -98,6 +166,7 @@ const Routing = () => (
           <Route path="review/:id" element={<WriteReviewPage />} />
         </Route>
     </Routes>
+
 );
 
 export const withRouter = (component: () => React.ReactNode) => () => (
