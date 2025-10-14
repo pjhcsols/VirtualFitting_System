@@ -1,0 +1,32 @@
+import { useState, useEffect } from 'react';
+import { fetchMyUserDetails } from '@/entities/user';
+import type { UserDetail } from '@/entities/user';
+
+export const useOrderForm = () => {
+  const [user, setUser] = useState<UserDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      setIsLoading(true);
+      try {
+        const response = await fetchMyUserDetails();
+        if (response && response.data) {
+          setUser(response.data);
+        }
+      } catch (error) {
+        console.error("사용자 정보를 불러오는 데 실패했습니다:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
+  const handleSaveAddress = () => {
+    // [seah] 배송지 정보 저장 기능 만두러야함(아직 api 없다능)
+  };
+
+  return { user, isLoading, handleSaveAddress };
+};

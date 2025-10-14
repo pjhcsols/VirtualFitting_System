@@ -1,34 +1,60 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
-import { type ClaimableCoupon } from '@/entities/coupon';
-import { fetchClaimableCoupons, downloadCoupon } from '@/entities/coupon/api';
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth';
+import type { ClaimableCoupon } from '@/entities/coupon';
+import { 
+  fetchClaimableCouponsForGuest, 
+  fetchMyClaimableCoupons,
+  downloadCoupon 
+} from '../api/coupon.api';
 
-// type OnSelectCoupon = (coupon: ClaimableCoupon | null) => void;
-
-// export const useProductCoupon = (productId: number, onSelect: OnSelectCoupon) => {
 export const useProductCoupon = (productId: number) => {
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
+  const isLoggedIn = useRecoilValue(authState);
 
   const [coupons, setCoupons] = useState<ClaimableCoupon[]>([]);
-  const [selectedCoupon, setSelectedCoupon] = useState<ClaimableCoupon | null>(null);
-  const [downloadedCoupon, setDownloadedCoupon] = useState<{ walletId: number; campaignId: number; } | null>(null);
-  const [showCouponPopup, setShowCouponPopup] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const refreshCoupons = async () => {
+  const refreshCoupons = useCallback(async () => {
+    setIsLoading(true);
     try {
-      const accessToken = cookies['access-token'];
-      const data = await fetchClaimableCoupons(productId, accessToken);
-      setCoupons(data ?? []);
+      const guestCoupons = await fetchClaimableCouponsForGuest(productId);
+      if (!guestCoupons) {
+        setCoupons([]);
+        return;
+      }
+      if (isLoggedIn) {
+        const accessToken = cookies['access-token'];
+        if (accessToken) {
+          const myCoupons = await fetchMyClaimableCoupons(productId, accessToken);
+          const myCouponsMap = new Map(myCoupons?.map(c => [c.campaignId, c]));
+          const mergedCoupons = guestCoupons.map(guestCoupon => 
+            myCouponsMap.get(guestCoupon.campaignId) || guestCoupon
+          );
+          setCoupons(mergedCoupons);
+        } else {
+          setCoupons(guestCoupons);
+        }
+      } else {
+        setCoupons(guestCoupons);
+      }
+      
     } catch (error) {
       console.error("Failed to refetch claimable coupons", error);
+      setCoupons([]);
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [productId, isLoggedIn, cookies]);
 
   useEffect(() => {
-    if (productId) refreshCoupons();
-  }, [productId]);
+    if (productId) {
+      refreshCoupons();
+    }
+  }, [productId, refreshCoupons]);
 
   const handleDownloadCoupon = async (campaignId: number) => {
     const authUserId = cookies['access-token'];
@@ -40,29 +66,17 @@ export const useProductCoupon = (productId: number) => {
     try {
       const result = await downloadCoupon({ campaignId, authUserId });
       if (result) {
-        alert("쿠폰이 발급되었습니다.");
-        setDownloadedCoupon(result);
-        refreshCoupons();
+        alert("쿠폰이 발급되었습니다!");
+        await refreshCoupons();
       }
     } catch (error) {
       console.error("쿠폰 다운로드에 실패하였습니다.", error);
     }
   };
 
-  const handleSelectCoupon = (coupon: ClaimableCoupon | null) => {
-    const newSelectedCoupon = (!coupon || selectedCoupon?.campaignId === coupon.campaignId) ? null : coupon;
-    setSelectedCoupon(newSelectedCoupon);
-    // onSelect(newSelectedCoupon);
-    setShowCouponPopup(false);
-  };
-
   return {
     coupons,
-    selectedCoupon,
-    downloadedCoupon,
-    showCouponPopup,
-    setShowCouponPopup,
+    isLoading,
     handleDownloadCoupon,
-    handleSelectCoupon,
   };
 };

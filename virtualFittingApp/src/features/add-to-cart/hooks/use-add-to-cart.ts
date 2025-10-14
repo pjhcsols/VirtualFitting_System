@@ -1,38 +1,12 @@
 import { useSetRecoilState } from 'recoil';
-import { cartState } from '@/entities/cart';
-import { type ProductDetail } from "@/entities/product";
-import { type ProductColorPayment, type ProductSizePayment } from "@/entities/payment/model/types"; 
+import { cartState, type CartItem } from '@/entities/cart';
 
-interface UseAddToCartProps {
-  product: ProductDetail;
-  price: { original: number; discounted?: number } | null;
-  selectedColor: ProductColorPayment;
-  selectedSize: ProductSizePayment;
-  quantity: number;
-  selectedProductImages: string[];
-}
-
-export const useAddToCart = ({ product, price, selectedColor, selectedSize, quantity, selectedProductImages }: UseAddToCartProps) => {
+export const useAddToCart = () => {
   const setCartItems = useSetRecoilState(cartState);
 
-  const handleAddToCart = () => {
-    if (!price) return;
-
-    const newItem = {
-      id: `${product.productId}-${selectedColor}-${selectedSize}`,
-      productId: product.productId,
-      name: product.productName,
-      brand: product.brandUser.firmName,
-      image: selectedProductImages[0],
-      price: price.discounted ?? price.original,
-      color: selectedColor,
-      size: selectedSize,
-      quantity: quantity,
-    };
-
+  const addToCart = (newItem: Omit<CartItem, 'quantity'> & { quantity: number }) => {
     setCartItems((prevItems) => {
       const existingItem = prevItems.find(item => item.id === newItem.id);
-
       if (existingItem) {
         return prevItems.map(item =>
           item.id === newItem.id
@@ -45,5 +19,6 @@ export const useAddToCart = ({ product, price, selectedColor, selectedSize, quan
     });
   };
 
-  return { handleAddToCart };
+  return { addToCart };
 };
+
