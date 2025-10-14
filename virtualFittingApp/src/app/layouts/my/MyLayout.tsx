@@ -1,8 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { MYPAGE_GRADIENT } from "@/shared/styles/Theme";
 import { Header } from "@/widgets/header";
-import { Starfield } from "@/shared/components/star/StarField";
+import { Starfield } from "@/shared/components/star";
 
 function MyPageLayout() {
   return (
@@ -16,10 +15,10 @@ function MyPageLayout() {
 
 export { MyPageLayout }
 
-const Wrapper = styled.div`
+const Wrapper = styled.main`
+  position: relative;
+  box-sizing: border-box;
+  max-width: 100vw;
   min-height: 100vh;
-  background: ${MYPAGE_GRADIENT};
-  display: flex;
-  flex-direction: column;
+  background: #292e49;
 `;
-

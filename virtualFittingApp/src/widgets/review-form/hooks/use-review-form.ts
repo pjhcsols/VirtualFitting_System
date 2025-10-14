@@ -3,14 +3,13 @@ import { useParams, useNavigate, useLocation } from "react-router-dom";
 import type { OrderItem } from "@/entities/order";
 import type { ReviewData } from "@/entities/review";
 import { orderDummyData } from "@/entities/order";
-import { postProductReview } from "@/pages/my/api/review.aciton";
-import type { BodySize } from "@/pages/my/types/user";
+import { postProductReview } from "@/features/write-review";
+import type { BodySize } from "@/entities/user/model/types";
 
 export const useReviewForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { id } = useParams<{ id: string }>();
-
   const editReview: ReviewData | undefined = location.state?.reviewData;
 
   let title = "";
@@ -22,7 +21,6 @@ export const useReviewForm = () => {
   const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
-
   const initialSize: BodySize = {
     height: 0,
     weight: 0,
@@ -88,6 +86,15 @@ export const useReviewForm = () => {
     setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // const handleRegister = () => {
+  //   if (!order) {
+  //     alert("주문 정보를 찾을 수 없습니다.");
+  //     return;
+  //   }
+  //   if (reviewText.length < 20) {
+  //     alert("리뷰를 20자 이상 작성해주세요.");
+  //     return;
+  //   }
   // const handleRegister = () => {
   //   if (!order) {
   //     alert("주문 정보를 찾을 수 없습니다.");

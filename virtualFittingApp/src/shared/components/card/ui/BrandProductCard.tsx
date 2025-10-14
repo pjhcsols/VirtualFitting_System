@@ -18,7 +18,7 @@ function BrandProductCard({
 }: BrandProductCardType) {
   return (
     <CardWrapper>
-      <Linker to={`/store/${productId}`}>
+      <Linker to={`/products/${productId}`}>
         <Photo src={photoUrl} alt={`product-url-${productId}`} />
         <TitleBox>
           <Title>{productTitle}</Title>

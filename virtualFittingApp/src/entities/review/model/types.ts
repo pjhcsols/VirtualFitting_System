@@ -14,3 +14,11 @@ export type ReviewData = {
     photos: string[];
     date: string;
 };
+
+export type ReviewRequest = {
+  purchaseSize: string;
+  purchaseColor: string;
+  rating: number;
+  title: string;
+  comment: string;
+};

@@ -34,7 +34,7 @@ export const fetchUserInfo = async () => {
 export const getReviewAPI = async ({
   productId,
 }: {
-  productId: string;
+  productId: number;
 }) => {
   try {
     const res = await API_BASILIUM.get(`/b1/products/${productId}/reviews`);

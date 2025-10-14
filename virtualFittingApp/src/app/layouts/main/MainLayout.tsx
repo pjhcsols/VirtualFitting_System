@@ -18,5 +18,4 @@ const Wrapper = styled.main`
   box-sizing: border-box;
   max-width: 100vw;
   min-height: 100vh;
-  // background-color: #fffafa;
 `;

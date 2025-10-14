@@ -1,8 +1,13 @@
-export type ClaimableCoupon = {
+import type { ApiResponse } from "@/shared/types/api";
+
+export interface CouponBase {
   campaignId: number;
-  scope: "BRAND" | "PRODUCT";
   percent: number;
   maxDiscountPrice: number;
+}
+
+export interface ClaimableCoupon extends CouponBase {
+  scope: "BRAND" | "PRODUCT";
   minOrderPrice: number;
   estimatedDiscountOnThisProduct: number;
   endAt: string;
@@ -13,15 +18,17 @@ export type ClaimableCoupon = {
   usedCount: number;
   hasAvailable: boolean;
   alreadyUsedOnce: boolean;
-};
+}
+
+export type ClaimableCouponsResponse = ApiResponse<ClaimableCoupon[]>;
 
 export interface DownloadCouponRequestBody {
   campaignId: number;
 }
 
-export interface DownloadCouponResponseData {
+export interface CouponInWallet extends CouponBase {
   walletId: number;
-  campaignId: number;
-  percent: number;
-  maxDiscountPrice: number;
 }
+
+export type DownloadCouponApiResponse = ApiResponse<CouponInWallet>;
+

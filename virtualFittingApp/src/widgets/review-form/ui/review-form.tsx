@@ -6,7 +6,8 @@ import icon_star_filled from "@/shared/assets/icons/icon-star-filled.svg";
 import icon_star_unfilled from "@/shared/assets/icons/icon-star-unfilled.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
 import icon_cancel from "@/shared/assets/icons/icon-cancel.svg";
-import { DOWN_ICON, UP_ICON } from "@/pages/my/constants";
+import icon_down from "@/shared/assets/icons/icon-down.svg";
+import icon_up from "@/shared/assets/icons/icon-up.svg";
 import { BREAKPOINTS } from "@/shared";
 
 export function ReviewForm() {
@@ -48,7 +49,6 @@ export function ReviewForm() {
             />
           ))}
         </RatingSection>
-
         <ReviewLabel>신체 사이즈</ReviewLabel>
         <SizeForm>
           <SizeInput
@@ -104,12 +104,11 @@ export function ReviewForm() {
             ref={photoInputRef}
           />
         </ImageWrapper>
-
         <FormField>
           <LabelWithIcon onClick={() => setShowSizeForm((prev) => !prev)}>
             선택사항
             <ToggleIcon
-              src={showSizeForm ? DOWN_ICON : UP_ICON}
+              src={showSizeForm ? icon_down : icon_up}
               alt="토글 아이콘"
             />
           </LabelWithIcon>
@@ -442,6 +441,8 @@ const LabelWithIcon = styled.label`
   align-items: center;
   cursor: pointer;
   gap: 6px;
+  width: 20px;
+  height: 20px;
 `;
 
 const ToggleIcon = styled.img`

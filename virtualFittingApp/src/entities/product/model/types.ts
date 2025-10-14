@@ -1,28 +1,19 @@
-export type DiscountQuote = {
-  timestamp: string;
-  status: number;
-  code: string;
-  message: string;
-  data: {
-    productId: number;
-    brandName: string;
-    baseUnitPrice: number;
-    productDiscountPercent: number;
-    productDiscountAmount: number;
-    productDiscountedUnitPrice: number | null;
-    userExtraPercent: number;
-    userExtraDiscountAmount: number;
-    finalUnitPrice: number;
-  };
-};
-
-export type ProductDetail = {
+export interface ProductBase {
   productId: number;
   productName: string;
   productPrice: number;
+  categoryName: string;
+}
+
+export interface Product extends ProductBase {
+  totalQuantity: number;
+  productColors: string[];
+  productPhotoUrls: string[];
+}
+
+export interface ProductDetail extends Product {
   productDesc: string;
   productMaterials: string[];
-  categoryName: string;
   brandUser: {
     userNumber: number;
     id: string;
@@ -35,7 +26,6 @@ export type ProductDetail = {
     businessRegistration: string;
     firmWebUrl: string;
   };
-  totalQuantity: number;
   productOptions: {
     productSize: string;
     productColor: string;
@@ -53,7 +43,7 @@ export type ProductDetail = {
     productPhotoUrls: string[];
     productSubPhotoUrls: string[];
   };
-};
+}
 
 export interface ProductPrice {
   productId: number;
@@ -63,12 +53,20 @@ export interface ProductPrice {
   productDiscountedUnitPrice: number;
 }
 
-export type Product = {
-  productId: number;
-  productName: string;
-  productPrice: number;
-  totalQuantity: number;
-  categoryName: string;
-  productColors: string[];
-  productPhotoUrls: string[];
-}
+export type DiscountQuote = {
+  timestamp: string;
+  status: number;
+  code: string;
+  message: string;
+  data: {
+    productId: number;
+    brandName: string;
+    baseUnitPrice: number;
+    productDiscountPercent: number;
+    productDiscountAmount: number;
+    productDiscountedUnitPrice: number | null;
+    userExtraPercent: number;
+    userExtraDiscountAmount: number;
+    finalUnitPrice: number;
+  };
+};

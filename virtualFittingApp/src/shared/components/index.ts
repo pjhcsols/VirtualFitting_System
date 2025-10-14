@@ -6,8 +6,6 @@ export * from "@/shared/components/checkbox";
 
 export * from "@/shared/components/pagination";
 
-export * from "@/shared/components/product";
-
 export * from "@/shared/components/review";
 
 export * from "@/shared/components/searchBar";

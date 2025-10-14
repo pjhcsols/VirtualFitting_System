@@ -2,10 +2,12 @@ import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared";
+import { Starfield } from "@/shared/components/star";
 
 function CartLayout() {
   return (
     <Wrapper>
+      <Starfield />
       <Header theme="dark" /> 
       <ContentWrapper>
         <Outlet />
