@@ -15,6 +15,16 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
   margin: 2.5rem auto;
   width: 100%;
 
+  input[type="password"] {
+    font-size: 20px;
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    padding: 5px 0;
+    background-color: transparent;
+    outline: none;
+    color: white;
+  }
   input[type="text"] {
     font-size: 20px;
     width: 100%;
@@ -23,7 +33,7 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
     padding: 5px 0;
     background-color: transparent;
     outline: none;
-    color: black;
+    color: white;
   }
   label {
     position: absolute;
@@ -33,11 +43,17 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
     transition: all 0.3s ease;
     pointer-events: none;
   }
+  input[type="password"]:focus ~ .label,
+  input[type="password"]:valid ~ .label {
+    top: -20px;
+    font-size: 16px;
+    color: #ccc;
+  }
   input[type="text"]:focus ~ .label,
   input[type="text"]:valid ~ .label {
     top: -20px;
     font-size: 16px;
-    color: #333;
+    color: #ccc;
   }
   .underline {
     position: absolute;
@@ -45,9 +61,13 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
     left: 0;
     height: 2px;
     width: 100%;
-    background-color: #333;
+    background-color: #ccc;
     transform: scaleX(0);
     transition: all 0.3s ease;
+  }
+  input[type="password"]:focus ~ .underline,
+  input[type="password"]:valid ~ .underline {
+    transform: scaleX(1);
   }
   input[type="text"]:focus ~ .underline,
   input[type="text"]:valid ~ .underline {

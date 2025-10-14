@@ -1,5 +1,3 @@
-interface IFileInput {d}
-
 function FileInput() {
   return <></>;
 }

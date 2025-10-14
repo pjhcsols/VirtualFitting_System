@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 
-export const Wrapper = styled.div`
+export const Wrapper = styled.form`
   box-sizing: border-box;
   padding: 5rem 4rem;
   width: 100%;
@@ -98,14 +98,7 @@ export const IdInput = styled.input.attrs({ type: "text" })`
 
 export const PasswordInput = styled(IdInput).attrs({ type: "password" })``;
 
-export const ButtonText = styled.span`
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: black;
-  text-transform: uppercase;
-`;
-
-const BrandSignUpButton = styled.div`
+export const BrandSignUpButton = styled.div`
   width: 100%;
   height: 2.5rem;
   display: flex;
@@ -121,7 +114,7 @@ const BrandSignUpButton = styled.div`
   background-color: #bbd2c5;
 `;
 
-export const LoginButton = styled.div`
+export const LoginButton = styled.button.attrs({ type: "submit" })`
   width: 100%;
   height: 2.5rem;
   display: flex;
@@ -153,4 +146,45 @@ export const SignUpButton = styled(NavLink)`
   span {
     color: white;
   }
+`;
+
+export const SignUpButtonWrapper = styled(NavLink)`
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1000px;
+  transition: 0.15s all ease;
+  &:hover {
+    transform: scale(1.01);
+  }
+  cursor: pointer;
+  background-color: #292e49;
+`;
+
+export const ButtonText = styled.span`
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+`;
+
+export const LoginButtonWrapper = styled.div`
+  width: 100%;
+  height: 2.5rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 1000px;
+  transition: 0.15s all ease;
+  &:hover {
+    transform: scale(1.01);
+  }
+  cursor: pointer;
+  border: 1px solid #d9d9d9;
+`;
+
+export const SignUpText = styled(ButtonText)`
+  color: white;
 `;

@@ -4,17 +4,7 @@ import * as S from "./style";
 import { useBrand } from "@/pages/auth/hooks/useBrand";
 
 function BrandSignUp() {
-  const {
-    user,
-    next,
-    prev,
-    step,
-    errMsg,
-    onChangeText,
-    onChangeFirmPhoneNumber,
-    onChangePhoneNumber,
-    onSubmit,
-  } = useBrand();
+  const { user, next, prev, step, onChangeText, onSubmit } = useBrand();
   return (
     <S.Wrapper>
       <S.StepInformation>

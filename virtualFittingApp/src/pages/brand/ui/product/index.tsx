@@ -7,7 +7,7 @@ import { useLocation } from "react-router-dom";
 function BrandProduct() {
   const location = useLocation();
   const { page, size } = getQueryParameter(location.pathname);
-  const { products, errMsg } = useProduct({ page, size });
+  const { products } = useProduct({ page, size });
 
   return (
     <S.Wrapper>

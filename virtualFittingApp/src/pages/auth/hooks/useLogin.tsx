@@ -32,7 +32,11 @@ function useLogin() {
     try {
       await login(user);
     } catch (err) {
+      let message: string;
       if (err instanceof CustomException) {
+        message =
+          LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")?.message ??
+          "알 수 없는 오류 발생";
         if (err.status === 401) {
           globalEventBus.emit(
             "api-error",
@@ -40,14 +44,17 @@ function useLogin() {
           );
           setErrMsg({
             ...errMsg,
-            userPassword: LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")?.message ?? "",
+            userPassword: message,
           });
         }
         if (err.status === 404) {
+          message =
+            LOGIN_ERROR_STATUS.get("NO_USER")?.message ??
+            "알 수 없는 오류 발생";
           globalEventBus.emit("api-error", LOGIN_ERROR_STATUS.get("NO_USER"));
           setErrMsg({
             ...errMsg,
-            userPassword: LOGIN_ERROR_STATUS.get("NO_USER")?.message ?? "",
+            userPassword: message,
           });
         }
       }

@@ -15,7 +15,11 @@ type ProductDetailsProps = {
   onColorChange?: (color: string) => void;
 };
 
-function ProductDetails({ product, productColors, onColorChange }: ProductDetailsProps) {
+function ProductDetails({
+  product,
+  productColors,
+  onColorChange,
+}: ProductDetailsProps) {
   const {
     price,
     quantity,
@@ -40,13 +44,13 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
 
   const goToPrevious = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? selectedProductImages.length - 1 : prevIndex - 1
+      prevIndex === 0 ? selectedProductImages.length - 1 : prevIndex - 1,
     );
   };
 
   const goToNext = () => {
     setCurrentIndex((prevIndex) =>
-      prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1
+      prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1,
     );
   };
 
@@ -54,11 +58,13 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
     setCurrentIndex(slideIndex);
   };
 
-
   if (!price) return null;
 
-  const hasDiscount = price.discounted !== undefined && price.discounted < price.original;
-  const discountRate = hasDiscount ? Math.round(((price.original - price.discounted!) / price.original) * 100) : 0;
+  const hasDiscount =
+    price.discounted !== undefined && price.discounted < price.original;
+  const discountRate = hasDiscount
+    ? Math.round(((price.original - price.discounted!) / price.original) * 100)
+    : 0;
 
   return (
     <S.ProductBox>
@@ -78,7 +84,10 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
                 </S.CarouselButton>
               </>
             )}
-            <S.ProductImage src={selectedProductImages[currentIndex]} alt={`${product.productName} - slide ${currentIndex + 1}`} />
+            <S.ProductImage
+              src={selectedProductImages[currentIndex]}
+              alt={`${product.productName} - slide ${currentIndex + 1}`}
+            />
             <S.Pagination>
               {selectedProductImages.map((_, slideIndex) => (
                 <S.Dot
@@ -104,15 +113,19 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
           {hasDiscount ? (
             <S.PriceGroup>
               <S.DiscountRate>{discountRate}%</S.DiscountRate>
-              <S.DiscountPrice>{price.discounted!.toLocaleString()}원</S.DiscountPrice>
+              <S.DiscountPrice>
+                {price.discounted!.toLocaleString()}원
+              </S.DiscountPrice>
               <S.OriginalPriceBox>
-                <S.OriginalPrice>{price.original.toLocaleString()}원</S.OriginalPrice>
+                <S.OriginalPrice>
+                  {price.original.toLocaleString()}원
+                </S.OriginalPrice>
               </S.OriginalPriceBox>
             </S.PriceGroup>
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <S.IconImage src={ICON_SHARE} alt="share icon" />
           </div>
         </S.TopRow>
@@ -122,7 +135,7 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
             {product.productMaterials.join(", ")} | {selectedColor}
           </S.SelectedColorText>
           <S.ColorSwatches>
-            {productColors.map(color => (
+            {productColors.map((color) => (
               <S.ColorCircle
                 key={color}
                 $color={COLOR_MAP[color] ?? "transparent"}
@@ -134,7 +147,7 @@ function ProductDetails({ product, productColors, onColorChange }: ProductDetail
         </S.ColorBoxContainer>
         <S.SizeBoxContainer>
           <S.SizeBox>
-            {sizesSorted.map(size => (
+            {sizesSorted.map((size) => (
               <S.SizeItem
                 key={size}
                 $selectedSize={selectedSize === size}
