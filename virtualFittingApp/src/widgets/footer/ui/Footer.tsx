@@ -10,12 +10,29 @@ const businessInfo = [
 ];
 
 function Footer() {
+  const openPopup = (url: string, title: string) => {
+    const width = 600;
+    const height = 700;
+    const left = (window.screen.width / 2) - (width / 2);
+    const top = (window.screen.height / 2) - (height / 2);
+    
+    window.open(
+      url,
+      title,
+      `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
+    );
+  };
+
   return (
     <Wrapper>
       <Content>
         <Links>
-          <FooterLink href="/terms" target="_blank">전자상거래 표준약관</FooterLink>
-          <FooterLink href="/privacy" target="_blank">개인정보 처리방침</FooterLink>
+          <FooterLink as="button" onClick={() => openPopup('/terms', '전자상거래 표준약관')}>
+            전자상거래 표준약관
+          </FooterLink>
+          <FooterLink as="button" onClick={() => openPopup('/privacy', '개인정보 처리방침')}>
+            개인정보 처리방침
+          </FooterLink>
         </Links>
         <InfoBlock>
           {businessInfo.map((info, index) => (
@@ -56,6 +73,11 @@ const FooterLink = styled.a`
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
+  
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 
   &:hover {
     color: #fff;
