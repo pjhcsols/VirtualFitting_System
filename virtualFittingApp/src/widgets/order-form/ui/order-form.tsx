@@ -7,21 +7,16 @@ import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { useOrderForm } from '../hooks/use-order-form';
 import { ProductCoupon } from '@/features/product-coupon';
-import { useMemo, useState } from 'react';
-import { calculateFinalPrice } from '@/shared/lib/price.util';
 
 interface OrderFormProps {
   item: CartItem;
+  selectedCoupon: ClaimableCoupon | null;
+  onSelectCoupon: (coupon: ClaimableCoupon | null) => void;
+  finalPrice: number;
 }
 
-export const OrderForm = ({ item }: OrderFormProps) => {
+export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
   const { user, isLoading, handleSaveAddress } = useOrderForm();
-  const [selectedCoupon, setSelectedCoupon] = useState<ClaimableCoupon | null>(null);
-
-  const finalPrice = useMemo(() => {
-    const basePrice = item.discountedPrice ?? item.price;
-    return calculateFinalPrice(basePrice, item.quantity, selectedCoupon);
-  }, [item, selectedCoupon]);
 
   if (isLoading || !user) {
     return (
@@ -57,7 +52,7 @@ export const OrderForm = ({ item }: OrderFormProps) => {
           <ProductCoupon 
             productId={item.productId}
             finalPrice={finalPrice}
-            onSelect={setSelectedCoupon}
+            onSelect={onSelectCoupon}
           />
         </Header>
         <OrderItemCard item={item} />

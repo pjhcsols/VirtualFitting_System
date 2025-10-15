@@ -56,21 +56,24 @@ export const useProductCoupon = (productId: number) => {
     }
   }, [productId, refreshCoupons]);
 
-  const handleDownloadCoupon = async (campaignId: number) => {
+  const handleDownloadCoupon = async (campaignId: number): Promise<boolean> => {
     const authUserId = cookies['access-token'];
     if (!authUserId) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
-      return;
+      return false;
     }
     try {
       const result = await downloadCoupon({ campaignId, authUserId });
       if (result) {
-        alert("쿠폰이 발급되었습니다!");
+        // alert("쿠폰이 발급되었습니다!");
         await refreshCoupons();
+        return true;
       }
+      return false;
     } catch (error) {
       console.error("쿠폰 다운로드에 실패하였습니다.", error);
+      return false;
     }
   };
 

@@ -13,13 +13,31 @@ interface ProductCouponProps {
 }
 
 export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCouponProps) => {
-  const { coupons, isLoading } = useProductCoupon(productId);
+  const { 
+    coupons, 
+    isLoading,
+    handleDownloadCoupon 
+  } = useProductCoupon(productId);
+
   const [showPopup, setShowPopup] = useState(false);
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
 
-  const handleApply = () => {
-    onSelect(tempSelectedCoupon);
-    setShowPopup(false);
+  const handleApply = async () => {
+    if (!tempSelectedCoupon) return;
+
+    const isAlreadyOwned = tempSelectedCoupon.ownedCount > 0;
+
+    if (isAlreadyOwned) {
+      onSelect(tempSelectedCoupon);
+      setShowPopup(false);
+    } else {
+      const downloadSuccess = await handleDownloadCoupon(tempSelectedCoupon.campaignId);
+    
+      if (downloadSuccess) {
+        onSelect(tempSelectedCoupon);
+        setShowPopup(false);
+      }
+    }
   };
 
   return (
