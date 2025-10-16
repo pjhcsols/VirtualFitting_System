@@ -5,6 +5,5 @@ export type {
     DiscountQuote, 
     Product, 
     ProductDetail, 
-    ProductPage,
     ProductPrice 
 } from "./model/types";

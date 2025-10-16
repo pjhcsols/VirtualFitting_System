@@ -1,14 +1,13 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import styled from "styled-components";
 import { confirmFinalPayment } from "@/features/process-payment";
+import styled from "styled-components";
 
 export function PaymentSuccessPage() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [error, setError] = useState<string | null>(null);
   const [isConfirmed, setIsConfirmed] = useState(false);
-  
   const hasConfirmed = useRef(false);
 
   useEffect(() => {
@@ -18,12 +17,11 @@ export function PaymentSuccessPage() {
 
     const confirm = async () => {
       hasConfirmed.current = true;
-      
-      const paymentKey = searchParams.get("paymentKey");
-      const orderId = searchParams.get("orderId");
-      const amount = searchParams.get("amount");
-      
+
       const paymentType = sessionStorage.getItem('paymentMethod');
+      const amount = searchParams.get("amount");
+      const orderId = searchParams.get("orderId");
+      const paymentKey = searchParams.get("paymentKey");
 
       if (!paymentKey || !orderId || !amount || !paymentType) {
         setError("잘못된 결제 정보입니다. 주문 내역을 확인해주세요.");
@@ -33,10 +31,10 @@ export function PaymentSuccessPage() {
 
       try {
         await confirmFinalPayment({
-          paymentKey,
-          orderId,
-          amount: Number(amount),
           paymentType,
+          amount: Number(amount),
+          orderId,
+          paymentKey,
         });
 
         setIsConfirmed(true);
@@ -45,7 +43,7 @@ export function PaymentSuccessPage() {
         
         setTimeout(() => {
           navigate('/mypage/order');
-        }, 3000);
+        }, 5000);
 
       } catch (e: any) {
         const errorMessage = e.response?.data?.message || e.message || "알 수 없는 오류 발생";
