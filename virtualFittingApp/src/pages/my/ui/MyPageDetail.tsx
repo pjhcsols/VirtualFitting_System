@@ -1,16 +1,19 @@
 import { useState, useRef, useEffect} from "react";
-import styled from "styled-components";
-import { MYUSER_ICON, UP_ICON, DOWN_ICON} from "@/pages/my/constants"; 
+import styled from "styled-components"; 
+import icon_user from "@/shared/assets/icons/icon-user.svg";
+import icon_up from "@/shared/assets/icons/icon-up.svg";
+import icon_down from "@/shared/assets/icons/icon-down.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
-import { UserFormData } from "../types/user";
-import { submitUserInfo } from "../api/submit.action";
-import { handleImageFileChange } from "@/pages/my";
+import { UserFormData } from "@/entities/user/model/types";
+import { submitUserInfo } from "@/shared/api/submit.api";
+import { handleImageFileChange } from "@/shared/lib/image.util";
 import { sendVerificationEmail } from "@/shared/utils/email/sendVerificationEmail";
 import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
-import { EmailVerificationInput } from "./EmailVerificationInput";
 import { formatTime } from "@/shared/utils/time/time.util";
-import { fetchUserInfo } from "../api/get.action";
-import { fetchUserProfileImage, fetchUserImage} from "@/pages/my/api/image.action";
+import { fetchUserInfo } from "@/shared/api/get.api";
+import { EmailVerificationInput } from "@/features/user-profile/ui/email-verification-input";
+import { fetchUserImage, fetchUserProfileImage } from "@/shared/api/image.api";
+import { uploadUserProfileImage, uploadUserImage } from "@/shared/api/image.api";
 import { BREAKPOINTS } from "@/shared";
 import { formatDateAuto } from "@/shared/utils/date/dateAuto.util";
 
@@ -29,7 +32,7 @@ function MypageDetail() {
         name: "",
         password: "",
         emailAddress: "",
-        phoneNumber: "",
+        phoneNumber: "", 
         nickname: "",
         birthDate: "",
         address: {address: "", zonecode: "", detailAddress: ""},
@@ -54,6 +57,7 @@ function MypageDetail() {
       const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
       const [photoPreviewImage, setPhotoPreviewImage] = useState<string | null>(null);
       const [photoImageFile, setPhotoImageFile] = useState<File | null>(null);
+      const [saving, setSaving] = useState(false);
 
       useEffect(() => {
         const loadUserInfo = async () => {
@@ -88,11 +92,11 @@ function MypageDetail() {
             userImageUrl: userInfo.userImageUrl ?? "",
           });
 
-          // const profileUrl = await fetchUserProfileImage();
-          // const photoUrl = await fetchUserImage();
+          const profileUrl = await fetchUserProfileImage();
+          const photoUrl = await fetchUserImage();
 
-          // if (profileUrl) setProfilePreviewImage(profileUrl);
-          // if (photoUrl) setPhotoPreviewImage(photoUrl);
+          if (profileUrl) setProfilePreviewImage(profileUrl);
+          if (photoUrl) setPhotoPreviewImage(photoUrl);
         };
 
         loadUserInfo();
@@ -120,12 +124,28 @@ function MypageDetail() {
       }, [isTimerActive, timer]);
 
       const handleSubmit = async () => {
+        if (saving) return;
+          setSaving(true);
+        
         try {
           await submitUserInfo(formData);
+
+          if (profileImageFile) {
+            const uploadedProfileUrl = await uploadUserProfileImage(profileImageFile);
+            if (!uploadedProfileUrl) throw new Error("프로필 이미지 업로드 실패");
+          }
+
+          if (photoImageFile) {
+            const uploadedPhotoUrl = await uploadUserImage(photoImageFile);
+            if (!uploadedPhotoUrl) throw new Error("전신 이미지 업로드 실패");
+          }
+
           alert("회원정보 저장 완료!");
         } catch {
           alert("저장 실패");
           console.log(formData);
+        } finally {
+          setSaving(false);
         }
       };
 
@@ -186,8 +206,7 @@ function MypageDetail() {
             <GlassContainer>
                 <ContentWrapper>
                   <AvatarContainer>
-                    <AvatarIcon src={profilePreviewImage ?? MYUSER_ICON} alt="사용자 이미지" onClick={handleUpProfileButton}/>
-                    {/* <PenIcon src={PEN_ICON} alt="수정 아이콘" onClick={handleUpProfileButton} /> */}
+                    <AvatarIcon src={profilePreviewImage ?? icon_user} alt="사용자 이미지" onClick={handleUpProfileButton}/>
                     <HiddenInput
                       type="file"
                       accept="image/*"
@@ -332,7 +351,7 @@ function MypageDetail() {
                     <LabelWithIcon onClick={() => setShowSizeForm(prev => !prev)}>
                       신체사이즈
                       <ToggleIcon
-                        src={showSizeForm ? DOWN_ICON : UP_ICON}
+                        src={showSizeForm ? icon_down : icon_up}
                         alt="토글 아이콘"
                       />
                     </LabelWithIcon>
@@ -422,7 +441,9 @@ function MypageDetail() {
               </ContentWrapper>
 
               <FooterWrapper>
-                  <StoreButton onClick={handleSubmit}>저장하기</StoreButton>
+                  <StoreButton onClick={handleSubmit} disabled={saving}>
+                    {saving ? "저장 중..." : "저장하기"}
+                  </StoreButton>
               </FooterWrapper> 
             </GlassContainer>
           </PageWrapper>
@@ -502,17 +523,6 @@ const FooterWrapper = styled.div`
     width: 100px;
     height: 100px;
     border-radius: 50%;
-  `;
-
-  const PenIcon = styled.img`
-    position: absolute;
-    right: 5px;
-    bottom: 14px;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    padding: 5px;
-    cursor: pointer;
   `;
 
   const HiddenInput = styled.input`

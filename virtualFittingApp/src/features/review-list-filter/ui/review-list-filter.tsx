@@ -34,6 +34,7 @@ export const StickyTabWrapper = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-top: 50px;
 `;
 
 export const TabInner = styled.div`

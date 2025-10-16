@@ -40,3 +40,54 @@ export const fetchUserImage = async (): Promise<string | null> => {
     }
     return null;
 };
+
+export const uploadUserProfileImage = async (file: File): Promise<string | null> => {
+  const userId = Cookies.get("userId");
+  if (!userId) {
+    console.error("userId 쿠키 없음");
+    return null;
+  }
+
+  try {
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await API_BASILIUM.post("b1/users/me/profile-image", form, {
+      params: { userId }, 
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+
+    if (res.status === 200) {
+        return res.data; 
+    }
+  } catch (e) {
+    console.error("프로필 이미지 업로드 실패", e);
+  }
+  return null;
+};
+
+export const uploadUserImage = async (file: File): Promise<string | null> => {
+  const userId = Cookies.get("userId");
+  if (!userId) {
+    console.error("userId 쿠키 없음");
+    return null;
+  }
+
+  try {
+    const form = new FormData();
+    form.append("file", file);
+
+    const res = await API_BASILIUM.post("b1/users/me/image", form, {
+      params: { userId },
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+
+    if (res.status === 200 || res.status === 201) {
+        return res.data;
+    }
+  } catch (e) {
+    console.error("전신 이미지 업로드 실패", e);
+  }
+  return null;
+};
