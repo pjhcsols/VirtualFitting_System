@@ -50,7 +50,6 @@ function Footer() {
 
 const Wrapper = styled.footer`
   width: 100%;
-  padding: 70px 50px;
   color: #888;
   font-size: 13px;
   z-index: 50;
@@ -59,13 +58,14 @@ const Wrapper = styled.footer`
 const Content = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 8px;
 `;
 
 const Links = styled.div`
   display: flex;
   gap: 24px;
-  margin-bottom: 8px;
+  justify-content: center;
+  padding: 16px;
 `;
 
 const FooterLink = styled.a`
@@ -101,7 +101,8 @@ const Separator = styled.span`
 `;
 
 const Copyright = styled.p`
-  margin-top: 24px;
+  margin-top: 50px;
+  margin-bottom: 30px;
   font-size: 12px;
   color: #ccc;
 `;
