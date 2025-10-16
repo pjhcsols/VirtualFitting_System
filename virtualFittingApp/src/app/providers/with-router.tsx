@@ -17,6 +17,7 @@ import { MyReviewListPage } from "@/pages/my/review-list";
 import { WriteReviewPage } from "@/pages/my/write-review";
 import { CartPage } from "@/pages/cart";
 import { TermsPage } from "@/pages/terms";
+import { PrivacyPage } from "@/pages/privacy";
 
 import {
   MainPage,
@@ -102,6 +103,7 @@ const Routing = () => (
     </Route>
 
     <Route path="/terms" element={<TermsPage />} />
+    <Route path="/privacy" element={<PrivacyPage />} />
   </Routes>
 );
 
