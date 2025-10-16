@@ -15,7 +15,8 @@ interface OrderFormProps {
   finalPrice: number;
 }
 
-export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
+// export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
+export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) => {
   const { user, isLoading, handleSaveAddress } = useOrderForm();
 
   if (isLoading || !user) {
