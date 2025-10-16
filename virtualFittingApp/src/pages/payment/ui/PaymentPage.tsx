@@ -15,14 +15,16 @@ import { useOrderForm } from '@/widgets/order-form/hooks/use-order-form';
 export const PaymentPage = () => {
   const location = useLocation();
   const itemToCheckout = location.state?.item as CartItem;
-  const { user, isLoading: isUserLoading } = useOrderForm();
+  // const { user, isLoading: isUserLoading } = useOrderForm();
+  const { user } = useOrderForm();
 
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
   const [selectedCoupon, setSelectedCoupon] = useState<ClaimableCoupon | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState('CARD');
-  const { confirmAndPay, isLoading } = useConfirmCheckout();
+  // const [paymentMethod, setPaymentMethod] = useState('CARD');
+  const [paymentMethod] = useState('CARD');
+  const { confirmAndPay } = useConfirmCheckout();
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -58,7 +60,6 @@ export const PaymentPage = () => {
       customerEmail: user.emailAddress,
     });
   };
-  
 
   return (
     <PageContainer>
@@ -67,6 +68,9 @@ export const PaymentPage = () => {
         <MainContent>
           <OrderForm 
             item={itemToCheckout}
+            selectedCoupon={selectedCoupon}
+            onSelectCoupon={setSelectedCoupon}
+            finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
           />
         </MainContent>
         <SideContent>

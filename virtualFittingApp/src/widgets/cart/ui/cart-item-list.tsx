@@ -37,7 +37,8 @@ export function CartItemList() {
         <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
       ) : (
         <ItemsContainer>
-          {entries.map(([brand, items], brandIndex, brandArr) => (
+          {/* {entries.map(([brand, items], brandIndex, brandArr) => ( */}
+          {entries.map(([brand, items],) => (
             <BrandSection key={brand}>
               {items.map((item) => (
                 <ItemWrapper>

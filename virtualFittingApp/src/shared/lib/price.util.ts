@@ -1,4 +1,4 @@
-import type { CartItem } from "@/entities/cart";
+// import type { CartItem } from "@/entities/cart";
 import type { ClaimableCoupon } from "@/entities/coupon";
 
 export const calculateFinalPrice = (

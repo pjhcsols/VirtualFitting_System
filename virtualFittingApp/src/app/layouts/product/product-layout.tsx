@@ -1,43 +1,43 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/widgets/header";
-import { BREAKPOINTS } from "@/shared"
+import { Footer } from "@/widgets/footer";
+import { BREAKPOINTS } from "@/shared";
 import { Starfield } from "@/shared/components/star";
 
 function ProductLayout() {
   return (
     <Wrapper>
       <Starfield /> 
-      <Header theme="dark" /> 
+      <Header theme="dark" $sticky={true} /> 
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
+      <Footer />
     </Wrapper>
   );
 }
 
 const Wrapper = styled.main`
   position: relative;
-  box-sizing: border-box;
-  max-width: 100vw;
-  height: 100vh;
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+  width: 100%;
 `;
 
 const ContentWrapper = styled.article`
   box-sizing: border-box;
   padding: 70px 50px;
   width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  align-items: flex-start;
   flex: 1;
-  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
   @media (max-width: ${BREAKPOINTS.sm}px) {
     padding: 70px 16px;
   }
-
 `;
 
 export { ProductLayout };

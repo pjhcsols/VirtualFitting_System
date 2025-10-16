@@ -73,10 +73,10 @@ export interface PaymentIntentData {
 }
 
 export interface PaymentConfirmParams {
-  paymentKey: string;
-  orderId: string;
-  amount: number;
   paymentType: string;
+  amount: number;
+  orderId: string;
+  paymentKey: string;
 }
 
 export interface PaymentFailParams {

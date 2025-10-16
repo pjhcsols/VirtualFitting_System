@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { GlassButton } from '@/shared/components/glass-button';
 
 interface ConfirmCheckoutSingleButtonProps {
   totalAmount: number;

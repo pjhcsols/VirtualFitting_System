@@ -20,7 +20,8 @@ export interface CheckoutData {
   customerEmail: string;
 }
 
-const clientKey = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
+// const clientKey = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
+const clientKey = "test_ck_ORzdMaqN3wxZAZWjPQWgV5AkYXQG"
 
 export const useConfirmCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
