@@ -140,7 +140,7 @@ export const useReviewForm = () => {
         comment: reviewText.trim(),
       };
 
-      await postProductReview(order.id, body, photoFiles);
+      await postProductReview(Number(order.id), body, photoFiles);
       alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
       console.log(body);
       navigate("/mypage/review");
