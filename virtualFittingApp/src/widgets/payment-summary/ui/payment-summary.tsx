@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { GlassButton } from '@/shared/components/glass-button';
 import { GlassBox } from '@/shared/components/glass-box';
+import { CheckoutButton } from '@/features/process-payment';
 
 interface PaymentSummaryProps {
   totals: {
@@ -44,14 +44,10 @@ export const PaymentSummary = ({ totals, onConfirm }: PaymentSummaryProps) => {
           <Checkbox type="checkbox" id="agreement" defaultChecked />
           <AgreementLabel htmlFor="agreement">주문 내용을 확인했으며 결제에 동의합니다.</AgreementLabel>
         </AgreementBox>
-
-        <GlassButton
-          size="large"
-          width="100%"
+        <CheckoutButton
+          totalAmount={totals.totalAmount}
           onClick={onConfirm}
-        >
-          {totals.totalAmount.toLocaleString()}원 결제하기
-        </GlassButton>
+        />
       </Content>
     </StyledGlassBox>
   );
