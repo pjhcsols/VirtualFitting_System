@@ -11,6 +11,7 @@ import {
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+import type { ShippingAddressData } from "@/entities/shipping-address";
 
 export interface SingleOfflineCheckoutData {
   item: CartItem;
@@ -19,6 +20,7 @@ export interface SingleOfflineCheckoutData {
   finalPrice: number;
   customerName: string;
   customerEmail: string;
+  shippingAddress: ShippingAddressData;
 }
 
 export const useSingleOfflineConfirmCheckout = () => {
@@ -72,7 +74,25 @@ export const useSingleOfflineConfirmCheckout = () => {
 
       await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
 
-      navigate(`/mypage/order/confirmation`, { replace: true });
+      navigate(`/mypage/order/confirmation`, { 
+        replace: true,
+        state: { 
+          shippingAddress: checkoutData.shippingAddress,
+          orderId: intentData.orderId,
+          item: {
+            productName: checkoutData.item.name,
+            options: {
+              color: checkoutData.item.color,
+              size: checkoutData.item.size,
+              quantity: checkoutData.item.quantity,
+            },
+            price: checkoutData.finalPrice,
+          },
+          totalAmount: checkoutData.finalPrice,
+          senderName: checkoutData.customerName,
+          deadline: reservationData.expiresAt,
+        } 
+    });
 
     //   sessionStorage.setItem('paymentMethod', checkoutData.paymentMethod);
 
