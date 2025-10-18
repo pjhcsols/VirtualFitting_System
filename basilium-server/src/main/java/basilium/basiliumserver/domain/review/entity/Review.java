@@ -15,7 +15,13 @@ import java.util.List;
 
 // 테이블 분리 가능
 @Entity
-@Table(name = "review")
+@Table(
+        name = "review",
+        indexes = {
+                @Index(name = "idx_review_user", columnList = "normal_user_number"),
+                @Index(name = "idx_review_product", columnList = "product_id")
+        }
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 @Builder

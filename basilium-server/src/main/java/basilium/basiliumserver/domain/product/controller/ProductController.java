@@ -120,7 +120,8 @@ public class ProductController implements ProductApiDocs {
     // 상품 옵션 수정 (PATCH /b1/products/{productId}/options)
     @PreAuthorize("hasRole('BRAND') and #userId == authentication.principal")
     @PatchMapping("/{productId}/options")
-    public ResponseEntity<String> updateProductOption(@PathVariable Long productId,
+    public ResponseEntity<String> updateProductOption(@AuthUser String userId,
+                                                      @PathVariable Long productId,
                                                       @RequestBody ProductOptionDTO optionUpdateRequest) {
         productService.updateProductOption(productId, optionUpdateRequest);
         return ResponseEntity.ok("상품 옵션 수정 성공");

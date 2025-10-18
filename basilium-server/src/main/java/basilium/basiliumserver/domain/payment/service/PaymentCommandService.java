@@ -3,6 +3,7 @@ package basilium.basiliumserver.domain.payment.service;
 
 import basilium.basiliumserver.domain.coupon.entity.NormalCouponWalletStatus;
 import basilium.basiliumserver.domain.coupon.repository.NormalCouponWalletRepository;
+import basilium.basiliumserver.domain.order.service.OrderService;
 import basilium.basiliumserver.domain.payment.entity.Payment;
 import basilium.basiliumserver.domain.payment.entity.PaymentIntentLine;
 import basilium.basiliumserver.domain.payment.entity.PaymentStatus;
@@ -42,6 +43,7 @@ public class PaymentCommandService {
 
     private final NormalCouponWalletRepository couponWalletRepo;
     private final WalletService walletService; // 지갑 차감(승인 시)
+    private final OrderService orderService;
 
     /* ===== 유틸 ===== */
 
@@ -219,8 +221,9 @@ public class PaymentCommandService {
         var auth = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
         boolean isNormal = auth != null && auth.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_NORMAL"));
         if (isNormal) {
+            //String principal = auth.getName();
             String principal = String.valueOf(auth.getPrincipal());
-            if (!String.valueOf(payment.getNormalUser().getUserNumber()).equals(principal)) {
+            if (!String.valueOf(payment.getNormalUser().getId()).equals(principal)) {
                 throw new BasiliumCustomException(ErrorCode.ACCESS_DENIED, "본인 결제가 아닙니다.");
             }
         }
@@ -264,6 +267,7 @@ public class PaymentCommandService {
         // ④ Payment APPROVE
         payment.approve(paymentKey, paymentType, serverPgAmount, now);
         paymentRepo.save(payment);
+        orderService.createFromApprovedPayment(orderId);
     }
     /*
     @Transactional

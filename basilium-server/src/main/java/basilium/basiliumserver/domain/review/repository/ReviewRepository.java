@@ -15,6 +15,20 @@ import java.util.Set;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
 
+    //order
+    @Query(value = """
+        SELECT CASE WHEN EXISTS (
+               SELECT 1
+                 FROM review r
+                 JOIN payment_intent_line l ON l.product_id = r.product_id
+                 JOIN payment p ON p.id = l.payment_id
+                WHERE p.order_id = :orderId
+                  AND r.normal_user_number = :userNumber
+        ) THEN TRUE ELSE FALSE END
+    """, nativeQuery = true)
+    boolean existsAnyByUserAndOrderProducts(@Param("userNumber") Long userNumber,
+                                            @Param("orderId") String orderId);
+
     /** 기본 목록(상품별, 선택적 연령대) */
     @Query(
             value = """

@@ -1040,7 +1040,7 @@ VALUES
 -- 브랜드 전체 18%
 (1, 'BRAND', NULL, 18, 0, 40000,
  NOW() - INTERVAL 1 DAY, '2025-12-31 23:59:59',
- 2, 10000, 0, 'ACTIVE', NOW(), 0),
+ 10, 10000, 0, 'ACTIVE', NOW(), 0),
 -- 특정 상품(상품ID=1) 35%
 (1, 'PRODUCT', 1, 35, 50000, 70000,
  NOW() - INTERVAL 1 DAY, '2025-12-31 23:59:59',
@@ -1164,6 +1164,51 @@ INSERT INTO payment_intent_line (
          );
 
 COMMIT;
+
+
+
+/* 주문 #1: payment(주문ID=20250903-200500-UUID-TEST-1, user=1)와 호환
+   - 상품2 1개, 할인/쿠폰/포인트 없음 → 최종결제 53,000
+   - 상태: PAID (배송정보 없음)
+*/
+INSERT INTO orders (
+    order_id, user_number, status,
+    original_amount, brand_discount_amount, user_extra_discount_amount,
+    final_pay_amount, coupon_used_amount, wallet_used_amount,
+    recipient_name, recipient_phone, zip_code, addr1, addr2, shipping_memo,
+    courier_code, courier_name, tracking_no,
+    created_at,           paid_at,               delivered_at, confirmed_at,        updated_at
+) VALUES (
+             '20250903-200500-UUID-TEST-1', 1, 'PAID',
+             53000, 0, 0,
+             53000, 0, 0,
+             '홍길동', '010-1234-5678', '06236', '서울 강남구 테헤란로 123', '101동 1001호', '부재 시 문 앞',
+             NULL, NULL, NULL,
+             '2025-09-03 20:05:00', '2025-09-03 20:05:40', NULL,        NULL,                '2025-09-03 20:05:40'
+         );
+
+
+/* 주문 #2: payment(주문ID=20250903-200000-UUID-EXAMPLE-2, user=2)와 호환
+   - 상품1 1개, 원가 53,000 → 브랜드할인 반영된 라인기준 19,000 결제
+   - original=53,000, lineBase=19,000 ⇒ brand_discount_amount=34,000
+   - 쿠폰/포인트 없음 → 최종결제 19,000
+   - 상태: DELIVERED (송장 포함)
+*/
+INSERT INTO orders (
+    order_id, user_number, status,
+    original_amount, brand_discount_amount, user_extra_discount_amount,
+    final_pay_amount, coupon_used_amount, wallet_used_amount,
+    recipient_name, recipient_phone, zip_code, addr1, addr2, shipping_memo,
+    courier_code, courier_name, tracking_no,
+    created_at,           paid_at,               delivered_at,         confirmed_at, updated_at
+) VALUES (
+             '20250903-200000-UUID-EXAMPLE-2', 2, 'DELIVERED',
+             53000, 34000, 0,
+             19000, 0, 0,
+             '김철수', '010-2222-3333', '04524', '서울 중구 세종대로 110', '본관 1층', '문 앞에 놓아주세요',
+             'CJ', 'CJ대한통운', '1234-5678-9999',
+             '2025-09-03 20:00:00', '2025-09-03 20:01:00', '2025-09-05 15:00:00', NULL,       '2025-09-05 15:00:00'
+         );
 
 
 

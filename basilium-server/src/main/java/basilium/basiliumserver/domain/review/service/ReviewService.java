@@ -1,5 +1,10 @@
 package basilium.basiliumserver.domain.review.service;
 
+import basilium.basiliumserver.domain.order.entity.Order;
+import basilium.basiliumserver.domain.order.entity.OrderStatus;
+import basilium.basiliumserver.domain.order.repository.OrderRepository;
+import basilium.basiliumserver.domain.payment.entity.Payment;
+import basilium.basiliumserver.domain.payment.repository.PaymentRepository;
 import basilium.basiliumserver.domain.product.entity.Product;
 import basilium.basiliumserver.domain.product.repository.ProductRepository;
 import basilium.basiliumserver.domain.review.dto.ReviewDto;
@@ -44,6 +49,10 @@ public class ReviewService {
     private final ImageProperties imageProperties;
     private final FileStorageService fileStorageService;
     private final WalletService walletService;
+
+    // ✅ [추가] 검증용
+    private final PaymentRepository paymentRepository;
+    private final OrderRepository orderRepository;
 
     private static final int MAX_IMAGES = 5;
     private static final DateTimeFormatter TS_FMT = DateTimeFormatter.ofPattern("yyyyMMddHHmmss");
@@ -182,8 +191,38 @@ public class ReviewService {
 
         if (files.size() > MAX_IMAGES) throw new BasiliumCustomException(ErrorCode.INVALID_INPUT_VALUE, "이미지는 최대 5장까지");
 
-        // [추가] 리뷰 적립(10%) — 결제 라인 필수일 때만 시도 (멱등키: REVIEW:{paymentId})
+
         Long paymentId = req.getPaymentId();
+        if (paymentId == null) {
+            throw new BasiliumCustomException(ErrorCode.INVALID_INPUT_VALUE, "paymentId가 필요합니다(주문 매핑)");
+        }
+
+        Payment pay = paymentRepository.findById(paymentId)
+                .orElseThrow(() -> new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "결제를 찾을 수 없습니다: " + paymentId));
+
+        // 본인 결제인지 (NormalUser.id/number 체계에 맞게 비교)
+        if (!Objects.equals(pay.getNormalUser().getId(), userId)) {
+            throw new BasiliumCustomException(ErrorCode.ACCESS_DENIED, "본인 결제가 아닙니다.");
+        }
+
+        String orderId = pay.getOrderId();
+        Order order = orderRepository.findByOrderId(orderId)
+                .orElseThrow(() -> new BasiliumCustomException(ErrorCode.RESOURCE_NOT_FOUND, "주문을 찾을 수 없습니다: " + orderId));
+
+        if (order.getStatus() != OrderStatus.DELIVERED) {
+            throw new BasiliumCustomException(ErrorCode.CONFLICT, "배송완료 상태에서만 리뷰 작성 가능합니다.");
+        }
+        if (order.getDeliveredAt() == null || order.getDeliveredAt().isBefore(LocalDateTime.now().minusDays(14))) {
+            throw new BasiliumCustomException(ErrorCode.CONFLICT, "배송완료 후 14일 이내에만 리뷰 작성 가능합니다.");
+        }
+
+        // 주문당 1회 제한: 주문에 포함된 상품 중 이미 내가 쓴 리뷰가 하나라도 있으면 차단
+        boolean already = reviewRepository.existsAnyByUserAndOrderProducts(user.getUserNumber(), orderId);
+        if (already) {
+            throw new BasiliumCustomException(ErrorCode.CONFLICT, "해당 주문에 대한 리뷰는 이미 작성되었습니다(주문당 1회).");
+        }
+
+        // [추가] 리뷰 적립(10%) — 결제 라인 필수일 때만 시도 (멱등키: REVIEW:{paymentId})
         if (paymentId != null) {
             // 내부에서 본인 결제/APPROVED 검증 & 멱등 처리됨 (실패 시 예외)
             walletService.creditByReview(userId, paymentId);

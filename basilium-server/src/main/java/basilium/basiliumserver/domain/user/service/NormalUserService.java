@@ -66,7 +66,8 @@ public class NormalUserService {
         if (normalUserRepository.existsByPhoneNumber(phone))
             throw new BasiliumCustomException(ErrorCode.DUPLICATE_RESOURCE, "이미 사용 중인 전화번호입니다.");
 
-        final String hashed = passwordEncoder.encode(dto.getPassword());
+        // 앞뒤 공백 제거 .strip()
+        final String hashed = passwordEncoder.encode(dto.getPassword().trim());
 
         NormalUser user = new NormalUser(
                 id, hashed, email, phone,
