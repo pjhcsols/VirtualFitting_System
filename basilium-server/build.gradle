@@ -38,6 +38,9 @@ dependencies {
 	compileOnly 'org.projectlombok:lombok:1.18.38'
 	annotationProcessor 'org.projectlombok:lombok:1.18.38'
 
+	// @Nullable javax.annotation.meta.When
+	compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+
 	// JWT (0.12.x 최신)
 	implementation 'io.jsonwebtoken:jjwt-api:0.12.4'
 	runtimeOnly   'io.jsonwebtoken:jjwt-impl:0.12.4'

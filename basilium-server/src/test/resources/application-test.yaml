@@ -1,15 +1,33 @@
 spring:
+
   datasource:
     url: jdbc:h2:mem:testdb;MODE=MySQL;DATABASE_TO_LOWER=TRUE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
     username: sa
     password:
     driver-class-name: org.h2.Driver
+
   jpa:
     hibernate:
       ddl-auto: create-drop   # 테스트는 매번 깨끗하게
+    properties:
+      hibernate:
+        hbm2ddl:
+          import_files: ""    # import.sql 등 자동 import 비활성화
+
   sql:
     init:
       mode: never            # (중요) schema.sql/data.sql 자동실행 금지
+      #mode: always
+      #platform: h2
+
+  main:
+    lazy-initialization: true          # 테스트 시 불필요 Bean 지연 생성
+
+  batch:
+    job:
+      enabled: false                   # 배치 잡 자동 실행 금지
+    jdbc:
+      initialize-schema: never         # Batch 메타테이블 자동 생성 금지
 
 # gavlyukovskiy p6spy-starter 사용 시 파일 로깅 대신 slf4j로
 decorator:
@@ -21,6 +39,7 @@ decorator:
 logging:
   level:
     com.p6spy: INFO
+    org.springframework.jdbc.datasource.init.ScriptUtils: DEBUG
 
 
 
@@ -31,7 +50,8 @@ cloud:
     s3BucketUrl: deep
     credentialsAccessKey: deep
     credentialsSecretKey: deep
-    region-static: ap-northeast-2
+    region:
+      static: ap-northeast-2
     stack:
       auto: false
 
