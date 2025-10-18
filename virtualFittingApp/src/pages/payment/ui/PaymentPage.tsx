@@ -4,6 +4,7 @@ import { useMemo, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
+import { ShippingAddressWidget } from '@/widgets/shipping-address';
 import { PaymentSummary } from '@/widgets/payment-summary';
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
@@ -14,13 +15,13 @@ import {
   // useSingleTossConfirmCheckout,
   PaymentSelectionModal,
 } from '@/features/process-checkout';
-import { useOrderForm } from '@/widgets/order-form/hooks/use-order-form';
+import { useOrderForm } from '@/entities/user';
 
 export const PaymentPage = () => {
   const location = useLocation();
   const itemToCheckout = location.state?.item as CartItem;
   // const { user, isLoading: isUserLoading } = useOrderForm();
-  const { user } = useOrderForm();
+  const { user, isLoading: isUserLoading, handleSaveAddress } = useOrderForm();
 
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
@@ -57,6 +58,12 @@ export const PaymentPage = () => {
     setIsModalOpen(false);
     if (!itemToCheckout || !user) return; 
 
+    const shippingAddress = {
+      name: user.name,
+      address: user.deliveryInfo.defaultDeliveryAddress,
+      phone: user.phoneNumber,
+    };
+
     confirmAndProceed({
       item: itemToCheckout,
       coupon: selectedCoupon,
@@ -64,6 +71,7 @@ export const PaymentPage = () => {
       finalPrice: paymentTotals.totalAmount,
       customerName: user.name,
       customerEmail: user.emailAddress,
+      shippingAddress: shippingAddress,
     });
   };
 
@@ -72,12 +80,20 @@ export const PaymentPage = () => {
       <PageTitle>주문서</PageTitle>
       <Layout>
         <MainContent>
-          <OrderForm 
-            item={itemToCheckout} 
-            selectedCoupon={selectedCoupon}
-            onSelectCoupon={setSelectedCoupon}
-            finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
-          />
+          <FormContainer>
+            {!isUserLoading && user && (
+                <ShippingAddressWidget 
+                  user={user}
+                  onSaveAddress={handleSaveAddress}
+                />
+              )}
+            <OrderForm 
+              item={itemToCheckout} 
+              selectedCoupon={selectedCoupon}
+              onSelectCoupon={setSelectedCoupon}
+              finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
+            />
+          </FormContainer>
         </MainContent>
         <SideContent>
           <PaymentSummary 
@@ -124,7 +140,6 @@ const Layout = styled.div`
 
 const MainContent = styled.main`
   flex: 2;
-  min-width: 0;
   width: 100%;
 `;
 
@@ -133,4 +148,11 @@ const SideContent = styled.aside`
   width: 100%;
   position: sticky;
   top: 80px;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
 `;

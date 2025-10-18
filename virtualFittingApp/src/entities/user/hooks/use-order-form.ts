@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { fetchMyUserDetails } from '@/entities/user';
-import type { UserDetail } from '@/entities/user';
+import { fetchMyUserDetails } from '../api/user.api';
+import type { UserDetail } from '../model/types';
 
 export const useOrderForm = () => {
   const [user, setUser] = useState<UserDetail | null>(null);
@@ -25,7 +25,7 @@ export const useOrderForm = () => {
   }, []);
 
   const handleSaveAddress = () => {
-    // [seah] 배송지 정보 저장 기능 만두러야함(아직 api 없다능)
+    // [seah] 배송지 정보 저장 기능 만두러야함
   };
 
   return { user, isLoading, handleSaveAddress };
