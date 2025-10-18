@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { confirmFinalPayment, reportPaymentResult } from "@/features/process-payment";
+import { confirmFinalPayment, reportPaymentResult } from "@/features/process-checkout";
 import styled from "styled-components";
 
 export function PaymentSuccessPage() {
@@ -43,7 +43,7 @@ export function PaymentSuccessPage() {
         sessionStorage.removeItem('paymentMethod');
         setTimeout(() => {
           navigate('/mypage/order');
-        }, 3000);
+        }, 7000);
 
       } catch (e: any) {
         if (orderId) {

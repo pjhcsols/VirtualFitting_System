@@ -9,7 +9,11 @@ import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { calculateFinalPrice } from '@/shared/lib/price.util';
 import { BREAKPOINTS } from '@/shared';
-import { useConfirmCheckout } from '@/features/process-payment';
+import { 
+  useSingleOfflineConfirmCheckout, 
+  // useSingleTossConfirmCheckout,
+  PaymentSelectionModal,
+} from '@/features/process-checkout';
 import { useOrderForm } from '@/widgets/order-form/hooks/use-order-form';
 
 export const PaymentPage = () => {
@@ -23,8 +27,10 @@ export const PaymentPage = () => {
 
   const [selectedCoupon, setSelectedCoupon] = useState<ClaimableCoupon | null>(null);
   // const [paymentMethod, setPaymentMethod] = useState('CARD');
-  const [paymentMethod] = useState('CARD');
-  const { confirmAndPay } = useConfirmCheckout();
+  const [paymentMethod] = useState('BANK_TRANSFER');
+  // const { confirmAndPay } = useSingleTossConfirmCheckout();
+  const { confirmAndProceed } = useSingleOfflineConfirmCheckout();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -37,7 +43,6 @@ export const PaymentPage = () => {
     if (!itemToCheckout) {
       return { productAmount: 0, finalDiscount: 0, shippingFee: 0, totalAmount: 0 };
     }
-
     const basePrice = itemToCheckout.discountedPrice ?? itemToCheckout.price;
     const productAmount = itemToCheckout.price * itemToCheckout.quantity;
     const finalPrice = calculateFinalPrice(basePrice, itemToCheckout.quantity, selectedCoupon);
@@ -49,9 +54,10 @@ export const PaymentPage = () => {
   }, [itemToCheckout, selectedCoupon]);
 
   const handlePayment = () => {
+    setIsModalOpen(false);
     if (!itemToCheckout || !user) return; 
 
-    confirmAndPay({
+    confirmAndProceed({
       item: itemToCheckout,
       coupon: selectedCoupon,
       paymentMethod: paymentMethod as any,
@@ -67,7 +73,7 @@ export const PaymentPage = () => {
       <Layout>
         <MainContent>
           <OrderForm 
-            item={itemToCheckout}
+            item={itemToCheckout} 
             selectedCoupon={selectedCoupon}
             onSelectCoupon={setSelectedCoupon}
             finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
@@ -76,10 +82,18 @@ export const PaymentPage = () => {
         <SideContent>
           <PaymentSummary 
             totals={paymentTotals} 
-            onConfirm={handlePayment}
+            // onConfirm={handlePayment}
+            onConfirm={() => setIsModalOpen(true)}
           />
         </SideContent>
       </Layout>
+      <PaymentSelectionModal 
+        item={itemToCheckout}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handlePayment}
+        totalAmount={paymentTotals.totalAmount}
+      />
     </PageContainer>
   );
 };

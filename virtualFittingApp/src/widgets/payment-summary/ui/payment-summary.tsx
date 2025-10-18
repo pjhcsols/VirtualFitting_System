@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { GlassBox } from '@/shared/components/glass-box';
-import { CheckoutButton } from '@/features/process-payment';
+import { CheckoutButton } from '@/features/process-checkout';
 
 interface PaymentSummaryProps {
   totals: {
