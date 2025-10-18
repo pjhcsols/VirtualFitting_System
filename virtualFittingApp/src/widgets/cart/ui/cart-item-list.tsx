@@ -70,7 +70,7 @@ const Header = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.2rem;
+  font-size: 17px;
   font-weight: 600;
   color: #fff;
   margin: 0;
