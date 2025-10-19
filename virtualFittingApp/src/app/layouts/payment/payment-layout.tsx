@@ -1,6 +1,7 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/widgets/header";
+import { Footer } from "@/widgets/footer";
 import { BREAKPOINTS } from "@/shared"
 import { Starfield } from "@/shared/components/star";
 
@@ -12,6 +13,7 @@ function PaymentLayout() {
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
+      <Footer />
     </Wrapper>
   );
 }
@@ -29,7 +31,7 @@ const Wrapper = styled.main`
 
 const ContentWrapper = styled.article`
   box-sizing: border-box;
-  padding: 70px 50px;
+  padding: 50px;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -41,7 +43,5 @@ const ContentWrapper = styled.article`
   }
 
 `;
-
-
 
 export { PaymentLayout };

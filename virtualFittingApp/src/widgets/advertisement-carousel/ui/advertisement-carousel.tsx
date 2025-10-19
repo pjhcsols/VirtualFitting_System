@@ -58,7 +58,6 @@ function AdvertisementCarousel() {
   return (
     <Wrapper>
       <Image src={imageUrl} alt={`Banner ${currentIndex + 1}`} />
-      
       <Pagination>
         {banners.map((_, index) => (
           <Dot
@@ -78,6 +77,7 @@ const Wrapper = styled.div`
   width: 100%;
   height: auto;
   overflow: hidden;
+  margin-top: 24px;
 `;
 
 const Image = styled.img`

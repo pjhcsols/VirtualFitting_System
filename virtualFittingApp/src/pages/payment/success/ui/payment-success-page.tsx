@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { confirmFinalPayment } from "@/features/process-payment";
+import { confirmFinalPayment, reportPaymentResult } from "@/features/process-checkout";
 import styled from "styled-components";
 
 export function PaymentSuccessPage() {
@@ -37,15 +37,18 @@ export function PaymentSuccessPage() {
           paymentKey,
         });
 
+        await reportPaymentResult({ reserveTaskOrderPayId: orderId, success: true });
+
         setIsConfirmed(true);
-        
         sessionStorage.removeItem('paymentMethod');
-        
         setTimeout(() => {
           navigate('/mypage/order');
-        }, 5000);
+        }, 7000);
 
       } catch (e: any) {
+        if (orderId) {
+          reportPaymentResult({ reserveTaskOrderPayId: orderId, success: false });
+        }
         const errorMessage = e.response?.data?.message || e.message || "알 수 없는 오류 발생";
         setError(errorMessage);
         navigate(`/payment/fail?code=${e.response?.data?.code || 'UNKNOWN'}&message=${encodeURIComponent(errorMessage)}&orderId=${orderId}`);

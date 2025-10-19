@@ -1,11 +1,8 @@
 import styled from 'styled-components';
 import { GlassBox } from '@/shared/components/glass-box';
-import { ShippingAddressCard } from '@/entities/shipping-address';
-import { ChangeShippingAddressButton } from '@/features/change-shipping-address';
 import { OrderItemCard } from '@/entities/order-item';
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
-import { useOrderForm } from '../hooks/use-order-form';
 import { ProductCoupon } from '@/features/product-coupon';
 
 interface OrderFormProps {
@@ -15,38 +12,9 @@ interface OrderFormProps {
   finalPrice: number;
 }
 
-// export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
 export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) => {
-  const { user, isLoading, handleSaveAddress } = useOrderForm();
-
-  if (isLoading || !user) {
-    return (
-      <FormContainer>
-        <GlassBox>
-          <Header>
-            <SectionTitle>주문 상품</SectionTitle>
-          </Header>
-          <OrderItemCard item={item} />
-        </GlassBox>
-      </FormContainer>
-    );
-  }
-
-  const shippingAddress = {
-    name: user.name,
-    address: user.deliveryInfo.defaultDeliveryAddress,
-    phone: user.phoneNumber,
-  };
-
   return (
     <FormContainer>
-      <GlassBox>
-        <Header>
-          <SectionTitle>배송지</SectionTitle>
-          <ChangeShippingAddressButton onClick={handleSaveAddress}/>
-        </Header>
-        <ShippingAddressCard {...shippingAddress} />
-      </GlassBox>
       <GlassBox>
         <Header>
           <SectionTitle>주문 상품</SectionTitle>
@@ -56,7 +24,7 @@ export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) 
             onSelect={onSelectCoupon}
           />
         </Header>
-        <OrderItemCard item={item} />
+        <OrderItemCard item={item} finalPrice={finalPrice}/>
       </GlassBox>
     </FormContainer>
   );
@@ -78,7 +46,7 @@ const Header = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.2rem;
+  font-size: 17px;
   font-weight: 600;
   color: #fff;
   margin: 0;
