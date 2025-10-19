@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { useCookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
@@ -10,8 +10,9 @@ import {
   downloadCoupon 
 } from '../api/coupon.api';
 
+const cookiesInstance = new Cookies()
+
 export const useProductCoupon = (productId: number) => {
-  const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
 
@@ -27,7 +28,7 @@ export const useProductCoupon = (productId: number) => {
         return;
       }
       if (isLoggedIn) {
-        const accessToken = cookies['access-token'];
+        const accessToken = cookiesInstance.get('access-token');
         if (accessToken) {
           const myCoupons = await fetchMyClaimableCoupons(productId, accessToken);
           const myCouponsMap = new Map(myCoupons?.map(c => [c.campaignId, c]));
@@ -48,7 +49,7 @@ export const useProductCoupon = (productId: number) => {
     } finally {
       setIsLoading(false);
     }
-  }, [productId, isLoggedIn, cookies]);
+  }, [productId, isLoggedIn]);
 
   useEffect(() => {
     if (productId) {
@@ -57,7 +58,7 @@ export const useProductCoupon = (productId: number) => {
   }, [productId, refreshCoupons]);
 
   const handleDownloadCoupon = async (campaignId: number): Promise<boolean> => {
-    const authUserId = cookies['access-token'];
+    const authUserId = cookiesInstance.get('access-token');
     if (!authUserId) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
