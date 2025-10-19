@@ -32,18 +32,11 @@ export const PaymentSummary = ({ totals, onConfirm }: PaymentSummaryProps) => {
             <Value>{totals.shippingFee > 0 ? `${totals.shippingFee.toLocaleString()}원` : '무료배송'}</Value>
           </AmountRow>
         </AmountList>
-
         <Divider />
-        
         <TotalAmountRow>
           <TotalLabel>총 결제 금액</TotalLabel>
           <TotalValue>{totals.totalAmount.toLocaleString()}원</TotalValue>
         </TotalAmountRow>
-        
-        <AgreementBox>
-          <Checkbox type="checkbox" id="agreement" defaultChecked />
-          <AgreementLabel htmlFor="agreement">주문 내용을 확인했으며 결제에 동의합니다.</AgreementLabel>
-        </AgreementBox>
         <CheckoutButton
           totalAmount={totals.totalAmount}
           onClick={onConfirm}
@@ -116,6 +109,7 @@ const TotalAmountRow = styled.div`
   justify-content: space-between;
   align-items: baseline;
   font-weight: 600;
+  margin-bottom: 24px;
 `;
 
 const TotalLabel = styled.span`
@@ -125,23 +119,3 @@ const TotalLabel = styled.span`
 const TotalValue = styled.span`
   font-size: 18px;
 `;
-
-const AgreementBox = styled.div`
-  margin-top: 24px;
-  margin-bottom: 24px;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
-const Checkbox = styled.input`
-  cursor: pointer;
-  vertical-align: middle;
-  margin: 0;
-`;
-const AgreementLabel = styled.label`
-  color: #bbbbbb;
-  cursor: pointer;
-`;
-
