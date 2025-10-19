@@ -31,7 +31,7 @@ const Wrapper = styled.main`
 
 const ContentWrapper = styled.article`
   box-sizing: border-box;
-  padding: 70px 50px;
+  padding: 50px;
   width: 100%;
   display: flex;
   justify-content: flex-start;
@@ -43,7 +43,5 @@ const ContentWrapper = styled.article`
   }
 
 `;
-
-
 
 export { PaymentLayout };
