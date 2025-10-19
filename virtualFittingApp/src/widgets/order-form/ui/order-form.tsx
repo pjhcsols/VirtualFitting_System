@@ -24,7 +24,7 @@ export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) 
             onSelect={onSelectCoupon}
           />
         </Header>
-        <OrderItemCard item={item} />
+        <OrderItemCard item={item} finalPrice={finalPrice}/>
       </GlassBox>
     </FormContainer>
   );
