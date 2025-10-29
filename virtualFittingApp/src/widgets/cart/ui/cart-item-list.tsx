@@ -18,7 +18,7 @@ function groupByBrand(items: CartItem[]) {
 export function CartItemList() {
   const [cartItems, setCartItems] = useRecoilState(cartState);
 
-  const handleRemoveItem = (itemIdToRemove: string) => {
+  const handleRemoveItem = (itemIdToRemove: number) => {
     setCartItems((prevItems) => 
       prevItems.filter(item => item.id !== itemIdToRemove)
     );
@@ -37,11 +37,10 @@ export function CartItemList() {
         <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
       ) : (
         <ItemsContainer>
-          {/* {entries.map(([brand, items], brandIndex, brandArr) => ( */}
           {entries.map(([brand, items],) => (
             <BrandSection key={brand}>
               {items.map((item) => (
-                <ItemWrapper>
+                <ItemWrapper key={item.id}>
                   <OrderItemCard item={item} />
                   <RemoveButton onClick={() => handleRemoveItem(item.id)}>×</RemoveButton>
                 </ItemWrapper>
@@ -53,7 +52,6 @@ export function CartItemList() {
     </StyledGlassBox>
   );
 }
-
 
 const StyledGlassBox = styled(GlassBox)`
   width: 100%;
@@ -70,7 +68,7 @@ const Header = styled.div`
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 1.2rem;
+  font-size: 17px;
   font-weight: 600;
   color: #fff;
   margin: 0;

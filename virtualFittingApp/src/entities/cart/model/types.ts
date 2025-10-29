@@ -1,5 +1,5 @@
 export type CartItem = {
-  id: string;
+  id: number;
   productId: number;
   name: string;
   brand: string;
@@ -11,3 +11,38 @@ export type CartItem = {
   size: string;
   quantity: number;
 };
+
+export interface ApiCartItem {
+  itemId: number;
+  productId: number;
+  size: string;
+  color: string;
+  quantity: number;
+  brandUserNumber: number;
+  brandFirmName: string;
+}
+
+export interface CartTotals {
+  originalAmount: number;
+  brandDiscountAmount: number;
+  bestCouponDiscountAmount: number;
+  finalPayableAmount: number;
+}
+
+export interface Cart {
+  cartId: number;
+  normalUserId: string;
+  totalLines: number;
+  items: ApiCartItem[];
+  totals: CartTotals;
+  created: boolean;
+}
+
+export interface AddCartItemRequest {
+  productId: number;
+  size: string;
+  color: string;
+  quantity: number;
+  brandUserNumber: number
+  brandFirmName: string;
+}
