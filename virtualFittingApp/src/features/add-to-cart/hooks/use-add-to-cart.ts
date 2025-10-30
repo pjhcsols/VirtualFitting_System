@@ -1,24 +1,29 @@
-import { useSetRecoilState } from 'recoil';
-import { cartState, type CartItem } from '@/entities/cart';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { 
+  addCartItem, 
+  type Cart, 
+  type AddCartItemRequest 
+} from '@/entities/cart';
+
+interface AddToCartVariables {
+  authUserId: string;
+  itemData: AddCartItemRequest;
+}
 
 export const useAddToCart = () => {
-  const setCartItems = useSetRecoilState(cartState);
-
-  const addToCart = (newItem: Omit<CartItem, 'quantity'> & { quantity: number }) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(item => item.id === newItem.id);
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + newItem.quantity }
-            : item
+  const queryClient = useQueryClient();
+  return useMutation<Cart | null, Error, AddToCartVariables>({
+    mutationFn: ({ authUserId, itemData }) => addCartItem(authUserId, itemData),
+    onSuccess: (updatedCart) => {
+      if (updatedCart) {
+        queryClient.setQueryData(
+          ['myCart', updatedCart.normalUserId],
+          updatedCart
         );
-      } else {
-        return [...prevItems, newItem];
       }
-    });
-  };
-
-  return { addToCart };
+    },
+    onError: (error) => {
+      console.error("장바구니 아이템 추가에 실패했습니다.", error);
+    },
+  });
 };
-

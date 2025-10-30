@@ -1,6 +1,29 @@
 import { API_BASILIUM } from "@/shared";
-import type { PaymentConfirmParams, PaymentFailParams, PaymentIntentRequest, PaymentIntentData } from "@/entities/payment";
+import type { 
+  PaymentConfirmParams, 
+  PaymentFailParams, 
+  PaymentIntentRequest, 
+  PaymentIntentData, 
+  ReportPaymentResultParams, 
+} from "@/entities/payment";
 import { ApiResponse } from "@/shared/types/api";
+
+import type { PaymentRequestParams, PaymentResponse } from "@/entities/payment";
+
+export const createPaymentReservation = async (
+  params: PaymentRequestParams,
+): Promise<PaymentResponse | null> => {
+  try {
+    const response = await API_BASILIUM.post("/b1/payment/request", null, {
+      params,
+    });
+    console.log("[결제 예약] API 응답 성공:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Payment reservation failed:", error);
+    return null;
+  }
+};
 
 export const createPaymentIntent = async (
   paymentIntent: PaymentIntentRequest
@@ -39,5 +62,17 @@ export const reportPaymentFailure = async (params: PaymentFailParams): Promise<a
   } catch (error) {
     console.error("Payment failure reporting failed:", error);
     throw error;
+  }
+};
+
+export const reportPaymentResult = async (params: ReportPaymentResultParams): Promise<any> => {
+  try {
+    const response = await API_BASILIUM.post("/b1/payment/response-by-reserve", null, {
+      params,
+    });
+    console.log(`[재고 예약 정리: ${params.success ? '성공' : '실패'}] API 응답 성공:`, response.data);
+    return response.data;
+  } catch (error) {
+    console.error(`[재고 예약 정리] API 요청 실패:`, error);
   }
 };

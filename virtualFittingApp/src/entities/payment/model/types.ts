@@ -84,3 +84,8 @@ export interface PaymentFailParams {
   message: string;
   orderId: string;
 }
+
+export interface ReportPaymentResultParams {
+  reserveTaskOrderPayId: string;
+  success: boolean;
+}

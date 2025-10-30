@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
-import { confirmFinalPayment } from "@/features/process-payment";
+import { confirmFinalPayment } from "@/features/process-checkout";
 import styled from "styled-components";
 
 export function PaymentSuccessPage() {

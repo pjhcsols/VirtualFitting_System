@@ -3,34 +3,33 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
-import { createPaymentReservation } from '@/features/initiate-checkout-single';
-import { createPaymentIntent } from '../api/payment.api';
+import { 
+    createPaymentReservation,
+    createPaymentIntent,
+    reportPaymentResult,
+ } from '../api/payment.api';
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
-import type { TossPaymentMethod, TossPaymentsInstance } from '@/shared/types/payment';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+import type { ShippingAddressData } from "@/entities/shipping-address";
 
-export interface CheckoutData {
+export interface SingleOfflineCheckoutData {
   item: CartItem;
   coupon: ClaimableCoupon | CouponInWallet | null;
-  paymentMethod: TossPaymentMethod;
+  paymentMethod: "BANK_TRANSFER"
   finalPrice: number;
   customerName: string;
   customerEmail: string;
+  shippingAddress: ShippingAddressData;
 }
 
-// const clientKey = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
-const clientKey = "test_ck_ORzdMaqN3wxZAZWjPQWgV5AkYXQG"
-
-export const useConfirmCheckout = () => {
+export const useSingleOfflineConfirmCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
   
-
-  const confirmAndPay = async (checkoutData: CheckoutData) => {
+  const confirmAndProceed = async (checkoutData: SingleOfflineCheckoutData) => {
     setIsLoading(true);
     try {
       if (!isLoggedIn) {
@@ -38,7 +37,6 @@ export const useConfirmCheckout = () => {
         navigate('/login');
         return;
       }
-
       const accessToken = cookies['access-token'];
       
       const reservationResponse = await createPaymentReservation({
@@ -66,7 +64,7 @@ export const useConfirmCheckout = () => {
           couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
         }],
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
-        pointsToUse: 0, //[세아] 나중에 수정해야댐
+        pointsToUse: 0, //[세아] 수정해야돼.... 
       });
 
       const intentData = intentResponse?.data;
@@ -74,32 +72,39 @@ export const useConfirmCheckout = () => {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
       }
 
-      sessionStorage.setItem('paymentMethod', checkoutData.paymentMethod);
-      const tossPayments: TossPaymentsInstance = await loadTossPayments(clientKey);
-      const payment = tossPayments.payment({ customerKey: reservedOrderId });
+      await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
 
-      await payment.requestPayment({
-        method: checkoutData.paymentMethod,
-        amount: {
-          value: intentData.pgAmount,
-          currency: 'KRW'
-        },
-        orderId: intentData.orderId,
-        orderName: checkoutData.item.name,
-        successUrl: `${window.location.origin}/payment/success`,
-        failUrl: `${window.location.origin}/payment/fail`,
-        customerEmail: checkoutData.customerEmail,
-        customerName: checkoutData.customerName,
-      });
+      navigate(`/mypage/order/confirmation`, { 
+        replace: true,
+        state: { 
+          shippingAddress: checkoutData.shippingAddress,
+          orderId: intentData.orderId,
+          item: {
+            productName: checkoutData.item.name,
+            options: {
+              color: checkoutData.item.color,
+              size: checkoutData.item.size,
+              quantity: checkoutData.item.quantity,
+            },
+            price: checkoutData.finalPrice,
+          },
+          totalAmount: checkoutData.finalPrice,
+          senderName: checkoutData.customerName,
+          deadline: reservationData.expiresAt,
+        } 
+    });
+
+    //   sessionStorage.setItem('paymentMethod', checkoutData.paymentMethod);
 
     } catch (error: any) {
       console.error("Payment confirmation failed:", error);
       alert(`결제 처리 중 오류가 발생했습니다: ${error.message}`);
+
     } finally {
       setIsLoading(false);
     }
   };
 
-  return { confirmAndPay, isLoading };
+  return { confirmAndProceed, isLoading };
 };
 
