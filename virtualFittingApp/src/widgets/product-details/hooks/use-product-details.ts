@@ -1,22 +1,22 @@
 import { useState, useEffect, useMemo } from "react";
-import { useCookies } from 'react-cookie';
+import { Cookies } from 'react-cookie';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth'; 
 import { useNavigate } from "react-router-dom";
 
-import { 
-  SIZE_ORDER
-} from "@/shared";
+import { SIZE_ORDER } from "@/shared";
 import { fetchDiscountQuote } from "@/entities/discount";
 import type { ProductDetail } from "@/entities/product/model/types";
 import type { ProductColorPayment, ProductSizePayment } from "@/entities/payment/model/types";
-
+import type { AddCartItemRequest } from '@/entities/cart';
 
 import { useAddToCart } from '@/features/add-to-cart';
 import { useInitiateCheckout } from "@/features/initiate-checkout-single";
 
+const cookiesInstance = new Cookies();
+
 export const useProductDetails = (product: ProductDetail, onColorChange?: (color: string) => void) => {
-  const [cookies] = useCookies(['access-token']);
+  // const [cookies] = useCookies(['access-token']);
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
@@ -40,13 +40,13 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   }, [product]);
 
   useEffect(() => {
-    const accessToken = cookies['access-token'];
+    const accessToken = cookiesInstance.get('access-token');
     fetchDiscountQuote({ productId: product.productId, userId: accessToken })
       .then(quote => {
         if (quote?.data) setPrice({ original: quote.data.baseUnitPrice, discounted: quote.data.finalUnitPrice });
       })
       .catch(err => console.error("Failed to fetch discount quote", err));
-  }, [product.productId, cookies]);
+  }, [product.productId]);
 
   const sizesSorted = useMemo(() => product.productOptions
     .filter(po => po.productColor === selectedColor)
@@ -73,22 +73,26 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     onColorChange?.(color);
   };
 
-  const { addToCart } = useAddToCart();
-    const handleAddToCart = () => {
-    if (!price) return;
-    const newItem = {
-      id: `${product.productId}-${selectedColor}-${selectedSize}`,
+  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
+
+  const handleAddToCart = () => {
+    const authUserId = cookiesInstance.get('access-token');
+    if (!authUserId) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate('/login');
+      return;
+    }
+    
+    const itemData: AddCartItemRequest = {
       productId: product.productId,
-      name: product.productName,
-      brand: product.brandUser.firmName,
-      image: selectedProductImages[0],
-      price: price.original,
-      discountedPrice: price.discounted,
       color: selectedColor,
       size: selectedSize,
       quantity: quantity,
+      brandUserNumber: product.brandUser.userNumber,
+      brandFirmName: product.brandUser.firmName,
     };
-    addToCart(newItem);
+
+    addToCart({ authUserId, itemData });
   };
 
   const handlePurchaseClick = () => {
@@ -102,7 +106,6 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     if (!price) return;
 
     initiateCheckout({
-      id: `${product.productId}-${selectedColor}-${selectedSize}`,
       productId: product.productId,
       name: product.productName,
       brand: product.brandUser.firmName,
@@ -119,6 +122,7 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   return {
     price, quantity, showPaymentTab, paymentLoading,
     selectedColor, selectedSize, mainImage, sizesSorted, selectedProductImages, 
+    isAddingToCart,
     setQuantity, setShowPaymentTab, setSelectedSize, setMainImage,
     handleAddToCart, handlePurchaseClick, handleColorChange,
   };

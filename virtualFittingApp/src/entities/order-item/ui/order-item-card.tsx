@@ -3,9 +3,15 @@ import type { CartItem } from '@/entities/cart';
 
 interface OrderItemCardProps {
   item: CartItem;
+  finalPrice?: number;
 }
 
-export const OrderItemCard = ({ item }: OrderItemCardProps) => {
+export const OrderItemCard = ({ item, finalPrice }: OrderItemCardProps) => {
+  const regularPrice = item.price * item.quantity;
+  const preCouponPrice = (item.discountedPrice ?? item.price) * item.quantity;
+  const displayPrice = finalPrice !== undefined ? finalPrice : preCouponPrice;
+  const showOriginalPrice = displayPrice < regularPrice;
+
   return (
     <CardContainer>
       <ItemImage src={item.image} alt={item.name} />
@@ -18,10 +24,10 @@ export const OrderItemCard = ({ item }: OrderItemCardProps) => {
           </Option>
         </div>
         <PriceContainer>
-          {item.discountedPrice && (
-            <OriginalPrice>{(item.price * item.quantity).toLocaleString()}원</OriginalPrice>
+          {showOriginalPrice && (
+            <OriginalPrice>{regularPrice.toLocaleString()}원</OriginalPrice>
           )}
-          <Price>{((item.discountedPrice ?? item.price)*item.quantity).toLocaleString()}원</Price>
+          <Price>{displayPrice.toLocaleString()}원</Price>
         </PriceContainer>
       </ItemInfo>
     </CardContainer>
