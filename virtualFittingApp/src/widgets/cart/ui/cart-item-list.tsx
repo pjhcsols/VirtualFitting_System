@@ -1,8 +1,9 @@
 import styled from 'styled-components';
-import { useRecoilState } from 'recoil';
-import { cartState, type CartItem } from '@/entities/cart';
+import { type CartItem } from '@/entities/cart';
 import { GlassBox } from '@/shared/components/glass-box';
 import { OrderItemCard } from '@/entities/order-item';
+import { useMyCartQuery } from '@/entities/cart'; 
+import { useCookies } from 'react-cookie';
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();
@@ -16,12 +17,14 @@ function groupByBrand(items: CartItem[]) {
 }
 
 export function CartItemList() {
-  const [cartItems, setCartItems] = useRecoilState(cartState);
+  const [cookies] = useCookies(['access-token']);
+  const accessToken = cookies['access-token'];
 
+  const { data: cartData } = useMyCartQuery(accessToken);
+  const cartItems: CartItem[] = cartData?.items || [];
   const handleRemoveItem = (itemIdToRemove: number) => {
-    setCartItems((prevItems) => 
-      prevItems.filter(item => item.id !== itemIdToRemove)
-    );
+    // [seah] 만들어야됨 ㅜ
+    console.log(itemIdToRemove);
   };
 
   const groupedItems = groupByBrand(cartItems);
