@@ -1,23 +1,43 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { 
-  addCartItem, 
+  upsertCart, 
   type Cart, 
-  type AddCartItemRequest 
-} from '@/entities/cart';
+  type PostCartMeRequest,
+} from '@/entities/cart'; 
 
 interface AddToCartVariables {
   authUserId: string;
-  itemData: AddCartItemRequest;
+  itemData: {
+      productId: number;
+      size: string;
+      color: string;
+      quantity: number;
+      brandUserNumber: number;
+      brandFirmName: string;
+  };
 }
 
 export const useAddToCart = () => {
   const queryClient = useQueryClient();
+  
   return useMutation<Cart | null, Error, AddToCartVariables>({
-    mutationFn: ({ authUserId, itemData }) => addCartItem(authUserId, itemData),
+    mutationFn: ({ authUserId, itemData }) => {
+        const requestBody: PostCartMeRequest = {
+            items: [{
+                productId: itemData.productId,
+                size: itemData.size,
+                color: itemData.color,
+                quantity: itemData.quantity,
+            }],
+        };
+
+        return upsertCart(authUserId, requestBody);
+    },
+    
     onSuccess: (updatedCart) => {
       if (updatedCart) {
         queryClient.setQueryData(
-          ['myCart', updatedCart.normalUserId],
+          ['cart', 'me', updatedCart.normalUserId],
           updatedCart
         );
       }

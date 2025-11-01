@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchMyCart,  } from '../api/cart.api';
-import { adaptCartToViewData, CartViewModel } from "./adapter";
+import { upsertCart } from '../api/cart.api'; 
 import type { Cart } from '../model/types'; 
 
 const cartKeys = {
@@ -9,10 +8,12 @@ const cartKeys = {
 };
 
 export const useMyCartQuery = (authUserId: string) => {
-  return useQuery<Cart | null, Error, CartViewModel | null>({ 
-    queryKey: ['cart', 'me', authUserId],
-    queryFn: () => fetchMyCart(authUserId),
+  return useQuery<Cart | null, Error, Cart | null>({ 
+    queryKey: cartKeys.myCart(authUserId),
+    queryFn: () => {
+        return upsertCart(authUserId, null);
+    },
     enabled: !!authUserId,
-    select: (data) => data ? adaptCartToViewData(data) : null,
+    staleTime: 0, 
   });
 };

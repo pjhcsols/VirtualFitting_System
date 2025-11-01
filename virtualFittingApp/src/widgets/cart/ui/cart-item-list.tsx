@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { type CartItem } from '@/entities/cart';
+import { mapCartItemResponseToCartItem, type CartItem } from '@/entities/cart';
 import { GlassBox } from '@/shared/components/glass-box';
 import { OrderItemCard } from '@/entities/order-item';
 import { useMyCartQuery } from '@/entities/cart'; 
@@ -21,7 +21,11 @@ export function CartItemList() {
   const accessToken = cookies['access-token'];
 
   const { data: cartData } = useMyCartQuery(accessToken);
-  const cartItems: CartItem[] = cartData?.items || [];
+  
+  const cartItems: CartItem[] = cartData?.items
+    ? cartData.items.map(mapCartItemResponseToCartItem)
+    : [];
+    
   const handleRemoveItem = (itemIdToRemove: number) => {
     // [seah] 만들어야됨 ㅜ
     console.log(itemIdToRemove);

@@ -1,38 +1,21 @@
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
-import type { Cart, AddCartItemRequest } from "../model/types";
+import type { Cart, PostCartMeRequest } from "../model/types";
 
-export const fetchMyCart = async (authUserId: string): Promise<Cart | null> => {
-  const config: AxiosRequestConfig = {
-    method: 'get',
-    url: "/b1/carts/me",
-    params: { authUserId },
-  };
-
-  return apiClient<Cart>(config, "내 장바구니 조회/생성");
-};
-
-export const peekMyCart = async (authUserId: string): Promise<Cart | null> => {
-  const config: AxiosRequestConfig = {
-    method: 'get',
-    url: "/b1/carts/me/peek",
-    params: { authUserId },
-  };
-
-  return apiClient<Cart>(config, "내 장바구니 조회(peek)");
-};
-
-export const addCartItem = async (
-  authUserId: string,
-  itemData: AddCartItemRequest
+export const upsertCart = async (
+    authUserId: string,
+    requestData?: PostCartMeRequest | null
 ): Promise<Cart | null> => {
-  
-  const config: AxiosRequestConfig = {
-    method: 'post',
-    url: "/b1/carts/me/items",
-    params: { authUserId },
-    data: itemData,
-  };
 
-  return apiClient<Cart>(config, "장바구니 아이템 1건 추가");
+    const config: AxiosRequestConfig = {
+        method: 'post',
+        url: "/b1/carts/me",
+        headers: {
+            Authorization: `Bearer ${authUserId}`,
+        },
+        data: requestData || {},
+    };
+
+    const action = requestData ? "장바구니 아이템 추가" : "장바구니 조회/생성";
+    return apiClient<Cart>(config, action);
 };

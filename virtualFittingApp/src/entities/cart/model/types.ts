@@ -12,7 +12,7 @@ export type CartItem = {
   quantity: number;
 };
 
-export interface ApiCartItem {
+export interface CartItemResponse {
   itemId: number;
   productId: number;
   size: string;
@@ -20,6 +20,19 @@ export interface ApiCartItem {
   quantity: number;
   brandUserNumber: number;
   brandFirmName: string;
+  
+  productName: string;         
+  productPrice: number;        
+  discountedPrice: number;     
+  discountPercent: number | null; 
+  productPhotoUrls: string[];  
+  
+  couponDiscountPrice: number;
+  couponPercent: number | null;
+  discountedTotal: number;
+  finalLinePayable: number;
+  optionQuantity: number;
+  productTotalQuantity: number;
 }
 
 export interface CartTotals {
@@ -33,16 +46,16 @@ export interface Cart {
   cartId: number;
   normalUserId: string;
   totalLines: number;
-  items: ApiCartItem[];
+  items: CartItemResponse[];
   totals: CartTotals;
   created: boolean;
 }
 
-export interface AddCartItemRequest {
-  productId: number;
-  size: string;
-  color: string;
-  quantity: number;
-  brandUserNumber: number
-  brandFirmName: string;
+export interface PostCartMeRequest {
+  items: {
+    productId: number;
+    size: string;
+    color: string;
+    quantity: number;
+  }[];
 }

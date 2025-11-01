@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useCookies } from 'react-cookie';
-import { useCartPeekQuery } from "@/entities/cart";
+import { useCartCountQuery } from "@/features/conut-cart";
 
 type HeaderProps = { 
   theme?: 'light' | 'dark';
@@ -12,7 +12,7 @@ function Header({ theme = 'light', $sticky = true }: HeaderProps) {
   const router = useNavigate();
   const [cookies] = useCookies(['access-token']);
   const accessToken = cookies['access-token'];
-  const { data: cartItemCount = 0 } = useCartPeekQuery(accessToken);
+  const { data: cartItemCount = 0 } = useCartCountQuery(accessToken);
 
   return (
     <Wrapper theme={theme} $sticky={$sticky} >
