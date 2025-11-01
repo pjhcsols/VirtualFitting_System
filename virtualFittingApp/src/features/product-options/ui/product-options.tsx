@@ -56,7 +56,6 @@ export function ProductOptions({
           ))}
         </ColorSwatches>
       </ColorBoxContainer>
-
       <SizeBoxContainer>
         <SizeBox>
           {sizesSorted.map((size) => (
@@ -70,7 +69,6 @@ export function ProductOptions({
           ))}
         </SizeBox>
       </SizeBoxContainer>
-
       <OptionBox>
         <OptionTop>
           <OptionText>
@@ -98,7 +96,8 @@ export const ColorBoxContainer = styled.div`
 export const SelectedColorText = styled.div`
   display: flex;
   font-size: 12px;
-  font-family: "pretendard";
+  color: #ffffff;
+  padding-bottom:8px;
 `;
 
 export const ColorSwatches = styled.div`
@@ -114,7 +113,7 @@ export const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean
   border-radius: 50%;
   background-color: ${(props) => props.$color};
   box-sizing: border-box;
-  border: 1px solid gray;
+  border: 1px solid #b6b6b6;
   cursor: pointer;
 
   ${(props) =>
@@ -128,21 +127,10 @@ export const ColorCircle = styled.div<{ $color: string; $selectedColor?: boolean
       width: 32px;
       height: 32px;
       border-radius: 50%;
-      border: 2px solid #333;
+      border: 2px solid #c4c4c4;
       box-sizing: border-box;
     }
   `}
-
-  @media (prefers-color-scheme: dark) {
-    border: 1px solid #888;
-    ${(props) =>
-    props.$selectedColor &&
-    `
-    &::after {
-      border: 2px solid #ffffff;
-    }
-  `}
-  }
 `;
 
 export const SizeBoxContainer = styled.div`
@@ -151,7 +139,7 @@ export const SizeBoxContainer = styled.div`
   display: flex;
   gap: 8px;
   flex-direction: column;
-  padding: 16px 0px;
+  padding: 8px 0px 16px;
   margin-bottom: 4px;
 `;
 
@@ -169,7 +157,6 @@ export const SizeItem = styled(GlassBox)<{ $selectedSize?: boolean }>`
   display: flex;
   justify-content: center;
   align-items: center;
-  font-family: "pretendard";
   font-size: 14px;
   cursor: pointer;
   transition: all 0.2s ease;

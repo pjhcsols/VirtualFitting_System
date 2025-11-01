@@ -59,3 +59,11 @@ export interface PostCartMeRequest {
     quantity: number;
   }[];
 }
+
+export interface UpdateCartItem {
+  quantity: number; 
+  size?: string;
+  color?: string;
+}
+
+export interface UpdateCartItemRequest extends UpdateCartItem {}

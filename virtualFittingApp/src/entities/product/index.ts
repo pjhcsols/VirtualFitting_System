@@ -1,4 +1,5 @@
 export * from "./api/product.api";
+export * from "./hooks/use-product-detail";
 export * from "./ui/liked-product-card/liked-product-card";
 export * from "./ui/product-card/product-card";
 export type { 
