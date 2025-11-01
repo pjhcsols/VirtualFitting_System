@@ -8,6 +8,7 @@ import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
 import { SelectQuantity } from "@/features/select-quantiy";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
+import { ProductOptions } from "@/features/product-options";
 
 type ProductDetailsProps = {
   product: ProductDetail;
@@ -130,47 +131,18 @@ function ProductDetails({
           </div>
         </S.TopRow>
         <S.Description>{product.productDesc}</S.Description>
-        <S.ColorBoxContainer>
-          <S.SelectedColorText>
-            {product.productMaterials.join(", ")} | {selectedColor}
-          </S.SelectedColorText>
-          <S.ColorSwatches>
-            {productColors.map((color) => (
-              <S.ColorCircle
-                key={color}
-                $color={COLOR_MAP[color] ?? "transparent"}
-                $selectedColor={selectedColor === color}
-                onClick={() => handleColorChange(color)}
-              />
-            ))}
-          </S.ColorSwatches>
-        </S.ColorBoxContainer>
-        <S.SizeBoxContainer>
-          <S.SizeBox>
-            {sizesSorted.map((size) => (
-              <S.SizeItem
-                key={size}
-                $selectedSize={selectedSize === size}
-                onClick={() => setSelectedSize(size)}
-              >
-                {size}
-              </S.SizeItem>
-            ))}
-          </S.SizeBox>
-        </S.SizeBoxContainer>
-        <S.OptionBox>
-          <S.OptionTop>
-            <S.OptionText>
-              {selectedColor} · {selectedSize}
-            </S.OptionText>
-          </S.OptionTop>
-          <SelectQuantity
-            unitPrice={price.original}
-            discountedPrice={price.discounted}
-            quantity={quantity}
-            setQuantity={setQuantity}
-          />
-        </S.OptionBox>
+        <ProductOptions
+          productMaterials={product.productMaterials}
+          productColors={productColors}
+          sizesSorted={sizesSorted}
+          price={price}
+          selectedColor={selectedColor}
+          selectedSize={selectedSize}
+          quantity={quantity}
+          handleColorChange={handleColorChange}
+          setSelectedSize={setSelectedSize}
+          setQuantity={setQuantity}
+        />
         <S.ButtonBox>
           <AddToCartButton onClick={handleAddToCart} />
           <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />

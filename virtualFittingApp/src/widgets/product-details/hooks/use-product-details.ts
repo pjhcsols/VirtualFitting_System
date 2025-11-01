@@ -1,41 +1,35 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Cookies } from 'react-cookie';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth'; 
 import { useNavigate } from "react-router-dom";
-
-import { SIZE_ORDER } from "@/shared";
 import { fetchDiscountQuote } from "@/entities/discount";
 import type { ProductDetail } from "@/entities/product/model/types";
-import type { ProductColorPayment, ProductSizePayment } from "@/entities/payment/model/types";
-import type { AddCartItemRequest } from '@/entities/cart';
-
 import { useAddToCart } from '@/features/add-to-cart';
 import { useInitiateCheckout } from "@/features/initiate-checkout-single";
+import { useProductOptions } from '@/features/product-options';
 
 const cookiesInstance = new Cookies();
 
 export const useProductDetails = (product: ProductDetail, onColorChange?: (color: string) => void) => {
-  // const [cookies] = useCookies(['access-token']);
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
   const [price, setPrice] = useState<{ original: number; discounted?: number } | null>(null);
-  const [quantity, setQuantity] = useState(1);
-
-  const [selectedColor, setSelectedColor] = useState<ProductColorPayment>(product.productImages.productColor as ProductColorPayment);  
-  const [selectedSize, setSelectedSize] = useState(() => 
-    product.productOptions.find(opt => opt.productColor === product.productImages.productColor)?.productSize as ProductSizePayment
-  );
   const [mainImage, setMainImage] = useState(product.productImages.productPhotoUrls?.[0] ?? '');
-
   const [showPaymentTab, setShowPaymentTab] = useState(false);
+
+  const {
+    quantity, setQuantity,
+    selectedColor, setSelectedColor,
+    selectedSize, setSelectedSize,
+    sizesSorted,
+    handleColorChange,
+  } = useProductOptions(product, onColorChange);
   
   const { initiateCheckout, isLoading: paymentLoading } = useInitiateCheckout();
 
   useEffect(() => {
-    setSelectedColor(product.productImages.productColor as ProductColorPayment); 
-    setSelectedSize(product.productOptions.find(opt => opt.productColor === product.productImages.productColor)?.productSize as ProductSizePayment);
     setMainImage(product.productImages.productPhotoUrls?.[0] ?? '');
   }, [product]);
 
@@ -48,13 +42,7 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
       .catch(err => console.error("Failed to fetch discount quote", err));
   }, [product.productId]);
 
-  const sizesSorted = useMemo(() => product.productOptions
-    .filter(po => po.productColor === selectedColor)
-    .map(po => po.productSize as ProductSizePayment)
-    .sort((a, b) => (SIZE_ORDER.indexOf(a) - SIZE_ORDER.indexOf(b))), [product.productOptions, selectedColor]);
-
   const selectedProductImages = product.productImages?.productPhotoUrls ?? [];
-
 
   // const finalPrice = useMemo(() => {
   //   if (!price) return 0;
@@ -65,14 +53,6 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   //   return Math.round(basePrice - couponDiscount);
   // }, [price, quantity, selectedCoupon]);
 
-  const handleColorChange = (color: string) => {
-    setSelectedColor(color as ProductColorPayment);
-    const newSize = product.productOptions.find(opt => opt.productColor === color)?.productSize as ProductSizePayment;
-    if (newSize) setSelectedSize(newSize);
-    
-    onColorChange?.(color);
-  };
-
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   const handleAddToCart = () => {
@@ -82,8 +62,8 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
       navigate('/login');
       return;
     }
-    
-    const itemData: AddCartItemRequest = {
+
+    const itemData = {
       productId: product.productId,
       color: selectedColor,
       size: selectedSize,
@@ -118,12 +98,11 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     });
   };
   
-
   return {
     price, quantity, showPaymentTab, paymentLoading,
     selectedColor, selectedSize, mainImage, sizesSorted, selectedProductImages, 
     isAddingToCart,
-    setQuantity, setShowPaymentTab, setSelectedSize, setMainImage,
+    setQuantity, setShowPaymentTab, setSelectedColor, setSelectedSize, setMainImage,
     handleAddToCart, handlePurchaseClick, handleColorChange,
   };
 };
