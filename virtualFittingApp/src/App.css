@@ -5,3 +5,8 @@
   width: 100%;
   text-align: center;
 }
+
+::selection {
+  color: rgba(255, 255, 255, 0.8);
+  text-shadow: 0 0 6px #D0EFFF;
+}
