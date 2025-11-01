@@ -94,7 +94,7 @@ function HeroSection() {
         <BackContainer>
           <ContentContainer>
             <TitleText ref={titleRef}>Virtual Fitting System</TitleText> 
-            <ContentText ref={textRef1}>바실리움의 다양한 IT 솔루션을 만나보세요.</ContentText>
+            <ContentText ref={textRef1}>바실리움의 다양한 IT 솔루션을 한곳에서 만나보세요.</ContentText>
             <ContentText ref={textRef2}>지금, 비즈니스의 성장을 시작하세요.</ContentText>
             <ButtonContainer ref={buttonRef}>
               <GlassButton onClick={handleScheduleClick} size='large'>
