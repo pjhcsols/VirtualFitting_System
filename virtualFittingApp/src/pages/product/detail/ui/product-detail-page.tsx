@@ -34,6 +34,7 @@ function ProductDetailPage() {
     const loadProduct = async () => {
       setLoading(true);
       try {
+        
         const colors = await fetchProductColors(Number(id));
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
@@ -88,7 +89,7 @@ function ProductDetailPage() {
         <Divider />
       
         {activeTab === "description" && <ProductDescription product={product} />}
-        {activeTab === "size" && <ProductSizingInfo />}
+        {activeTab === "size" && <ProductSizingInfo product={product} />}
         {activeTab === "review" && <ProductReviews />}
       </ContentArea>
     </Wrapper>
