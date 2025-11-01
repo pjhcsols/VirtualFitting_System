@@ -11,6 +11,7 @@ import { ProductDetails } from "@/widgets/product-details";
 import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
+import { ProductQnAs } from "@/widgets/product-qnas";
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -92,6 +93,7 @@ function ProductDetailPage() {
         {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo product={product} />}
         {activeTab === "review" && <ProductReviews productId={currentProductId} />}
+        {activeTab === "qna" && <ProductQnAs productId={currentProductId} product={product} />}
       </ContentArea>
     </Wrapper>
   );
