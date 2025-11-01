@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { COLOR_MAP } from "@/shared";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
 import { ICON_SHARE } from "@/shared";
 import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
-import { SelectQuantity } from "@/features/select-quantiy";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
 
