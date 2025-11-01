@@ -68,6 +68,7 @@ function ProductDetailPage() {
   if (loading || !product) {
     return <div>Loading...</div>;
   }
+  const currentProductId = product.productId;
 
   return (
     <Wrapper>
@@ -90,12 +91,11 @@ function ProductDetailPage() {
       
         {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo product={product} />}
-        {activeTab === "review" && <ProductReviews />}
+        {activeTab === "review" && <ProductReviews productId={currentProductId} />}
       </ContentArea>
     </Wrapper>
   );
 }
-
 
 const Wrapper = styled.div`
   box-sizing: border-box;
