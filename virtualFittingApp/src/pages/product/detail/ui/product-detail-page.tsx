@@ -87,7 +87,7 @@ function ProductDetailPage() {
         </TabMenu>
         <Divider />
       
-        {activeTab === "description" && <ProductDescription />}
+        {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo />}
         {activeTab === "review" && <ProductReviews />}
       </ContentArea>
