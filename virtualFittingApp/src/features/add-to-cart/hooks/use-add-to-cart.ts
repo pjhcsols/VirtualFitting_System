@@ -4,7 +4,7 @@ import {
   type Cart, 
   type PostCartMeRequest,
 } from '@/entities/cart'; 
-import { cartKeys } from '@/features/conut-cart';
+import { cartKeys } from '@/features/count-cart';
 
 interface AddToCartVariables {
   authUserId: string;
