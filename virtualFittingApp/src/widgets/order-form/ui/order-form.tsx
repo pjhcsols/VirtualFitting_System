@@ -13,8 +13,7 @@ interface OrderFormProps {
   finalPrice: number;
 }
 
-// export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
-export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) => {
+export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
   const { user, isLoading } = useOrderForm();
 
   if (isLoading || !user) {
@@ -39,9 +38,10 @@ export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) 
             productId={item.productId}
             finalPrice={finalPrice}
             onSelect={onSelectCoupon}
+            currentSelectedCoupon={selectedCoupon}
           />
         </Header>
-        <OrderItemCard item={item} />
+        <OrderItemCard item={item} finalPrice={finalPrice} />
       </GlassBox>
     </FormContainer>
   );

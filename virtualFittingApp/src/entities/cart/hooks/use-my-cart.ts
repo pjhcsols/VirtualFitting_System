@@ -14,6 +14,6 @@ export const useMyCartQuery = (authUserId: string) => {
         return upsertCart(authUserId, null);
     },
     enabled: !!authUserId,
-    staleTime: Infinity,
+    staleTime: 0, 
   });
 };

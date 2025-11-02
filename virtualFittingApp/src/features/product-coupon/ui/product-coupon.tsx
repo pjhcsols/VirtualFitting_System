@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useProductCoupon } from '../hooks/use-product-coupon';
 import { GlassButton } from '@/shared/components/glass-button';
 import { GlassBox } from "@/shared/components/glass-box";
@@ -10,9 +10,16 @@ interface ProductCouponProps {
   productId: number;
   finalPrice: number;
   onSelect: (coupon: ClaimableCoupon | null) => void;
+  currentSelectedCoupon: ClaimableCoupon | null;
 }
 
-export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCouponProps) => {
+export const ProductCoupon = ({ 
+    productId, 
+    finalPrice, 
+    onSelect,
+    currentSelectedCoupon 
+}: ProductCouponProps) => {
+  
   const { 
     coupons, 
     isLoading,
@@ -21,6 +28,11 @@ export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCoupon
 
   const [showPopup, setShowPopup] = useState(false);
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
+
+  const handleOpenPopup = () => {
+    setTempSelectedCoupon(currentSelectedCoupon); 
+    setShowPopup(true);
+  };
 
   const handleApply = async () => {
     if (!tempSelectedCoupon) return;
@@ -34,15 +46,23 @@ export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCoupon
       const downloadSuccess = await handleDownloadCoupon(tempSelectedCoupon.campaignId);
     
       if (downloadSuccess) {
-        onSelect(tempSelectedCoupon);
+        onSelect(tempSelectedCoupon); 
         setShowPopup(false);
       }
     }
   };
 
+  const availableCoupons = useMemo(() => {
+    return coupons.filter(coupon => {
+        const canDownloadOrUse = coupon.availableCount > 0;
+        const isMinPriceMet = finalPrice >= coupon.minOrderPrice;
+        return canDownloadOrUse && isMinPriceMet;
+    });
+  }, [coupons, finalPrice]);
+
   return (
     <>
-      <GlassButton onClick={() => setShowPopup(true)} size="small">
+      <GlassButton onClick={handleOpenPopup} size="small">
         쿠폰 적용
       </GlassButton>
 
@@ -57,18 +77,19 @@ export const ProductCoupon = ({ productId, finalPrice, onSelect }: ProductCoupon
               
               {isLoading ? (
                 <StatusText>쿠폰을 불러오는 중...</StatusText>
-              ) : coupons.length > 0 ? (
+              ) : availableCoupons.length > 0 ? (
                 <CouponList>
-                  {coupons.map(coupon => {
-                    const isUsable = coupon.remainingCanClaim > 0 && finalPrice >= coupon.minOrderPrice;
+                  {availableCoupons.map(coupon => {
+                    const isDisabled = false; 
+
                     return (
-                      <CouponItemLabel key={coupon.campaignId} disabled={!isUsable}>
+                      <CouponItemLabel key={coupon.campaignId} disabled={isDisabled}>
                         <RadioButton 
                           type="radio"
                           name="coupon"
                           checked={tempSelectedCoupon?.campaignId === coupon.campaignId}
                           onChange={() => setTempSelectedCoupon(coupon)}
-                          disabled={!isUsable}
+                          disabled={isDisabled}
                         />
                         <CouponInfo>
                           <DiscountLine>

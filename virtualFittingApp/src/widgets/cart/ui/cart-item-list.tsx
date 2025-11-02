@@ -6,9 +6,11 @@ import { OrderItemCard } from '@/entities/order-item';
 import { useMyCartQuery } from '@/entities/cart'; 
 import { useCookies } from 'react-cookie';
 import { useDeleteCartItems } from '@/features/cart';
-import { ProductCoupon } from '@/features/product-coupon';
 import { UpdateCartItemOptionsPopup } from '@/features/update-cart';
-import { useProductDetailQuery, type ProductDetail } from '@/entities/product'; 
+import { useProductDetailQuery } from '@/entities/product'; 
+import { ProductCoupon } from "@/features/product-coupon";
+import type { ClaimableCoupon } from '@/entities/coupon';
+import { useApplyCartItemCoupon } from "@/features/cart";
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();
@@ -31,9 +33,11 @@ export function CartItemList() {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ItemToEdit | null>(null);
+  const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
 
   const { data: cartData, refetch: refetchCart } = useMyCartQuery(accessToken);
   const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
+  const { mutate: applyCoupon } = useApplyCartItemCoupon({ authUserId: accessToken! });
 
   const cartItems: CartItem[] = cartData?.items
     ? cartData.items.map(mapCartItemResponseToCartItem)
@@ -43,41 +47,66 @@ export function CartItemList() {
   const initialColorToFetch = itemToEdit ? itemToEdit.item.color : null;
   
   const { 
-      data: productDetail, 
-      isLoading: isProductDetailLoading,
+    data: productDetail, 
+    isLoading: isProductDetailLoading,
   } = useProductDetailQuery(productIdToFetch, initialColorToFetch);
 
   const handleRemoveItem = (itemIdToRemove: number) => {
     if (!accessToken) {
-        alert("로그인 정보가 유효하지 않습니다.");
-        return;
+      alert("로그인 정보가 유효하지 않습니다.");
+      return;
     }
 
     if (confirm("정말로 이 상품을 장바구니에서 삭제하시겠습니까?")) {
-        deleteItems({ itemIds: [itemIdToRemove] }, {
-            onSuccess: () => {
-                console.log(`장바구니 항목 ${itemIdToRemove} 삭제 성공`);
-                refetchCart();
-            },
-            onError: () => {
-                alert("항목 삭제 중 오류가 발생했습니다.");
-            }
-        });
+      deleteItems({ itemIds: [itemIdToRemove] }, {
+        onSuccess: () => {
+          console.log(`장바구니 항목 ${itemIdToRemove} 삭제 성공`);
+          refetchCart();
+        },
+        onError: () => {
+          alert("항목 삭제 중 오류가 발생했습니다.");
+        }
+      });
     }
   };
 
+  const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
+    setSelectedCouponMap(prevMap => {
+      const newMap = new Map(prevMap);
+      newMap.set(itemId, coupon);
+      return newMap;
+    });
+
+    if (!accessToken) {
+      alert("로그인 정보가 유효하지 않습니다.");
+      return;
+    }
+
+    const couponWalletIdToApply = coupon ? coupon.walletId : null; 
+
+    applyCoupon({ itemId, couponWalletId: couponWalletIdToApply }, {
+      onSuccess: () => {
+        console.log(`장바구니 아이템 ID ${itemId} 쿠폰 적용/취소 성공`);
+        refetchCart();
+      },
+      onError: () => {
+        alert('쿠폰 적용에 실패했습니다. 다시 시도해 주세요.');
+      }
+    });
+  };
+
   const handleEditOptions = (item: CartItem) => {
-      setItemToEdit({ item });
-      setIsPopupOpen(true);
+    setItemToEdit({ item });
+    setIsPopupOpen(true);
   };
   
   const handleClosePopup = () => {
-      setIsPopupOpen(false);
-      setItemToEdit(null);
+    setIsPopupOpen(false);
+    setItemToEdit(null);
   };
   
   const handleUpdateSuccess = () => {
-      refetchCart();
+    refetchCart();
   };
 
   const groupedItems = groupByBrand(cartItems);
@@ -95,28 +124,42 @@ export function CartItemList() {
         <ItemsContainer>
           {entries.map(([brand, items],) => (
             <BrandSection key={brand}>
-              {items.map((item) => (
-                <ItemWrapper key={item.id}>
-                  <OrderItemCard item={item} />
-                  <EditButton onClick={() => handleEditOptions(item)}>옵션 변경</EditButton>
-                  <RemoveButton onClick={() => handleRemoveItem(item.id)}>×</RemoveButton>
-                </ItemWrapper>
-              ))}
+              {items.map((item) => {
+                const itemTotalPrice = (item as any).productPrice * item.quantity; 
+                const currentCoupon = selectedCouponMap.get(item.id) || null; 
+
+                return (
+                  <ItemWrapper key={item.id}>
+                    <OrderItemCard item={item} />
+                    
+                    <ButtonContainer>
+                      <ProductCoupon 
+                        productId={item.productId}
+                        finalPrice={itemTotalPrice} 
+                        onSelect={(coupon) => handleCouponSelect(coupon, item.id)}
+                        currentSelectedCoupon={currentCoupon} 
+                      />
+                        <EditButton onClick={() => handleEditOptions(item)}>옵션 변경</EditButton>
+                    </ButtonContainer>
+                    <RemoveButton onClick={() => handleRemoveItem(item.id)}>×</RemoveButton>
+                  </ItemWrapper>
+                )
+              })}
             </BrandSection>
           ))}
         </ItemsContainer>
       )}
     </StyledGlassBox>
     {isPopupOpen && itemToEdit && productDetail && !isProductDetailLoading && (
-          <UpdateCartItemOptionsPopup
-              productDetail={productDetail}
-              cartItemId={itemToEdit.item.id}
-              initialColor={itemToEdit.item.color}
-              initialSize={itemToEdit.item.size}
-              initialQuantity={itemToEdit.item.quantity}
-              onClose={handleClosePopup}
-              onUpdateSuccess={handleUpdateSuccess}
-          />
+        <UpdateCartItemOptionsPopup
+          productDetail={productDetail}
+          cartItemId={itemToEdit.item.id}
+          initialColor={itemToEdit.item.color}
+          initialSize={itemToEdit.item.size}
+          initialQuantity={itemToEdit.item.quantity}
+          onClose={handleClosePopup}
+          onUpdateSuccess={handleUpdateSuccess}
+        />
       )}
       </>
   );
@@ -156,6 +199,15 @@ const BrandSection = styled.div`
 
 const ItemWrapper = styled.div`
   position: relative;
+`;
+
+const ButtonContainer = styled.div`
+    position: absolute;
+    bottom: 24px;
+    right: 24px;
+    display: flex;
+    gap: 8px;
+    z-index: 100;
 `;
 
 const RemoveButton = styled.button`
