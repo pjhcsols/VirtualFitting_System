@@ -35,3 +35,24 @@ export const updateCartItem = async (
 
   return apiClient<Cart>(config, `장바구니 아이템 ID ${itemId} 수정`);
 };
+
+export async function deleteCartItems(
+  authUserId: string,
+  itemIds: number[],
+): Promise<Cart | null> { 
+
+  const usp = new URLSearchParams();
+  usp.set("authUserId", authUserId);
+  for (const id of itemIds) {
+      usp.append("itemIds", String(id));
+  }
+  const queryString = usp.toString();
+  
+  const config: AxiosRequestConfig = {
+    method: 'delete', 
+    url: `/b1/carts/me/items?${queryString}`, 
+    data: null, 
+  };
+
+  return apiClient<Cart>(config, `장바구니 아이템 ID [${itemIds.join(', ')}] 삭제`);
+}

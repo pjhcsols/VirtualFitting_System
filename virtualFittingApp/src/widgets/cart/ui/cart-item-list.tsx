@@ -5,6 +5,7 @@ import { GlassBox } from '@/shared/components/glass-box';
 import { OrderItemCard } from '@/entities/order-item';
 import { useMyCartQuery } from '@/entities/cart'; 
 import { useCookies } from 'react-cookie';
+import { useDeleteCartItems } from '@/features/cart';
 import { ProductCoupon } from '@/features/product-coupon';
 import { UpdateCartItemOptionsPopup } from '@/features/update-cart';
 import { useProductDetailQuery, type ProductDetail } from '@/entities/product'; 
@@ -32,7 +33,8 @@ export function CartItemList() {
   const [itemToEdit, setItemToEdit] = useState<ItemToEdit | null>(null);
 
   const { data: cartData, refetch: refetchCart } = useMyCartQuery(accessToken);
-  
+  const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
+
   const cartItems: CartItem[] = cartData?.items
     ? cartData.items.map(mapCartItemResponseToCartItem)
     : [];
@@ -46,8 +48,22 @@ export function CartItemList() {
   } = useProductDetailQuery(productIdToFetch, initialColorToFetch);
 
   const handleRemoveItem = (itemIdToRemove: number) => {
-    // [seah] 만들어야됨 ㅜ
-    console.log(itemIdToRemove);
+    if (!accessToken) {
+        alert("로그인 정보가 유효하지 않습니다.");
+        return;
+    }
+
+    if (confirm("정말로 이 상품을 장바구니에서 삭제하시겠습니까?")) {
+        deleteItems({ itemIds: [itemIdToRemove] }, {
+            onSuccess: () => {
+                console.log(`장바구니 항목 ${itemIdToRemove} 삭제 성공`);
+                refetchCart();
+            },
+            onError: () => {
+                alert("항목 삭제 중 오류가 발생했습니다.");
+            }
+        });
+    }
   };
 
   const handleEditOptions = (item: CartItem) => {

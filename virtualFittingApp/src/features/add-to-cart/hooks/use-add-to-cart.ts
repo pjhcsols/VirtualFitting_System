@@ -4,6 +4,7 @@ import {
   type Cart, 
   type PostCartMeRequest,
 } from '@/entities/cart'; 
+import { cartKeys } from '@/features/conut-cart';
 
 interface AddToCartVariables {
   authUserId: string;
@@ -34,13 +35,17 @@ export const useAddToCart = () => {
         return upsertCart(authUserId, requestBody);
     },
     
-    onSuccess: (updatedCart) => {
+    onSuccess: (updatedCart, variables) => {
       if (updatedCart) {
         queryClient.setQueryData(
           ['cart', 'me', updatedCart.normalUserId],
           updatedCart
         );
       }
+      
+      queryClient.invalidateQueries({ 
+          queryKey: cartKeys.count(variables.authUserId) 
+      });
     },
     onError: (error) => {
       console.error("장바구니 아이템 추가에 실패했습니다.", error);
