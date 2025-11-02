@@ -23,6 +23,6 @@ export const useCartCountQuery = (authUserId: string | null) => {
       );
     },
     
-    staleTime: 5000,
+    staleTime: Infinity,
   });
 };
