@@ -1,8 +1,20 @@
 import styled from "styled-components";
+import { useState } from 'react';
 import { BREAKPOINTS } from "@/shared";
-import { CartPurchaseSummary, CartItemList } from "@/widgets";
+import { CartItemList } from "@/widgets";
+import { PaymentSummary } from "@/widgets/payment-summary";
+import { useCartPaymentTotals } from "@/entities/cart";
+
 
 function CartPage() {
+  // const { totals, isLoading, isError } = useCartPaymentTotals();
+  // const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const { totals } = useCartPaymentTotals();
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  console.log(isModalOpen);
+  // [seah] 수정 필요
+
   return (
     <PageContainer>
       <PageTitle>장바구니</PageTitle>
@@ -11,7 +23,10 @@ function CartPage() {
           <CartItemList />
         </MainContent>
         <SideContent>
-          <CartPurchaseSummary />
+          <PaymentSummary 
+            totals={totals} 
+            onConfirm={() => setIsModalOpen(true)}
+          />
         </SideContent>
       </Layout>
     </PageContainer>

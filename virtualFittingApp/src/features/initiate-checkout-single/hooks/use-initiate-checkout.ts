@@ -4,13 +4,15 @@ import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import type { CartItem } from '@/entities/cart';
 
+type InitiateCheckoutData = Omit<CartItem, 'id'>;
+
 export const useInitiateCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   
   const isLoggedIn = useRecoilValue(authState);
 
-  const initiateCheckout = (item: CartItem) => {
+  const initiateCheckout = (item: InitiateCheckoutData) => {
     setIsLoading(true);
     try {
       if (!isLoggedIn) {

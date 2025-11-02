@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useQuery } from '@tanstack/react-query'; 
+import { useEffect } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
@@ -9,65 +10,55 @@ import {
   fetchMyClaimableCoupons,
   downloadCoupon 
 } from '../api/coupon.api';
+import { couponKeys } from '../coupon.keys';
 
 export const useProductCoupon = (productId: number) => {
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
+  
+  const accessToken = cookies['access-token']; 
 
-  const [coupons, setCoupons] = useState<ClaimableCoupon[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
+  const queryFn = async (): Promise<ClaimableCoupon[]> => {
+    const guestCoupons = await fetchClaimableCouponsForGuest(productId);
+    if (!guestCoupons) return [];
 
-  const refreshCoupons = useCallback(async () => {
-    setIsLoading(true);
-    try {
-      const guestCoupons = await fetchClaimableCouponsForGuest(productId);
-      if (!guestCoupons) {
-        setCoupons([]);
-        return;
-      }
-      if (isLoggedIn) {
-        const accessToken = cookies['access-token'];
-        if (accessToken) {
-          const myCoupons = await fetchMyClaimableCoupons(productId, accessToken);
-          const myCouponsMap = new Map(myCoupons?.map(c => [c.campaignId, c]));
-          const mergedCoupons = guestCoupons.map(guestCoupon => 
-            myCouponsMap.get(guestCoupon.campaignId) || guestCoupon
-          );
-          setCoupons(mergedCoupons);
-        } else {
-          setCoupons(guestCoupons);
-        }
-      } else {
-        setCoupons(guestCoupons);
-      }
-      
-    } catch (error) {
-      console.error("Failed to refetch claimable coupons", error);
-      setCoupons([]);
-    } finally {
-      setIsLoading(false);
+    if (isLoggedIn && accessToken) {
+      const myCoupons = await fetchMyClaimableCoupons(productId, accessToken);
+      const myCouponsMap = new Map(myCoupons?.map(c => [c.campaignId, c]));
+      const mergedCoupons = guestCoupons.map(guestCoupon => 
+        myCouponsMap.get(guestCoupon.campaignId) || guestCoupon
+      );
+      return mergedCoupons;
     }
-  }, [productId, isLoggedIn, cookies]);
+    return guestCoupons;
+  };
+
+  const { data: coupons = [], isLoading, refetch, error } = useQuery({
+    queryKey: couponKeys.claimables(productId, accessToken), 
+    queryFn,
+    enabled: !!productId,
+    staleTime: 1000 * 60 * 5, 
+    refetchOnWindowFocus: false,
+  });
 
   useEffect(() => {
-    if (productId) {
-      refreshCoupons();
+    if (error) {
+        console.error("Failed to fetch claimable coupons (Query Error):", error);
     }
-  }, [productId, refreshCoupons]);
+  }, [error]);
 
   const handleDownloadCoupon = async (campaignId: number): Promise<boolean> => {
-    const authUserId = cookies['access-token'];
-    if (!authUserId) {
+    if (!accessToken) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
       return false;
     }
     try {
-      const result = await downloadCoupon({ campaignId, authUserId });
+      const result = await downloadCoupon({ campaignId, authUserId: accessToken });
       if (result) {
-        // alert("쿠폰이 발급되었습니다!");
-        await refreshCoupons();
+
+        await refetch(); 
         return true;
       }
       return false;

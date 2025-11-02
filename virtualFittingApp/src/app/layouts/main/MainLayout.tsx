@@ -1,11 +1,9 @@
-import { MainNavigator } from "@/pages/main/components";
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 
 function MainLayout() {
   return (
     <Wrapper>
-      <MainNavigator />
       <Outlet />
     </Wrapper>
   );

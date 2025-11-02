@@ -1,24 +1,54 @@
-import { useSetRecoilState } from 'recoil';
-import { cartState, type CartItem } from '@/entities/cart';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { 
+  upsertCart, 
+  type Cart, 
+  type PostCartMeRequest,
+} from '@/entities/cart'; 
+import { cartKeys } from '@/features/conut-cart';
+
+interface AddToCartVariables {
+  authUserId: string;
+  itemData: {
+      productId: number;
+      size: string;
+      color: string;
+      quantity: number;
+      brandUserNumber: number;
+      brandFirmName: string;
+  };
+}
 
 export const useAddToCart = () => {
-  const setCartItems = useSetRecoilState(cartState);
+  const queryClient = useQueryClient();
+  
+  return useMutation<Cart | null, Error, AddToCartVariables>({
+    mutationFn: ({ authUserId, itemData }) => {
+        const requestBody: PostCartMeRequest = {
+            items: [{
+                productId: itemData.productId,
+                size: itemData.size,
+                color: itemData.color,
+                quantity: itemData.quantity,
+            }],
+        };
 
-  const addToCart = (newItem: Omit<CartItem, 'quantity'> & { quantity: number }) => {
-    setCartItems((prevItems) => {
-      const existingItem = prevItems.find(item => item.id === newItem.id);
-      if (existingItem) {
-        return prevItems.map(item =>
-          item.id === newItem.id
-            ? { ...item, quantity: item.quantity + newItem.quantity }
-            : item
+        return upsertCart(authUserId, requestBody);
+    },
+    
+    onSuccess: (updatedCart, variables) => {
+      if (updatedCart) {
+        queryClient.setQueryData(
+          ['cart', 'me', updatedCart.normalUserId],
+          updatedCart
         );
-      } else {
-        return [...prevItems, newItem];
       }
-    });
-  };
-
-  return { addToCart };
+      
+      queryClient.invalidateQueries({ 
+          queryKey: cartKeys.count(variables.authUserId) 
+      });
+    },
+    onError: (error) => {
+      console.error("장바구니 아이템 추가에 실패했습니다.", error);
+    },
+  });
 };
-

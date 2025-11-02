@@ -22,3 +22,31 @@ export type ReviewRequest = {
   title: string;
   comment: string;
 };
+
+export interface ReviewItem {
+  reviewId: number;
+  maskedUserId: string;
+  purchaseSize: string;
+  purchaseColor: string;
+  rating: number;
+  title: string;
+  comment: string;
+  imageUrls: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PaginatedReviews {
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  content: ReviewItem[];
+  first: boolean;
+  last: boolean;
+  number: number;
+}
+
+export interface ReviewsResponseData {
+  averageRating: number;
+  reviews: PaginatedReviews;
+}

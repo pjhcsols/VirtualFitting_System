@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useRecoilValue } from 'recoil';
-import { cartTotalQuantityState } from '@/entities/cart';
+import { useCookies } from 'react-cookie';
+import { useCartCountQuery } from "@/features/count-cart";
 
 type HeaderProps = { 
   theme?: 'light' | 'dark';
@@ -10,7 +10,9 @@ type HeaderProps = {
 
 function Header({ theme = 'light', $sticky = true }: HeaderProps) {
   const router = useNavigate();
-  const cartItemCount = useRecoilValue(cartTotalQuantityState);
+  const [cookies] = useCookies(['access-token']);
+  const accessToken = cookies['access-token'];
+  const { data: cartItemCount = 0 } = useCartCountQuery(accessToken);
 
   return (
     <Wrapper theme={theme} $sticky={$sticky} >

@@ -1,7 +1,5 @@
 import styled from 'styled-components';
 import { GlassBox } from '@/shared/components/glass-box';
-import { ShippingAddressCard } from '@/entities/shipping-address';
-import { ChangeShippingAddressButton } from '@/features/change-shipping-address';
 import { OrderItemCard } from '@/entities/order-item';
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
@@ -15,9 +13,8 @@ interface OrderFormProps {
   finalPrice: number;
 }
 
-// export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
-export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) => {
-  const { user, isLoading, handleSaveAddress } = useOrderForm();
+export const OrderForm = ({ item, selectedCoupon, onSelectCoupon, finalPrice }: OrderFormProps) => {
+  const { user, isLoading } = useOrderForm();
 
   if (isLoading || !user) {
     return (
@@ -32,21 +29,8 @@ export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) 
     );
   }
 
-  const shippingAddress = {
-    name: user.name,
-    address: user.deliveryInfo.defaultDeliveryAddress,
-    phone: user.phoneNumber,
-  };
-
   return (
     <FormContainer>
-      <GlassBox>
-        <Header>
-          <SectionTitle>배송지</SectionTitle>
-          <ChangeShippingAddressButton onClick={handleSaveAddress}/>
-        </Header>
-        <ShippingAddressCard {...shippingAddress} />
-      </GlassBox>
       <GlassBox>
         <Header>
           <SectionTitle>주문 상품</SectionTitle>
@@ -54,9 +38,10 @@ export const OrderForm = ({ item, onSelectCoupon, finalPrice }: OrderFormProps) 
             productId={item.productId}
             finalPrice={finalPrice}
             onSelect={onSelectCoupon}
+            currentSelectedCoupon={selectedCoupon}
           />
         </Header>
-        <OrderItemCard item={item} />
+        <OrderItemCard item={item} finalPrice={finalPrice} />
       </GlassBox>
     </FormContainer>
   );

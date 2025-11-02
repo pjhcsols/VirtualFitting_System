@@ -1,7 +1,8 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
 import { Header } from "@/widgets/header";
-import { BREAKPOINTS } from "@/shared"
+import { BREAKPOINTS } from "@/shared";
+import { Footer } from "@/widgets/footer";
 import { Starfield } from "@/shared/components/star";
 
 function PaymentLayout() {
@@ -12,6 +13,7 @@ function PaymentLayout() {
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
+      <Footer />
     </Wrapper>
   );
 }

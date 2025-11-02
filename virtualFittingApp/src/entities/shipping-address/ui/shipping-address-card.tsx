@@ -34,7 +34,6 @@ const Name = styled.p`
 `;
 
 const InfoText = styled.p`
-  font-family: "Pretendard", sans-serif;
   font-size: 14px;
   color: white;
   line-height: 1.4;

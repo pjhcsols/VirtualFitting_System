@@ -11,6 +11,7 @@ import { ProductDetails } from "@/widgets/product-details";
 import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
+import { ProductQnAs } from "@/widgets/product-qnas";
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -34,6 +35,7 @@ function ProductDetailPage() {
     const loadProduct = async () => {
       setLoading(true);
       try {
+        
         const colors = await fetchProductColors(Number(id));
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
@@ -67,6 +69,7 @@ function ProductDetailPage() {
   if (loading || !product) {
     return <div>Loading...</div>;
   }
+  const currentProductId = product.productId;
 
   return (
     <Wrapper>
@@ -87,14 +90,14 @@ function ProductDetailPage() {
         </TabMenu>
         <Divider />
       
-        {activeTab === "description" && <ProductDescription />}
-        {activeTab === "size" && <ProductSizingInfo />}
-        {activeTab === "review" && <ProductReviews />}
+        {activeTab === "description" && <ProductDescription product={product} />}
+        {activeTab === "size" && <ProductSizingInfo product={product} />}
+        {activeTab === "review" && <ProductReviews productId={currentProductId} />}
+        {activeTab === "qna" && <ProductQnAs productId={currentProductId} product={product} />}
       </ContentArea>
     </Wrapper>
   );
 }
-
 
 const Wrapper = styled.div`
   box-sizing: border-box;
@@ -125,17 +128,53 @@ const TabMenu = styled.div`
   margin-top: 64px;
   flex-wrap: nowrap;
   gap: 64px;
+
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
-  padding: 8px 32px;
   border: none;
-  background: transparent;
-  color: ${({ $active }) => ($active ? "#c3c3c3ff" : "#ffffffff")};
-  font-size: 15px;
+  font-size: 16px;
   font-weight: ${({ $active }) => ($active ? 700 : 500)};
   cursor: pointer;
   white-space: nowrap;
+  background: none;
+  padding: 4px 2px;
+  position: relative;
+  cursor: pointer;
+
+  text-decoration: none; 
+  
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.3s ease;
+
+  &::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: rgb(255, 255, 255);
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease-out;
+  }
+
+  &:hover {
+    color: rgb(255, 255, 255);
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &.active {
+    color: rgb(255, 255, 255);
+  }
+
+  &.active::after {
+    transform: scaleX(1);
+  }
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 8px 8px;

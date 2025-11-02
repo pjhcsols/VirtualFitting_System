@@ -1,65 +1,112 @@
-import styled from "styled-components";
-
-import { Basilium3DLogo } from "@/shared";
+import styled, { keyframes } from "styled-components";
+import { Basilium3DLogoMain } from "@/shared";
 
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { BasiliumLogoText, PrataText } from "@/shared/components/common";
-import { NavLink } from "react-router-dom";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
-import * as THREE from "three";
-import { Stars } from "@react-three/drei";
+import { useNavigate } from "react-router-dom";
+import { GlassButton } from "@/shared/components/glass-button";
+import { Starfield } from "@/shared/components/star";
+import { useRef, useEffect } from "react";
+import { rawSvgContent } from "../model/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+`;
+
 function HeroSection() {
-  const RotatingStars = () => {
-    const stars = useRef<THREE.Points>(null);
+  const navigate = useNavigate();
+  const titleRef = useRef(null);
+  const textRef1 = useRef(null);
+  const textRef2 = useRef(null);
+  const buttonRef = useRef(null);
+  const scrollProgress = useRef({ value: 0 });
 
-    useFrame(() => {
-      if (stars.current) {
-        stars.current.rotation.x = stars.current.rotation.y += 0.00015;
-      }
-    });
-
-    return <Stars ref={stars} />;
+  const handleScheduleClick = () => {
+    navigate('/login');
   };
+
+  const handleStoreClick = () => {
+    navigate('/products');
+  };
+
+
+  useEffect(() => {
+    gsap.set([titleRef.current, textRef1.current, textRef2.current, buttonRef.current], { opacity: 0, y: 30 });
+    
+    const tl = gsap.timeline({ defaults: { duration: 1.8, ease: "power3.out" } });
+    tl.fromTo(
+      titleRef.current, 
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1 },
+      0.5
+    ) 
+
+    .fromTo(
+      textRef1.current, 
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1 },
+      "-=1.2"
+    ) 
+
+    .fromTo(
+      textRef2.current, 
+      { y: 50, opacity: 0 },
+      { y: 0, opacity: 1 },
+      "-=1.4"
+    ) 
+    
+    .fromTo(
+      buttonRef.current, 
+      { y: 30, opacity: 0 },
+      { y: 0, opacity: 1 },
+      "-=1.2"
+    );
+
+    gsap.to(scrollProgress.current, {
+      value: 1, 
+      ease: "none",
+      scrollTrigger: {
+        trigger: document.body,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true,
+      },
+    });
+  }, []);
+
   return (
     <Wrapper>
-      <StarBackground>
-        <StarContainer>
-          <Canvas>
-            <RotatingStars />
-          </Canvas>
-        </StarContainer>
-        <HeaderContainer>
-          <BasiliumLogoText />
-        </HeaderContainer>
+      <Starfield theme="light"/>
+      <LogoText>Basilium</LogoText>
         <ModelContainer>
-          <Basilium3DLogo />
+          <Basilium3DLogoMain scrollProgress={scrollProgress} />
         </ModelContainer>
-        <InfoContainer>
-          <PrataText size={"4rem"} $weight={700} color="#fff">
-            WEAR CROWN
-          </PrataText>
-          <PrataText size={"1.5rem"} $weight={500} color="#fff">
-            RULE YOUR STYLE
-          </PrataText>
-          <ButtonContainer>
-            <LoginButton to={"/login"}>
-              <PrataText size={"0.8rem"} $weight={500} color="#fff">
-                LOGIN
-              </PrataText>
-            </LoginButton>
-            <LoginButton to={"/products"}>
-              <PrataText size={"0.8rem"} $weight={500} color="#fff">
-                STORE
-              </PrataText>
-            </LoginButton>
-          </ButtonContainer>
-        </InfoContainer>
-      </StarBackground>
+        <BackContainer>
+          <ContentContainer>
+            <TitleText ref={titleRef}>Virtual Fitting System</TitleText> 
+            <ContentText ref={textRef1}>바실리움의 다양한 IT 솔루션을 한곳에서 만나보세요.</ContentText>
+            <ContentText ref={textRef2}>지금, 비즈니스의 성장을 시작하세요.</ContentText>
+            <ButtonContainer ref={buttonRef}>
+              <GlassButton onClick={handleScheduleClick} size='large'>
+              일정상담
+              </GlassButton>
+              <GlassButton onClick={handleStoreClick} size='large'>
+              스토어
+              </GlassButton>
+            </ButtonContainer>
+          </ContentContainer>
+        </BackContainer>
+        <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} />
     </Wrapper>
   );
 }
@@ -69,109 +116,113 @@ export { HeroSection };
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 `;
 
-const StarBackground = styled.div`
+const LogoText = styled.span`
+  font-family: "Prata-Regular";
+  font-size: 24px;
+  color: white;
+  text-transform: uppercase;
   position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-`;
-
-const StarContainer = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-flow: row nowrap;
-  justify-content: center;
-  align-items: center;
-  z-index: 0;
-`;
-
-const HeaderContainer = styled.div`
-  box-sizing: border-box;
-  position: absolute;
-  top: 0;
-  left: 0;
   height: 80px;
-  padding: 0 40px;
-  width: 100%;
+  padding: 16px 40px;
   display: flex;
-  flex-flow: row nowrap;
-  justify-content: space-between;
-  align-items: center;
-  z-index: 10;
 `;
 
 const ModelContainer = styled.div`
-  width: 50vw;
-  min-height: 100vh;
+  flex: 1;
   display: flex;
   flex-flow: column wrap;
   justify-content: center;
   align-items: center;
+  margin-left: 64px;
 `;
 
-const InfoContainer = styled.div`
-  width: 50vw;
+const BackContainer = styled.div`
+  flex: 2;
   min-height: 100vh;
   display: flex;
-  flex-flow: column wrap;
+  flex-flow: column;
   justify-content: center;
-  align-items: center;
-  gap: 1rem;
-  z-index: 10;
+  align-items: flex-end;
+`;
+
+const ContentContainer = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  align-items: flex-end;
+  z-index: 2;
+`;
+
+const TitleText = styled.div`
+  font-family: "Prata-Regular";
+  font-size: 96px;
+  font-weight: 600;
+  text-align: right;
+  letter-spacing: -4px;
+  padding-right: 84px;
+  padding-bottom: 24px;
+  margin: 0;
+  background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+`;
+
+const ContentText = styled.div`
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: right;
+  letter-spacing: -1px;
+  padding-right: 84px;
+  margin: 0;
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `;
 
 const ButtonContainer = styled.div`
-  width: 100%;
   display: flex;
   flex-flow: row nowrap;
-  justify-content: center;
+  justify-content: flex-end;
   align-items: center;
-  gap: 2rem;
+  padding-top: 32px;
+  padding-right: 90px;
+  gap: 16px;
+  width: 100%; 
 `;
 
-const LoginButton = styled(NavLink)`
-  padding: 16px 48px;
-  font-size: 18px;
-  border-radius: 20px;
-  border: none;
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  &:hover {
-    background: rgba(255, 255, 255, 0.25);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    transform: translateY(-2px);
-    box-shadow:
-      0 12px 40px rgba(31, 38, 135, 0.5),
-      inset 0 1px 0 rgba(255, 255, 255, 0.6);
-  }
-  &:after {
-    transform: translateY(0);
-    box-shadow:
-      0 4px 16px rgba(31, 38, 135, 0.3),
-      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+const ScrollArrow = styled.div`
+  position: absolute;
+  bottom: 140px;
+  z-index: 10;
+  animation: ${bounce} 2s infinite;
+  
+  color: #E9FAFF; 
+
+  svg {
+    width: 50px; 
+    height: 100px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: block;
+    vertical-align: middle;
   }
 `;

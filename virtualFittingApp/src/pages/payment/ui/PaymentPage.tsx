@@ -4,27 +4,34 @@ import { useMemo, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
+import { ShippingAddressWidget } from '@/widgets/shipping-address';
 import { PaymentSummary } from '@/widgets/payment-summary';
 import type { CartItem } from '@/entities/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { calculateFinalPrice } from '@/shared/lib/price.util';
 import { BREAKPOINTS } from '@/shared';
-import { useConfirmCheckout } from '@/features/process-payment';
-import { useOrderForm } from '@/widgets/order-form/hooks/use-order-form';
+import { 
+  useSingleOfflineConfirmCheckout, 
+  // useSingleTossConfirmCheckout,
+  PaymentSelectionModal,
+} from '@/features/process-checkout';
+import { useOrderForm } from '@/entities/user';
 
 export const PaymentPage = () => {
   const location = useLocation();
   const itemToCheckout = location.state?.item as CartItem;
   // const { user, isLoading: isUserLoading } = useOrderForm();
-  const { user } = useOrderForm();
+  const { user, isLoading: isUserLoading, handleSaveAddress } = useOrderForm();
 
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
   const [selectedCoupon, setSelectedCoupon] = useState<ClaimableCoupon | null>(null);
   // const [paymentMethod, setPaymentMethod] = useState('CARD');
-  const [paymentMethod] = useState('CARD');
-  const { confirmAndPay } = useConfirmCheckout();
+  const [paymentMethod] = useState('BANK_TRANSFER');
+  // const { confirmAndPay } = useSingleTossConfirmCheckout();
+  const { confirmAndProceed } = useSingleOfflineConfirmCheckout();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
     if (!isLoggedIn) {
@@ -37,7 +44,6 @@ export const PaymentPage = () => {
     if (!itemToCheckout) {
       return { productAmount: 0, finalDiscount: 0, shippingFee: 0, totalAmount: 0 };
     }
-
     const basePrice = itemToCheckout.discountedPrice ?? itemToCheckout.price;
     const productAmount = itemToCheckout.price * itemToCheckout.quantity;
     const finalPrice = calculateFinalPrice(basePrice, itemToCheckout.quantity, selectedCoupon);
@@ -49,15 +55,23 @@ export const PaymentPage = () => {
   }, [itemToCheckout, selectedCoupon]);
 
   const handlePayment = () => {
+    setIsModalOpen(false);
     if (!itemToCheckout || !user) return; 
 
-    confirmAndPay({
+    const shippingAddress = {
+      name: user.name,
+      address: user.deliveryInfo.defaultDeliveryAddress,
+      phone: user.phoneNumber,
+    };
+
+    confirmAndProceed({
       item: itemToCheckout,
       coupon: selectedCoupon,
       paymentMethod: paymentMethod as any,
       finalPrice: paymentTotals.totalAmount,
       customerName: user.name,
       customerEmail: user.emailAddress,
+      shippingAddress: shippingAddress,
     });
   };
 
@@ -66,20 +80,36 @@ export const PaymentPage = () => {
       <PageTitle>주문서</PageTitle>
       <Layout>
         <MainContent>
-          <OrderForm 
-            item={itemToCheckout}
-            selectedCoupon={selectedCoupon}
-            onSelectCoupon={setSelectedCoupon}
-            finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
-          />
+          <FormContainer>
+            {!isUserLoading && user && (
+                <ShippingAddressWidget 
+                  user={user}
+                  onSaveAddress={handleSaveAddress}
+                />
+              )}
+            <OrderForm 
+              item={itemToCheckout} 
+              selectedCoupon={selectedCoupon}
+              onSelectCoupon={setSelectedCoupon}
+              finalPrice={paymentTotals.productAmount - paymentTotals.finalDiscount}
+            />
+          </FormContainer>
         </MainContent>
         <SideContent>
           <PaymentSummary 
             totals={paymentTotals} 
-            onConfirm={handlePayment}
+            // onConfirm={handlePayment}
+            onConfirm={() => setIsModalOpen(true)}
           />
         </SideContent>
       </Layout>
+      <PaymentSelectionModal 
+        item={itemToCheckout}
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onConfirm={handlePayment}
+        totalAmount={paymentTotals.totalAmount}
+      />
     </PageContainer>
   );
 };
@@ -110,7 +140,6 @@ const Layout = styled.div`
 
 const MainContent = styled.main`
   flex: 2;
-  min-width: 0;
   width: 100%;
 `;
 
@@ -119,4 +148,11 @@ const SideContent = styled.aside`
   width: 100%;
   position: sticky;
   top: 80px;
+`;
+
+const FormContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  width: 100%;
 `;

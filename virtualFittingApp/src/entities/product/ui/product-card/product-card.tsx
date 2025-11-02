@@ -1,7 +1,7 @@
 import styled from "styled-components";
 import { useState, useEffect } from "react";
 import { ColorPopup } from "./color-pop-up";
-import { COLOR_MAP } from "@/shared";
+import { ColorSwatchesList } from "./color-swatches-list";
 import { fetchProductPrice } from "@/entities/discount";
 import { GlassBox } from "@/shared/components/glass-box";
 
@@ -14,7 +14,6 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [price, setPrice] = useState<{ original: number; discounted: number } | null>(null);
   const maxVisibleColors = 3;
-  const visibleColors = product.productColors?.slice(0, maxVisibleColors) || [];
   const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
 
   useEffect(() => {
@@ -37,9 +36,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
           {/* <ProductLikeButton productId={product.productId} isInitiallyLiked={product.isLiked} /> */}
         </ProductLikeButtonWrapper>
         <ColorSwatches>
-          {visibleColors.map((color: string, index: number) => (
-            <ColorCircle key={index} $color={COLOR_MAP[color] ?? "transparent"} />
-          ))}
+          <ColorSwatchesList colors={product.productColors?.slice(0, maxVisibleColors) || []} />
           {remainingColors > 0 && (
             <ExtraIcon
               onClick={(e) => {
@@ -171,14 +168,6 @@ const ColorSwatches = styled.div`
   display: flex;
   gap: 4px;
   z-index: 2;
-`;
-
-const ColorCircle = styled.div<{ $color: string }>`
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  background-color: ${(props) => props.$color};
-  border: 1px solid rgba(255, 255, 255, 0.5);
 `;
 
 const ProductLikeButtonWrapper = styled.div`

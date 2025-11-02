@@ -10,7 +10,10 @@ import { ProductDetailPage } from "@/pages/product/detail";
 import { ProductListPage } from "@/pages/product/list";
 import { MyDashboardPage } from "@/pages/my/dashboard";
 import { MyOrderListPage } from "@/pages/my/order-list";
-import { MyOrderDetailPage } from "@/pages/my/order-detail";
+import { 
+  MyOrderDetailPage,
+  OrderConfirmationPage, 
+} from "@/pages/my/order-detail";
 import { MyCancelListPage } from "@/pages/my/cancel-list";
 import { MyLikeListPage } from "@/pages/my/like-list";
 import { MyReviewListPage } from "@/pages/my/review-list";
@@ -95,6 +98,7 @@ const Routing = () => (
     <Route path="/mypage" element={<MyPageLayout />}>
       <Route index element={<MyDashboardPage />} />
       <Route path="order" element={<MyOrderListPage />} />
+      <Route path="order/confirmation" element={<OrderConfirmationPage />} />
       <Route path="order/:id" element={<MyOrderDetailPage />} />
       <Route path="cancel" element={<MyCancelListPage />} />
       <Route path="like" element={<MyLikeListPage />} />
