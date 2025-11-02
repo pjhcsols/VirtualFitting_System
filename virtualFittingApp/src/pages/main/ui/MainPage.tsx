@@ -1,6 +1,6 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { HeroSection, DescriptionSection, SolutionSection } from "@/widgets/main";
+import { HeroSection, DescriptionSection, SolutionSection, VirtualFittingSection } from "@/widgets/main";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
@@ -38,6 +38,9 @@ function MainPage() {
             </Section>
             <Section>
               <SolutionSection />
+            </Section>
+            <Section>
+              <VirtualFittingSection />
             </Section>
           </ModelContainer>
         </Article>
