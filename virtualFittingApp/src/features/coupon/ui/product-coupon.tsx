@@ -1,113 +1,106 @@
 import styled from "styled-components";
 import { useState, useMemo } from "react";
-import { useProductCoupon } from '../hooks/use-product-coupon';
 import { GlassButton } from '@/shared/components/glass-button';
 import { GlassBox } from "@/shared/components/glass-box";
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { Portal } from "@/shared/ui/Portal";
+import { useProductCoupon } from "../hooks/use-product-coupon";
 
 interface ProductCouponProps {
   productId: number;
   finalPrice: number;
   onSelect: (coupon: ClaimableCoupon | null) => void;
   currentSelectedCoupon: ClaimableCoupon | null;
+  pageType: 'product' | 'checkout';
+  
+  showPopup: boolean;
+  setShowPopup: (show: boolean) => void;
 }
 
 export const ProductCoupon = ({ 
-  productId, 
+  productId,
   finalPrice, 
   onSelect,
-  currentSelectedCoupon 
+  currentSelectedCoupon,
+  pageType,
+  showPopup,
+  setShowPopup
 }: ProductCouponProps) => {
-  
-  const { 
-    coupons, 
-    isLoading,
-    handleDownloadCoupon 
-  } = useProductCoupon(productId);
 
-  const [showPopup, setShowPopup] = useState(false);
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
+  const handleClosePopup = () => setShowPopup(false);
+  const { coupons, isLoading, handleDownloadCoupon } = useProductCoupon(productId);
 
-const availableCoupons = useMemo(() => {
+  const availableCoupons = useMemo(() => {
+    if (!coupons) {
+        return [];
+    }
     const now = new Date();
 
     return coupons.filter(coupon => {
       const isExpired = new Date(coupon.endAt) < now;
-      if (isExpired) return false;
-
       const isMinPriceMet = finalPrice >= coupon.minOrderPrice;
-      if (!isMinPriceMet) return false;
-      
-      const canDownloadOrUse = coupon.remainingCanClaim > 0;
-      
+      if (isExpired || !isMinPriceMet) return false;
+      if (pageType === 'checkout') {
+          return coupon.normalCouponIds && coupon.normalCouponIds.length > 0;
+      }
+
+      const canDownloadOrUse = coupon.remainingCanClaim > 0 || coupon.normalCouponIds.length > 0;
       return canDownloadOrUse;
     });
-  }, [coupons, finalPrice]);
+  }, [coupons, finalPrice, pageType]);
 
-  const handleOpenPopup = () => {
-    setTempSelectedCoupon(currentSelectedCoupon); 
-    if (!currentSelectedCoupon && availableCoupons.length > 0) {
-        setTempSelectedCoupon(availableCoupons[0]);
-    }
-    
-    setShowPopup(true);
-  };
   const handleApply = async () => {
     if (tempSelectedCoupon === null) {
       onSelect(null); 
       setShowPopup(false);
       return;
     }
-    const hasWalletIdForUse = tempSelectedCoupon.walletId !== null && tempSelectedCoupon.walletId !== undefined;
 
-    if (hasWalletIdForUse) {
-      onSelect(tempSelectedCoupon);
+    if (pageType === 'checkout') {
+      const walletIdForUse = tempSelectedCoupon.normalCouponIds[0];
+      const finalCoupon: ClaimableCoupon = { ...tempSelectedCoupon, walletId: walletIdForUse }; 
+      
+      onSelect(finalCoupon);
       setShowPopup(false);
-    } else {
+
+    } else if (pageType === 'product') {
+      
+      const isAlreadyOwned = tempSelectedCoupon.normalCouponIds.length > 0;
+
+      if (isAlreadyOwned) {
+        setShowPopup(false);
+        return;
+      }
+      
+      // 다운로드 시도 로직
       if (tempSelectedCoupon.remainingCanClaim > 0) {
-        const downloadedWalletId = await handleDownloadCoupon(tempSelectedCoupon.campaignId);
+        const brandCampaignIdToUse = tempSelectedCoupon.campaignId; // brandCampaignId가 없으면 campaignId 사용 가정
+        const downloadedWalletId = await handleDownloadCoupon(brandCampaignIdToUse);
       
         if (downloadedWalletId !== null) {
-
-          const latestCouponData = coupons.find(c => c.campaignId === tempSelectedCoupon.campaignId);
-          
-          if (latestCouponData) {
-              const newlySelectedCoupon: ClaimableCoupon = {
-                ...latestCouponData,
-                walletId: downloadedWalletId,
-              };
-              
-              onSelect(newlySelectedCoupon);
-              setTempSelectedCoupon(newlySelectedCoupon);
-              setShowPopup(false);
-          } else {
-              const partialCoupon: ClaimableCoupon = { ...tempSelectedCoupon, walletId: downloadedWalletId };
-              onSelect(partialCoupon);
-              setShowPopup(false);
-          }
+          alert('쿠폰 다운로드에 성공했습니다! 마이페이지에서 확인하세요.');
         } else {
           alert('쿠폰 다운로드에 실패했습니다. (수량 소진 등을 확인하세요)');
         }
       } else {
           alert('쿠폰을 다운로드할 수 없습니다. 발급 제한을 확인하세요.');
       }
+      setShowPopup(false);
     }
   };
 
   return (
-    <>
-      <GlassButton onClick={handleOpenPopup} size="small">
-        쿠폰 적용
-      </GlassButton>
-      <Portal>
-        {showPopup && (
-          <PopupOverlay onClick={() => setShowPopup(false)}>
-            <PopupContent onClick={(e) => e.stopPropagation()}>
-              <PopupHeader>
-                <Title>쿠폰 선택</Title>
-                <CloseButton onClick={() => setShowPopup(false)}>×</CloseButton>
-              </PopupHeader>
+    <Portal>
+      {showPopup && (
+        <PopupOverlay onClick={handleClosePopup}>
+          <PopupContent onClick={(e) => e.stopPropagation()}>
+            <PopupHeader>
+              <Title>
+                {pageType === 'product' ? '사용 가능한 쿠폰' : '쿠폰 선택'}
+              </Title>
+              <CloseButton onClick={handleClosePopup}>×</CloseButton>
+            </PopupHeader>
               
               {isLoading ? (
                 <StatusText>쿠폰을 불러오는 중...</StatusText>
@@ -140,7 +133,7 @@ const availableCoupons = useMemo(() => {
                             <CouponInfo>
                               <DiscountLine>
                                 <DiscountAmount>{finalDiscountAmount.toLocaleString()}원 할인</DiscountAmount>
-                                {isCurrentlySelected && (
+                                {pageType === 'checkout' && isCurrentlySelected && (
                                   <UnapplyButton
                                     type="button"
                                     onClick={(e) => {
@@ -151,6 +144,9 @@ const availableCoupons = useMemo(() => {
                                   >
                                     미적용
                                   </UnapplyButton>
+                                )}
+                                {pageType === 'product' && coupon.normalCouponIds.length > 0 && (
+                                  <OwnedTag>발급 완료</OwnedTag>
                                 )}
                               </DiscountLine>
                               <DiscountLine>
@@ -184,7 +180,6 @@ const availableCoupons = useMemo(() => {
           </PopupOverlay>
         )}
       </Portal>
-    </>
   );
 };
 
@@ -192,7 +187,7 @@ const PopupOverlay = styled.div`
   position: fixed;
   inset: 0;
   background-color: #292e49d0;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
@@ -208,6 +203,16 @@ const PopupContent = styled(GlassBox)`
   display: flex;
   flex-direction: column;
   overflow: hidden;
+`;
+
+const OwnedTag = styled.span`
+  font-size: 12px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  color: #fff;
+  font-weight: 600;
+  margin-left: auto;
+  border: 1px solid rgba(255, 255, 255, 0.2);
 `;
 
 const PopupHeader = styled.div`

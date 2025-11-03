@@ -42,10 +42,12 @@ export const useProductCoupon = (productId: number) => {
     return guestCoupons;
   };
 
+  const isCouponQueryEnabled = productId > 0;
+  
   const { data: coupons = [], isLoading, refetch, error } = useQuery({
     queryKey: couponKeys.claimables(productId, accessToken), 
     queryFn,
-    enabled: !!productId,
+    enabled: isCouponQueryEnabled, 
     staleTime: 1000 * 60 * 5, 
     refetchOnWindowFocus: false,
   });
@@ -56,19 +58,20 @@ export const useProductCoupon = (productId: number) => {
     }
   }, [error]);
 
-  const handleDownloadCoupon = async (campaignId: number): Promise<number | null> => {
+  const handleDownloadCoupon = async (brandCampaignId: number): Promise<number | null> => {
     if (!accessToken) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
       return null;
     }
     try {
-      const result = await downloadCoupon({ campaignId, authUserId: accessToken }); 
-      if (result && result.walletId) { 
+      const result = await downloadCoupon({ brandCampaignId, authUserId: accessToken }); 
+      
+      if (result && result.normalCouponWalletId) {
         
         await refetch(); 
 
-        return result.walletId; 
+        return result.normalCouponWalletId;
       }
       return null; 
     } catch (error) {
