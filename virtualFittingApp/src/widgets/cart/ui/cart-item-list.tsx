@@ -1,16 +1,15 @@
 import styled from 'styled-components';
 import { useState } from 'react';
-import { mapCartItemResponseToCartItem, type CartItem } from '@/entities/cart';
+import { type CartItem } from '@/entities/cart';
 import { GlassBox } from '@/shared/components/glass-box';
+import { GlassButton } from '@/shared/components/glass-button';
 import { OrderItemCard } from '@/entities/order-item';
-import { useMyCartQuery } from '@/entities/cart'; 
-import { useCookies } from 'react-cookie';
 import { useDeleteCartItems } from '@/features/cart';
 import { UpdateCartItemOptionsPopup } from '@/features/update-cart';
 import { useProductDetailQuery } from '@/entities/product'; 
-import { ProductCoupon } from "@/features/product-coupon";
+import { ProductCoupon } from "@/features/coupon";
 import type { ClaimableCoupon } from '@/entities/coupon';
-import { useApplyCartItemCoupon } from "@/features/cart";
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();
@@ -27,25 +26,36 @@ interface ItemToEdit {
     item: CartItem;
 }
 
-export function CartItemList() {
-  const [cookies] = useCookies(['access-token']);
-  const accessToken = cookies['access-token'];
+interface CartItemListProps {
+    cartItems: CartItem[];
+    isCartLoading: boolean;
+    selectedCouponMap: Map<number, ClaimableCoupon | null>;
+    handleCouponSelect: (coupon: ClaimableCoupon | null, itemId: number) => void;
+    refetchCart: () => void;
+    accessToken: string;
+}
+
+export function CartItemList({
+    cartItems,
+    isCartLoading,
+    selectedCouponMap,
+    handleCouponSelect,
+    refetchCart,
+    accessToken,
+}: CartItemListProps) {
+  
+  const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ItemToEdit | null>(null);
-  const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
 
-  const { data: cartData, refetch: refetchCart } = useMyCartQuery(accessToken);
-  const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
-  const { mutate: applyCoupon } = useApplyCartItemCoupon({ authUserId: accessToken! });
+  const handleCouponSelectAndApply = (coupon: ClaimableCoupon | null, itemId: number) => {
+    handleCouponSelect(coupon, itemId); 
+  };
 
-  const cartItems: CartItem[] = cartData?.items
-    ? cartData.items.map(mapCartItemResponseToCartItem)
-    : [];
-    
   const productIdToFetch = itemToEdit ? itemToEdit.item.productId : null;
   const initialColorToFetch = itemToEdit ? itemToEdit.item.color : null;
-  
+
   const { 
     data: productDetail, 
     isLoading: isProductDetailLoading,
@@ -68,31 +78,6 @@ export function CartItemList() {
         }
       });
     }
-  };
-
-  const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
-    setSelectedCouponMap(prevMap => {
-      const newMap = new Map(prevMap);
-      newMap.set(itemId, coupon);
-      return newMap;
-    });
-
-    if (!accessToken) {
-      alert("로그인 정보가 유효하지 않습니다.");
-      return;
-    }
-
-    const couponWalletIdToApply = coupon ? coupon.walletId : null; 
-
-    applyCoupon({ itemId, couponWalletId: couponWalletIdToApply }, {
-      onSuccess: () => {
-        console.log(`장바구니 아이템 ID ${itemId} 쿠폰 적용/취소 성공`);
-        refetchCart();
-      },
-      onError: () => {
-        alert('쿠폰 적용에 실패했습니다. 다시 시도해 주세요.');
-      }
-    });
   };
 
   const handleEditOptions = (item: CartItem) => {
@@ -118,28 +103,38 @@ export function CartItemList() {
       <Header>
         <SectionTitle>장바구니</SectionTitle>
       </Header>
-      {cartItems.length === 0 ? (
+      {!isCartLoading && cartItems.length === 0 ? (
         <EmptyMessage>장바구니가 비어있습니다.</EmptyMessage>
       ) : (
         <ItemsContainer>
-          {entries.map(([brand, items],) => (
+          {cartItems.length > 0 && entries.map(([brand, items],) => (
             <BrandSection key={brand}>
               {items.map((item) => {
-                const itemTotalPrice = (item as any).productPrice * item.quantity; 
-                const currentCoupon = selectedCouponMap.get(item.id) || null; 
+                const currentCoupon = selectedCouponMap.get(item.id) || null;
+                const priceForCouponCalculation = 
+                    (item.discountedPrice ?? item.price) * item.quantity;
+                let itemCouponDiscount = 0;
+                if (currentCoupon && currentCoupon.walletId !== null) {
+                    const calculatedDiscount = Math.floor(priceForCouponCalculation * (currentCoupon.percent / 100));
+                    itemCouponDiscount = Math.min(calculatedDiscount, currentCoupon.maxDiscountPrice);
+                }
 
+                const finalItemPrice = priceForCouponCalculation - itemCouponDiscount;
+                
                 return (
                   <ItemWrapper key={item.id}>
-                    <OrderItemCard item={item} />
-                    
+                    <OrderItemCard 
+                        item={item as CheckoutItemDetail} 
+                        finalPrice={finalItemPrice} 
+                    />
                     <ButtonContainer>
                       <ProductCoupon 
                         productId={item.productId}
-                        finalPrice={itemTotalPrice} 
-                        onSelect={(coupon) => handleCouponSelect(coupon, item.id)}
-                        currentSelectedCoupon={currentCoupon} 
+                        finalPrice={priceForCouponCalculation}
+                        onSelect={(coupon) => handleCouponSelectAndApply(coupon, item.id)} 
+                        currentSelectedCoupon={currentCoupon}
                       />
-                        <EditButton onClick={() => handleEditOptions(item)}>옵션 변경</EditButton>
+                      <GlassButton onClick={() => handleEditOptions(item)} size='small'>옵션변경</GlassButton>
                     </ButtonContainer>
                     <RemoveButton onClick={() => handleRemoveItem(item.id)}>×</RemoveButton>
                   </ItemWrapper>
@@ -231,19 +226,4 @@ const EmptyMessage = styled.p`
   text-align: center;
   color: #888;
   font-size: 1rem;
-`;
-
-const EditButton = styled.button`
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    padding: 4px 8px;
-    border-radius: 4px;
-    font-size: 11px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-
-    &:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-    }
 `;

@@ -29,7 +29,7 @@ export const ProductCoupon = ({
   const [showPopup, setShowPopup] = useState(false);
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
 
-  const availableCoupons = useMemo(() => {
+const availableCoupons = useMemo(() => {
     const now = new Date();
 
     return coupons.filter(coupon => {
@@ -39,7 +39,7 @@ export const ProductCoupon = ({
       const isMinPriceMet = finalPrice >= coupon.minOrderPrice;
       if (!isMinPriceMet) return false;
       
-      const canDownloadOrUse = coupon.ownedCount > 0 || coupon.remainingCanClaim > 0;
+      const canDownloadOrUse = coupon.remainingCanClaim > 0;
       
       return canDownloadOrUse;
     });
@@ -60,24 +60,12 @@ export const ProductCoupon = ({
       return;
     }
     const hasWalletIdForUse = tempSelectedCoupon.walletId !== null && tempSelectedCoupon.walletId !== undefined;
-    console.log(
-        "[Coupon Apply] Selected Coupon Info:", 
-        { 
-            campaignId: tempSelectedCoupon.campaignId, 
-            walletId: tempSelectedCoupon.walletId, 
-            ownedCount: tempSelectedCoupon.ownedCount,
-            hasWalletIdForUse: hasWalletIdForUse
-        }
-    );
 
     if (hasWalletIdForUse) {
       onSelect(tempSelectedCoupon);
       setShowPopup(false);
     } else {
       if (tempSelectedCoupon.remainingCanClaim > 0) {
-        
-        console.log("Wallet ID가 없어 새로 다운로드 시도합니다. (remainingCanClaim > 0)");
-
         const downloadedWalletId = await handleDownloadCoupon(tempSelectedCoupon.campaignId);
       
         if (downloadedWalletId !== null) {
@@ -94,7 +82,6 @@ export const ProductCoupon = ({
               setTempSelectedCoupon(newlySelectedCoupon);
               setShowPopup(false);
           } else {
-              alert('쿠폰 다운로드는 성공했지만, 최신 쿠폰 데이터를 불러오는 데 실패했습니다.');
               const partialCoupon: ClaimableCoupon = { ...tempSelectedCoupon, walletId: downloadedWalletId };
               onSelect(partialCoupon);
               setShowPopup(false);
