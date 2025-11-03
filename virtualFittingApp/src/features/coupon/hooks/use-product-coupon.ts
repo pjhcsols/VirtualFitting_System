@@ -9,8 +9,9 @@ import {
   fetchClaimableCouponsForGuest, 
   fetchMyClaimableCoupons,
   downloadCoupon 
-} from '../api/coupon.api';
-import { couponKeys } from '../coupon.keys';
+} from '@/entities/coupon';
+import { couponKeys } from '@/entities/coupon';
+import { fetchMyUserDetails } from '@/entities/user';
 
 export const useProductCoupon = (productId: number) => {
   const [cookies] = useCookies(['access-token']);
@@ -24,7 +25,14 @@ export const useProductCoupon = (productId: number) => {
     if (!guestCoupons) return [];
 
     if (isLoggedIn && accessToken) {
-      const myCoupons = await fetchMyClaimableCoupons(productId, accessToken);
+      const userDetailResponse = await fetchMyUserDetails();
+      const normalUserId = userDetailResponse?.data?.id; 
+      
+      if (!normalUserId) {
+        console.warn("사용자 ID를 가져올 수 없어 게스트 쿠폰 정보만 반환합니다.");
+        return guestCoupons; 
+      }
+      const myCoupons = await fetchMyClaimableCoupons(productId, normalUserId);
       const myCouponsMap = new Map(myCoupons?.map(c => [c.campaignId, c]));
       const mergedCoupons = guestCoupons.map(guestCoupon => 
         myCouponsMap.get(guestCoupon.campaignId) || guestCoupon
@@ -48,23 +56,24 @@ export const useProductCoupon = (productId: number) => {
     }
   }, [error]);
 
-  const handleDownloadCoupon = async (campaignId: number): Promise<boolean> => {
+  const handleDownloadCoupon = async (campaignId: number): Promise<number | null> => {
     if (!accessToken) {
       alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
-      return false;
+      return null;
     }
     try {
-      const result = await downloadCoupon({ campaignId, authUserId: accessToken });
-      if (result) {
-
+      const result = await downloadCoupon({ campaignId, authUserId: accessToken }); 
+      if (result && result.walletId) { 
+        
         await refetch(); 
-        return true;
+
+        return result.walletId; 
       }
-      return false;
+      return null; 
     } catch (error) {
       console.error("쿠폰 다운로드에 실패하였습니다.", error);
-      return false;
+      return null; 
     }
   };
 

@@ -13,6 +13,7 @@ export interface ClaimableCoupon extends CouponBase {
   endAt: string;
   alreadyClaimed: boolean;
   remainingCanClaim: number;
+  walletId: number | null;
   ownedCount: number;
   availableCount: number;
   usedCount: number;
