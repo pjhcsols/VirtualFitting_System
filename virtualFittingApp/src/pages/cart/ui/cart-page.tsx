@@ -1,34 +1,71 @@
-import styled from "styled-components";
 import { useState } from 'react';
-import { BREAKPOINTS } from "@/shared";
-import { CartItemList } from "@/widgets";
+import styled from 'styled-components';
+import { BREAKPOINTS } from '@/shared';
+import { CartItemList } from '@/widgets';
 import { PaymentSummary } from "@/widgets/payment-summary";
-import { useCartPaymentTotals } from "@/entities/cart";
+import { useMyCartQuery } from "@/entities/cart";
+import { useCartTotals } from '@/features/cart';
+import type { ClaimableCoupon } from '@/entities/coupon';
+import { Cookies } from 'react-cookie';
+import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
+const cookiesInstance = new Cookies();
 
 function CartPage() {
-  // const { totals, isLoading, isError } = useCartPaymentTotals();
-  // const [isModalOpen, setIsModalOpen] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
+    
+    const accessToken = cookiesInstance.get('access-token');
 
-  const { totals } = useCartPaymentTotals();
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  console.log(isModalOpen);
-  // [seah] 수정 필요
+    const { data: cartData, isLoading: isCartLoading, refetch: refetchCart } = useMyCartQuery(accessToken!); 
+    
+    const cartItems = cartData?.items 
+        ? cartData.items.map(item => ({ 
+            id: item.itemId,
+            productId: item.productId,
+            name: item.productName,
+            brand: item.brandFirmName,
+            image: item.productPhotoUrls?.[0] ?? '',
+            price: item.productPrice,
+            discountedPrice: item.discountedPrice,
+            discountRate: item.discountPercent ?? undefined,
+            color: item.color as ProductColorPayment, 
+            size: item.size as ProductSizePayment,
+            quantity: item.quantity,
+        })) 
+        : []; 
 
-  return (
-    <PageContainer>
-      <PageTitle>장바구니</PageTitle>
-      <Layout>
-        <MainContent>
-          <CartItemList />
-        </MainContent>
-        <SideContent>
-          <PaymentSummary 
-            totals={totals} 
-            onConfirm={() => setIsModalOpen(true)}
-          />
-        </SideContent>
-      </Layout>
+    const totals = useCartTotals(cartItems, selectedCouponMap);
+
+    const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
+        setSelectedCouponMap(prevMap => {
+            const newMap = new Map(prevMap);
+            newMap.set(itemId, coupon);
+            return newMap;
+        });
+    };
+
+    return (
+        <PageContainer>
+            <PageTitle>장바구니</PageTitle>
+            <Layout>
+                <MainContent>
+                  <CartItemList 
+                      cartItems={cartItems}
+                      isCartLoading={isCartLoading}
+                      selectedCouponMap={selectedCouponMap} 
+                      handleCouponSelect={handleCouponSelect}
+                      refetchCart={refetchCart}
+                      accessToken={accessToken}
+                  />
+              </MainContent>
+                <SideContent>
+                    <PaymentSummary 
+                      totals={totals} 
+                      onConfirm={() => setIsModalOpen(true)}
+                    />
+                </SideContent>
+            </Layout>
     </PageContainer>
   );
 }

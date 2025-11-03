@@ -11,25 +11,28 @@ export interface ClaimableCoupon extends CouponBase {
   minOrderPrice: number;
   estimatedDiscountOnThisProduct: number;
   endAt: string;
-  alreadyClaimed: boolean;
-  remainingCanClaim: number;
-  walletId: number | null;
   ownedCount: number;
-  availableCount: number;
   usedCount: number;
+  availableCount: number;
   hasAvailable: boolean;
-  alreadyUsedOnce: boolean;
+  remainingCanClaim: number;
+  normalCouponIds: number[];
+  usedNormalCouponIds: number[];
+  expiredNormalCouponIds: number[];
+  walletId?: number;
 }
 
 export type ClaimableCouponsResponse = ApiResponse<ClaimableCoupon[]>;
 
 export interface DownloadCouponRequestBody {
-  campaignId: number;
+  brandCampaignId: number; 
 }
 
-export interface CouponInWallet extends CouponBase {
-  walletId: number;
+export interface CouponInWallet {
+  normalCouponWalletId: number;
+  brandCampaignId: number;
+  percent: number;
+  maxDiscountPrice: number;
 }
 
 export type DownloadCouponApiResponse = ApiResponse<CouponInWallet>;
-
