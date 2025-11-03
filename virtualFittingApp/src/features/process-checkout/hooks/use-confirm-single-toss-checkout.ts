@@ -54,6 +54,11 @@ export const useSingleTossConfirmCheckout = () => {
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
       console.log(reservedOrderId);
+
+      const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
+                        ?? (checkoutData.coupon as any)?.walletId 
+                        ?? undefined;
+
       const intentResponse = await createPaymentIntent({
         orderId: reservedOrderId,
         currency: 'KRW',
@@ -62,7 +67,7 @@ export const useSingleTossConfirmCheckout = () => {
           size: checkoutData.item.size,
           color: checkoutData.item.color,
           quantity: checkoutData.item.quantity,
-          couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
+          couponWalletId: couponWalletId,
         }],
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
         pointsToUse: 0, //[세아] 나중에 수정해야댐

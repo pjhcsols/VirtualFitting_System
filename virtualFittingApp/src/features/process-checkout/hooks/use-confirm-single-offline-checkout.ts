@@ -4,14 +4,19 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { 
-    createPaymentReservation,
-    createPaymentIntent,
-    reportPaymentResult,
+  confirmOrderPurchase, 
+} from '@/entities/order';
+import { 
+  createPaymentReservation,
+  createPaymentIntent,
+  confirmFinalPayment,
+  reportPaymentResult,
  } from '@/entities/payment';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 import type { ShippingAddressData } from "@/entities/shipping-address";
+import { upsertCart } from '@/entities/cart';
 
 export interface SingleOfflineCheckoutData {
   item: CheckoutItemDetail;
@@ -32,6 +37,7 @@ export const useSingleOfflineConfirmCheckout = () => {
   
   const confirmAndProceed = async (checkoutData: SingleOfflineCheckoutData) => {
     setIsLoading(true);
+    let reservedOrderId: string | undefined;
 
     console.log("[INPUT LOG] Selected Coupon:", checkoutData.coupon);
 
@@ -57,19 +63,10 @@ export const useSingleOfflineConfirmCheckout = () => {
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
       console.log(reservedOrderId);
-      // const intentResponse = await createPaymentIntent({
-      //   orderId: reservedOrderId,
-      //   currency: 'KRW',
-      //   lines: [{
-      //     productId: checkoutData.item.productId,
-      //     size: checkoutData.item.size,
-      //     color: checkoutData.item.color,
-      //     quantity: checkoutData.item.quantity,
-      //     couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
-      //   }],
-      //   expiresAt: new Date(reservationData.expiresAt).toISOString(),
-      //   pointsToUse: 0, //[세아] 수정해야돼.... 
-      // });
+
+      const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
+                             ?? (checkoutData.coupon as any)?.walletId 
+                             ?? undefined;
 
       const intentBody = {
         orderId: reservedOrderId,
@@ -79,25 +76,35 @@ export const useSingleOfflineConfirmCheckout = () => {
           size: checkoutData.item.size,
           color: checkoutData.item.color,
           quantity: checkoutData.item.quantity,
-          couponWalletId: checkoutData.coupon?.walletId ?? undefined,
+          couponWalletId: couponWalletId,
         }],
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
-        pointsToUse: 0, 
+        pointsToUse: 0, // [seah] 포인트 적용할 수 있게 추후 수정필요
       };
-      
-      // 🚨 콘솔 로그: 결제 의도 생성 API로 보내는 Body
-      console.log("여기여기여기여기여기여ㅣ", intentBody);
-
 
       const intentResponse = await createPaymentIntent(intentBody);
-
-      
       const intentData = intentResponse?.data;
       if (!intentData) {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
       }
 
+      const FINAL_PAYMENT_KEY = `TEMP-${Date.now()}`;
+
+      const confirmationParams = {
+        paymentType: checkoutData.paymentMethod,
+        amount: intentData.serverTotal,
+        orderId: intentData.orderId,
+        paymentKey: FINAL_PAYMENT_KEY,
+      };
+
+      await confirmFinalPayment(confirmationParams); 
+
       await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
+
+      const authUserId = accessToken;
+      const orderId = intentData.orderId;
+
+      await confirmOrderPurchase(authUserId, orderId); 
 
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
@@ -119,12 +126,36 @@ export const useSingleOfflineConfirmCheckout = () => {
         } 
     });
 
-    //   sessionStorage.setItem('paymentMethod', checkoutData.paymentMethod);
-
     } catch (error: any) {
-      console.error("Payment confirmation failed:", error);
-      alert(`결제 처리 중 오류가 발생했습니다: ${error.message}`);
 
+      const itemToReAdd = checkoutData.item;
+      let shouldReAddToCart = false;
+
+      if (reservedOrderId) {
+        try {
+            await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
+            console.log(`[재고 롤백 성공] ${reservedOrderId}`);
+            shouldReAddToCart = true;
+        } catch (rollbackError) {
+            console.error("[재고 롤백 실패]", rollbackError);
+        }
+      }
+      
+      if (shouldReAddToCart) {
+        const accessToken = cookies['access-token'];
+          try {
+              await upsertCart(accessToken, {
+                  items: [{
+                      productId: itemToReAdd.productId,
+                      size: itemToReAdd.size,
+                      color: itemToReAdd.color,
+                      quantity: itemToReAdd.quantity,
+                  }],
+              });
+          } catch (cartError) {
+          }
+      } else {
+      }
     } finally {
       setIsLoading(false);
     }
@@ -132,4 +163,3 @@ export const useSingleOfflineConfirmCheckout = () => {
 
   return { confirmAndProceed, isLoading };
 };
-
