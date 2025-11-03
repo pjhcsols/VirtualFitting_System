@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
-import { createPaymentReservation, createPaymentIntent } from '../api/payment.api';
-import type { CartItem } from '@/entities/cart';
+import { createPaymentReservation, createPaymentIntent } from '@/entities/payment';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { TossPaymentMethod, TossPaymentsInstance } from '@/shared/types/payment';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
 export interface SingleTossCheckoutData {
-  item: CartItem;
+  item: CheckoutItemDetail;
   coupon: ClaimableCoupon | CouponInWallet | null;
   paymentMethod: TossPaymentMethod;
   finalPrice: number;

@@ -1,14 +1,6 @@
 export type ProductSizePayment = "XX" | "S" | "M" | "L" | "XL" | "F";
 export type ProductColorPayment = "BLACK" | "WHITE" | "GRAY" | "BLUE" | "RED" | "YELLOW" | "GREEN" | "ORANGE";
 
-export interface PaymentRequestParams {
-  userId: string;
-  productId: number;
-  count: number;
-  productSize: ProductSizePayment;
-  productColor: ProductColorPayment;
-}
-
 export interface ReservedItem {
   productId: number;
   count: number;
@@ -16,10 +8,24 @@ export interface ReservedItem {
   productColor: ProductColorPayment;
 }
 
+export interface PaymentRequestParams extends ReservedItem {
+  userId: string;
+}
+
+export interface BatchPaymentRequestBody {
+  items: ReservedItem[];
+}
+
 export interface PaymentReservationData {
   reserveTaskOrderPayId: string;
   expiresAt: string;
   items: ReservedItem[];
+}
+
+export interface PaymentReservationStatus {
+  reserveTaskOrderPayId: string;
+  status: "ACTIVATED" | "INACTIVE";
+  expiresAt: string;
 }
 
 export interface PaymentResponse {
@@ -30,27 +36,10 @@ export interface PaymentResponse {
   data: PaymentReservationData;
 }
 
-export interface BatchPaymentRequestItem {
-  productId: number;
-  count: number;
-  productSize: ProductSizePayment;
-  productColor: ProductColorPayment;
-}
-
-export interface BatchPaymentRequestBody {
-  items: BatchPaymentRequestItem[];
-}
-
-export interface PaymentReservationStatus {
-  reserveTaskOrderPayId: string;
-  status: "ACTIVATED" | "INACTIVE";
-  expiresAt: string;
-}
-
 export interface PaymentIntentLine {
   productId: number;
-  size: string;
-  color: string;
+  size: ProductSizePayment; 
+  color: ProductColorPayment;
   quantity: number;
   couponWalletId?: number;
 }

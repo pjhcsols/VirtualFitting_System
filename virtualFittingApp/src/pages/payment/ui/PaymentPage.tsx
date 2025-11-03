@@ -6,7 +6,7 @@ import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
 import { ShippingAddressWidget } from '@/widgets/shipping-address';
 import { PaymentSummary } from '@/widgets/payment-summary';
-import type { CartItem } from '@/entities/cart';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { calculateFinalPrice } from '@/shared/lib/price.util';
 import { BREAKPOINTS } from '@/shared';
@@ -19,7 +19,7 @@ import { useOrderForm } from '@/entities/user';
 
 export const PaymentPage = () => {
   const location = useLocation();
-  const itemToCheckout = location.state?.item as CartItem;
+  const itemToCheckout = location.state?.item as CheckoutItemDetail;
   // const { user, isLoading: isUserLoading } = useOrderForm();
   const { user, isLoading: isUserLoading, handleSaveAddress } = useOrderForm();
 
@@ -39,6 +39,7 @@ export const PaymentPage = () => {
       navigate('/login');
     }
   }, [isLoggedIn, location]);
+
 
   const paymentTotals = useMemo(() => {
     if (!itemToCheckout) {
@@ -60,7 +61,7 @@ export const PaymentPage = () => {
 
     const shippingAddress = {
       name: user.name,
-      address: user.deliveryInfo.defaultDeliveryAddress,
+      address: user.address,
       phone: user.phoneNumber,
     };
 
@@ -109,6 +110,7 @@ export const PaymentPage = () => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handlePayment}
         totalAmount={paymentTotals.totalAmount}
+        selectedCoupon={selectedCoupon}
       />
     </PageContainer>
   );

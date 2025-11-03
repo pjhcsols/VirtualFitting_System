@@ -7,14 +7,14 @@ import {
     createPaymentReservation,
     createPaymentIntent,
     reportPaymentResult,
- } from '../api/payment.api';
-import type { CartItem } from '@/entities/cart';
+ } from '@/entities/payment';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 import type { ShippingAddressData } from "@/entities/shipping-address";
 
 export interface SingleOfflineCheckoutData {
-  item: CartItem;
+  item: CheckoutItemDetail;
   coupon: ClaimableCoupon | CouponInWallet | null;
   paymentMethod: "BANK_TRANSFER"
   finalPrice: number;
@@ -28,9 +28,13 @@ export const useSingleOfflineConfirmCheckout = () => {
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
+
   
   const confirmAndProceed = async (checkoutData: SingleOfflineCheckoutData) => {
     setIsLoading(true);
+
+    console.log("[INPUT LOG] Selected Coupon:", checkoutData.coupon);
+
     try {
       if (!isLoggedIn) {
         alert("결제 처리를 위해 로그인이 필요합니다.");
@@ -53,7 +57,21 @@ export const useSingleOfflineConfirmCheckout = () => {
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
       console.log(reservedOrderId);
-      const intentResponse = await createPaymentIntent({
+      // const intentResponse = await createPaymentIntent({
+      //   orderId: reservedOrderId,
+      //   currency: 'KRW',
+      //   lines: [{
+      //     productId: checkoutData.item.productId,
+      //     size: checkoutData.item.size,
+      //     color: checkoutData.item.color,
+      //     quantity: checkoutData.item.quantity,
+      //     couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
+      //   }],
+      //   expiresAt: new Date(reservationData.expiresAt).toISOString(),
+      //   pointsToUse: 0, //[세아] 수정해야돼.... 
+      // });
+
+      const intentBody = {
         orderId: reservedOrderId,
         currency: 'KRW',
         lines: [{
@@ -61,12 +79,19 @@ export const useSingleOfflineConfirmCheckout = () => {
           size: checkoutData.item.size,
           color: checkoutData.item.color,
           quantity: checkoutData.item.quantity,
-          couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
+          couponWalletId: checkoutData.coupon?.walletId ?? undefined,
         }],
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
-        pointsToUse: 0, //[세아] 수정해야돼.... 
-      });
+        pointsToUse: 0, 
+      };
+      
+      // 🚨 콘솔 로그: 결제 의도 생성 API로 보내는 Body
+      console.log("여기여기여기여기여기여ㅣ", intentBody);
 
+
+      const intentResponse = await createPaymentIntent(intentBody);
+
+      
       const intentData = intentResponse?.data;
       if (!intentData) {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
