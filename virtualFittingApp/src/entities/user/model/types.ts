@@ -50,13 +50,6 @@ export type EmailVerificationInputProps = {
   onVerify: () => void;
 };
 
-export interface DeliveryInfo {
-  deliveryInfoId: number;
-  defaultDeliveryAddress: string;
-  firstDeliveryAddress: string;
-  second_delivery_address: string;
-}
-
 export interface UserDetail {
   id: string;
   emailAddress: string;
@@ -78,7 +71,10 @@ export interface UserDetail {
   hemWidth: number;
   height: number;
   weight: number;
-  deliveryInfo: DeliveryInfo;
+}
+
+export interface UpdateAddressRequest {
+  address: string;
 }
 
 export type UserDetailResponse = ApiResponse<UserDetail>;
