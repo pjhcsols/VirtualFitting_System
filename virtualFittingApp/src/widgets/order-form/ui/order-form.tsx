@@ -1,13 +1,13 @@
 import styled from 'styled-components';
 import { GlassBox } from '@/shared/components/glass-box';
 import { OrderItemCard } from '@/entities/order-item';
-import type { CartItem } from '@/entities/cart';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { useOrderForm } from '../hooks/use-order-form';
-import { ProductCoupon } from '@/features/product-coupon';
+import { ProductCoupon } from '@/features/coupon';
 
 interface OrderFormProps {
-  item: CartItem;
+  item: CheckoutItemDetail;
   selectedCoupon: ClaimableCoupon | null;
   onSelectCoupon: (coupon: ClaimableCoupon | null) => void;
   finalPrice: number;
