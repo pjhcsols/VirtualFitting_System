@@ -1,5 +1,5 @@
 import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
-import type { UpdateAddressRequest, UserDetailResponse } from "../model/types";
+import type { UserDetail, UpdateAddressRequest, UserDetailResponse } from "../model/types";
 
 export const fetchUserData = async () => {
   try {
@@ -18,6 +18,25 @@ export const fetchMyUserDetails = async (): Promise<UserDetailResponse | null> =
     return response.data;
   } catch (error) {
     console.error("[내 정보 상세 조회] API 요청 실패:", error);
+    return null;
+  }
+};
+
+export const fetchMyUserLoginType = async (): Promise<UserDetail['loginType'] | null> => {
+  try {
+    const response = await fetchMyUserDetails(); 
+    const loginType = response?.data?.loginType ?? null; 
+
+    if (loginType) {
+      console.log(`[Login Type 조회 성공] Type: ${loginType}`);
+    } else {
+      console.warn("[Login Type 조회 실패] 사용자 상세 정보에 loginType 필드가 없습니다.");
+    }
+    
+    return loginType;
+    
+  } catch (error) {
+    console.error("[Login Type 조회] API 요청 실패:", error);
     return null;
   }
 };
