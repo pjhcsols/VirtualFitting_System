@@ -1,26 +1,13 @@
-import { BREAKPOINTS } from "@/shared";
 import styled from "styled-components";
 
 export const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 1rem 20rem;
+  padding: 1rem 0;
   width: 100%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  @media (max-width: ${BREAKPOINTS.xl}px) {
-    padding: 1rem 15rem;
-  }
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    padding: 1rem 10rem;
-  }
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 1rem 5rem;
-  }
-  @media (max-width: ${BREAKPOINTS.sm}px) {
-    padding: 1rem 2.5rem;
-  }
 `;
 
 export const TitleContainer = styled.div`
@@ -31,21 +18,28 @@ export const TitleContainer = styled.div`
   align-items: center;
 `;
 
-export const Title = styled.h1`
-  font-size: 1.25rem;
+export const Title = styled.span`
+  font-family: "Prata-Regular";
+  font-size: 32px;
   font-weight: 600;
-  color: black;
+  text-align: right;
+  letter-spacing: -4px;
+  margin: 0;
+  background-image: linear-gradient(to right, #e9faff, #b8d2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `;
 
 export const InfoContainer = styled.div`
   box-sizing: border-box;
-  padding: 1rem 10rem;
+  padding: 1rem 4rem;
   width: 100%;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 1rem;
+  gap: 0.5rem;
 `;
 
 export const InfoBox = styled.div`
@@ -55,7 +49,7 @@ export const InfoBox = styled.div`
   flex-flow: column wrap;
   justify-content: flex-start;
   align-items: flex-start;
-  gap: 0.75rem;
+  gap: 0.25rem;
 `;
 
 export const SubTitle = styled.span`
@@ -118,10 +112,4 @@ export const ToggleButton = styled.button`
     outline: none;
     color: #667eea;
   }
-`;
-
-export const EyeIcon = styled.svg`
-  width: 20px;
-  height: 20px;
-  transition: opacity 0.2s ease;
 `;

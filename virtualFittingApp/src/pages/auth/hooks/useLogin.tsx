@@ -1,11 +1,13 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import type { TLoginUser } from "@/pages/auth/types/auth";
 import { login } from "@/pages/auth/api/login.action";
 import { globalEventBus } from "@/shared/event";
 import { LOGIN_ERROR_STATUS } from "@/pages/auth/constants";
 import { isLoginKey } from "@/pages/auth/utils/type";
+import { useNavigate } from "react-router-dom";
 
 function useLogin() {
+  const router = useNavigate();
   const [user, setUser] = useState<TLoginUser>({
     userId: "",
     userPassword: "",
@@ -28,9 +30,11 @@ function useLogin() {
   };
 
   // 나중에 EventBus 오류 발생 지점 컴포넌트로 따로 빼도 될듯
-  const onSubmit = async () => {
+  const onSubmit = async (e: MouseEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       await login(user);
+      router("/products");
     } catch (err) {
       let message: string;
       if (err instanceof CustomException) {

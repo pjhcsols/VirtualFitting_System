@@ -45,16 +45,22 @@ export const LeftContainer = styled.div`
   justify-content: center;
   align-items: center;
   z-index: 10;
+  @media (max-width: 768px) {
+    display: none;
+  }
 `;
 
 export const RightContainer = styled.div`
   box-sizing: border-box;
-  padding: 5rem;
+  padding: 2rem;
   width: 50%;
   height: 100%;
   display: flex;
   justify-content: center;
-  align-items: cneter;
+  align-items: center;
+  @media (max-width: 768px) {
+    padding: 0;
+  }
 `;
 
 export const ModelContainer = styled.div`

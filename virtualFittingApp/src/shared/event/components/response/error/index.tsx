@@ -1,13 +1,12 @@
 import { useCallback, useEffect, useState } from "react";
 import * as S from "./style";
-import { globalEventBus } from "@/shared/event/types/event";
+import { globalEventBus } from "@/shared/event/types/event.d";
 
 export type TErrorResponse = {
   message: string;
 };
 
 function ErrorResponseModal() {
-  // * 매직스트링 처리
   const API_ERROR: string = "api-error";
 
   const [errInfo, setErrInfo] = useState<TErrorResponse | null>(null);

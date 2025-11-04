@@ -1,12 +1,13 @@
 import { type ChangeEvent, useState } from "react";
 
 import { BrandUserType } from "@/pages/brand";
-import { isBrandUserKey, isPhoneNumber } from "@/pages/auth/utils/type";
-import { validateEmail } from "@/pages/auth/utils/validation";
-import { TPhoneNumerPart } from "@/pages/brand/types/brandUser";
+import { isBrandUserKey } from "@/pages/auth/utils/type";
+import { validateEmail, validatePassword } from "@/pages/auth/utils/validation";
 import { signUpBrand } from "../api/brand.action";
+import { useNavigate } from "react-router-dom";
 
 function useBrand() {
+  const router = useNavigate();
   const [step, setStep] = useState<number>(0);
   const [user, setUser] = useState<BrandUserType>({
     userNumber: 0,
@@ -27,16 +28,9 @@ function useBrand() {
     userProfileImageUrl: "",
     saleAllowed: false,
   });
-  const [phoneNumber, setPhoneNumber] = useState<TPhoneNumerPart>({
-    prefix: "",
-    middle: "",
-    suffix: "",
-  });
-  const [firmPhoneNumber, setFirmPhoneNumber] = useState<TPhoneNumerPart>({
-    prefix: "",
-    middle: "",
-    suffix: "",
-  });
+  const [phone, setPhone] = useState<string>("");
+  const [firmPhone, setFirmPhone] = useState<string>("");
+  const [registration, setRegistration] = useState<string>("");
   const [errMsg, setErrMsg] = useState<string | null>(null);
 
   const prev = () => {
@@ -58,6 +52,12 @@ function useBrand() {
     if (!isBrandUserKey(name)) {
       return;
     }
+    if (name === "password") {
+      const result = validatePassword(value);
+      if (!result.isValid) {
+        setErrMsg(result.message);
+      }
+    }
     if (name === "emailAddress" && !validateEmail(value)) {
       setErrMsg("이메일 형식에 맞지 않습니다.");
     }
@@ -67,31 +67,21 @@ function useBrand() {
     });
   };
 
-  const onChangePhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (!isPhoneNumber(name)) {
-      return;
-    }
-    setPhoneNumber({
-      ...phoneNumber,
-      [name]: value,
-    });
-  };
-
-  const onChangeFirmPhoneNumber = (e: ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    if (!isPhoneNumber(name)) {
-      return;
-    }
-    setFirmPhoneNumber({
-      ...firmPhoneNumber,
-      [name]: value,
-    });
-  };
-
   const onSubmit = async () => {
     try {
-      await signUpBrand({ user, phoneNumber, firmPhoneNumber });
+      setUser({
+        ...user,
+        firmPhone: firmPhone,
+        phoneNumber: phone,
+        businessRegistration: registration,
+      });
+      await signUpBrand({
+        user,
+        phone,
+        firmPhone,
+        businessRegistration: registration,
+      });
+      router("/products");
     } catch (err) {
       if (err instanceof CustomException) {
       }
@@ -102,12 +92,16 @@ function useBrand() {
     user,
     step,
     errMsg,
+    phone,
+    setPhone,
+    firmPhone,
+    setFirmPhone,
+    registration,
+    setRegistration,
     onSubmit,
     prev,
     next,
     onChangeText,
-    onChangePhoneNumber,
-    onChangeFirmPhoneNumber,
   };
 }
 
