@@ -2,7 +2,7 @@
   "routes": [
     {
       "src": "/b1(.*)",
-      "dest": "https://basilium-alb-1972402546.ap-northeast-2.elb.amazonaws.com/b1/$1"
+      "dest": "http://43.200.234.185/b1/$1"
     },
     {
       "handle": "filesystem"
