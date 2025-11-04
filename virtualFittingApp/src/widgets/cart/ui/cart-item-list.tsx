@@ -7,9 +7,10 @@ import { OrderItemCard } from '@/entities/order-item';
 import { useDeleteCartItems } from '@/features/cart';
 import { UpdateCartItemOptionsPopup } from '@/features/update-cart';
 import { useProductDetailQuery } from '@/entities/product'; 
-import { ProductCoupon } from "@/features/coupon";
 import type { ClaimableCoupon } from '@/entities/coupon';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
+import { PaymentCouponButton } from '@/features/coupon';
+import { ProductCoupon } from "@/features/coupon";
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();
@@ -27,27 +28,28 @@ interface ItemToEdit {
 }
 
 interface CartItemListProps {
-    cartItems: CartItem[];
-    isCartLoading: boolean;
-    selectedCouponMap: Map<number, ClaimableCoupon | null>;
-    handleCouponSelect: (coupon: ClaimableCoupon | null, itemId: number) => void;
-    refetchCart: () => void;
-    accessToken: string;
+  cartItems: CartItem[];
+  isCartLoading: boolean;
+  selectedCouponMap: Map<number, ClaimableCoupon | null>;
+  handleCouponSelect: (coupon: ClaimableCoupon | null, itemId: number) => void;
+  refetchCart: () => void;
+  accessToken: string;
 }
 
 export function CartItemList({
-    cartItems,
-    isCartLoading,
-    selectedCouponMap,
-    handleCouponSelect,
-    refetchCart,
-    accessToken,
+  cartItems,
+  isCartLoading,
+  selectedCouponMap,
+  handleCouponSelect,
+  refetchCart,
+  accessToken,
 }: CartItemListProps) {
   
   const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ItemToEdit | null>(null);
+  const [activeCouponItemId, setActiveCouponItemId] = useState<number | null>(null);
 
   const handleCouponSelectAndApply = (coupon: ClaimableCoupon | null, itemId: number) => {
     handleCouponSelect(coupon, itemId); 
@@ -109,7 +111,7 @@ export function CartItemList({
         <ItemsContainer>
           {cartItems.length > 0 && entries.map(([brand, items],) => (
             <BrandSection key={brand}>
-              {items.map((item) => {
+              {items.map((item, itemIndex) => {
                 const currentCoupon = selectedCouponMap.get(item.id) || null;
                 const priceForCouponCalculation = 
                     (item.discountedPrice ?? item.price) * item.quantity;
@@ -128,15 +130,27 @@ export function CartItemList({
                         finalPrice={finalItemPrice} 
                     />
                     <ButtonContainer>
-                      <ProductCoupon 
-                        productId={item.productId}
-                        finalPrice={priceForCouponCalculation}
-                        onSelect={(coupon) => handleCouponSelectAndApply(coupon, item.id)} 
-                        currentSelectedCoupon={currentCoupon}
+                      <PaymentCouponButton 
+                        onClick={() => setActiveCouponItemId(item.id)}
                       />
+                      {activeCouponItemId === item.id && (
+                        <ProductCoupon
+                          productId={item.productId}
+                          finalPrice={priceForCouponCalculation}
+                          pageType="checkout"
+                          onSelect={(coupon) => {
+                              handleCouponSelectAndApply(coupon, item.id);
+                              setActiveCouponItemId(null);
+                          }} 
+                          currentSelectedCoupon={currentCoupon}
+                          showPopup={true}
+                          setShowPopup={() => setActiveCouponItemId(null)}
+                        />
+                      )}
                       <GlassButton onClick={() => handleEditOptions(item)} size='small'>옵션변경</GlassButton>
                     </ButtonContainer>
                     <RemoveButton onClick={() => handleRemoveItem(item.id)}>×</RemoveButton>
+                    {itemIndex < items.length - 1 && <ItemSeparator />}
                   </ItemWrapper>
                 )
               })}
@@ -226,4 +240,9 @@ const EmptyMessage = styled.p`
   text-align: center;
   color: #888;
   font-size: 1rem;
+`;
+
+const ItemSeparator = styled.div`
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 `;

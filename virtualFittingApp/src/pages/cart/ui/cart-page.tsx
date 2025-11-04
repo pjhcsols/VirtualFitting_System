@@ -1,71 +1,103 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth';
 import { CartItemList } from '@/widgets';
 import { PaymentSummary } from "@/widgets/payment-summary";
 import { useMyCartQuery } from "@/entities/cart";
 import { useCartTotals } from '@/features/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { Cookies } from 'react-cookie';
-import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
+import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+import { 
+  useInitiateBatchCheckout, 
+  BatchCheckoutItemDetail,
+} from '@/features/initiate-checkout-batch';
 const cookiesInstance = new Cookies();
 
 function CartPage() {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
-    
-    const accessToken = cookiesInstance.get('access-token');
+  const location = useLocation();
+  const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
+  const accessToken = cookiesInstance.get('access-token');
 
-    const { data: cartData, isLoading: isCartLoading, refetch: refetchCart } = useMyCartQuery(accessToken!); 
-    
-    const cartItems = cartData?.items 
-        ? cartData.items.map(item => ({ 
-            id: item.itemId,
-            productId: item.productId,
-            name: item.productName,
-            brand: item.brandFirmName,
-            image: item.productPhotoUrls?.[0] ?? '',
-            price: item.productPrice,
-            discountedPrice: item.discountedPrice,
-            discountRate: item.discountPercent ?? undefined,
-            color: item.color as ProductColorPayment, 
-            size: item.size as ProductSizePayment,
-            quantity: item.quantity,
-        })) 
-        : []; 
+  const { data: cartData, isLoading: isCartLoading, refetch: refetchCart } = useMyCartQuery(accessToken!); 
+  const isLoggedIn = useRecoilValue(authState);
+  const navigate = useNavigate();
 
-    const totals = useCartTotals(cartItems, selectedCouponMap);
+  const { initiateBatchCheckout } = useInitiateBatchCheckout();
+  
+  useEffect(() => {
+      if (!isLoggedIn) {
+        alert("로그인이 필요한 페이지입니다.");
+        navigate('/login');
+      }
+  }, [isLoggedIn, navigate, location]);
 
-    const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
-        setSelectedCouponMap(prevMap => {
-            const newMap = new Map(prevMap);
-            newMap.set(itemId, coupon);
-            return newMap;
-        });
-    };
+  const cartItems: BatchCheckoutItemDetail[] = cartData?.items
+  ? cartData.items.map(item => ({ 
+      id: item.itemId,
+      productId: item.productId,
+      name: item.productName,
+      brand: item.brandFirmName,
+      image: item.productPhotoUrls?.[0] ?? '',
+      price: item.productPrice,
+      discountedPrice: item.discountedPrice,
+      discountRate: item.discountPercent ?? undefined,
+      color: item.color as ProductColorPayment, 
+      size: item.size as ProductSizePayment,
+      quantity: item.quantity,
+  })) 
+  : [];
 
-    return (
-        <PageContainer>
-            <PageTitle>장바구니</PageTitle>
-            <Layout>
-                <MainContent>
-                  <CartItemList 
-                      cartItems={cartItems}
-                      isCartLoading={isCartLoading}
-                      selectedCouponMap={selectedCouponMap} 
-                      handleCouponSelect={handleCouponSelect}
-                      refetchCart={refetchCart}
-                      accessToken={accessToken}
-                  />
-              </MainContent>
-                <SideContent>
-                    <PaymentSummary 
-                      totals={totals} 
-                      onConfirm={() => setIsModalOpen(true)}
-                    />
-                </SideContent>
-            </Layout>
+  const totals = useCartTotals(cartItems, selectedCouponMap);
+
+  const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
+      setSelectedCouponMap(prevMap => {
+          const newMap = new Map(prevMap);
+          newMap.set(itemId, coupon);
+          return newMap;
+      });
+  };
+
+  const handlePurchaseClick = () => {
+  if (!isLoggedIn) {
+    alert("로그인이 필요한 서비스입니다.");
+    navigate('/login');
+    return;
+  }
+  
+  if (cartItems.length === 0) {
+      alert('결제를 진행하려면 상품 목록이 있어야 합니다.');
+      return;
+  }
+
+  initiateBatchCheckout({ items: cartItems, totals }); 
+};
+
+  return (
+    <PageContainer>
+      <PageTitle>장바구니</PageTitle>
+        <Layout>
+          <MainContent>
+            <CartItemList 
+              cartItems={cartItems}
+              isCartLoading={isCartLoading}
+              selectedCouponMap={selectedCouponMap} 
+              handleCouponSelect={handleCouponSelect}
+              refetchCart={refetchCart}
+              accessToken={accessToken}
+            />
+          </MainContent>
+          <SideContent>
+            <PaymentSummary 
+              totals={totals} 
+              onConfirm={handlePurchaseClick}
+            />
+          </SideContent>
+      </Layout>
     </PageContainer>
   );
 }
