@@ -10,6 +10,8 @@ import { ProductOptions } from "@/features/product-options";
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { ProductCoupon } from "@/features/coupon";
 import { ProductCouponButton } from "@/features/coupon";
+import { useProductLike } from "@/features/product-like"; 
+import { ProductLikeButton } from "@/features/product-like";
 
 type ProductDetailsProps = {
   product: ProductDetail;
@@ -47,6 +49,7 @@ function ProductDetails({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
   const [showCouponModal, setShowCouponModal] = useState(false);
+  const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
 
   useEffect(() => {
     setCurrentIndex(0);
@@ -118,6 +121,12 @@ function ProductDetails({
         </S.TopRow>
         <S.TopRow>
           <S.ProductName>{product.productName}</S.ProductName>
+          <ProductLikeButton 
+            productId={product.productId} 
+            isInitiallyLiked={isLiked}
+            onToggle={toggleLike}
+            isLoading={isLikeToggling}
+          />
         </S.TopRow>
         <S.TopRow>
           {hasDiscount ? (

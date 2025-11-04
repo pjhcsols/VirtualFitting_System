@@ -1,2 +1,2 @@
-export * from "@/features/product-like/api/like.action";
-export * from "@/features/product-like/ui/ProductLikeButton";
+export * from "./hooks/use-product-like";
+export * from "./ui/ProductLikeButton";

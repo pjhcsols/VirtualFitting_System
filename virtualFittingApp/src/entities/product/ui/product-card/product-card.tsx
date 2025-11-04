@@ -4,6 +4,8 @@ import { ColorPopup } from "./color-pop-up";
 import { ColorSwatchesList } from "./color-swatches-list";
 import { fetchProductPrice } from "@/entities/discount";
 import { GlassBox } from "@/shared/components/glass-box";
+import { useProductLike } from "@/features/product-like"; 
+import { ProductLikeButton } from "@/features/product-like";
 
 type ProductCardProps = {
   product: any;
@@ -15,6 +17,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   const [price, setPrice] = useState<{ original: number; discounted: number } | null>(null);
   const maxVisibleColors = 3;
   const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
+  const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
 
   useEffect(() => {
     async function loadPrice() {
@@ -32,9 +35,6 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   return (
     <Card onClick={onClick} borderRadius={"8px"}>
       <ImageBox $imageUrl={product.productPhotoUrls[0]}>
-        <ProductLikeButtonWrapper>
-          {/* <ProductLikeButton productId={product.productId} isInitiallyLiked={product.isLiked} /> */}
-        </ProductLikeButtonWrapper>
         <ColorSwatches>
           <ColorSwatchesList colors={product.productColors?.slice(0, maxVisibleColors) || []} />
           {remainingColors > 0 && (
@@ -53,7 +53,17 @@ function ProductCard({ product, onClick }: ProductCardProps) {
         )}
       </ImageBox>
       <InfoBox>
-        <Brand>{product.categoryName}</Brand>
+        <TitleRow>
+          <Category>{product.categoryName}</Category>
+          <ProductLikeButtonWrapper>
+            <ProductLikeButton 
+              productId={product.productId} 
+              isInitiallyLiked={isLiked}
+              onToggle={toggleLike}
+              isLoading={isLikeToggling}
+            />
+          </ProductLikeButtonWrapper>
+        </TitleRow>
         <Name>{product.productName}</Name>
         <PriceBox>
           {price && (
@@ -107,7 +117,7 @@ const InfoBox = styled.div`
   aspect-ratio: 5 / 1;
 `;
 
-const Brand = styled.div`
+const Category = styled.div`
   display: flex;
   font-family: "pretendard";
   font-size: 11px;
@@ -161,6 +171,13 @@ const Price = styled.div`
   font-weight: 600;
 `;
 
+const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px; /* Name과의 간격 조정 */
+`;
+
 const ColorSwatches = styled.div`
   position: absolute;
   bottom: 8px;
@@ -171,12 +188,13 @@ const ColorSwatches = styled.div`
 `;
 
 const ProductLikeButtonWrapper = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  width: 24px;
+  /* 🚨 절대 위치 제거 */
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* width: 24px; // 아이콘 크기만큼만 */
   height: 24px;
+  z-index: 2; /* InfoBox 내에서 클릭이 가능하도록 z-index 조정 */
 `;
 
 const ExtraIcon = styled.div`
