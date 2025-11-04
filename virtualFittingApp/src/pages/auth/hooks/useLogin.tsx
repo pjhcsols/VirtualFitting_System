@@ -4,6 +4,8 @@ import { login } from "@/pages/auth/api/login.action";
 import { globalEventBus } from "@/shared/event";
 import { LOGIN_ERROR_STATUS } from "@/pages/auth/constants";
 import { isLoginKey } from "@/pages/auth/utils/type";
+import { useSetRecoilState } from 'recoil';
+import { authState } from "@/entities/auth";
 import Swal from "sweetalert2";
 
 function useLogin() {
@@ -28,9 +30,12 @@ function useLogin() {
     });
   };
 
+  const setAuth = useSetRecoilState(authState);
+
   // 나중에 EventBus 오류 발생 지점 컴포넌트로 따로 빼도 될듯
   const onSubmit = async () => {
     try {
+      setAuth(true);
       await login(user);
       Swal.fire({
         title: "Success!",
