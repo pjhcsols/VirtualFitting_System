@@ -69,12 +69,6 @@ function useBrand() {
 
   const onSubmit = async () => {
     try {
-      setUser({
-        ...user,
-        firmPhone: firmPhone,
-        phoneNumber: phone,
-        businessRegistration: registration,
-      });
       await signUpBrand({
         user,
         phone,

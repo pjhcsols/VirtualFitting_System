@@ -1,4 +1,14 @@
+import type { ApiResponse } from "@/shared/types/api";
+
+export type ProductIdsResponse = ApiResponse<number[]>; 
+
+export interface LikeStatus {
+    liked: boolean;
+}
+
+export type LikeStatusResponse = ApiResponse<LikeStatus>;
+
 export interface LikedItem {
-    productPhotoUrl: string[]; // 이미지 URL 배열
-    productName: string;
-  }
+productPhotoUrl: string[];
+productName: string;
+}

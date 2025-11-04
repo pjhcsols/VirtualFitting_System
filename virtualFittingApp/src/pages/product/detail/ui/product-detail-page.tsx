@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
@@ -12,22 +12,104 @@ import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
+import { useProductCoupon } from "@/features/coupon";
+
+import { AddModelModal } from "@/features/ai-try-on";
+import { Cookies } from "react-cookie";
+import { NormalUserGetImg } from "@/widgets/auth/api/normalAuth.action";
+
+const cookies = new Cookies();
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [tryOnOpen, setTryOnOpen] = useState(false);
+  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+  const [registeredImageUrl, setRegisteredImageUrl] = useState<string | null>(null);
+  const [registeredLoading, setRegisteredLoading] = useState(false);
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
+  const currentProductId = Number(id); 
+    
+  const { 
+    coupons, 
+    isLoading: isCouponLoading, 
+    handleDownloadCoupon,
+  } = useProductCoupon(currentProductId);
+
+  const requireAuth = useCallback(() => {
+    const token = cookies.get("access-token");
+    if (!token) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return false;
+    }
+    return true;
+  }, [navigate]);
+
+  const loadRegisteredImage = useCallback(async () => {
+    setRegisteredLoading(true);
+    try {
+      const res = await NormalUserGetImg();
+      const ImgUrl = "http://" + res.data; 
+      setRegisteredImageUrl(ImgUrl);
+      return ImgUrl;
+    } catch {
+      setRegisteredImageUrl(null);
+      return null;
+    } finally {
+      setRegisteredLoading(false);
+    }
+  }, []);
+
+  const openTryOn = useCallback(async () => {
+    if (!requireAuth()) return;
+    setTryOnOpen(true);
+    await loadRegisteredImage(); 
+  }, [requireAuth, loadRegisteredImage]);
+
+  const closeTryOn = useCallback(() => {
+    setTryOnOpen(false);
+    if (uploadPreview?.startsWith("blob:")) URL.revokeObjectURL(uploadPreview);
+    setUploadPreview(null);
+  }, [uploadPreview]);
+
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploadPreview(prev => {
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev); 
+      return URL.createObjectURL(file);
+    });
+  }, []);
+
+  const handleUseExisting = useCallback(() => {
+    closeTryOn();
+  }, [closeTryOn]);
+
+  const handleConfirmUpload = useCallback(async () => {
+    if (!uploadPreview) return;
+
+    try {
+      const latest = await loadRegisteredImage();
+      if (latest) {
+      }
+      closeTryOn();
+    } catch (e) {
+      console.error(e);
+      alert("이미지 등록에 실패했습니다.");
+    }
+  }, [uploadPreview, loadRegisteredImage, closeTryOn]);
 
   const handleTabChange = (tab: string) => {
-    setSearchParams({ tab: tab, color: color || "" });
+  setSearchParams({ tab: tab, color: color || "" });
   };
+
 
   useEffect(() => {
     if (!id) return;
@@ -35,7 +117,6 @@ function ProductDetailPage() {
     const loadProduct = async () => {
       setLoading(true);
       try {
-        
         const colors = await fetchProductColors(Number(id));
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
@@ -56,8 +137,7 @@ function ProductDetailPage() {
         setProduct(detailData);
 
       } catch (error) {
-        console.error("Failed to load product details:", error);
-        navigate('/not-found');
+        navigate('/');
       } finally {
         setLoading(false);
       }
@@ -69,16 +149,34 @@ function ProductDetailPage() {
   if (loading || !product) {
     return <div>Loading...</div>;
   }
-  const currentProductId = product.productId;
+
+  const finalPrice = product.productPrice;
+    const productDetailsProps = {
+      product,
+      productColors,
+      onColorChange: (newColor: string) => {
+        setSearchParams({ tab: activeTab, color: newColor }); 
+      },
+      coupons,
+      isCouponLoading,
+      handleDownloadCoupon,
+      finalPrice,
+      onTryOn: openTryOn, 
+    };
 
   return (
     <Wrapper>
-      <ProductDetails
-        product={product}
-        productColors={productColors}
-        onColorChange={(newColor) => {
-          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
-        }}
+      <ProductDetails {...productDetailsProps} />
+
+      <AddModelModal
+        open={tryOnOpen}
+        onClose={closeTryOn}
+        registeredLoading={registeredLoading}
+        registeredImageUrl={registeredImageUrl}
+        onUseExisting={handleUseExisting}
+        onFileChange={handleFileChange}
+        onConfirmUpload={handleConfirmUpload}
+        previewUrl={uploadPreview}
       />
       
       <ContentArea>
@@ -89,7 +187,7 @@ function ProductDetailPage() {
           <TabButton $active={activeTab === "qna"} onClick={() => handleTabChange("qna")}>문의하기</TabButton>
         </TabMenu>
         <Divider />
-      
+
         {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo product={product} />}
         {activeTab === "review" && <ProductReviews productId={currentProductId} />}
@@ -173,7 +271,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 
   &.active::after {
-    transform: scaleX(1);
+    color: rgb(255, 255, 255);
   }
 
   @media (max-width: ${BREAKPOINTS.md}px) {

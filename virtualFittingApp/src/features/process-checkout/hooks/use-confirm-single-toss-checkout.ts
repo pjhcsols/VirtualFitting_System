@@ -4,14 +4,14 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { loadTossPayments } from '@tosspayments/tosspayments-sdk';
-import { createPaymentReservation, createPaymentIntent } from '../api/payment.api';
-import type { CartItem } from '@/entities/cart';
+import { createPaymentReservation, createPaymentIntent } from '@/entities/payment';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { TossPaymentMethod, TossPaymentsInstance } from '@/shared/types/payment';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
 export interface SingleTossCheckoutData {
-  item: CartItem;
+  item: CheckoutItemDetail;
   coupon: ClaimableCoupon | CouponInWallet | null;
   paymentMethod: TossPaymentMethod;
   finalPrice: number;
@@ -54,6 +54,11 @@ export const useSingleTossConfirmCheckout = () => {
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
       console.log(reservedOrderId);
+
+      const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
+                        ?? (checkoutData.coupon as any)?.walletId 
+                        ?? undefined;
+
       const intentResponse = await createPaymentIntent({
         orderId: reservedOrderId,
         currency: 'KRW',
@@ -62,7 +67,7 @@ export const useSingleTossConfirmCheckout = () => {
           size: checkoutData.item.size,
           color: checkoutData.item.color,
           quantity: checkoutData.item.quantity,
-          couponWalletId: (checkoutData.coupon as CouponInWallet)?.walletId,
+          couponWalletId: couponWalletId,
         }],
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
         pointsToUse: 0, //[세아] 나중에 수정해야댐

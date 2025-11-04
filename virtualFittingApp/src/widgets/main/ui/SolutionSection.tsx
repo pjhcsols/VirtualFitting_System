@@ -4,8 +4,8 @@ import { ScrollTrigger } from "gsap/all";
 import { GlassBox } from "@/shared/components/glass-box";
 import { useRef, useEffect, ReactNode } from "react";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-// import AutoAwesomeIcon from '@mui/icons-material/Au';
-// import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 
 gsap.registerPlugin(ScrollTrigger); 
 
@@ -77,8 +77,7 @@ function SolutionSection() {
         </div>
         <div ref={el => cardRefs.current[1] = el as HTMLDivElement}>
           <FeatureCard 
-              // icon={<AddBusinessIcon style={{ fontSize: '1em' }} />}
-              icon={null}
+              icon={<AddBusinessIcon style={{ fontSize: '1em' }} />}
               title="정교한 매칭과 올인원 통합" 
               content={<>
                   정교한 사이즈 매칭 알고리즘 기반의 최적 핏 추천으로 반품 오류를 획기적으로 낮춥니다.<br/>
@@ -88,8 +87,7 @@ function SolutionSection() {
         </div>
         <div ref={el => cardRefs.current[2] = el as HTMLDivElement}>
           <FeatureCard 
-              // icon={<AutoAwesomeIcon style={{ fontSize: '1em' }} />}
-              icon={null}
+              icon={<AutoAwesomeIcon style={{ fontSize: '1em' }} />}
               title="미래형 커머스 성장 인프라" 
               content={<>
                   가상착용·입점·운영 자동화를 통합 제공하는 미래형 커머스 플랫폼입니다.<br/>
@@ -185,6 +183,7 @@ const CardIcon = styled.div`
     color: currentColor;
   }
 `;
+
 const CardTitle = styled.h3`
   font-size: 24px;
   font-weight: 700;

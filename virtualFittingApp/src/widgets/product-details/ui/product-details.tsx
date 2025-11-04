@@ -2,41 +2,73 @@ import { useState, useEffect } from "react";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
-import { ICON_SHARE } from "@/shared";
 import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
+import type { ClaimableCoupon } from '@/entities/coupon';
+import { ProductCoupon } from "@/features/coupon";
+import { ProductCouponButton } from "@/features/coupon";
+import { useProductLike } from "@/features/product-like"; 
+import { ProductLikeButton } from "@/features/product-like";
+import { SoldOutButton } from "@/features/product-options";
+import { PopUpBottom } from "@/shared/ui/PopUpBottom";
+
+type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
 type ProductDetailsProps = {
-  product: ProductDetail;
+  product: ProductWithQuantity;
   productColors: string[];
   onColorChange?: (color: string) => void;
+  onTryOn?: () => void;
+  coupons: ClaimableCoupon[]; 
+  isCouponLoading: boolean; 
+  handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>; 
+  finalPrice: number;
 };
 
 function ProductDetails({
   product,
   productColors,
   onColorChange,
+  onTryOn,
+  finalPrice,
 }: ProductDetailsProps) {
   const {
-    price,
-    quantity,
-    selectedColor,
-    selectedSize,
-    // finalPrice,
-    sizesSorted,
-    selectedProductImages,
-    setQuantity,
-    setSelectedSize,
-    handleAddToCart,
-    handlePurchaseClick,
-    handleColorChange,
+    price, quantity, selectedColor, selectedSize, sizesSorted,
+    selectedProductImages, setQuantity, setSelectedSize,
+    handleAddToCart, handlePurchaseClick, handleColorChange,
   } = useProductDetails(product, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [showCouponModal, setShowCouponModal] = useState(false);
+  const [showSoldOutPopup, setShowSoldOutPopup] = useState(false);
+  const [showAddToCartPopup, setShowAddToCartPopup] = useState(false);
+  const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
+  const totalQuantity = product.totalQuantity;
+  const isSoldOut = totalQuantity === 0; 
 
+  useEffect(() => {
+    if (showSoldOutPopup || showAddToCartPopup) {
+      const timer = setTimeout(() => {
+        setShowSoldOutPopup(false);
+        setShowAddToCartPopup(false);
+      }, 2200); 
+      return () => clearTimeout(timer);
+    }
+  }, [showSoldOutPopup, showAddToCartPopup]);
+  
+  const handleSoldOutAction = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowSoldOutPopup(true);
+  };
+
+  const handleAddToCartAndShowPopup = () => {
+    handleAddToCart(); 
+    setShowAddToCartPopup(true);
+  };
+  
   useEffect(() => {
     setCurrentIndex(0);
   }, [selectedProductImages]);
@@ -107,6 +139,12 @@ function ProductDetails({
         </S.TopRow>
         <S.TopRow>
           <S.ProductName>{product.productName}</S.ProductName>
+          <ProductLikeButton 
+            productId={product.productId} 
+            isInitiallyLiked={isLiked}
+            onToggle={toggleLike}
+            isLoading={isLikeToggling}
+          />
         </S.TopRow>
         <S.TopRow>
           {hasDiscount ? (
@@ -124,9 +162,26 @@ function ProductDetails({
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <S.IconImage src={ICON_SHARE} alt="share icon" />
-          </div>
+          </div> */}
+          {!isSoldOut && (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <ProductCouponButton 
+                onClick={() => setShowCouponModal(true)}
+              />
+              <ProductCoupon
+                productId={product.productId}
+                finalPrice={finalPrice}
+                pageType="product"
+                onSelect={() => {}} 
+                currentSelectedCoupon={null} 
+                showPopup={showCouponModal}
+                setShowPopup={setShowCouponModal}
+                excludedWalletIds={[]}
+              />
+            </div>
+          )}
         </S.TopRow>
         <S.Description>{product.productDesc}</S.Description>
         <ProductOptions
@@ -140,15 +195,29 @@ function ProductDetails({
           handleColorChange={handleColorChange}
           setSelectedSize={setSelectedSize}
           setQuantity={setQuantity}
+          disabled={isSoldOut}
         />
         <S.ButtonBox>
-          <AddToCartButton onClick={handleAddToCart} />
-          <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />
+          {isSoldOut ? (
+            <SoldOutButton onClick={handleSoldOutAction} />
+          ) : (
+            <>
+              <AddToCartButton onClick={handleAddToCartAndShowPopup} />
+              <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />
+            </>
+          )}
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton />
+          <AITryOnButton onClick={onTryOn} />
         </S.ButtonBox>
       </S.ProductInfoBox>
+
+      {showSoldOutPopup && (
+          <PopUpBottom message="품절된 상품입니다." />
+      )}
+      {showAddToCartPopup && (
+          <PopUpBottom message="장바구니에 상품이 추가되었습니다." />
+      )}
     </S.ProductBox>
   );
 }

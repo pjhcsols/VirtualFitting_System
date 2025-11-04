@@ -4,10 +4,38 @@ import type {
   TPhoneNumerPart,
 } from "@/pages/brand/types/brandUser";
 import { type TLoginUserKey } from "../../types/auth";
+import { type NormalUserTypeKey } from "@/entities/auth/types/normal.d";
 
 export const isLoginKey = (key: string): key is TLoginUserKey => {
   const loginKey: readonly string[] = ["userId", "userPassword"];
   return loginKey.includes(key);
+};
+
+export const isNormalUserKey = (key: string): key is NormalUserTypeKey => {
+  const normalUserKeys: readonly string[] = [
+    "id",
+    "password",
+    "emailAddress",
+    "phoneNumber",
+    "name",
+    "nickname",
+    "gender",
+    "birthDate",
+    "address",
+    "totalLength",
+    "chest",
+    "shoulder",
+    "arm",
+    "pantsTotalLength",
+    "waistWidth",
+    "hipWidth",
+    "thighWidth",
+    "rise",
+    "hemWidth",
+    "height",
+    "weight",
+  ];
+  return normalUserKeys.includes(key);
 };
 
 export const isBrandUserKey = (key: string): key is BrandUserTypeKey => {

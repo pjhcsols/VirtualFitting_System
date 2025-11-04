@@ -1,3 +1,5 @@
+import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+
 export type CartItem = {
   id: number;
   productId: number;
@@ -7,8 +9,8 @@ export type CartItem = {
   price: number;
   discountedPrice?: number;
   discountRate?: number;
-  color: string;
-  size: string;
+  color: ProductColorPayment; 
+  size: ProductSizePayment; 
   quantity: number;
 };
 
@@ -20,13 +22,13 @@ export interface CartItemResponse {
   quantity: number;
   brandUserNumber: number;
   brandFirmName: string;
-
-  productName: string;
-  productPrice: number;
-  discountedPrice: number;
-  discountPercent: number | null;
-  productPhotoUrls: string[];
-
+  
+  productName: string;         
+  productPrice: number;        
+  discountedPrice: number;     
+  discountPercent: number | null; 
+  productPhotoUrls: string[];  
+  
   couponDiscountPrice: number;
   couponPercent: number | null;
   discountedTotal: number;
@@ -61,11 +63,9 @@ export interface PostCartMeRequest {
 }
 
 export interface UpdateCartItem {
-  quantity: number;
+  quantity: number; 
   size?: string;
   color?: string;
 }
 
-export interface UpdateCartItemRequest extends UpdateCartItem {
-  couponWalletId: number | null;
-}
+export interface UpdateCartItemRequest extends UpdateCartItem {}
