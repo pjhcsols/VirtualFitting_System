@@ -109,19 +109,19 @@ const Card = styled(GlassBox)<{ $isSoldOut: boolean }>`
 `;
 
 const SoldOutOverlay = styled.div`
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
-    color: white;
-    font-size: 24px;
-    font-weight: bold;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 5; /* ImageBox 위에 표시 */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
 `;
 
 const ImageBox = styled.div<{ $imageUrl: string }>`
@@ -210,13 +210,12 @@ const ColorSwatches = styled.div`
 `;
 
 const ProductLikeButtonWrapper = styled.div`
-  /* 🚨 절대 위치 제거 */
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  /* width: 24px; // 아이콘 크기만큼만 */
+  /* width: 24px;
   height: 24px;
-  z-index: 2; /* InfoBox 내에서 클릭이 가능하도록 z-index 조정 */
+  z-index: 2;
 `;
 
 const ExtraIcon = styled.div`
