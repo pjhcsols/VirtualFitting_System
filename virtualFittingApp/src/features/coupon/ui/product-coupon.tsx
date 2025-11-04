@@ -1,10 +1,11 @@
 import styled from "styled-components";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { GlassButton } from '@/shared/components/glass-button';
 import { GlassBox } from "@/shared/components/glass-box";
 import type { ClaimableCoupon } from '@/entities/coupon';
 import { Portal } from "@/shared/ui/Portal";
 import { useProductCoupon } from "../hooks/use-product-coupon";
+import { PopUpBottom } from "@/shared/ui/PopUpBottom";
 
 interface ProductCouponProps {
   productId: number;
@@ -15,6 +16,7 @@ interface ProductCouponProps {
   
   showPopup: boolean;
   setShowPopup: (show: boolean) => void;
+  excludedWalletIds: number[];
 }
 
 export const ProductCoupon = ({ 
@@ -24,12 +26,27 @@ export const ProductCoupon = ({
   currentSelectedCoupon,
   pageType,
   showPopup,
-  setShowPopup
+  setShowPopup,
+  excludedWalletIds,
 }: ProductCouponProps) => {
 
   const [tempSelectedCoupon, setTempSelectedCoupon] = useState<ClaimableCoupon | null>(null);
   const handleClosePopup = () => setShowPopup(false);
   const { coupons, isLoading, handleDownloadCoupon } = useProductCoupon(productId);
+  const [showDownloadPopup, setShowDownloadPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+
+  useEffect(() => {
+    if (showDownloadPopup) {
+        const timer = setTimeout(() => {
+            setShowDownloadPopup(false);
+            setPopupMessage('');
+        }, 2200);
+        return () => clearTimeout(timer);
+    }
+  }, [showDownloadPopup]);
+
+  const excludedSet = useMemo(() => new Set(excludedWalletIds), [excludedWalletIds]);
 
   const availableCoupons = useMemo(() => {
     if (!coupons) {
@@ -37,18 +54,36 @@ export const ProductCoupon = ({
     }
     const now = new Date();
 
-    return coupons.filter(coupon => {
-      const isExpired = new Date(coupon.endAt) < now;
-      const isMinPriceMet = finalPrice >= coupon.minOrderPrice;
-      if (isExpired || !isMinPriceMet) return false;
-      if (pageType === 'checkout') {
-          return coupon.normalCouponIds && coupon.normalCouponIds.length > 0;
-      }
+    return coupons
+      .map(coupon => {
+        const isExpired = new Date(coupon.endAt) < now;
+        const isMinPriceMet = finalPrice >= coupon.minOrderPrice;
+        if (isExpired || !isMinPriceMet) return null;
 
-      const canDownloadOrUse = coupon.remainingCanClaim > 0 || coupon.normalCouponIds.length > 0;
-      return canDownloadOrUse;
-    });
-  }, [coupons, finalPrice, pageType]);
+        const usableWalletIds = coupon.normalCouponIds.filter(walletId => 
+          !excludedSet.has(walletId)
+        );
+
+        if (pageType === 'checkout') {
+          if (usableWalletIds.length === 0) return null; 
+          return { ...coupon, normalCouponIds: usableWalletIds };
+        }
+
+        const canDownloadOrUse = coupon.remainingCanClaim > 0 || usableWalletIds.length > 0;
+        if (pageType === 'product' && !canDownloadOrUse) {
+          return null;
+        }
+
+        return { ...coupon, normalCouponIds: usableWalletIds };
+
+      })
+    .filter((coupon): coupon is ClaimableCoupon => coupon !== null);
+  }, [coupons, finalPrice, pageType, excludedSet]);
+
+  const showPopupMessage = (message: string) => {
+      setPopupMessage(message);
+      setShowDownloadPopup(true);
+  };
 
   const handleApply = async () => {
     if (tempSelectedCoupon === null) {
@@ -60,30 +95,23 @@ export const ProductCoupon = ({
     if (pageType === 'checkout') {
       const walletIdForUse = tempSelectedCoupon.normalCouponIds[0];
       const finalCoupon: ClaimableCoupon = { ...tempSelectedCoupon, walletId: walletIdForUse }; 
-      
+
       onSelect(finalCoupon);
       setShowPopup(false);
 
     } else if (pageType === 'product') {
-      
-      const isAlreadyOwned = tempSelectedCoupon.normalCouponIds.length > 0;
-
-      if (isAlreadyOwned) {
-        setShowPopup(false);
-        return;
-      }
       
       if (tempSelectedCoupon.remainingCanClaim > 0) {
         const brandCampaignIdToUse = tempSelectedCoupon.campaignId;
         const downloadedWalletId = await handleDownloadCoupon(brandCampaignIdToUse);
       
         if (downloadedWalletId !== null) {
-          alert('쿠폰 다운로드에 성공했습니다! 마이페이지에서 확인하세요.');
+          showPopupMessage('쿠폰을 다운로드 하였습니다.');
         } else {
-          alert('쿠폰 다운로드에 실패했습니다. (수량 소진 등을 확인하세요)');
+          showPopupMessage('쿠폰 다운로드에 실패했습니다.');
         }
       } else {
-          alert('쿠폰을 다운로드할 수 없습니다. 발급 제한을 확인하세요.');
+          showPopupMessage('모든 쿠폰을 발급받았습니다.');
       }
       setShowPopup(false);
     }
@@ -116,6 +144,11 @@ export const ProductCoupon = ({
                             calculatedDiscount,
                             coupon.maxDiscountPrice
                         );
+
+                        const ownedCount = coupon.normalCouponIds?.length || 0;
+                        const canClaim = coupon.remainingCanClaim || 0;
+                        const isFullyOwned = ownedCount > 0 && canClaim === 0;
+                        
                         return (
                           <CouponItemLabel 
                             key={coupon.campaignId} 
@@ -144,8 +177,15 @@ export const ProductCoupon = ({
                                     미적용
                                   </UnapplyButton>
                                 )}
-                                {pageType === 'product' && coupon.normalCouponIds.length > 0 && (
-                                  <OwnedTag>발급 완료</OwnedTag>
+                                {pageType === 'product' && (
+                                    <OwnedTag>
+                                        보유: {ownedCount}장
+                                        {canClaim > 0 && ownedCount === 0 && 
+                                            <><br/>다운로드 가능</>}
+                                        {canClaim > 0 && ownedCount > 0 && 
+                                            <><br/>추가 발급 가능: {canClaim}장</>}
+                                        {isFullyOwned && <><br/>발급 완료</>}
+                                    </OwnedTag>
                                 )}
                               </DiscountLine>
                               <DiscountLine>
@@ -173,11 +213,14 @@ export const ProductCoupon = ({
                 onClick={handleApply} 
                 disabled={isLoading || (tempSelectedCoupon?.campaignId === currentSelectedCoupon?.campaignId && tempSelectedCoupon !== null)}
               >
-                적용하기
+                {pageType === 'product' ? '다운받기' : '적용하기'}
               </ApplyButton>
             </PopupContent>
           </PopupOverlay>
         )}
+        {showDownloadPopup && (
+          <PopUpBottom message={popupMessage} />
+      )}
       </Portal>
   );
 };

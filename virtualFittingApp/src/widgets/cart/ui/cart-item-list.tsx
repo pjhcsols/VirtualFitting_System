@@ -113,12 +113,11 @@ export function CartItemList({
             <BrandSection key={brand}>
               {items.map((item, itemIndex) => {
                 const currentCoupon = selectedCouponMap.get(item.id) || null;
-                const priceForCouponCalculation = 
-                    (item.discountedPrice ?? item.price) * item.quantity;
+                const priceForCouponCalculation = (item.discountedPrice ?? item.price) * item.quantity;
                 let itemCouponDiscount = 0;
                 if (currentCoupon && currentCoupon.walletId !== null) {
-                    const calculatedDiscount = Math.floor(priceForCouponCalculation * (currentCoupon.percent / 100));
-                    itemCouponDiscount = Math.min(calculatedDiscount, currentCoupon.maxDiscountPrice);
+                  const calculatedDiscount = Math.floor(priceForCouponCalculation * (currentCoupon.percent / 100));
+                  itemCouponDiscount = Math.min(calculatedDiscount, currentCoupon.maxDiscountPrice);
                 }
 
                 const finalItemPrice = priceForCouponCalculation - itemCouponDiscount;
@@ -137,14 +136,15 @@ export function CartItemList({
                         <ProductCoupon
                           productId={item.productId}
                           finalPrice={priceForCouponCalculation}
-                          pageType="checkout"
+                          pageType="product"
                           onSelect={(coupon) => {
-                              handleCouponSelectAndApply(coupon, item.id);
-                              setActiveCouponItemId(null);
+                            handleCouponSelectAndApply(coupon, item.id);
+                            setActiveCouponItemId(null);
                           }} 
                           currentSelectedCoupon={currentCoupon}
                           showPopup={true}
                           setShowPopup={() => setActiveCouponItemId(null)}
+                          excludedWalletIds={[]}
                         />
                       )}
                       <GlassButton onClick={() => handleEditOptions(item)} size='small'>옵션변경</GlassButton>
@@ -160,17 +160,17 @@ export function CartItemList({
       )}
     </StyledGlassBox>
     {isPopupOpen && itemToEdit && productDetail && !isProductDetailLoading && (
-        <UpdateCartItemOptionsPopup
-          productDetail={productDetail}
-          cartItemId={itemToEdit.item.id}
-          initialColor={itemToEdit.item.color}
-          initialSize={itemToEdit.item.size}
-          initialQuantity={itemToEdit.item.quantity}
-          onClose={handleClosePopup}
-          onUpdateSuccess={handleUpdateSuccess}
-        />
-      )}
-      </>
+      <UpdateCartItemOptionsPopup
+        productDetail={productDetail}
+        cartItemId={itemToEdit.item.id}
+        initialColor={itemToEdit.item.color}
+        initialSize={itemToEdit.item.size}
+        initialQuantity={itemToEdit.item.quantity}
+        onClose={handleClosePopup}
+        onUpdateSuccess={handleUpdateSuccess}
+      />
+    )}
+    </>
   );
 }
 

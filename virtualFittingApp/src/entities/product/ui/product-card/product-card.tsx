@@ -197,7 +197,7 @@ const TitleRow = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 2px; /* Name과의 간격 조정 */
+  margin-bottom: 2px;
 `;
 
 const ColorSwatches = styled.div`

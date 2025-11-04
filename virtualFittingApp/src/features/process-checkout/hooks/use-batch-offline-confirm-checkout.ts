@@ -4,9 +4,13 @@ import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { 
-    createBatchPaymentReservation,
-    createPaymentIntent,
-    reportPaymentResult,
+  confirmOrderPurchase, 
+} from '@/entities/order';
+import { 
+  createBatchPaymentReservation,
+  createPaymentIntent,
+  reportPaymentResult,
+  confirmFinalPayment,
  } from '@/entities/payment';
 import type { 
     BatchPaymentRequestBody, 
@@ -56,6 +60,7 @@ export const useBatchOfflineConfirmCheckout = () => {
   
   const confirmAndProceed = async (checkoutData: BatchOfflineCheckoutData) => {
     setIsLoading(true);
+    let reservedOrderId: string | undefined;
 
      try {
       if (!isLoggedIn) {
@@ -78,17 +83,17 @@ export const useBatchOfflineConfirmCheckout = () => {
         throw new Error("상품 재고를 예약하는 데 실패했습니다.");
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
-      console.log(`[배치 예약 ID] ${reservedOrderId}`);
 
       const intentLines: PaymentIntentLine[] = checkoutData.items.map((item, index) => {
         const coupon = checkoutData.coupons[index]; 
-        
+        const walletId = (coupon as any)?.walletId;
+
         return {
           productId: item.productId,
           size: item.size,
           color: item.color,
           quantity: item.quantity,
-          couponWalletId: (coupon as CouponInWallet)?.normalCouponWalletId ?? undefined, 
+          couponWalletId: walletId ?? undefined,
         };
       });
 
@@ -99,8 +104,6 @@ export const useBatchOfflineConfirmCheckout = () => {
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
         pointsToUse: 0,
       };
-      
-      console.log("[결제 의도 생성 Body]", intentBody);
 
       const intentResponse = await createPaymentIntent(intentBody);
 
@@ -108,13 +111,27 @@ export const useBatchOfflineConfirmCheckout = () => {
       if (!intentData) {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
       }
+      const FINAL_PAYMENT_KEY = `TEMP-${Date.now()}`;
 
-      await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
-      const itemIdsToDelete = checkoutData.items.map(item => item.id);
-      console.log(`[장바구니 정리] 결제 완료된 아이템 ID: ${itemIdsToDelete.join(', ')}`);
+      const confirmationParams = {
+        paymentType: checkoutData.paymentMethod,
+        amount: intentData.serverTotal,
+        orderId: intentData.orderId,
+        paymentKey: FINAL_PAYMENT_KEY,
+      };
+
+      await confirmFinalPayment(confirmationParams); 
       
-      await deleteCartItems(accessToken, itemIdsToDelete);
-      console.log("[장바구니 정리] 아이템 삭제 성공.");
+      await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
+      
+      const authUserId = accessToken;
+          const orderId = intentData.orderId;
+
+      await confirmOrderPurchase(authUserId, orderId); 
+      
+      const itemIdsToDelete = checkoutData.items.map(item => item.id);
+
+      await deleteCartItems(accessToken, itemIdsToDelete); 
 
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
@@ -130,6 +147,13 @@ export const useBatchOfflineConfirmCheckout = () => {
 
     } catch (error: any) {
       console.error("Payment confirmation failed:", error);
+
+      if (reservedOrderId) {
+        try {
+            await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
+        } catch (rollbackError) {
+        }
+      }
       alert(`결제 처리 중 오류가 발생했습니다: ${error.message}`);
 
     } finally {
