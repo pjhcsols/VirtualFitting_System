@@ -5,12 +5,18 @@ import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled from "styled-components";
+import { TransparentHeader } from "@/widgets/header";
+
+gsap.registerPlugin(ScrollTrigger);
 
 gsap.registerPlugin(ScrollTrigger);
 
 function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
+
+  const descriptionRef = useRef<HTMLDivElement>(null);
+  const virtualFittingRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function update(time: number) {
@@ -20,20 +26,32 @@ function MainPage() {
     gsap.ticker.add(update);
     return () => gsap.ticker.remove(update);
   }, []);
+  
+  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+    if (ref.current && lenisRef.current?.lenis) {
+      lenisRef.current.lenis.scrollTo(ref.current, { offset: -64, duration: 1.2 });
+    }
+  };
 
+  const handleDescriptionScroll = () => scrollToSection(descriptionRef);
+  const handleVirtualFittingScroll = () => scrollToSection(virtualFittingRef);
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
       ref={lenisRef}
       root
     >
+      <TransparentHeader 
+        onDescriptionScroll={handleDescriptionScroll}
+        onVirtualFittingScroll={handleVirtualFittingScroll}
+      />
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
             <Section>
               <HeroSection />
             </Section>
-            <Section>
+            <Section ref={descriptionRef}>
               <DescriptionSection />
             </Section>
             <Section>
