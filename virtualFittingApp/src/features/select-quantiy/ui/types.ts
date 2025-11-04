@@ -3,4 +3,5 @@ export interface QuantityProps {
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   unitPrice: number;
   discountedPrice?: number;
+  disabled?: boolean;
 }

@@ -182,18 +182,22 @@ function ProductDetails({
           {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <S.IconImage src={ICON_SHARE} alt="share icon" />
           </div> */}
-          <ProductCouponButton 
-            onClick={() => setShowCouponModal(true)}
-          />
-          <ProductCoupon
-            productId={product.productId}
-            finalPrice={finalPrice}
-            pageType="product"
-            onSelect={() => {}} 
-            currentSelectedCoupon={null} 
-            showPopup={showCouponModal}
-            setShowPopup={setShowCouponModal}
-          />
+          {!isSoldOut && (
+            <div style={{ display: 'flex', gap: '8px' }}>
+              <ProductCouponButton 
+                onClick={() => setShowCouponModal(true)}
+              />
+              <ProductCoupon
+                productId={product.productId}
+                finalPrice={finalPrice}
+                pageType="product"
+                onSelect={() => {}} 
+                currentSelectedCoupon={null} 
+                showPopup={showCouponModal}
+                setShowPopup={setShowCouponModal}
+              />
+            </div>
+          )}
         </S.TopRow>
         <S.Description>{product.productDesc}</S.Description>
         <ProductOptions
@@ -207,6 +211,8 @@ function ProductDetails({
           handleColorChange={handleColorChange}
           setSelectedSize={setSelectedSize}
           setQuantity={setQuantity}
+          
+          disabled={isSoldOut} // 👈 품절 상태일 때 비활성화 플래그 전달
         />
         <S.ButtonBox>
           {isSoldOut ? (
