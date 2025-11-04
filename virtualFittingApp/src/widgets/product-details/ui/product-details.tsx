@@ -12,12 +12,14 @@ type ProductDetailsProps = {
   product: ProductDetail;
   productColors: string[];
   onColorChange?: (color: string) => void;
+  onTryOn?: () => void;
 };
 
 function ProductDetails({
   product,
   productColors,
   onColorChange,
+  onTryOn,
 }: ProductDetailsProps) {
   const {
     price,
@@ -146,7 +148,7 @@ function ProductDetails({
           <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton />
+          <AITryOnButton onClick={onTryOn} />
         </S.ButtonBox>
       </S.ProductInfoBox>
     </S.ProductBox>

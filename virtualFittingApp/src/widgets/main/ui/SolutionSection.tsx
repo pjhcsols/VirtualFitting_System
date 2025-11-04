@@ -185,6 +185,7 @@ const CardIcon = styled.div`
     color: currentColor;
   }
 `;
+
 const CardTitle = styled.h3`
   font-size: 24px;
   font-weight: 700;

@@ -16,7 +16,7 @@ function PasswordInput({ name, onChange, title, value }: IPasswordInput) {
   };
   return (
     <S.InfoBox>
-      <S.InputContainer inputed={value.length !== 0}>
+      <S.InputContainer $inputed={value.length !== 0}>
         <input
           type={showPassword ? "text" : "password"}
           id="input"
