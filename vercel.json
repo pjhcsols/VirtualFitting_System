@@ -1,8 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/b1/:path*",
+      "destination": "https://basilium-alb-1972402546.ap-northeast-2.elb.amazonaws.com/b1/:path*"
+    }
+  ],
   "routes": [
     {
       "src": "/b1/(.*)",
-      "dest": "http://basilium-alb-1972402546.ap-northeast-2.elb.amazonaws.com/b1/$1"
+      "dest": "https://basilium-alb-1972402546.ap-northeast-2.elb.amazonaws.com/b1/$1"
     },
     {
       "handle": "filesystem"
