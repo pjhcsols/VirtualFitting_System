@@ -10,7 +10,7 @@ export const InfoBox = styled.div`
   gap: 0.75rem;
 `;
 
-export const InputContainer = styled.div<{ inputed: boolean }>`
+export const InputContainer = styled.div<{ $inputed: boolean }>`
   position: relative;
   margin: 2.5rem auto;
   width: 100%;
@@ -37,7 +37,7 @@ export const InputContainer = styled.div<{ inputed: boolean }>`
   }
   label {
     position: absolute;
-    top: ${(props) => (props.inputed ? "-20px" : "0")};
+    top: ${(props) => (props.$inputed ? "-20px" : "0")};
     left: 0;
     color: #ccc;
     transition: all 0.3s ease;
