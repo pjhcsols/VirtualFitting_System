@@ -1,6 +1,7 @@
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
 export interface CheckoutItemDetail {
+  id: number;
   productId: number;
   name: string;
   brand: string;

@@ -12,6 +12,7 @@ import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
+import { useProductCoupon } from "@/features/coupon";
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -24,6 +25,13 @@ function ProductDetailPage() {
 
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
+  
+  const currentProductId = Number(id); 
+  const { 
+    coupons, 
+    isLoading: isCouponLoading, 
+    handleDownloadCoupon,
+  } = useProductCoupon(currentProductId);
 
   const handleTabChange = (tab: string) => {
     setSearchParams({ tab: tab, color: color || "" });
@@ -56,8 +64,7 @@ function ProductDetailPage() {
         setProduct(detailData);
 
       } catch (error) {
-        console.error("Failed to load product details:", error);
-        navigate('/not-found');
+        navigate('/');
       } finally {
         setLoading(false);
       }
@@ -69,17 +76,23 @@ function ProductDetailPage() {
   if (loading || !product) {
     return <div>Loading...</div>;
   }
-  const currentProductId = product.productId;
+
+  const finalPrice = product.productPrice;
+    const productDetailsProps = {
+      product,
+      productColors,
+      onColorChange: (newColor: string) => {
+          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
+      },
+      coupons,
+      isCouponLoading,
+      handleDownloadCoupon,
+      finalPrice,
+    };
 
   return (
     <Wrapper>
-      <ProductDetails
-        product={product}
-        productColors={productColors}
-        onColorChange={(newColor) => {
-          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
-        }}
-      />
+      <ProductDetails {...productDetailsProps} />
       
       <ContentArea>
         <TabMenu>
