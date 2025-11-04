@@ -7,8 +7,10 @@ import { GlassBox } from "@/shared/components/glass-box";
 import { useProductLike } from "@/features/product-like"; 
 import { ProductLikeButton } from "@/features/product-like";
 
+type ProductWithStatus = any & { isSoldOut: boolean }; 
+
 type ProductCardProps = {
-  product: any;
+  product: ProductWithStatus;
   onClick?: () => void;
 };
 
@@ -18,6 +20,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   const maxVisibleColors = 3;
   const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
   const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
+  const isSoldOut = product.isSoldOut;
 
   useEffect(() => {
     async function loadPrice() {
@@ -33,8 +36,11 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   }, [product.productId]);
 
   return (
-    <Card onClick={onClick} borderRadius={"8px"}>
+    <Card onClick={onClick} borderRadius={"8px"} $isSoldOut={isSoldOut}>
       <ImageBox $imageUrl={product.productPhotoUrls[0]}>
+        {isSoldOut && (
+            <SoldOutOverlay>SOLD OUT</SoldOutOverlay>
+        )}
         <ColorSwatches>
           <ColorSwatchesList colors={product.productColors?.slice(0, maxVisibleColors) || []} />
           {remainingColors > 0 && (
@@ -93,13 +99,29 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   );
   }
 
-const Card = styled(GlassBox)`
+const Card = styled(GlassBox)<{ $isSoldOut: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+`;
+
+const SoldOutOverlay = styled.div`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5); /* 반투명 검은색 배경 */
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 5; /* ImageBox 위에 표시 */
 `;
 
 const ImageBox = styled.div<{ $imageUrl: string }>`
