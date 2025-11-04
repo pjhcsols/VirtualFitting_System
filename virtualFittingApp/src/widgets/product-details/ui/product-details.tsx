@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
-// import { ICON_SHARE } from "@/shared";
 import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
-import { SoldOutButton } from "@/features/product-options";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
 import type { ClaimableCoupon } from '@/entities/coupon';
@@ -13,16 +11,19 @@ import { ProductCoupon } from "@/features/coupon";
 import { ProductCouponButton } from "@/features/coupon";
 import { useProductLike } from "@/features/product-like"; 
 import { ProductLikeButton } from "@/features/product-like";
+import { SoldOutButton } from "@/features/product-options";
 import { PopUpBottom } from "@/shared/ui/PopUpBottom";
 
+type ProductWithQuantity = ProductDetail & { totalQuantity: number };
+
 type ProductDetailsProps = {
-  product: ProductDetail;
+  product: ProductWithQuantity;
   productColors: string[];
   onColorChange?: (color: string) => void;
-
-  coupons: ClaimableCoupon[];
-  isCouponLoading: boolean;
-  handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>;
+  onTryOn?: () => void;
+  coupons: ClaimableCoupon[]; 
+  isCouponLoading: boolean; 
+  handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>; 
   finalPrice: number;
 };
 
@@ -30,22 +31,13 @@ function ProductDetails({
   product,
   productColors,
   onColorChange,
-
+  onTryOn,
   finalPrice,
 }: ProductDetailsProps) {
   const {
-    price,
-    quantity,
-    selectedColor,
-    selectedSize,
-    // finalPrice,
-    sizesSorted,
-    selectedProductImages,
-    setQuantity,
-    setSelectedSize,
-    handleAddToCart,
-    handlePurchaseClick,
-    handleColorChange,
+    price, quantity, selectedColor, selectedSize, sizesSorted,
+    selectedProductImages, setQuantity, setSelectedSize,
+    handleAddToCart, handlePurchaseClick, handleColorChange,
   } = useProductDetails(product, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -55,35 +47,26 @@ function ProductDetails({
   const [showAddToCartPopup, setShowAddToCartPopup] = useState(false);
   const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
   const totalQuantity = product.totalQuantity;
-  const isSoldOut = totalQuantity === 0
+  const isSoldOut = totalQuantity === 0; 
 
-  
   useEffect(() => {
-    if (showSoldOutPopup) {
-        const timer = setTimeout(() => {
-            setShowSoldOutPopup(false);
-        }, 2200); 
-        return () => clearTimeout(timer);
+    if (showSoldOutPopup || showAddToCartPopup) {
+      const timer = setTimeout(() => {
+        setShowSoldOutPopup(false);
+        setShowAddToCartPopup(false);
+      }, 2200); 
+      return () => clearTimeout(timer);
     }
-  }, [showSoldOutPopup]);
+  }, [showSoldOutPopup, showAddToCartPopup]);
   
-  useEffect(() => {
-    if (showAddToCartPopup) {
-        const timer = setTimeout(() => {
-            setShowAddToCartPopup(false);
-        }, 2200); 
-        return () => clearTimeout(timer);
-    }
-  }, [showAddToCartPopup]);
-
   const handleSoldOutAction = (e: React.MouseEvent) => {
-      e.stopPropagation();
-      setShowSoldOutPopup(true);
+    e.stopPropagation();
+    setShowSoldOutPopup(true);
   };
 
   const handleAddToCartAndShowPopup = () => {
-      handleAddToCart(); 
-      setShowAddToCartPopup(true);
+    handleAddToCart(); 
+    setShowAddToCartPopup(true);
   };
   
   useEffect(() => {
@@ -211,8 +194,7 @@ function ProductDetails({
           handleColorChange={handleColorChange}
           setSelectedSize={setSelectedSize}
           setQuantity={setQuantity}
-          
-          disabled={isSoldOut} // 👈 품절 상태일 때 비활성화 플래그 전달
+          disabled={isSoldOut}
         />
         <S.ButtonBox>
           {isSoldOut ? (
@@ -225,7 +207,7 @@ function ProductDetails({
           )}
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton />
+          <AITryOnButton onClick={onTryOn} />
         </S.ButtonBox>
       </S.ProductInfoBox>
 
@@ -238,6 +220,5 @@ function ProductDetails({
     </S.ProductBox>
   );
 }
-
 
 export { ProductDetails };
