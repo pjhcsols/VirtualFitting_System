@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { useQueryClient } from '@tanstack/react-query';
 import { authState } from '@/entities/auth';
-import {
+import { 
     createBatchPaymentReservation,
     createPaymentIntent,
     reportPaymentResult,
  } from '@/entities/payment';
-import type {
-    BatchPaymentRequestBody,
-    ReservedItem,
+import type { 
+    BatchPaymentRequestBody, 
+    ReservedItem, 
     PaymentIntentLine,
  } from '@/entities/payment';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
@@ -53,7 +52,6 @@ export const useBatchOfflineConfirmCheckout = () => {
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
-  const queryClient = useQueryClient();
 
   
   const confirmAndProceed = async (checkoutData: BatchOfflineCheckoutData) => {
@@ -90,7 +88,7 @@ export const useBatchOfflineConfirmCheckout = () => {
           size: item.size,
           color: item.color,
           quantity: item.quantity,
-          couponWalletId: (coupon as CouponInWallet)?.walletId ?? undefined, 
+          couponWalletId: (coupon as CouponInWallet)?.normalCouponWalletId ?? undefined, 
         };
       });
 
@@ -118,15 +116,12 @@ export const useBatchOfflineConfirmCheckout = () => {
       await deleteCartItems(accessToken, itemIdsToDelete);
       console.log("[장바구니 정리] 아이템 삭제 성공.");
 
-      queryClient.invalidateQueries({ queryKey: ['coupons', 'claimables'] });
-      console.log("[캐시 무효화] 모든 상품 쿠폰 쿼리를 무효화했습니다.");
-
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
         state: { 
           shippingAddress: checkoutData.shippingAddress,
           orderId: intentData.orderId,
-          items: checkoutData.items, // 전체 아이템 목록을 전달
+          items: checkoutData.items,
           totalAmount: checkoutData.finalPrice,
           senderName: checkoutData.customerName,
           deadline: reservationData.expiresAt,

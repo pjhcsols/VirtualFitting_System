@@ -73,9 +73,8 @@ export const ProductCoupon = ({
         return;
       }
       
-      // 다운로드 시도 로직
       if (tempSelectedCoupon.remainingCanClaim > 0) {
-        const brandCampaignIdToUse = tempSelectedCoupon.campaignId; // brandCampaignId가 없으면 campaignId 사용 가정
+        const brandCampaignIdToUse = tempSelectedCoupon.campaignId;
         const downloadedWalletId = await handleDownloadCoupon(brandCampaignIdToUse);
       
         if (downloadedWalletId !== null) {
