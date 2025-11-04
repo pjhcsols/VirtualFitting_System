@@ -178,6 +178,7 @@ function ProductDetails({
                 currentSelectedCoupon={null} 
                 showPopup={showCouponModal}
                 setShowPopup={setShowCouponModal}
+                excludedWalletIds={[]}
               />
             </div>
           )}
