@@ -86,6 +86,7 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     if (!price) return;
 
     initiateCheckout({
+      id: product.productId,
       productId: product.productId,
       name: product.productName,
       brand: product.brandUser.firmName,
