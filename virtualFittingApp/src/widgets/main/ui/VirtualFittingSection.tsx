@@ -19,6 +19,7 @@ import { AddModelModal } from "@/features/ai-try-on";
 import { NormalUserImgUpload, NormalUserGetImg } from "@/widgets/auth/api/normalAuth.action";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
+import { useProductCoupon } from "@/features/coupon"; // 🚨 쿠폰 훅 임포트
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,34 +34,50 @@ const TXT = {
 };
 
 function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
+  // ----------------------------------------------------
+  // 🚨 1. Hooks & State 선언 (최상위 배치)
+  // ----------------------------------------------------
   const navigate = useNavigate();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
   const [loading, setLoading] = useState(true);
 
+  // GSAP Refs
   const WrapperRef = useRef<HTMLDivElement | null>(null);
   const railRef = useRef<HTMLDivElement | null>(null);
   const modelRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
+  // Try-On 상태
   const [modelSrc, setModelSrc] = useState<Record<ModelKey, string>>({
     man: manImg,
     woman: womanImg,
     custom: "" 
   });
-
   const [registeredImageUrl, setRegisteredImageUrl] = useState<string | null>(null);
   const [registeredLoading, setRegisteredLoading] = useState(false);
-
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  
+  // 🚨 쿠폰 훅 호출 (product가 로드된 후 productId를 사용)
+  const { 
+    coupons, 
+    isLoading: isCouponLoading, 
+    handleDownloadCoupon, 
+  } = useProductCoupon(product?.productId ?? 0); 
 
+
+  // ----------------------------------------------------
+  // 🚨 2. Callbacks & Handlers
+  // ----------------------------------------------------
+  
   const loadRegisteredImage = useCallback(async () => {
     setRegisteredLoading(true);
     try {
       const res = await NormalUserGetImg();
+      // NOTE: API 응답이 URL 전체를 주지 않는 경우 'http://'를 붙여야 함
       const ImgUrl = "http://" + res.data; 
       setRegisteredImageUrl(ImgUrl);
       return ImgUrl;
@@ -71,6 +88,16 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
       setRegisteredLoading(false);
     }
   }, []);
+
+  const requireAuth = useCallback(() => {
+    const token = cookiesInstance.get("access-token");
+    if (!token) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return false;
+    }
+    return true;
+  }, [navigate]);
 
   const openModal = async () => {
     if (!requireAuth()) return;
@@ -86,18 +113,12 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
     setIsModalOpen(true);
     await loadRegisteredImage(); 
   };
-
-  useEffect(() => {
-    return () => {
-      if (uploadPreview?.startsWith("blob:")) URL.revokeObjectURL(uploadPreview);
-    };
-  }, [uploadPreview]);
-
-  const closeModal = () => {
+  
+  const closeModal = useCallback(() => {
     setIsModalOpen(false);
     setUploadPreview(null);
     setSelectedFile(null);
-  };
+  }, []);
 
   const removeCustom = useCallback(() => {
     setModelSrc(prev => {
@@ -137,14 +158,18 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
         return;
       }
 
-      if (uploadPreview) {
+      // Blob URL을 사용하여 미리보기를 설정한 경우 (성공 후 실제 URL로 업데이트)
+      if (uploadPreview?.startsWith("blob:")) {
         setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
-        setSelectedModel(MODEL.CUSTOM);
       }
 
+      // 서버에서 등록된 최종 이미지 URL을 가져와서 custom 모델 소스로 설정
       const latest = await loadRegisteredImage(); 
       if (latest) {
         setModelSrc(prev => ({ ...prev, custom: latest }));
+        setSelectedModel(MODEL.CUSTOM);
+      } else if (uploadPreview) {
+        // API가 즉시 URL을 안 주는 경우, 미리보기 URL을 임시 사용 (UX)
         setSelectedModel(MODEL.CUSTOM);
       }
 
@@ -155,16 +180,10 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
     }
   };
 
-  const requireAuth = () => {
-    const token = cookiesInstance.get("access-token");
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return false;
-    }
-    return true;
-  };
 
+  // ----------------------------------------------------
+  // 🚨 3. Data Fetching & GSAP Effects
+  // ----------------------------------------------------
   useEffect(() => {
     let mounted = true;
     (async () => {
@@ -174,6 +193,7 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
         if (!colors?.length) throw new Error("색상 정보를 찾을 수 없습니다.");
         const detail = await fetchProductDetailByColor(productId, colors[0]);
         if (!detail) throw new Error("상품 상세를 찾을 수 없습니다.");
+        
         if (mounted) {
           setProduct(detail);
           setProductColors(colors);
@@ -213,7 +233,8 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
 
     return () => ctx.revert();
   }, []);
-
+  
+  const finalPrice = product?.productPrice ?? 0;
   if (loading || !product) return <Centered>Loading…</Centered>;
 
   return (
@@ -295,10 +316,14 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
 
         <PanelBox ref={panelRef}>
           <ProductDetails
-            product={product}
+            product={product as any}
             productColors={productColors}
             onColorChange={() => {}}
             onTryOn={openModal}
+            coupons={coupons}
+            isCouponLoading={isCouponLoading}
+            handleDownloadCoupon={handleDownloadCoupon}
+            finalPrice={finalPrice} 
           />
         </PanelBox>
       </SectionWrap>
