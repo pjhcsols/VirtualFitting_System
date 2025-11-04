@@ -5,12 +5,10 @@ import type { Banner } from "@/entities/advertisement";
 
 function AdvertisementCarousel() {
   const [banners, setBanners] = useState<Banner[]>([]);
-  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
     const loadBanners = async () => {
-      setLoading(true);
       try {
         const data = await fetchBanners("super_ad");
         if (data) {
@@ -19,7 +17,6 @@ function AdvertisementCarousel() {
       } catch (error) {
         console.error("Failed to load banners:", error);
       } finally {
-        setLoading(false);
       }
     };
 
@@ -41,12 +38,8 @@ function AdvertisementCarousel() {
     setCurrentIndex(index);
   };
   
-  if (loading) {
-    return <Wrapper><LoadingIndicator>Loading Banners...</LoadingIndicator></Wrapper>;
-  }
-
   if (banners.length === 0) {
-    return <Wrapper><EmptyMessage>표시할 배너가 없습니다.</EmptyMessage></Wrapper>;
+    return;
   }
 
   const currentBannerUrl = banners[currentIndex]?.url;
@@ -109,17 +102,5 @@ const Dot = styled.div<{ $isActive: boolean }>`
     background-color: rgba(255, 255, 255, 0.8);
   }
 `;
-
-const LoadingIndicator = styled.div`
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  color: #fff;
-  font-size: 1.2rem;
-`;
-
-const EmptyMessage = styled(LoadingIndicator)``;
 
 export { AdvertisementCarousel };
