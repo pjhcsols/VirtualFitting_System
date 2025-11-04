@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import type { CartItem } from '@/entities/cart';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 
-type InitiateCheckoutData = Omit<CartItem, 'id'>;
+type InitiateCheckoutData = CheckoutItemDetail;
 
 export const useInitiateCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);

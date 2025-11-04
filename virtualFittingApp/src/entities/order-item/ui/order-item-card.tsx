@@ -1,8 +1,8 @@
 import styled from 'styled-components';
-import type { CartItem } from '@/entities/cart';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
 
 interface OrderItemCardProps {
-  item: CartItem;
+  item: CheckoutItemDetail;
   finalPrice?: number;
 }
 

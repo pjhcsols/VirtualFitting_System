@@ -56,16 +56,3 @@ export async function deleteCartItems(
 
   return apiClient<Cart>(config, `장바구니 아이템 ID [${itemIds.join(', ')}] 삭제`);
 }
-
-export const updateCartItemCoupon = async (
-  authUserId: string,
-  itemId: number,
-  couponWalletId: number | null
-): Promise<Cart | null> => {
-    
-  const requestData: UpdateCartItemRequest = {
-    couponWalletId: couponWalletId,
-  };
-
-  return updateCartItem(authUserId, itemId, requestData);
-};

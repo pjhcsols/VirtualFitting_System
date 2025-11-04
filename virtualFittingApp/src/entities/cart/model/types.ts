@@ -1,3 +1,5 @@
+import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+
 export type CartItem = {
   id: number;
   productId: number;
@@ -7,8 +9,8 @@ export type CartItem = {
   price: number;
   discountedPrice?: number;
   discountRate?: number;
-  color: string;
-  size: string;
+  color: ProductColorPayment; 
+  size: ProductSizePayment; 
   quantity: number;
 };
 

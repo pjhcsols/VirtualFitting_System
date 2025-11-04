@@ -2,16 +2,18 @@ import styled, { css } from "styled-components";
 import { useState } from "react";
 import { Portal } from "@/shared/ui/Portal";
 import type { TossPaymentMethod } from "@/shared/types/payment";
-import type { CartItem } from "@/entities/cart";
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
+import type { ClaimableCoupon } from '@/entities/coupon';
 
 export type PaymentProvider = TossPaymentMethod;
 
 interface PaymentSelectionModalProps {
+  item: CheckoutItemDetail;
   isOpen: boolean;
   onClose: () => void;
   onConfirm: (selectedMethod: PaymentProvider) => void;
   totalAmount: number;
-  item: CartItem;
+  selectedCoupon: ClaimableCoupon | null;
 }
 
 const paymentGroups: { title: string; options: { key: PaymentProvider, name: string, enabled: boolean }[] }[] = [

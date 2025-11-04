@@ -32,15 +32,26 @@ export const fetchMyClaimableCoupons = async (productId: number, normalUserId: s
 };
 
 export const downloadCoupon = async (params: { 
-  campaignId: number; 
+  brandCampaignId: number;
   authUserId: string; 
 }): Promise<CouponInWallet | null> => {
-  const { campaignId, authUserId } = params;
-  const requestBody: DownloadCouponRequestBody = { campaignId };
+  const { brandCampaignId, authUserId } = params;
+  const requestBody: DownloadCouponRequestBody = { brandCampaignId };
   
-  const response = await API_BASILIUM.post<DownloadCouponApiResponse>(`/b1/coupons/wallets`, requestBody, {
-    params: { authUserId }
-  });
-  console.log(`[쿠폰 다운로드 (ID: ${campaignId})] API 응답 성공:`, response.data);
-  return response.data.data;
+  try {
+    const response = await API_BASILIUM.post<DownloadCouponApiResponse>(
+      `/b1/coupons/wallets`, 
+      requestBody, 
+      {
+        params: { authUserId }
+      }
+    );
+    
+    console.log(`[쿠폰 다운로드 (ID: ${brandCampaignId})] API 응답 성공:`, response.data);
+    return response.data.data;
+
+  } catch (error) {
+    console.error(`[쿠폰 다운로드 (ID: ${brandCampaignId})] API 호출 실패:`, error);
+    return null; 
+  }
 };
