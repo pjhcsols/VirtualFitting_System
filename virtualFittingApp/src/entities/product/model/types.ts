@@ -1,3 +1,26 @@
+export type ProductColorFitting = "BLACK" | "WHITE" | "GRAY" | "BLUE" | "RED" | "YELLOW" | "GREEN" | "ORANGE";
+
+export interface VirtualFittingRequestParams {
+  authUserId: string;
+  productId: number;
+  color: ProductColorFitting;
+  gender: string;
+}
+
+export interface VirtualFittingData {
+  resultImageUrl: string;
+  simulatedDelayMillis: number;
+}
+
+export interface VirtualFittingResponse {
+  timestamp: string;
+  status: number;
+  code: string;
+  message: string;
+  data: VirtualFittingData;
+}
+
+
 export interface ProductBase {
   productId: number;
   productName: string;

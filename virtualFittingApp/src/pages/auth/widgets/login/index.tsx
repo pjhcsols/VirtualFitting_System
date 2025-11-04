@@ -1,29 +1,30 @@
 import { PasswordInput, TextInput } from "@/shared";
 import * as S from "./style";
-import { useLogin } from "../../hooks/useLogin";
+import { useLogin } from "@/widgets/auth/hooks/useLogin";
 
 function LoginForm() {
-  const { user, onChange, onSubmit } = useLogin();
+  const { loginInfo, onChangeUserId, onChangeUserPassword, onSubmitLoginInfo } =
+    useLogin();
   return (
-    <S.Wrapper onSubmit={onSubmit}>
+    <S.Wrapper>
       <S.Title>BASILIUM</S.Title>
       <S.InfoContainer>
         <TextInput
           name="userId"
-          onChange={onChange}
+          onChange={onChangeUserId}
           title="ID"
           type="text"
-          value={user.userId}
+          value={loginInfo.userId}
         />
         <PasswordInput
           name="userPassword"
-          value={user.userPassword}
-          onChange={onChange}
+          value={loginInfo.userPassword}
+          onChange={onChangeUserPassword}
           title="Password"
         />
       </S.InfoContainer>
       <S.ButtonContainer>
-        <S.LoginButtonWrapper>
+        <S.LoginButtonWrapper onClick={onSubmitLoginInfo}>
           <S.ButtonText>로그인</S.ButtonText>
         </S.LoginButtonWrapper>
         <S.SignUpButtonWrapper to={"/signup"}>

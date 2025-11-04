@@ -34,7 +34,7 @@ function NormalSignUpPage() {
     <Wrapper>
       <TitleContainer>
         <Title></Title>
-        <NextButton accepted={isCompleted} onClick={onClickNextButton}>
+        <NextButton $accepted={isCompleted} onClick={onClickNextButton}>
           {signUpStep === 0 ? "다음" : "가입"}
         </NextButton>
       </TitleContainer>
@@ -81,7 +81,7 @@ const Title = styled.span`
   color: black;
 `;
 
-const NextButton = styled.div<{ accepted: boolean }>`
+const NextButton = styled.div<{ $accepted: boolean }>`
   min-width: 6rem;
   min-height: 2.5rem;
   display: flex;
@@ -89,7 +89,7 @@ const NextButton = styled.div<{ accepted: boolean }>`
   align-items: center;
   border-radius: 0.5rem;
   border: 1px solid #d9d9d9;
-  cursor: ${(props) => (props.accepted ? "pointer" : "not-allowed")};
+  cursor: ${(props) => (props.$accepted ? "pointer" : "not-allowed")};
   font-size: 0.75rem;
   font-weight: 500;
   color: black;

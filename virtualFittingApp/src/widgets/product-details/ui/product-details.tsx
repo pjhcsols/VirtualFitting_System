@@ -26,6 +26,7 @@ function ProductDetails({
   product,
   productColors,
   onColorChange,
+
   finalPrice,
 }: ProductDetailsProps) {
   const {

@@ -4,6 +4,7 @@ import { login } from "@/pages/auth/api/login.action";
 import { globalEventBus } from "@/shared/event";
 import { LOGIN_ERROR_STATUS } from "@/pages/auth/constants";
 import { isLoginKey } from "@/pages/auth/utils/type";
+import Swal from "sweetalert2";
 
 function useLogin() {
   const [user, setUser] = useState<TLoginUser>({
@@ -31,32 +32,36 @@ function useLogin() {
   const onSubmit = async () => {
     try {
       await login(user);
-    } catch (err) {
+      Swal.fire({
+        title: "Success!",
+        text: "로그인에 성공했습니다.",
+        icon: "success",
+        confirmButtonText: "OK",
+      }).then(() => {
+        window.location.href = "/";
+      });
+    } catch (err: any) {
       let message: string;
-      if (err instanceof CustomException) {
+      if (err.response && err.response.status === 401) {
         message =
           LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")?.message ??
           "알 수 없는 오류 발생";
-        if (err.status === 401) {
-          globalEventBus.emit(
-            "api-error",
-            LOGIN_ERROR_STATUS.get("WRONG_PASSWORD"),
-          );
-          setErrMsg({
-            ...errMsg,
-            userPassword: message,
-          });
-        }
-        if (err.status === 404) {
-          message =
-            LOGIN_ERROR_STATUS.get("NO_USER")?.message ??
-            "알 수 없는 오류 발생";
-          globalEventBus.emit("api-error", LOGIN_ERROR_STATUS.get("NO_USER"));
-          setErrMsg({
-            ...errMsg,
-            userPassword: message,
-          });
-        }
+        globalEventBus.emit(
+          "api-error",
+          LOGIN_ERROR_STATUS.get("WRONG_PASSWORD")
+        );
+        setErrMsg({
+          ...errMsg,
+          userPassword: message,
+        });
+      } else if (err.response && err.response.status === 404) {
+        message =
+          LOGIN_ERROR_STATUS.get("NO_USER")?.message ?? "알 수 없는 오류 발생";
+        globalEventBus.emit("api-error", LOGIN_ERROR_STATUS.get("NO_USER"));
+        setErrMsg({
+          ...errMsg,
+          userId: message, // 404는 userId에 대한 에러
+        });
       }
     }
   };
