@@ -1,7 +1,7 @@
 {
   "routes": [
     {
-      "src": "/b1/(.*)",
+      "src": "/b1(.*)",
       "dest": "https://basilium-alb-1972402546.ap-northeast-2.elb.amazonaws.com/b1/$1"
     },
     {
