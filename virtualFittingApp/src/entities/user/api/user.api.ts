@@ -14,10 +14,8 @@ export const fetchUserData = async () => {
 export const fetchMyUserDetails = async (): Promise<UserDetailResponse | null> => {
   try {
     const response = await API_BASILIUM.get("/b1/normalUsers/me/detail");
-    console.log("[내 정보 상세 조회] API 응답 성공:", response.data);
     return response.data;
   } catch (error) {
-    console.error("[내 정보 상세 조회] API 요청 실패:", error);
     return null;
   }
 };
@@ -28,7 +26,6 @@ export const fetchMyUserLoginType = async (): Promise<UserDetail['loginType'] | 
     const loginType = response?.data?.loginType ?? null; 
 
     if (loginType) {
-      console.log(`[Login Type 조회 성공] Type: ${loginType}`);
     } else {
       console.warn("[Login Type 조회 실패] 사용자 상세 정보에 loginType 필드가 없습니다.");
     }
@@ -36,7 +33,6 @@ export const fetchMyUserLoginType = async (): Promise<UserDetail['loginType'] | 
     return loginType;
     
   } catch (error) {
-    console.error("[Login Type 조회] API 요청 실패:", error);
     return null;
   }
 };
@@ -49,7 +45,6 @@ export const updateAddress = async (
     const response = await API_BASILIUM.patch(`/b1/normalUsers/me`, addressData, {
       params: { userId },
     });
-    console.log("[주소 변경] API 응답 성공:", response.data);
     
     return response.data; 
   } catch (error) {

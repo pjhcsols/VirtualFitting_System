@@ -9,7 +9,6 @@ export const fetchMyLikedProductIds = async (
             "/b1/likes/me/product-ids",
             { params: { authUserId } }
         );
-        console.log("[좋아요 상품 ID 목록 조회] 성공.");
         return response.data.data;
     } catch (error) {
         console.error("[좋아요 상품 ID 목록 조회] 실패:", error);
@@ -27,7 +26,6 @@ export const toggleProductLike = async (
             null,
             { params: { authUserId } }
         );
-        console.log(`[좋아요 토글] 상품 ID ${productId} 성공. New status: ${response.data.data.liked}`);
         return response.data.data;
     } catch (error) {
         console.error(`[좋아요 토글] 상품 ID ${productId} 실패:`, error);

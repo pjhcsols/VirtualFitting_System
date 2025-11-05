@@ -10,10 +10,8 @@ import type {
 export const fetchClaimableCouponsForGuest = async (productId: number): Promise<ClaimableCoupon[] | null> => {
   try {
     const response = await API_BASILIUM.get<ClaimableCouponsResponse>(`/b1/coupons/products/${productId}/claimables`);
-    console.log(`[게스트용 쿠폰 조회 (상품 ID: ${productId})] API 응답 성공:`, response.data);
     return response.data.data;
   } catch (error) {
-    console.error(`[게스트용 쿠폰 조회 (상품 ID: ${productId})] API 요청 실패:`, error);
     return null;
   }
 };
@@ -23,10 +21,8 @@ export const fetchMyClaimableCoupons = async (productId: number, normalUserId: s
     const response = await API_BASILIUM.get<ClaimableCouponsResponse>(`/b1/coupons/products/${productId}/claimables`, {
       params: { normalUserId }
     });
-    console.log(`[사용자 쿠폰 조회 (상품 ID: ${productId})] API 응답 성공:`, response.data);
     return response.data.data;
   } catch (error) {
-    console.error(`[사용자 쿠폰 조회 (상품 ID: ${productId})] API 요청 실패:`, error);
     return null;
   }
 };
@@ -47,11 +43,9 @@ export const downloadCoupon = async (params: {
       }
     );
     
-    console.log(`[쿠폰 다운로드 (ID: ${brandCampaignId})] API 응답 성공:`, response.data);
     return response.data.data;
 
   } catch (error) {
-    console.error(`[쿠폰 다운로드 (ID: ${brandCampaignId})] API 호출 실패:`, error);
     return null; 
   }
 };
