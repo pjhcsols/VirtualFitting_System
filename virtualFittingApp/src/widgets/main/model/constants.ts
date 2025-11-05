@@ -1,4 +1,5 @@
 import svg_scroll_arrow from "../assets/icons/scroll.svg";
+import svg_scroll_double_arrow from "../assets/icons/scroll-double.svg";
 import img_hoodie1 from '../assets/images/hoodie-1.png';
 import img_hoodie2 from '../assets/images/hoodie-2.png';
 import img_hoodie3 from '../assets/images/hoodie-3.png';
@@ -28,6 +29,7 @@ export const HOODIE_IMAGES = [
 ];
 
 const SCROLL_ARROW_SVG = svg_scroll_arrow;
+const SCROLL_ARROW_DOUBLE_SVG = svg_scroll_double_arrow;
 
 export const rawSvgContent = (() => {
     const svgData = SCROLL_ARROW_SVG;
@@ -38,4 +40,15 @@ export const rawSvgContent = (() => {
       }
     }
     return svgData;
-  })();
+})();
+
+export const rawSvgDoubleContent = (() => {
+    const svgData = SCROLL_ARROW_DOUBLE_SVG;
+    if (typeof svgData === 'string' && svgData.startsWith('data:image/svg+xml')) {
+      const encodedContent = svgData.split(',')[1];
+      if (encodedContent) {
+        return decodeURIComponent(encodedContent);
+      }
+    }
+    return svgData;
+})();

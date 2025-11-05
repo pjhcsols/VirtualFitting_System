@@ -1,5 +1,6 @@
 import { useCallback, useState, useEffect, useRef } from "react";
-import styled, { createGlobalStyle, css } from "styled-components";
+import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { DummyProductDetails } from "@/widgets/product-details";
 import type { ProductDetail } from "@/entities/product";
@@ -16,9 +17,21 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { AddModelModal } from "@/features/ai-try-on";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
+import { rawSvgDoubleContent } from "../model/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-10px);
+  }
+  60% {
+    transform: translateY(-5px);
+  }
+`;
 
 const MODEL = { MAN: "man", WOMAN: "woman", CUSTOM: "custom" } as const;
 type ModelKey = typeof MODEL[keyof typeof MODEL];
@@ -29,6 +42,7 @@ const TXT = {
 };
 
 function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
+  const navigate = useNavigate();
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
 
@@ -158,6 +172,22 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
 
     return () => ctx.revert();
   }, []);
+
+  useEffect(() => {
+    const handleScrollToProduct = () => {
+      const scrollPosition = window.scrollY;
+      const totalHeight = document.documentElement.scrollHeight;
+      const viewportHeight = window.innerHeight;
+
+      if (scrollPosition + viewportHeight >= totalHeight - 10) {
+        window.removeEventListener('scroll', handleScrollToProduct);
+        navigate('/products');
+      }
+    };
+    window.addEventListener('scroll', handleScrollToProduct);
+
+    return () => window.removeEventListener('scroll', handleScrollToProduct);
+  }, [navigate]);
   
   if (!product) return;
 
@@ -165,7 +195,7 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
     <>
       <TooltipGlobalStyles />
 
-      <SectionWrap >
+      <SectionWrap ref={WrapperRef}>
         <HeadlineText>
           지금 바실리움에서 가상착용 데모를 확인하세요.
         </HeadlineText>
@@ -271,6 +301,7 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
         onConfirmUpload={handleConfirmUpload}
         previewUrl={uploadPreview}
       />
+      <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }} />
       
     </>
   );
@@ -281,11 +312,13 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  heitht:250vh;
+  heitht: 200vh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content:flex-start;
+
 `;
 
 const ContentWrapper = styled.div`
@@ -521,6 +554,29 @@ const SubText = styled.div`
   color: #E9FAFF; 
   padding-bottom: 24px;
 `;
+
 const StrongHighlight = styled.span`
   color: #B8D2FF; 
+`;
+
+const ScrollArrow = styled.div`
+  position: absolute;
+  bottom: 200px;
+  z-index: 10;
+  animation: ${bounce} 2s infinite;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #E9FAFF; 
+
+  svg {
+    width: 80px; 
+    height: 100px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 20;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    display: block;
+    vertical-align: middle;
+  }
 `;
