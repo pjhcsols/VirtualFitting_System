@@ -1,7 +1,16 @@
+import svg_scroll_arrow from "../assets/icons/scroll.svg";
 import img_hoodie1 from '../assets/images/hoodie-1.png';
 import img_hoodie2 from '../assets/images/hoodie-2.png';
 import img_hoodie3 from '../assets/images/hoodie-3.png';
-import svg_scroll_arrow from "../assets/icons/scroll.svg";
+import img_paper1 from "../assets/images/paper-1.png"
+import img_paper2 from "../assets/images/paper-2.png"
+import img_paper3 from "../assets/images/paper-3.png"
+import img_paper4 from "../assets/images/paper-4.png"
+
+export const PAPER_IMAGE_1 = img_paper1;
+export const PAPER_IMAGE_2 = img_paper2;
+export const PAPER_IMAGE_3 = img_paper3;
+export const PAPER_IMAGE_4 = img_paper4;
 
 export const HOODIE_IMAGES = [
   { id: 1, src: img_hoodie1, name: "Classic Hoodie" },
