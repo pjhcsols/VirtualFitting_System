@@ -37,7 +37,7 @@ const Wrapper = styled.div`
 const Stat = styled.div`
   flex: 1;
   text-align: center;
-  font-size: 14px;
+  font-size: 20px;
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.9);
   cursor: pointer;

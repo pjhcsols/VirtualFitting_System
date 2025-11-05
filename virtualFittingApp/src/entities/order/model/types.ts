@@ -18,4 +18,5 @@ import type { ReviewData } from "@/entities/review/model/types";
 export type OrderItemWithReview = OrderItem & {
   isReviewed: boolean;
   reviewData?: ReviewData;
+  deadline?: string; // ← optional
 };

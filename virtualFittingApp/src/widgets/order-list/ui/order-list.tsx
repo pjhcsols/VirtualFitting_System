@@ -23,17 +23,19 @@ export function OrderList() {
 
   return (
     <Wrapper>
-      {orders.map((order) => (
-        <OrderSummaryCard key={order.id} order={order} />
-      ))}
+      <CardGrid>
+        {orders.map((order) => (
+          <OrderSummaryCard key={order.id} order={order} />
+        ))}
+      </CardGrid>
     </Wrapper>
   );
 }
 
 const Wrapper = styled.div`
   width: 100%;
-  max-width: 800px;
-  padding: 20px;
+  max-width: 1000px;
+  padding: 20px;  
   box-sizing: border-box;
   margin: 0 auto;
 
@@ -41,6 +43,12 @@ const Wrapper = styled.div`
     max-width: 100%;
     padding: 10px;
   }
+`;
+
+const CardGrid = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;             
 `;
 
 const Message = styled.p`

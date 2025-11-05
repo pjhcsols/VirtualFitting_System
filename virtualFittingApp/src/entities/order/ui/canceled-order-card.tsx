@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import { formatSimpleDate } from '@/shared/lib/date.util';
 import { BREAKPOINTS } from '@/shared';
 import type { OrderItem } from '../model/types';
+import { GlassBox } from '@/shared/components/glass-box';
+import { ActionButton } from '@/features/review-actions/review-actions';
 
 type Props = { order: OrderItem };
 
@@ -10,13 +12,13 @@ export function CanceledOrderCard({ order }: Props) {
   const navigate = useNavigate();
 
   return (
-    <GlassCard>
+    <StyledGlassCard borderRadius="16px">
       <CardHeader>
         <DateText>{formatSimpleDate(order.date)}</DateText>
         <CategoryText>{order.category} 요청</CategoryText>
       </CardHeader>
 
-      <Divider />
+      <ActiveDivider />
 
       <OrderCard>
         <ImageBox
@@ -38,105 +40,128 @@ export function CanceledOrderCard({ order }: Props) {
         </RightSection>
       </OrderCard>
 
+      <ActiveDivider />
+
       <ButtonWrapper>
         {order.category === "교환" ? (
           <>
-            <ActionButton>교환 상세</ActionButton>
-            <ActionButton>교환 배송 조회</ActionButton>
-            <ActionButton>회수 배송 조회</ActionButton>
+            <ActionButton size="medium" aria-label="교환 상세 보기">교환 상세</ActionButton>
+            <ActionButton size="medium" aria-label="교환 배송 조회">교환 배송 조회</ActionButton>
+            <ActionButton size="medium" aria-label="회수 배송 조회">회수 배송 조회</ActionButton>
           </>
         ) : (
           <>
-            <ActionButton>문의하기</ActionButton>
-            <ActionButton>배송조회</ActionButton>
-            <ActionButton>상세보기</ActionButton>
+            <ActionButton size="medium" aria-label="문의하기">문의하기</ActionButton>
+            <ActionButton size="medium" aria-label="배송 조회">배송조회</ActionButton>
+            <ActionButton
+              size="medium"
+              aria-label="상세 보기"
+              onClick={() => navigate(`/mypage/order/${order.id}`)}
+            >
+              상세보기
+            </ActionButton>
           </>
         )}
       </ButtonWrapper>
-    </GlassCard>
+    </StyledGlassCard>
   );
 }
 
-const GlassCard = styled.div`
-  border-radius: 16px;
-  padding: 24px; /* 내부 여백을 좀 더 확보 */
+export const StyledGlassCard = styled(GlassBox)`
+  width: 100%;
+  padding: 16px 20px;
   overflow: hidden;
 
-  background: rgba(200, 200, 200, 0.15);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 30px rgba(0, 0, 0, 0.15);
-
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 20px 16px;
+    padding: 14px 16px;
   }
 `;
 
-const CardHeader = styled.div`
+export const CardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: baseline;
+  align-items: center;     
+  padding: 4px 0;  
 `;
 
-const DateText = styled.p`
-  font-weight: 600; /* 800 -> 600 (너무 무겁지 않게) */
-  font-size: 15px; /* 약간 작게 조정 */
+export const DateText = styled.p`
+  margin: 0;              
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 1.2;        
   color: #fff;
 `;
 
-const CategoryText = styled.p`
-  font-size: 13px; /* 약간 작게 조정 */
-  color: rgba(255, 255, 255, 0.7); /* 대비를 위해 약간 더 투명하게 */
+export const CategoryText = styled.p`
+  margin: 0;               
+  font-size: 16px;
+  line-height: 1.2;
+  color: rgba(255, 255, 255, 0.7);
 `;
 
-const Divider = styled.hr`
-  margin: 0 0 16px 0; /* 헤더와 본문 사이 구분선 */
-  border: none;
+export const ActiveDivider = styled.div`
+  margin: 8px 0 12px;
   height: 1px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  opacity: 0.7;
 `;
 
-const OrderCard = styled.div`
+export const OrderCard = styled.div`
   display: flex;
-  gap: 16px;
+  gap: 20px;                 
   width: 100%;
+  padding: 10px 2px;        
+  
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    gap: 14px;
+    padding: 8px 0;
+  }
 `;
 
-const ImageBox = styled.img`
-  width: 72px;
-  height: 86px;
+export const ImageBox = styled.img`
+  width: 120px;              
+  height: 130px;             
   background-color: #d9d9d9;
-  border-radius: 8px;
+  border-radius: 10px;       
   object-fit: cover;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 72px;
+    height: 86px;
+    border-radius: 8px;
+  }
 `;
 
-const RightSection = styled.div`
+export const RightSection = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   flex: 1;
-  gap: 1px;
+  row-gap: 6px;              
 `;
 
-const TitleLine = styled.div`
+export const TitleLine = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-const Brand = styled.div`
-  font-weight: 600; /* bold -> 600 */
-  font-size: 13px;
+export const Brand = styled.div`
+  font-weight: 600; 
+  font-family: "Prata-Regular";
+  font-size: 18px;
   color: #fff;
 `;
 
-const OrderDetail = styled.div`
-  font-size: 13px;
-  color: rgba(255, 255, 255, 0.8);
+export const OrderDetail = styled.div`
+  font-size: 16px;
+  font-family: "Prata-Regular";
+  color: rgba(255, 255, 255, 0.6);
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -146,50 +171,36 @@ const OrderDetail = styled.div`
   }
 `;
 
-const ProductName = styled.div`
-  font-size: 13px; /* 이름이 더 중요하므로 Brand보다 약간 크게 */
-  font-weight: 500; /* 굵기를 조금 주어 강조 */
-  color: rgba(255, 255, 255, 0.9);
+export const ProductName = styled.div`
+  font-size: 16px; 
+  font-family: "Prata-Regular";          
+  font-weight: 600;          
+  line-height: 1.3;
+  color: rgba(255, 255, 255, 0.95);
   text-align: left;
 `;
 
-const OptionText = styled.div`
-  font-size: 13px;
-  color: #rgba(255, 255, 255, 0.8);
+export const OptionText = styled.div`
+  font-size: 14px; 
+  font-family: "Prata-Regular";         
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.8);
   text-align: left;
 `;
 
-const Price = styled.div`
-  font-weight: 700; /* bold */
-  font-size: 13px;
+export const Price = styled.div`
+  font-weight: 700;
+  font-family: "Prata-Regular";
+  font-size: 16px;          
   color: #fff;
   text-align: left;
 `;
 
-const ButtonWrapper = styled.div`
+export const ButtonWrapper = styled.div`
   display: flex;
   gap: 8px;
-  margin-top: 16px; /* 카드 본문과 간격 추가 */
+  margin-top: 16px; 
   flex-wrap: wrap;
   justify-content: flex-start;
-`;
-
-const ActionButton = styled.button`
-  flex: 1 1 auto; /* 버튼 크기가 유연하게 조절되도록 */
-  padding: 0 16px; /* 내부 패딩으로 크기 조절 */
-  height: 40px;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 6px;
-  background-color: transparent; /* 배경을 투명하게 하여 더 깔끔하게 */
-  color: rgba(255, 255, 255, 0.9);
-  background-color: #353b60ff;
-  font-size: 13px; /* 폰트 크기 조정 */
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-  }
 `;
 

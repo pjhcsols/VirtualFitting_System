@@ -16,6 +16,8 @@ import { fetchUserImage, fetchUserProfileImage } from "@/shared/api/image.api";
 import { uploadUserProfileImage, uploadUserImage } from "@/shared/api/image.api";
 import { BREAKPOINTS } from "@/shared";
 import { formatDateAuto } from "@/shared/utils/date/dateAuto.util";
+import { StyledGlassCard, ActiveDivider } from "@/entities/order";
+import { ActionButton } from "@/features/review-actions/review-actions";
 
 function MypageDetail() {
     const profileInputRef = useRef<HTMLInputElement | null>(null);
@@ -203,7 +205,7 @@ function MypageDetail() {
 
       return (
           <PageWrapper>
-            <GlassContainer>
+            <StyledGlassCard style={{ maxWidth: 700, margin: "80px auto 48px",  }}>
                 <ContentWrapper>
                   <AvatarContainer>
                     <AvatarIcon src={profilePreviewImage ?? icon_user} alt="사용자 이미지" onClick={handleUpProfileButton}/>
@@ -214,7 +216,9 @@ function MypageDetail() {
                       onChange={(e: React.ChangeEvent<HTMLInputElement>) => handleImageFileChange(e, setProfilePreviewImage, setProfileImageFile)}
                     />
                   </AvatarContainer>
-                  <Divider />
+                  
+                  <ActiveDivider />
+
                   <Form>
                   <FormField> 
                       <Label>이름</Label>
@@ -441,11 +445,11 @@ function MypageDetail() {
               </ContentWrapper>
 
               <FooterWrapper>
-                  <StoreButton onClick={handleSubmit} disabled={saving}>
+                  <ActionButton size="medium" onClick={handleSubmit} disabled={saving}>
                     {saving ? "저장 중..." : "저장하기"}
-                  </StoreButton>
+                  </ActionButton>
               </FooterWrapper> 
-            </GlassContainer>
+            </StyledGlassCard>
           </PageWrapper>
       );
   }
@@ -476,32 +480,6 @@ function MypageDetail() {
     }
 `;
 
-const GlassContainer = styled.div`
-  width: 100%;
-  max-width: 700px;         
-  margin: 32px auto 48px;
-  margin-top: 50px;
-  border-radius: 20px;
-  overflow: hidden;
-
-  background: rgba(200, 200, 200, 0.15);  
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255,255,255,0.3),
-    0 10px 30px rgba(0,0,0,0.15);
-
-
-  padding: 24px 20px 16px;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    margin: 20px auto 28px;   
-    padding: 20px 14px 12px;
-  }
-`;
-
 const FooterWrapper = styled.div`
   flex-shrink: 0;
   position: static;
@@ -528,14 +506,6 @@ const FooterWrapper = styled.div`
   const HiddenInput = styled.input`
     display: none;
   `;
-
-  const Divider = styled.div`
-    width: 100%;
-    max-width: 700px;
-    height: 1px;
-    background: rgba(255,255,255,0.5);
-    margin: 20px 0;
-`;
 
   const Form = styled.div`
     width: 100%;
@@ -698,22 +668,6 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
     }
 
 `;
-
-  const StoreButton = styled.button`
-    width: 100%;
-    max-width: 550px;
-    padding: 12px;
-    background-color: #292E49;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 16px;
-    font-family: "Prata-Regular";
-
-    &:hover {
-      background-color: #000; 
-    }
-  `;
 
   const PreviewImg = styled.img`
       width: 100%;

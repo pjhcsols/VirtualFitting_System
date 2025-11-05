@@ -14,7 +14,7 @@ export function CancelList() {
     <OuterWrapper>
       <CancelListFilter
         activeTab={activeTab}
-        onTabClick={setActiveTab}
+        onTabClick={setActiveTab} 
       />
 
       <ContentWrapper>
@@ -41,8 +41,10 @@ const OuterWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 20px;
+
+  margin: 0 auto; 
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 0 16px;

@@ -40,7 +40,7 @@ export const StickyTabWrapper = styled.div`
 export const TabInner = styled.div`
   display: flex;
   gap: 24px;
-  max-width: 800px;
+  max-width: 1000px;
   width: 100%;
   padding: 10px 16px;
 
@@ -85,7 +85,7 @@ export const ButtonGroup = styled.div`
   display: inline-flex;
   gap: 0;                 
   margin: 10px 0;
-  margin-right: 570px;
+  margin-right: 770px;
   padding: 4px;
   border-radius: 30px;
   border: 1px solid rgba(255,255,255,0.25);

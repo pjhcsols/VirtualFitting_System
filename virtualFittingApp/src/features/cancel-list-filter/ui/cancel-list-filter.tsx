@@ -34,7 +34,7 @@ const ButtonGroup = styled.div`
   display: inline-flex;
   gap: 0;                 
   margin: 10px 0;
-  margin-right: 460px;
+  margin-right: 660px;
   padding: 4px;
   border-radius: 30px;
   border: 1px solid rgba(255,255,255,0.25);

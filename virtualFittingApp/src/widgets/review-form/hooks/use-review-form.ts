@@ -95,15 +95,6 @@ export const useReviewForm = () => {
   //     alert("리뷰를 20자 이상 작성해주세요.");
   //     return;
   //   }
-  // const handleRegister = () => {
-  //   if (!order) {
-  //     alert("주문 정보를 찾을 수 없습니다.");
-  //     return;
-  //   }
-  //   if (reviewText.length < 20) {
-  //     alert("리뷰를 20자 이상 작성해주세요.");
-  //     return;
-  //   }
 
   //   const existingReviews: ReviewData[] = JSON.parse(localStorage.getItem("reviews") || "[]");
   //   const newReview: ReviewData = {
@@ -133,6 +124,7 @@ export const useReviewForm = () => {
 
     try {
       const body = {
+        paymentId: 0,
         purchaseSize: order.options.size,
         purchaseColor: order.options.color,
         rating,
