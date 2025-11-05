@@ -1,8 +1,8 @@
 import styled from "styled-components";
-import { HOODIE_IMAGES } from "../model/constants";
 import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
+import { HOODIE_IMAGES } from "../model/constants"; 
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,78 +19,61 @@ function DescriptionSection() {
     gsap.set(letters, { opacity: 0, y: 30 });
     
     gsap.to(letters, {
-        scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top center+=150",
-            toggleActions: "play none none none",
-        },
-        opacity: 1,
-        y: 0,
-        duration: 0.5,
-        stagger: 0.1,
-        ease: "power2.out"
+      scrollTrigger: {
+        trigger: sectionRef.current,
+        start: "top center+=150",
+        toggleActions: "play none none none",
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.5,
+      stagger: 0.1,
+      ease: "power2.out"
     });
+    
     const track = trackRef.current;
     
     if (track) {
-        const trackWidth = track.scrollWidth;
-        const viewportWidth = window.innerWidth;
-        const scrollDistance = trackWidth - viewportWidth + 200; 
+      const trackWidth = track.scrollWidth;
+      const viewportWidth = window.innerWidth;
+      const scrollDistance = trackWidth - viewportWidth + 200; 
 
-        gsap.to(track, {
-            x: -scrollDistance,
-            ease: "none",
-            scrollTrigger: {
-                trigger: sectionRef.current, 
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.5,
-            }
-        });
-    }
-
-    if (track) {
-        const trackWidth = track.scrollWidth;
-        const viewportWidth = window.innerWidth;
-        const scrollDistance = trackWidth - viewportWidth + 200; 
-
-        gsap.to(track, {
-            x: -scrollDistance,
-            ease: "none",
-            scrollTrigger: {
-                trigger: sectionRef.current, 
-                start: "top bottom",
-                end: "bottom top",
-                scrub: 1.5,
-            }
-        });
+      gsap.to(track, {
+        x: -scrollDistance,
+        ease: "none",
+        scrollTrigger: {
+          trigger: sectionRef.current, 
+          start: "top bottom",
+          end: "bottom top",
+          scrub: 1.5,
+        }
+      });
     }
 
     if (descriptionRef.current) { 
-        const tl = gsap.timeline({
-            scrollTrigger: {
-                trigger: descriptionRef.current, 
-                start: "top bottom", 
-                toggleActions: "play none none none",
-            }
-        });
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: descriptionRef.current, 
+          start: "top bottom", 
+          toggleActions: "play none none none",
+        }
+      });
 
-        tl.fromTo(
-            descriptionRef.current.querySelector('h2'), 
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
-        )
-
-        .fromTo(
-            descriptionRef.current.querySelector('p'), 
-            { opacity: 0, y: 20 },
-            { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-            "-=0.4"
-        );
+      tl.fromTo(
+        descriptionRef.current.querySelector('h2'), 
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" }
+      )
+      .fromTo(
+        descriptionRef.current.querySelector('p'), 
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
+        "-=0.4"
+      );
     }
     
     return () => {
-        ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+      ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
 
   }, []);
