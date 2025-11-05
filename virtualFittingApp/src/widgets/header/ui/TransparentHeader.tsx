@@ -104,7 +104,7 @@ const Wrapper = styled.header<{ $sticky?: boolean; $isScrolled: boolean; $isVisi
 const LogoContainer = styled.div`
   display: flex;
   align-items: center;
-  cursor: pointer;
+  cursor: none;
   margin-right: 32px;
 `;
 
@@ -136,7 +136,7 @@ const StyledHeaderButton = styled.button`
   position: relative;
   font-size: 14px;
   font-weight: 500;
-  cursor: pointer;
+  cursor: none;
   text-decoration: none; 
   color: rgba(255, 255, 255, 0.85);
   transition: color 0.3s ease;
