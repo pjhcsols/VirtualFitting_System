@@ -74,10 +74,8 @@ function CarouselSection() {
     }
     
     return () => {
-        // 모든 ScrollTrigger 정리
         ScrollTrigger.getById('master-carousel-anim')?.kill();
         ScrollTrigger.getById('carousel-track')?.kill();
-        // 기타 모든 트리거 정리 (안전하게)
         ScrollTrigger.getAll().forEach(trigger => trigger.kill());
     };
 
