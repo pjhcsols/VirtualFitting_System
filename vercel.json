@@ -1,8 +1,14 @@
 {
+  "rewrites": [
+    {
+      "source": "/:path*",
+      "destination": "http://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/:path*"
+    }
+  ],
   "routes": [
     {
       "src": "/b1/(.*)",
-      "dest": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/b1/$1"
+      "dest": "http://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/b1/$1"
     },
     {
       "handle": "filesystem"
