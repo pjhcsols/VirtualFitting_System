@@ -4,11 +4,12 @@ import styled from "styled-components";
 
 type TransparentHeaderProps = { 
   $sticky?: boolean;
-  onDescriptionScroll: () => void;
-  onVirtualFittingScroll: () => void;
+  onAboutScroll: () => void;
+  onServiceScroll: () => void;
+  onSolutionScroll: () => void;
 }
 
-export function TransparentHeader({ $sticky = true, onDescriptionScroll, onVirtualFittingScroll }: TransparentHeaderProps) {
+export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScroll, onSolutionScroll }: TransparentHeaderProps) {
   const router = useNavigate();
 
   const [isScrolled, setIsScrolled] = useState(false);
@@ -50,17 +51,17 @@ export function TransparentHeader({ $sticky = true, onDescriptionScroll, onVirtu
       <nav>
         <RouterList>
           <li>
-            <StyledHeaderButton onClick={onDescriptionScroll}>
+            <StyledHeaderButton onClick={onAboutScroll}>
               About
             </StyledHeaderButton>
           </li>
           <li>
-            <StyledHeaderButton onClick={onVirtualFittingScroll}>
+            <StyledHeaderButton onClick={onServiceScroll}>
               Services
             </StyledHeaderButton>
           </li>
           <li>
-            <StyledHeaderButton onClick={onVirtualFittingScroll}>
+            <StyledHeaderButton onClick={onSolutionScroll}>
               SaaS
             </StyledHeaderButton>
           </li>
