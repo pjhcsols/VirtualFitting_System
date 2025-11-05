@@ -1,22 +1,18 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
 
 import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
 import type { ProductDetail } from "@/entities/product";
+
 import { BREAKPOINTS } from "@/shared";
+
 import { ProductDetails } from "@/widgets/product-details";
 import { ProductDescription } from "@/widgets/product-description";
 import { ProductReviews } from "@/widgets/product-reviews";
 import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
-
-import { AddModelModal } from "@/features/ai-try-on";
-
-import { Cookies } from "react-cookie";
-import { NormalUserGetImg } from "@/widgets/auth/api/normalAuth.action";
-
-const cookies = new Cookies();
+import { useProductCoupon } from "@/features/coupon";
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -29,86 +25,16 @@ function ProductDetailPage() {
 
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
+  
+  const currentProductId = Number(id); 
+  const { 
+    coupons, 
+    isLoading: isCouponLoading, 
+    handleDownloadCoupon,
+  } = useProductCoupon(currentProductId);
 
   const handleTabChange = (tab: string) => {
-    setSearchParams({ tab, color: color || "" });
-  };
-
-  const [tryOnOpen, setTryOnOpen] = useState(false);
-  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
-
-  const [registeredImageUrl, setRegisteredImageUrl] = useState<string | null>(null);
-  const [registeredLoading, setRegisteredLoading] = useState(false);
-
-  const requireAuth = () => {
-    const token = cookies.get("access-token");
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return false;
-    }
-    return true;
-  };
-
-  const loadRegisteredImage = useCallback(async () => {
-    setRegisteredLoading(true);
-    try {
-      const res = await NormalUserGetImg();
-      const ImgUrl = "http://" + res.data; 
-      setRegisteredImageUrl(ImgUrl);
-      return ImgUrl;
-    } catch {
-      setRegisteredImageUrl(null);
-      return null;
-    } finally {
-      setRegisteredLoading(false);
-    }
-  }, []);
-
-  const openTryOn = async () => {
-    if (!requireAuth()) return;
-    setTryOnOpen(true);
-    await loadRegisteredImage();
-  };
-
-  const closeTryOn = () => {
-    setTryOnOpen(false);
-    if (uploadPreview?.startsWith("blob:")) URL.revokeObjectURL(uploadPreview);
-    setUploadPreview(null);
-  };
-
-  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    setUploadPreview(prev => {
-      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
-      return prev;
-    });
-
-    const url = URL.createObjectURL(file);
-    setUploadPreview(url);
-  };
-
-  const handleUseExisting = () => {
-    closeTryOn();
-  };
-
-  
-  const handleConfirmUpload = async () => {
-    if (!uploadPreview) return;
-
-    try {
-      const latest = await loadRegisteredImage();
-      if (latest) {
-        
-      }
-
-      closeTryOn();
-    } catch (e) {
-      console.error(e);
-      alert("이미지 등록에 실패했습니다.");
-    }
+    setSearchParams({ tab: tab, color: color || "" });
   };
 
   useEffect(() => {
@@ -117,6 +43,7 @@ function ProductDetailPage() {
     const loadProduct = async () => {
       setLoading(true);
       try {
+        
         const colors = await fetchProductColors(Number(id));
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
@@ -129,15 +56,15 @@ function ProductDetailPage() {
           navigate(`/products/${id}?color=${colorToLoad}&tab=${activeTab}`, { replace: true });
           return;
         }
-
+        
         const detailData = await fetchProductDetailByColor(Number(id), colorToLoad);
         if (!detailData) {
           throw new Error(`'${colorToLoad}' 색상의 상세 정보를 찾을 수 없습니다.`);
         }
         setProduct(detailData);
+
       } catch (error) {
-        console.error("Failed to load product details:", error);
-        navigate("/not-found");
+        navigate('/');
       } finally {
         setLoading(false);
       }
@@ -149,30 +76,24 @@ function ProductDetailPage() {
   if (loading || !product) {
     return <div>Loading...</div>;
   }
-  const currentProductId = product.productId;
+
+  const finalPrice = product.productPrice;
+    const productDetailsProps = {
+      product,
+      productColors,
+      onColorChange: (newColor: string) => {
+          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
+      },
+      coupons,
+      isCouponLoading,
+      handleDownloadCoupon,
+      finalPrice,
+    };
 
   return (
     <Wrapper>
-      <ProductDetails
-        product={product}
-        productColors={productColors}
-        onColorChange={(newColor) => {
-          setSearchParams({ tab: activeTab, color: newColor });
-        }}
-        onTryOn={openTryOn} 
-      />
-
-      <AddModelModal
-        open={tryOnOpen}
-        onClose={closeTryOn}
-        registeredLoading={registeredLoading}
-        registeredImageUrl={registeredImageUrl}
-        onUseExisting={handleUseExisting}
-        onFileChange={handleFileChange}
-        onConfirmUpload={handleConfirmUpload}
-        previewUrl={uploadPreview}
-      />
-
+      <ProductDetails {...productDetailsProps} />
+      
       <ContentArea>
         <TabMenu>
           <TabButton $active={activeTab === "description"} onClick={() => handleTabChange("description")}>상세설명</TabButton>
@@ -181,7 +102,7 @@ function ProductDetailPage() {
           <TabButton $active={activeTab === "qna"} onClick={() => handleTabChange("qna")}>문의하기</TabButton>
         </TabMenu>
         <Divider />
-
+      
         {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo product={product} />}
         {activeTab === "review" && <ProductReviews productId={currentProductId} />}
@@ -220,6 +141,7 @@ const TabMenu = styled.div`
   margin-top: 64px;
   flex-wrap: nowrap;
   gap: 64px;
+
 `;
 
 const TabButton = styled.button<{ $active: boolean }>`
@@ -231,23 +153,41 @@ const TabButton = styled.button<{ $active: boolean }>`
   background: none;
   padding: 4px 2px;
   position: relative;
+  cursor: pointer;
+
+  text-decoration: none; 
+  
   color: rgba(255, 255, 255, 0.85);
   transition: color 0.3s ease;
 
   &::after {
     content: '';
     position: absolute;
-    left: 0; bottom: 0;
-    width: 100%; height: 1px;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
     background-color: rgb(255, 255, 255);
     transform: scaleX(0);
     transform-origin: center;
     transition: transform 0.3s ease-out;
   }
-  &:hover { color: rgb(255, 255, 255); }
-  &:hover::after { transform: scaleX(1); }
-  &.active, &.$active { color: rgb(255, 255, 255); }
-  &.active::after { transform: scaleX(1); }
+
+  &:hover {
+    color: rgb(255, 255, 255);
+  }
+
+  &:hover::after {
+    transform: scaleX(1);
+  }
+
+  &.active {
+    color: rgb(255, 255, 255);
+  }
+
+  &.active::after {
+    transform: scaleX(1);
+  }
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 8px 8px;
@@ -261,4 +201,3 @@ const ContentArea = styled.div`
 `;
 
 export { ProductDetailPage };
-3

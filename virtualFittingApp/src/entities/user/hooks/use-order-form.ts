@@ -1,32 +1,37 @@
-import { useState, useEffect } from 'react';
-import { fetchMyUserDetails } from '../api/user.api';
-import type { UserDetail } from '../model/types';
+import { useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { fetchMyUserDetails } from '@/entities/user/api/user.api';
+import type { UserDetailResponse, UserDetail } from '@/entities/user/model/types';
+import { Cookies } from 'react-cookie';
+
+const cookiesInstance = new Cookies();
+const userKeys = {
+    me: (accessToken: string) => ['userDetails', 'me', accessToken] as const,
+};
 
 export const useOrderForm = () => {
-  const [user, setUser] = useState<UserDetail | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+    const accessToken = cookiesInstance.get('access-token');
 
-  useEffect(() => {
-    const loadUserData = async () => {
-      setIsLoading(true);
-      try {
-        const response = await fetchMyUserDetails();
-        if (response && response.data) {
-          setUser(response.data);
+    const { 
+        data: responseData, 
+        isLoading, 
+        refetch
+    } = useQuery<UserDetailResponse | null, Error>({
+        queryKey: userKeys.me(accessToken!),
+        queryFn: fetchMyUserDetails,
+        enabled: !!accessToken,
+    });
+
+    const userDetail: UserDetail | null = useMemo(() => {
+        if (responseData && responseData.data) {
+            return responseData.data as UserDetail; 
         }
-      } catch (error) {
-        console.error("사용자 정보를 불러오는 데 실패했습니다:", error);
-      } finally {
-        setIsLoading(false);
-      }
+        return null;
+    }, [responseData]);
+    
+    const handleSaveAddress = () => {
+        refetch(); 
     };
 
-    loadUserData();
-  }, []);
-
-  const handleSaveAddress = () => {
-    // [seah] 배송지 정보 저장 기능 만두러야함
-  };
-
-  return { user, isLoading, handleSaveAddress };
+    return { user: userDetail, isLoading, handleSaveAddress };
 };

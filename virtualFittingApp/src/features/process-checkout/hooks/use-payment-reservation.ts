@@ -3,8 +3,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import { createPaymentReservation } from '../api/payment.api';
-import type { CartItem } from '@/entities/cart';
+import { createPaymentReservation } from '@/entities/payment';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
+
 import type { 
     ProductColorPayment, 
     ProductSizePayment, 
@@ -17,7 +18,7 @@ export const usePaymentReservation = () => {
   const [cookies] = useCookies(['access-token']);
   const isLoggedIn = useRecoilValue(authState);
 
-  const reserve = async (item: CartItem): Promise<PaymentReservationData | null> => {
+  const reserve = async (item: CheckoutItemDetail): Promise<PaymentReservationData | null> => {
     setIsLoading(true);
       try {
         if (!isLoggedIn) {

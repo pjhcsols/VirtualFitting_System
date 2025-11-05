@@ -2,24 +2,32 @@ import { useState, useEffect } from "react";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
-import { ICON_SHARE } from "@/shared";
+// import { ICON_SHARE } from "@/shared";
 import { AddToCartButton } from "@/features/add-to-cart";
 import { AITryOnButton } from "@/features/ai-try-on";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
+import type { ClaimableCoupon } from '@/entities/coupon';
+import { ProductCoupon } from "@/features/coupon";
+import { ProductCouponButton } from "@/features/coupon";
 
 type ProductDetailsProps = {
   product: ProductDetail;
   productColors: string[];
   onColorChange?: (color: string) => void;
-  onTryOn?: () => void;
+
+  coupons: ClaimableCoupon[];
+  isCouponLoading: boolean;
+  handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>;
+  finalPrice: number;
 };
 
 function ProductDetails({
   product,
   productColors,
   onColorChange,
-  onTryOn,
+
+  finalPrice,
 }: ProductDetailsProps) {
   const {
     price,
@@ -38,6 +46,7 @@ function ProductDetails({
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [showCouponModal, setShowCouponModal] = useState(false);
 
   useEffect(() => {
     setCurrentIndex(0);
@@ -126,9 +135,21 @@ function ProductDetails({
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <S.IconImage src={ICON_SHARE} alt="share icon" />
-          </div>
+          </div> */}
+          <ProductCouponButton 
+            onClick={() => setShowCouponModal(true)}
+          />
+          <ProductCoupon
+            productId={product.productId}
+            finalPrice={finalPrice}
+            pageType="product"
+            onSelect={() => {}} 
+            currentSelectedCoupon={null} 
+            showPopup={showCouponModal}
+            setShowPopup={setShowCouponModal}
+          />
         </S.TopRow>
         <S.Description>{product.productDesc}</S.Description>
         <ProductOptions
@@ -148,7 +169,7 @@ function ProductDetails({
           <InitiateCheckoutSingleButton onClick={handlePurchaseClick} />
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton onClick={onTryOn} />
+          <AITryOnButton />
         </S.ButtonBox>
       </S.ProductInfoBox>
     </S.ProductBox>

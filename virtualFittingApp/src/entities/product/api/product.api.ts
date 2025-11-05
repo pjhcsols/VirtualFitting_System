@@ -45,7 +45,7 @@ export const searchProducts = async (productName: string): Promise<Product[] | n
 };
 
 export const fetchOnSaleProducts = async (
-  params = { page: 0, size: 20, sort: "productId,desc" }
+  params = { page: 0, size: 20, sort: "productId,asc" }
 ): Promise<Product[] | null> => {
   try {
     const response = await API_BASILIUM.get("/b1/products/on-sale", {
