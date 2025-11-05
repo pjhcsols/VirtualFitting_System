@@ -1,46 +1,55 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { OrderItem } from "@/entities/order";
+import type { ReviewOrderPayload } from "@/entities/order";
+import { GlassButton } from "@/shared/components/glass-button";
+import { BREAKPOINTS } from "@/shared";
+
+const STORAGE_KEY = "reviewpayload";
 
 type ReviewActionsProps = {
-  order: OrderItem;
+  order: ReviewOrderPayload;
 };
 
 export function ReviewActions({ order }: ReviewActionsProps) {
   const navigate = useNavigate();
+
+  const goWrite = () => {
+    sessionStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ ...order, __ts: Date.now() })
+    );
+    navigate(`/mypage/review/${order.orderId}`);
+  };
+
   return (
     <ButtonWrapper>
-      <ActionButton>
+      <ActionButton size="medium" aria-label="전체 리뷰 보기">
         전체 리뷰
       </ActionButton>
-      <ActionButton onClick={() => navigate(`/mypage/review/${order.id}`)}>
+
+      <ActionButton
+        size="medium"
+        onClick={goWrite}
+        aria-label="스타일 리뷰 작성"
+      >
         스타일 리뷰
       </ActionButton>
     </ButtonWrapper>
   );
 }
 
-
 export const ButtonWrapper = styled.div`
   display:flex;
   margin-top: 12px;
   gap: 12px;
   justify-content:flex-start;
+
+   @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: column;
+  }
 `;
 
-export const ActionButton = styled.button`
-  flex:1;
-  height:40px;
-  border:none;
-  border-radius:6px;
-  background:#292E49;
-  color:rgba(255,255,255,0.9);
-  font-size:14px;
-  font-family:"Prata-Regular";
-  cursor:pointer;
-
-  &:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-color: rgba(255, 255, 255, 0.5);
-  }
+export const ActionButton = styled(GlassButton)`
+  flex: 1;
+  width: 100%;
 `;

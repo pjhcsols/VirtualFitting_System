@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
 import { useReviewList } from '../hooks/use-review-list';
@@ -5,20 +6,83 @@ import { ReviewListFilter } from "@/features/review-list-filter";
 import { ReviewCard } from '@/entities/review';
 import { ReviewableOrderCard } from '@/entities/order';
 import { ReviewActions } from '@/features/review-actions/review-actions';
+import { GlassBox } from '@/shared/components/glass-box';
+import alertImg from "@/shared/assets/images/alert-fallback.png";
+import type { ReviewOrderPayload } from "@/entities/order"
+
+const STORAGE_KEY = "reviewpayload";
+const TTL_MS = 1000 * 60 * 30;
+
+function readReviewPayload(): ReviewOrderPayload | null {
+  const data = sessionStorage.getItem(STORAGE_KEY);
+  if (!data) return null;
+
+  try {
+    const parsed = JSON.parse(data);
+
+    // (선택) 만료 체크
+    if (parsed.__ts && Date.now() - parsed.__ts > TTL_MS) {
+      sessionStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+
+     if (!parsed.orderId || !parsed.item) return null;
+
+    const normalizedItem = {
+      ...parsed.item,
+      ...(parsed.item?.date
+        ? { date: new Date(parsed.item.date).toISOString() }
+        : {}),
+    };
+
+    return {
+      orderId: String(parsed.orderId),
+      item: normalizedItem,
+      ...(parsed.deadline ? { deadline: String(parsed.deadline) } : {}),
+    };
+  } catch {
+    return null;
+  }
+}
+
 
 export function ReviewList() {
   const { filteredOrders, activeTab, setActiveTab, handleDeleteReview } = useReviewList();
+  const [injected, setInjected] = useState<ReviewOrderPayload | null>(null);
+
+  useEffect(() => {
+    const data = readReviewPayload();
+    if (data) {
+      setInjected(data);
+      sessionStorage.removeItem(STORAGE_KEY);
+    }
+  }, []);
 
   return (
     <OuterWrapper>
       <ReviewListFilter activeTab={activeTab} onTabClick={setActiveTab} />
       <ContentWrapper>
-        {filteredOrders.length === 0 ? (
-          <EmptyWrapper>...</EmptyWrapper>
+        {/* 세션에서 넘어온 단건이 있으면 최상단에 먼저 보여주기 */}
+        {injected && (
+          <CardGrid style={{ marginBottom: 16 }}>
+            <StyledGlassCard>
+              <ReviewableOrderCard order={injected} />
+              <ActionsDivider />
+              <ReviewActions order={injected} />
+            </StyledGlassCard>
+          </CardGrid>
+        )}
+
+        {/* 기존 리스트 */}
+        {!injected && (filteredOrders ?? []).length === 0 ? (
+          <EmptyWrapper>
+            <AlertImage src={alertImg} alt="알림 아이콘" />
+            <Message>작성 가능한 리뷰가 없습니다.</Message>
+          </EmptyWrapper>
         ) : (
           <CardGrid>
             {filteredOrders.map((order) => (
-              <GlassCard key={order.id}>
+              <StyledGlassCard key={order.id}>
                 {activeTab === "작성완료" && order.reviewData ? (
                   <ReviewCard
                     order={order}
@@ -27,11 +91,20 @@ export function ReviewList() {
                   />
                 ) : (
                   <>
-                    <ReviewableOrderCard order={order} />
-                    <ReviewActions order={order} />
+                    <ReviewableOrderCard order={{
+                      orderId: order.id,
+                      deadline: order.deadline ?? "",
+                      item: order,                          
+                    }} />
+                    <ActionsDivider />
+                    <ReviewActions order={{
+                      orderId: order.id,
+                      deadline: order.deadline ?? "",
+                      item: order,
+                    }} />
                   </>
                 )}
-              </GlassCard>
+              </StyledGlassCard>
             ))}
           </CardGrid>
         )}
@@ -50,7 +123,7 @@ const OuterWrapper = styled.div`
 
 const ContentWrapper = styled.div`
   width: 100%;
-  max-width: 800px;
+  max-width: 1000px;
   padding: 30px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -66,28 +139,43 @@ const EmptyWrapper = styled.div`
   margin-top: 70px;
 `;
 
+const Message = styled.p`
+  font-size: 20px;
+  font-family: "Prata-Regular";
+  margin-bottom: 20px;
+  color: #d9d9d9;
+`;
+
+const AlertImage = styled.img`
+  width: 80px;
+  height: 80px;
+`;
+
 const CardGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
 `;
 
-const GlassCard = styled.div`
-  border-radius: 16px;
+const StyledGlassCard = styled(GlassBox)`
+  width: 100%;
   padding: 16px;
   overflow: hidden;
 
-  background: rgba(200, 200, 200, 0.15);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 30px rgba(0, 0, 0, 0.15);
-
   @media (max-width: ${BREAKPOINTS.md}px) {
-    margin: 20px auto 28px;   
-    padding: 20px 14px 12px;
+    margin: 8px 0;
+    padding: 14px;
   }
+`;
 
+const ActionsDivider = styled.div`
+  margin: 12px 0 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255,255,255,0) 0%,
+    rgba(255,255,255,0.35) 50%,
+    rgba(255,255,255,0) 100%
+  );
+  opacity: 0.7;
 `;

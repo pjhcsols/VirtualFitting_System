@@ -5,10 +5,23 @@ import { UserBriefProfile } from '@/entities/user';
 import { UserStats } from '@/features/user-stats'; 
 import { MyPageNavigation } from '@/features/my-page-navigation';
 import { GlassBox } from '@/shared/components/glass-box';
+import { useEffect } from 'react';
+import { fetchUserInfo } from '@/shared/api/get.api';
+import Cookies from "js-cookie"
+
 
 export function MyDashboard() {
   const navigate = useNavigate();
   const { userId, reviewCount } = useMyDashboard();
+
+  useEffect(() => {
+    const loadUserInfo = async () => {
+      const res = await fetchUserInfo();
+      const userId = res.data.id;
+      Cookies.set("userId", userId as string);
+    };
+    loadUserInfo();
+  })
 
   return (
     <DashboardPanel>
@@ -25,7 +38,7 @@ export function MyDashboard() {
 
 const DashboardPanel = styled(GlassBox)`
   width: 100%;
-  max-width: 1000px;
+  max-width: 1200px;
   padding: 24px;
   display: flex;
   flex-direction: column;

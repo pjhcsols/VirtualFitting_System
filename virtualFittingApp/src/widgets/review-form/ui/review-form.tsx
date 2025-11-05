@@ -9,6 +9,9 @@ import icon_cancel from "@/shared/assets/icons/icon-cancel.svg";
 import icon_down from "@/shared/assets/icons/icon-down.svg";
 import icon_up from "@/shared/assets/icons/icon-up.svg";
 import { BREAKPOINTS } from "@/shared";
+import { StyledGlassCard } from "@/entities/order";
+import { ActionButton } from '@/features/review-actions/review-actions';
+import { ActiveDivider } from "@/entities/order";
 
 export function ReviewForm() {
   const {
@@ -35,10 +38,11 @@ export function ReviewForm() {
   }
 
   return (
-    <GlassForm>
+    <StyledGlassCard>
       <FormInner>
         <ReviewableOrderCard order={order} />
-        <Divider />
+        
+        <ActiveDivider />
 
         <RatingSection>
           {[1, 2, 3, 4, 5].map((star) => (
@@ -108,7 +112,7 @@ export function ReviewForm() {
           <LabelWithIcon onClick={() => setShowSizeForm((prev) => !prev)}>
             선택사항
             <ToggleIcon
-              src={showSizeForm ? icon_down : icon_up}
+              src={showSizeForm ? icon_up : icon_down}
               alt="토글 아이콘"
             />
           </LabelWithIcon>
@@ -184,29 +188,13 @@ export function ReviewForm() {
       </FormInner>
 
       <FooterInner>
-        <RegisterButton onClick={handleRegister}>
+        <ActionButton size="medium" onClick={handleRegister}>
           {editReview ? "리뷰 수정하기" : "리뷰 등록하기"}
-        </RegisterButton>
+        </ActionButton>
       </FooterInner>
-    </GlassForm>
+    </StyledGlassCard>
   );
 }
-
-export const GlassForm = styled.div`
-  width: 100%;
-  max-width: 800px;
-  border-radius: 18px;
-  padding: 20px;
-  overflow: hidden;
-  margin-top: 35px;
-  background: rgba(200, 200, 200, 0.15);
-  backdrop-filter: blur(16px) saturate(160%);
-  -webkit-backdrop-filter: blur(16px) saturate(160%);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.3),
-    0 10px 30px rgba(0, 0, 0, 0.15);
-`;
 
 export const FormInner = styled.div`
   width: 100%;
@@ -238,15 +226,15 @@ export const RatingSection = styled.div`
 `;
 
 export const StarImage = styled.img`
-  width: 35px;
-  height: 35px;
+  width: 40px;
+  height: 40px;
   cursor: pointer;
   object-fit: contain;
 `;
 
 export const ReviewTextWrapper = styled.div`
   width: 100%;
-  margin-top: 40px;
+  margin-top: 50px;
 `;
 
 export const ImageWrapper = styled.div`
@@ -258,7 +246,7 @@ export const ReviewLabel = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 14px;
+  font-size: 18px;
   font-family: "Prata-Regular";
   margin-bottom: 6px;
   width: 100%;
@@ -266,7 +254,7 @@ export const ReviewLabel = styled.div`
 `;
 
 export const LengthGuide = styled.span`
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.6);
 `;
@@ -277,7 +265,7 @@ export const ReviewTextarea = styled.textarea`
   padding: 10px;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Prata-Regular";
   background: rgba(200, 200, 200, 0.15);
   color: #fff;
@@ -291,7 +279,7 @@ export const ReviewTextarea = styled.textarea`
 `;
 
 export const CharCount = styled.div`
-  font-size: 12px;
+  font-size: 14px;
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.6);
   margin-top: 4px;
@@ -326,8 +314,8 @@ export const PictureList = styled.div`
 
 export const PreviewContainer = styled.div`
   position: relative;
-  width: 105px;
-  height: 140px;
+  width: 150px;
+  height: 200px;
   border-radius: 4px;
   overflow: hidden;
 `;
@@ -344,8 +332,8 @@ export const RemoveButton = styled.button`
   right: 4px;
   background: rgba(0, 0, 0, 0.5);
   border: none;
-  width: 16px;
-  height: 16px;
+  width: 20px;
+  height: 20px;
   border-radius: 50%;
   cursor: pointer;
   display: flex;
@@ -354,8 +342,8 @@ export const RemoveButton = styled.button`
 `;
 
 export const UploadBox = styled.div`
-  width: 105px;
-  height: 140px;
+  width: 150px;
+  height: 200px;
   border-radius: 4px;
   display: flex;
   justify-content: center;
@@ -383,8 +371,8 @@ export const AddIconImage = styled.img`
 `;
 
 export const CancelIconImage = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
 `;
 
 const SizeForm = styled.div`
@@ -401,7 +389,7 @@ const SizeInput = styled.input`
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 14px;
+  font-size: 16px;
   font-family: "Prata-Regular";
   text-align: left;
   resize: none;
@@ -414,8 +402,8 @@ const SizeInput = styled.input`
 
 const FormField = styled.div`
   display: grid;
-  grid-template-columns: 120px 1fr;
-  margin-top: 30px;
+  grid-template-columns: minmax(110px, auto) 1fr; 
+  margin-top: 50px;
   align-items: start;
   column-gap: 14px;
   width: 100%;
@@ -433,16 +421,18 @@ const SizeGrid = styled.div`
 `;
 
 const LabelWithIcon = styled.label`
-  width: 120px;
-  font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.9);
   display: flex;
   align-items: center;
-  cursor: pointer;
   gap: 6px;
-  width: 20px;
-  height: 20px;
+  cursor: pointer;
+  font-size: 18px;
+  font-family: "Prata-Regular";
+  color: rgba(255, 255, 255, 0.9);
+
+  white-space: nowrap;
+  width: auto;          
+  height: auto;        
+  min-width: 110px;      
 `;
 
 const ToggleIcon = styled.img`

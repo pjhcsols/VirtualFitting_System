@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GlassButton } from '@/shared/components/glass-button';
 import { BREAKPOINTS } from '@/shared';
@@ -19,6 +20,19 @@ export function OrderConfirmationPage() {
     deadline,
     senderName,
   } = location.state || {};
+
+  useEffect(() => {
+    if (!orderId || !item || !deadline) return; 
+    const payload = { orderId, deadline, item };
+
+    sessionStorage.setItem(
+      "reviewpayload",
+      JSON.stringify({
+        ...payload,
+        __ts: Date.now(), 
+      })
+    );
+  }, [orderId, item, deadline]);
 
   return (
     <PageContainer>

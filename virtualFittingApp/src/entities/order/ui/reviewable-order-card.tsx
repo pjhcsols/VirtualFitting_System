@@ -3,24 +3,30 @@ import { formatSimpleDate } from "@/shared/lib/date.util";
 import type { OrderItem } from "../model/types";
 import img_alert from "@/shared/assets/images/alert-fallback.png";
 
-type ReviewableOrderCardProps = {
-  order: OrderItem;
-  isFormHeader?: boolean;
+export type ReviewOrderPayload = {
+  orderId: string;
+  deadline: string;
+  item: OrderItem;
 };
 
-export function ReviewableOrderCard({ order }: ReviewableOrderCardProps) {
+export function ReviewableOrderCard({ order }: { order: ReviewOrderPayload }) {
+  const { orderId, deadline, item } = order;
+
   return (
     <div>
       <OrderCard>
-        <ImageBox src={order.productImageUrl || img_alert} alt="상품 이미지" />
+        {/* <ImageBox src={item.productImageUrl || img_alert} alt="상품 이미지" /> */}
+        <ImageBox src={img_alert} alt="상품 이미지" />
         <RightSection>
           <TitleLine>
-            <Brand>{order.brand}</Brand>
+            {/* <Brand>{item.brand}</Brand> */}
+            <Brand>Basilium</Brand>
           </TitleLine>
-          <ProductName>{order.productName}</ProductName>
+          <ProductName>{item.productName}</ProductName>
           <OptionText>
-            {order.options.color} / {order.options.size} /{" "}
-            {order.options.quantity}개 | {formatSimpleDate(order.date)} 구매
+            {item.options.color} / {item.options.size} / {item.options.quantity}개
+            {" | "}
+            {formatSimpleDate(item.date)} 구매
           </OptionText>
         </RightSection>
       </OrderCard>
@@ -28,21 +34,21 @@ export function ReviewableOrderCard({ order }: ReviewableOrderCardProps) {
   );
 }
 
-export const OrderCard = styled.div`
+const OrderCard = styled.div`
   display: flex;
   gap: 16px;
   width: 100%;
 `;
 
-export const ImageBox = styled.img`
-  width: 100px;
-  height: 110px;
+const ImageBox = styled.img`
+  width: 120px;
+  height: 130px;
   background-color: #d9d9d9;
   border-radius: 10px;
   object-fit: cover;
 `;
 
-export const RightSection = styled.div`
+const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -50,29 +56,29 @@ export const RightSection = styled.div`
   gap: 8px;
 `;
 
-export const TitleLine = styled.div`
+const TitleLine = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
 `;
 
-export const Brand = styled.div`
+const Brand = styled.div`
   font-weight: bold;
   font-family: "Prata-Regular";
-  font-size: 14px;
+  font-size: 18px;
   color: #fff;
 `;
 
-export const ProductName = styled.div`
-  font-size: 14px;
+const ProductName = styled.div`
+  font-size: 16px;
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.9);
   text-align: left;
 `;
 
-export const OptionText = styled.div`
-  font-size: 12px;
+const OptionText = styled.div`
+  font-size: 14px;
   font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.6);
   text-align: left;
