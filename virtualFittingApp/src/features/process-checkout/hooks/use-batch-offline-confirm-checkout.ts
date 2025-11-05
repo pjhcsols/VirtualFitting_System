@@ -133,16 +133,32 @@ export const useBatchOfflineConfirmCheckout = () => {
 
       await deleteCartItems(accessToken, itemIdsToDelete); 
 
+      const displayItem = checkoutData.items[0];
+      const isBatch = checkoutData.items.length > 1;
+
+      const representativeItemForUI = {
+        productName: isBatch
+          ? `${displayItem.name} 외 ${checkoutData.items.length - 1}개`
+          : displayItem.name,
+        options: {
+          color: displayItem.color,
+          size: displayItem.size,
+          quantity: checkoutData.items.reduce((sum: number, item) => sum + item.quantity, 0), // 총 수량
+        },
+        price: checkoutData.finalPrice,
+      };
+
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
         state: { 
           shippingAddress: checkoutData.shippingAddress,
           orderId: intentData.orderId,
           items: checkoutData.items,
+          item: representativeItemForUI,
           totalAmount: checkoutData.finalPrice,
           senderName: checkoutData.customerName,
           deadline: reservationData.expiresAt,
-        } 
+        }
     });
 
     } catch (error: any) {

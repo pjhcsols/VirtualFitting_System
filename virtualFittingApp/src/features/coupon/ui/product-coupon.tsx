@@ -178,14 +178,14 @@ export const ProductCoupon = ({
                                   </UnapplyButton>
                                 )}
                                 {pageType === 'product' && (
-                                    <OwnedTag>
-                                        보유: {ownedCount}장
-                                        {canClaim > 0 && ownedCount === 0 && 
-                                            <><br/>다운로드 가능</>}
-                                        {canClaim > 0 && ownedCount > 0 && 
-                                            <><br/>추가 발급 가능: {canClaim}장</>}
-                                        {isFullyOwned && <><br/>발급 완료</>}
-                                    </OwnedTag>
+                                  <OwnedTag>
+                                    현재 {ownedCount}장 소지
+                                    {canClaim > 0 && ownedCount === 0 && 
+                                        <><br/>{canClaim}장 다운 가능</>}
+                                    {canClaim > 0 && ownedCount > 0 && 
+                                        <><br/>{canClaim}장 다운 가능</>}
+                                    {isFullyOwned && <><br/>최대 발급 완료</>}
+                                  </OwnedTag>
                                 )}
                               </DiscountLine>
                               <DiscountLine>
