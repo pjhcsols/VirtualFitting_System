@@ -1,8 +1,8 @@
 {
   "routes": [
     {
-      "src": "/b1(.*)",
-      "dest": "http://43.200.234.185/b1/$1"
+      "src": "/b1/(.*)",
+      "dest": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/b1/$1"
     },
     {
       "handle": "filesystem"
