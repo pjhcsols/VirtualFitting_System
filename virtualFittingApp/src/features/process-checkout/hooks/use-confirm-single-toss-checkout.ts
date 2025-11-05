@@ -53,8 +53,6 @@ export const useSingleTossConfirmCheckout = () => {
         throw new Error("상품 재고를 예약하는 데 실패했습니다.");
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
-      console.log(reservedOrderId);
-
       const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
                         ?? (checkoutData.coupon as any)?.walletId 
                         ?? undefined;

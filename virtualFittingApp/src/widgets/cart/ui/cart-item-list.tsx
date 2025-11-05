@@ -72,7 +72,6 @@ export function CartItemList({
     if (confirm("정말로 이 상품을 장바구니에서 삭제하시겠습니까?")) {
       deleteItems({ itemIds: [itemIdToRemove] }, {
         onSuccess: () => {
-          console.log(`장바구니 항목 ${itemIdToRemove} 삭제 성공`);
           refetchCart();
         },
         onError: () => {

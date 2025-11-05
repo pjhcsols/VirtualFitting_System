@@ -11,9 +11,6 @@ export function PaymentFailPage() {
   const errorCode = searchParams.get("code");
   // const orderId = searchParams.get("orderId");
 
-  console.log("현재 URL 쿼리:", window.location.search);
-  console.log("추출된 에러 메시지:", errorMessage);
-
   return (
     <Wrapper>
       <ResultBox>
