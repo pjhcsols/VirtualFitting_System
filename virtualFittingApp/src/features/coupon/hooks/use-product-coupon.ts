@@ -60,7 +60,6 @@ export const useProductCoupon = (productId: number) => {
 
   const handleDownloadCoupon = async (brandCampaignId: number): Promise<number | null> => {
     if (!accessToken) {
-      alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
       return null;
     }

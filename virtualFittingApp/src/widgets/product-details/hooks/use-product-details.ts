@@ -43,22 +43,12 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   }, [product.productId]);
 
   const selectedProductImages = product.productImages?.productPhotoUrls ?? [];
-
-  // const finalPrice = useMemo(() => {
-  //   if (!price) return 0;
-  //   const basePrice = (price.discounted ?? price.original) * quantity;
-  //   if (!selectedCoupon) return basePrice;
-  //   let couponDiscount = basePrice * (selectedCoupon.percent / 100);
-  //   if (couponDiscount > selectedCoupon.maxDiscountPrice) couponDiscount = selectedCoupon.maxDiscountPrice;
-  //   return Math.round(basePrice - couponDiscount);
-  // }, [price, quantity, selectedCoupon]);
-
+  
   const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
 
   const handleAddToCart = () => {
     const authUserId = cookiesInstance.get('access-token');
     if (!authUserId) {
-      alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
       return;
     }
@@ -78,7 +68,6 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
   const handlePurchaseClick = () => {
 
     if (!isLoggedIn) {
-      alert("로그인이 필요한 서비스입니다.");
       navigate('/login');
       return;
     }
@@ -98,12 +87,20 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
       quantity: quantity,
     });
   };
+
+  const checkAuth = (): boolean => {
+    if (!isLoggedIn) {
+      navigate('/login');
+      return false;
+    }
+    return true;
+  };
   
   return {
     price, quantity, showPaymentTab, paymentLoading,
     selectedColor, selectedSize, mainImage, sizesSorted, selectedProductImages, 
     isAddingToCart,
     setQuantity, setShowPaymentTab, setSelectedColor, setSelectedSize, setMainImage,
-    handleAddToCart, handlePurchaseClick, handleColorChange,
+    handleAddToCart, handlePurchaseClick, handleColorChange, checkAuth
   };
 };

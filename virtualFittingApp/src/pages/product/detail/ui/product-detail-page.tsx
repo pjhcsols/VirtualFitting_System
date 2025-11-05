@@ -70,7 +70,7 @@ function ProductDetailPage() {
     if (!requireAuth()) return;
     setTryOnOpen(true);
     await loadRegisteredImage(); 
-  }, [requireAuth, loadRegisteredImage]);
+  }, [loadRegisteredImage, requireAuth]);
 
   const closeTryOn = useCallback(() => {
     setTryOnOpen(false);

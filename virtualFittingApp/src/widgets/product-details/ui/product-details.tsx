@@ -37,7 +37,7 @@ function ProductDetails({
   const {
     price, quantity, selectedColor, selectedSize, sizesSorted,
     selectedProductImages, setQuantity, setSelectedSize,
-    handleAddToCart, handlePurchaseClick, handleColorChange,
+    handleAddToCart, handlePurchaseClick, handleColorChange, checkAuth
   } = useProductDetails(product, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -58,10 +58,31 @@ function ProductDetails({
       return () => clearTimeout(timer);
     }
   }, [showSoldOutPopup, showAddToCartPopup]);
+
+  useEffect(() => {
+    if (isHovering || isSoldOut) {
+        return; 
+    }
+    const interval = setInterval(() => {
+        setCurrentIndex((prevIndex) =>
+            prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1,
+        );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isHovering, selectedProductImages.length, isSoldOut]);
+
   
   const handleSoldOutAction = (e: React.MouseEvent) => {
     e.stopPropagation();
     setShowSoldOutPopup(true);
+  };
+
+  const handleCouponClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+
+    if (checkAuth()) {
+      setShowCouponModal(true);
+    }
   };
 
   const handleAddToCartAndShowPopup = () => {
@@ -168,7 +189,7 @@ function ProductDetails({
           {!isSoldOut && (
             <div style={{ display: 'flex', gap: '8px' }}>
               <ProductCouponButton 
-                onClick={() => setShowCouponModal(true)}
+                onClick={handleCouponClick}
               />
               <ProductCoupon
                 productId={product.productId}

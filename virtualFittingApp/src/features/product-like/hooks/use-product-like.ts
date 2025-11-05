@@ -47,7 +47,6 @@ export const useProductLike = (productId: number) => {
     },
     onError: (error) => {
       console.error(`[좋아요 토글 실패] 상품 ID ${productId}:`, error);
-      alert("좋아요 상태 변경에 실패했습니다.");
     },
   });
 
