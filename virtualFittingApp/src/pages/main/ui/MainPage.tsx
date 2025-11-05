@@ -1,6 +1,7 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { 
+  ActionTextSection,
   HeroSection, 
   ServiceTextSection,
   AITextSection,
@@ -8,7 +9,6 @@ import {
   SolutionSection, 
   VirtualFittingSection,
   AboutSection,
-   
 } from "@/widgets/main";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
@@ -106,14 +106,18 @@ function MainPage() {
               <AITextSection/>
             </TextSection>
 
-            <SectionEmptySmall></SectionEmptySmall>
             <Section ref={saasRef}>
               <SolutionSection />
             </Section>
+            <SectionEmptyMedium></SectionEmptyMedium>
+            <SectionEmptyLarge>
+              <ActionTextSection />
+            </SectionEmptyLarge>
 
             <SaaSSection>
               <VirtualFittingSection />
             </SaaSSection>
+            <SectionEmptyLarge></SectionEmptyLarge>
           </ModelContainer>
         </Article>
       </MainSection>
@@ -176,22 +180,21 @@ const TextSection = styled.div`
   align-items: center;
 `;
 
-
 const SaaSSection = styled.div`
   width: 100%;
-  height: 200vh;
+  heitht: 130vh;
   display: flex;
   justify-content: flex-start;;
   align-items: center;
 `;
 
-const SectionEmptySmall = styled.div`
-  width: 100%;
-  height: 100px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const SectionEmptySmall = styled.div`
+//   width: 100%;
+//   height: 100px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 const SectionEmptyMedium = styled.div`
   width: 100%;

@@ -196,15 +196,6 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
       <TooltipGlobalStyles />
 
       <SectionWrap ref={WrapperRef}>
-        <HeadlineText>
-          지금 바실리움에서 가상착용 데모를 확인하세요.
-        </HeadlineText>
-        <SubText >
-          고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
-          바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
-          체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
-          매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
-        </SubText>
         <ContentWrapper>
         <Rail>
           <RailList>
@@ -312,13 +303,12 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  heitht: 200vh;
+  heitht: 130vh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content:flex-start;
-
 `;
 
 const ContentWrapper = styled.div`
@@ -526,37 +516,6 @@ const CancelImg = styled.img`
   display: block;
   filter: brightness(0) invert(1); 
   opacity: .95;
-`;
-
-const HeadlineText = styled.div`
-  font-size: 56px;
-  font-weight: 700;
-  line-height: 1.2;
-  text-align: center;
-  letter-spacing: -2px;
-  padding-bottom: 24px;
-  margin: 0;
-  background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-`;
-
-const SubText = styled.div`
-  font-size: 1.2rem;
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -1px;
-  text-align: center;
-  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #E9FAFF; 
-  padding-bottom: 24px;
-`;
-
-const StrongHighlight = styled.span`
-  color: #B8D2FF; 
 `;
 
 const ScrollArrow = styled.div`
