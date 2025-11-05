@@ -2,13 +2,13 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { 
   HeroSection, 
-  ImageBrandSection,
-  ImageHoodieSection,
-  ImageStuffSection,
-  ImageFitSection,
-  DescriptionSection, 
+  ServiceTextSection,
+  AITextSection,
+  PaperSection,
   SolutionSection, 
-  VirtualFittingSection 
+  VirtualFittingSection,
+  AboutSection,
+   
 } from "@/widgets/main";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
@@ -23,9 +23,10 @@ function MainPage() {
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   
-  const introductionRef = useRef<HTMLDivElement>(null);
-  const descriptionRef = useRef<HTMLDivElement>(null);
-  const virtualFittingRef = useRef<HTMLDivElement>(null);
+  const aboutRef = useRef<HTMLDivElement>(null);
+  const serviceRef = useRef<HTMLDivElement>(null);
+
+  const saasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function update(time: number) {
@@ -60,8 +61,10 @@ function MainPage() {
     }
   };
 
-  const handleDescriptionScroll = () => scrollToSection(descriptionRef);
-  const handleVirtualFittingScroll = () => scrollToSection(virtualFittingRef);
+  const handleDescriptionScroll = () => scrollToSection(aboutRef);
+  const handleSolutionScroll = () => scrollToSection(saasRef);
+  const handleServiceScroll = () => scrollToSection(serviceRef);
+
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
@@ -71,8 +74,9 @@ function MainPage() {
       <TooltipGlobalStyles /> 
       <GlobalCursorStyle />
       <TransparentHeader 
-        onDescriptionScroll={handleDescriptionScroll}
-        onVirtualFittingScroll={handleVirtualFittingScroll}
+        onAboutScroll={handleDescriptionScroll}
+        onServiceScroll={handleServiceScroll}
+        onSolutionScroll={handleSolutionScroll}
       />
       <CustomCursor ref={cursorRef} />
       <MainSection>
@@ -81,33 +85,35 @@ function MainPage() {
             <Section>
               <HeroSection />
             </Section>
-            <Section ref={descriptionRef}>
-              <DescriptionSection />
+
+            <Section ref={aboutRef}>
+              <AboutSection />
             </Section>
 
-            <SectionImage></SectionImage>
-
-            <SectionImage ref={introductionRef}>
-              <ImageHoodieSection />
-            </SectionImage>
-            <SectionImage>
-              <ImageBrandSection />
-            </SectionImage>
-            <SectionImage>
-              <ImageStuffSection />
-            </SectionImage>
-            <SectionImage>
-              <ImageFitSection />
-            </SectionImage>
-
-            <SectionImage></SectionImage>
+            <SectionEmptyMedium></SectionEmptyMedium>
             
-            <Section>
+            <Section ref={serviceRef}>
+              <PaperSection />
+            </Section>
+
+            <SectionEmptyLarge></SectionEmptyLarge>
+            
+            <TextSection>
+              <ServiceTextSection />
+            </TextSection>
+
+            <TextSection>
+              <AITextSection/>
+            </TextSection>
+
+            <SectionEmptySmall></SectionEmptySmall>
+            <Section ref={saasRef}>
               <SolutionSection />
             </Section>
-            <Section>
+
+            <SaaSSection>
               <VirtualFittingSection />
-            </Section>
+            </SaaSSection>
           </ModelContainer>
         </Article>
       </MainSection>
@@ -162,9 +168,42 @@ const Section = styled.div`
   align-items: center;
 `;
 
-const SectionImage = styled.div`
+const TextSection = styled.div`
   width: 100%;
-  height: 600px;
+  height: 200vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+
+const SaaSSection = styled.div`
+  width: 100%;
+  height: 250vh;
+  display: flex;
+  justify-content: flex-start;;
+  align-items: center;
+`;
+
+const SectionEmptySmall = styled.div`
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SectionEmptyMedium = styled.div`
+  width: 100%;
+  height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const SectionEmptyLarge = styled.div`
+  width: 100%;
+  height: 50vh;
   display: flex;
   justify-content: center;
   align-items: center;
