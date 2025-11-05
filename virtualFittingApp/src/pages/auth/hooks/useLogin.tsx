@@ -7,6 +7,11 @@ import { isLoginKey } from "@/pages/auth/utils/type";
 import { useSetRecoilState } from 'recoil';
 import { authState } from "@/entities/auth";
 import Swal from "sweetalert2";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface BasiliumJwtPayload extends JwtPayload {
+  role: string;
+}
 
 function useLogin() {
   const [user, setUser] = useState<TLoginUser>({
@@ -35,8 +40,9 @@ function useLogin() {
   // 나중에 EventBus 오류 발생 지점 컴포넌트로 따로 빼도 될듯
   const onSubmit = async () => {
     try {
-      setAuth(true);
-      await login(user);
+      const token = await login(user);
+      const decodedToken = jwtDecode<BasiliumJwtPayload>(token);
+      setAuth({ isLoggedIn: true, userId: decodedToken.sub ?? null });
       Swal.fire({
         title: "Success!",
         text: "로그인에 성공했습니다.",

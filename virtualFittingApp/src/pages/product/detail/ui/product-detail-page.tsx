@@ -1,6 +1,8 @@
 import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth';
 
 import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
 import type { ProductDetail } from "@/entities/product";
@@ -15,15 +17,13 @@ import { ProductQnAs } from "@/widgets/product-qnas";
 import { useProductCoupon } from "@/features/coupon";
 
 import { AddModelModal } from "@/features/ai-try-on";
-import { Cookies } from "react-cookie";
 import { NormalUserGetImg } from "@/widgets/auth/api/normalAuth.action";
-
-const cookies = new Cookies();
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
+  const { isLoggedIn } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -41,16 +41,6 @@ function ProductDetailPage() {
     handleDownloadCoupon,
   } = useProductCoupon(currentProductId);
 
-  const requireAuth = useCallback(() => {
-    const token = cookies.get("access-token");
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return false;
-    }
-    return true;
-  }, [navigate]);
-
   const loadRegisteredImage = useCallback(async () => {
     setRegisteredLoading(true);
     try {
@@ -67,10 +57,14 @@ function ProductDetailPage() {
   }, []);
 
   const openTryOn = useCallback(async () => {
-    if (!requireAuth()) return;
+    if (!isLoggedIn) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return;
+    }
     setTryOnOpen(true);
     await loadRegisteredImage(); 
-  }, [loadRegisteredImage, requireAuth]);
+  }, [isLoggedIn, loadRegisteredImage, navigate]);
 
   const closeTryOn = useCallback(() => {
     setTryOnOpen(false);

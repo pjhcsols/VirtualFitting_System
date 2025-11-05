@@ -15,9 +15,7 @@ export const upsertCart = async (
         },
         data: requestData || {},
     };
-
-    const action = requestData ? "장바구니 아이템 추가" : "장바구니 조회/생성";
-    return apiClient<Cart>(config, action);
+    return apiClient<Cart>(config);
 };
 
 export const updateCartItem = async (
@@ -33,7 +31,7 @@ export const updateCartItem = async (
     data: updateData,
   };
 
-  return apiClient<Cart>(config, `장바구니 아이템 ID ${itemId} 수정`);
+  return apiClient<Cart>(config);
 };
 
 export async function deleteCartItems(
@@ -54,5 +52,5 @@ export async function deleteCartItems(
     data: null, 
   };
 
-  return apiClient<Cart>(config, `장바구니 아이템 ID [${itemIds.join(', ')}] 삭제`);
+  return apiClient<Cart>(config);
 }

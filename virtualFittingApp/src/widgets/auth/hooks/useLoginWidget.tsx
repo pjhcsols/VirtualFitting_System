@@ -10,7 +10,7 @@ interface BasiliumJwtPayload extends JwtPayload {
   role: string;
 }
 
-function useLogin() {
+function useLoginWidget() {
   const router = useNavigate();
 
   const [loginInfo, setLoginInfo] = useState<LoginRequestDto>({
@@ -46,10 +46,10 @@ function useLogin() {
       return;
     }
 
-    setAuthState(true);
+    const decodedToken = jwtDecode<BasiliumJwtPayload>(res);
+    setAuthState({ isLoggedIn: true, userId: decodedToken.sub ?? null });
     
     alert("로그인에 성공하였습니다!");
-    const decodedToken = jwtDecode<BasiliumJwtPayload>(res);
     if (decodedToken.role === "BRAND") {
       router("/brand/dashboard");
     } else if (decodedToken.role === "SUPER") {
@@ -77,4 +77,4 @@ function useLogin() {
   };
 }
 
-export { useLogin };
+export { useLoginWidget };

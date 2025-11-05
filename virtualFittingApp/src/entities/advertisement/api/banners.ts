@@ -9,5 +9,5 @@ export const fetchBanners = async (adminId: string): Promise<Banner[] | null> =>
     params: { adminId },
   };
 
-  return apiClient<Banner[]>(config, "배너 이미지 조회");
+  return apiClient<Banner[]>(config);
 };
