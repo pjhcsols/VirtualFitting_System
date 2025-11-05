@@ -1,11 +1,9 @@
 import { useCallback, useState, useEffect, useRef } from "react";
 import styled, { createGlobalStyle, css } from "styled-components";
-import { useNavigate } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
-import { Cookies } from 'react-cookie';
-import { ProductDetails } from "@/widgets/product-details";
+import { DummyProductDetails } from "@/widgets/product-details";
 import type { ProductDetail } from "@/entities/product";
-import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
+import { fetchProductDetailByColor } from "@/entities/product/api/product.api";
 import icon_exclamatioin_mark from "@/shared/assets/icons/icon-exclamation-mark.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
 import { Tooltip } from "react-tooltip";
@@ -16,14 +14,11 @@ import womanImg from "/img/user/base_w.png";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import { AddModelModal } from "@/features/ai-try-on";
-import { NormalUserImgUpload, NormalUserGetImg } from "@/widgets/auth/api/normalAuth.action";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { useProductCoupon } from "@/features/coupon"; // 🚨 쿠폰 훅 임포트
 
 gsap.registerPlugin(ScrollTrigger);
 
-const cookiesInstance = new Cookies();
 
 const MODEL = { MAN: "man", WOMAN: "woman", CUSTOM: "custom" } as const;
 type ModelKey = typeof MODEL[keyof typeof MODEL];
@@ -33,23 +28,15 @@ const TXT = {
   helpTooltip: "협약된 브랜드의 상품만 자신의 이미지로 가상착용이 가능합니다.",
 };
 
-function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
-  // ----------------------------------------------------
-  // 🚨 1. Hooks & State 선언 (최상위 배치)
-  // ----------------------------------------------------
-  const navigate = useNavigate();
+function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
   const [product, setProduct] = useState<ProductDetail | null>(null);
-  const [productColors, setProductColors] = useState<string[]>([]);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
-  const [loading, setLoading] = useState(true);
 
-  // GSAP Refs
   const WrapperRef = useRef<HTMLDivElement | null>(null);
   const railRef = useRef<HTMLDivElement | null>(null);
   const modelRef = useRef<HTMLDivElement | null>(null);
   const panelRef = useRef<HTMLDivElement | null>(null);
 
-  // Try-On 상태
   const [modelSrc, setModelSrc] = useState<Record<ModelKey, string>>({
     man: manImg,
     woman: womanImg,
@@ -60,58 +47,20 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  
-  // 🚨 쿠폰 훅 호출 (product가 로드된 후 productId를 사용)
-  const { 
-    coupons, 
-    isLoading: isCouponLoading, 
-    handleDownloadCoupon, 
-  } = useProductCoupon(product?.productId ?? 0); 
 
-
-  // ----------------------------------------------------
-  // 🚨 2. Callbacks & Handlers
-  // ----------------------------------------------------
-  
   const loadRegisteredImage = useCallback(async () => {
-    setRegisteredLoading(true);
-    try {
-      const res = await NormalUserGetImg();
-      // NOTE: API 응답이 URL 전체를 주지 않는 경우 'http://'를 붙여야 함
-      const ImgUrl = "http://" + res.data; 
-      setRegisteredImageUrl(ImgUrl);
-      return ImgUrl;
-    } catch {
-      setRegisteredImageUrl(null);
-      return null;
-    } finally {
-      setRegisteredLoading(false);
-    }
-  }, []);
-
-  const requireAuth = useCallback(() => {
-    const token = cookiesInstance.get("access-token");
-    if (!token) {
-      alert("로그인이 필요한 서비스입니다.");
-      navigate("/login");
-      return false;
-    }
-    return true;
-  }, [navigate]);
+    setRegisteredImageUrl(null); 
+    setRegisteredLoading(true); 
+    return null; 
+}, [setRegisteredImageUrl]);
 
   const openModal = async () => {
-    if (!requireAuth()) return;
+    await loadRegisteredImage();
     setIsModalOpen(true);
-    
-    if (!registeredImageUrl) {
-      await loadRegisteredImage();
-    }
   };
 
   const openReplace = async () => {
-    if (!requireAuth()) return;
     setIsModalOpen(true);
-    await loadRegisteredImage(); 
   };
   
   const closeModal = useCallback(() => {
@@ -152,26 +101,10 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
   const handleConfirmUpload = async () => {
     if (!selectedFile) return;
     try {
-      const ok = await NormalUserImgUpload(selectedFile);
-      if (!ok) {
-        alert("이미지 등록에 실패했습니다.");
-        return;
-      }
-
-      // Blob URL을 사용하여 미리보기를 설정한 경우 (성공 후 실제 URL로 업데이트)
       if (uploadPreview?.startsWith("blob:")) {
         setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
       }
-
-      // 서버에서 등록된 최종 이미지 URL을 가져와서 custom 모델 소스로 설정
-      const latest = await loadRegisteredImage(); 
-      if (latest) {
-        setModelSrc(prev => ({ ...prev, custom: latest }));
         setSelectedModel(MODEL.CUSTOM);
-      } else if (uploadPreview) {
-        // API가 즉시 URL을 안 주는 경우, 미리보기 URL을 임시 사용 (UX)
-        setSelectedModel(MODEL.CUSTOM);
-      }
 
       alert("이미지가 성공적으로 등록되었습니다.");
       closeModal();
@@ -180,33 +113,25 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
     }
   };
 
-
-  // ----------------------------------------------------
-  // 🚨 3. Data Fetching & GSAP Effects
-  // ----------------------------------------------------
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        setLoading(true);
-        const colors = await fetchProductColors(productId);
-        if (!colors?.length) throw new Error("색상 정보를 찾을 수 없습니다.");
-        const detail = await fetchProductDetailByColor(productId, colors[0]);
+        const detail = await fetchProductDetailByColor(2, "BLACK");
         if (!detail) throw new Error("상품 상세를 찾을 수 없습니다.");
         
         if (mounted) {
           setProduct(detail);
-          setProductColors(colors);
+
         }
       } catch (e) {
         console.error(e);
-      } finally {
-        if (mounted) setLoading(false);
       }
     })();
     return () => { mounted = false; };
   }, [productId]);
 
+  
   useEffect(() => {
     const ctx = gsap.context(() => {
       const targets = [railRef.current, modelRef.current, panelRef.current].filter(
@@ -234,15 +159,24 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
     return () => ctx.revert();
   }, []);
   
-  const finalPrice = product?.productPrice ?? 0;
-  if (loading || !product) return <Centered>Loading…</Centered>;
+  if (!product) return;
 
   return (
     <>
       <TooltipGlobalStyles />
 
-      <SectionWrap ref={WrapperRef}>
-        <LeftRail ref={railRef}>
+      <SectionWrap >
+        <HeadlineText>
+          지금 바실리움에서 가상착용 데모를 확인하세요.
+        </HeadlineText>
+        <SubText >
+          고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
+          바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
+          체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
+          매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+        </SubText>
+        <ContentWrapper>
+        <Rail>
           <RailList>
             <GenderImageCard
               role="tab"
@@ -292,40 +226,34 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
               )}
             </CustomSlot>
           </RailList>
-          
-          <RailInfoTip
-            aria-label="도움말"
-            data-tooltip-id="help-tip"
-            data-tooltip-content={TXT.helpTooltip}
-          >
-            <img src={icon_exclamatioin_mark} alt="" aria-hidden="true" />
-          </RailInfoTip>
-        </LeftRail>
+        </Rail>
 
-        <AnimWrapper ref={modelRef}>
+        <Model>
           <ModelGlassCard>
             <MainModelImg
               src={modelSrc[selectedModel]}   
               alt={`${selectedModel} 모델`}
               loading="lazy"
               decoding="async"
-              onLoad={() => ScrollTrigger.refresh()} // 4)
+              onLoad={() => ScrollTrigger.refresh()}
             />
           </ModelGlassCard>
-        </AnimWrapper>
+          <RailInfoTip
+            aria-label="도움말"
+            data-tooltip-id="help-tip"
+            data-tooltip-content={TXT.helpTooltip}
+            >
+            <img src={icon_exclamatioin_mark} alt="" aria-hidden="true" />
+          </RailInfoTip>
+        </Model>
 
-        <PanelBox ref={panelRef}>
-          <ProductDetails
+        <ProductDetailContainer>
+          <DummyProductDetails
             product={product as any}
-            productColors={productColors}
-            onColorChange={() => {}}
             onTryOn={openModal}
-            coupons={coupons}
-            isCouponLoading={isCouponLoading}
-            handleDownloadCoupon={handleDownloadCoupon}
-            finalPrice={finalPrice} 
           />
-        </PanelBox>
+        </ProductDetailContainer>
+        </ContentWrapper>
       </SectionWrap>
 
       <Tooltip id="add-tip" place="right" className="basil-tooltip" opacity={1} offset={10} />
@@ -343,6 +271,7 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
         onConfirmUpload={handleConfirmUpload}
         previewUrl={uploadPreview}
       />
+      
     </>
   );
 }
@@ -351,97 +280,82 @@ export { VirtualFittingSection };
 
 
 const SectionWrap = styled.section`
-  --panel-h: clamp(480px, 68vh, 640px);
-  max-width: 1780px;  
   width: 100%;
+  heitht:250vh;
   margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
 
-  display: grid;
-  grid-template-columns:
-    120px
-    minmax(360px, 0.1fr)
-    minmax(560px, 1.9fr)
-    minmax(420px, 0.1fr);
-  column-gap: 20px;
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
   align-items: start;
+  margin-top: 30px;
+  gap: 14px;
 
   @media (max-width: ${BREAKPOINTS.lg}px) {
     grid-template-columns: 1fr;
     row-gap: 14px;
-    width: 94%;
+    padding: 0 10px;
   }
+`
+const Rail = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100px;
 `;
 
-const LeftRail = styled.div`
-  --rail-gap: 16px;
-  --plus-h: 50px;
-  --tip-gap: 18px;  
-
-  grid-column: 1;
-  position: relative;           
-  height: var(--panel-h);       
-  max-height: var(--panel-h);
-
-  margin-top: 12px;
-  margin-left: 45px;
-  z-index: 1;
-
-  display: block; 
-  overflow: visible;              
+const Model = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+  align-items: end;
+  gap: 10px;
+  position: relative;
+  display: inline-block; 
 `;
 
 const RailList = styled.div`
-  height: var(--panel-h);
-  display: grid;
-  grid-template-rows: repeat(3, 1fr); 
-  justify-items: center;
+  display: flex;
+  flex-direction: column; 
+  align-items: end;
   gap: 16px;
 `;
 
 const AddIcon = styled.img`
+  display: flex;
   width: 28px;
   height: 28px;
-  opacity: .95;
 `;
 
-const AnimWrapper = styled.div`
-  grid-column: 2;      
-  width: 100%;
-  height: var(--panel-h);
-  display: grid;
-  place-items: center;
+const ProductDetailContainer = styled.div`
+  display: flex;
+  width: 1000px;
 `;
 
 const RailInfoTip = styled.div`
-  position: absolute;
-  left: 50%;
-  top: calc(var(--panel-h) + var(--tip-gap));  /* 레일 높이 + 여백 만큼 아래 */
-  transform: translateX(-50%);
-  width: 50px;
-  height: 50px;
+position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
+  display: flex;
+  width: 40px;
+  height: 40px;
   border-radius: 100px;
-
-  display: grid;
-  place-items: center;
-
+  justify-content: center;
+  align-items: center;
   background: rgba(255,255,255,0.16);
   border: 1px solid rgba(255,255,255,0.38);
   backdrop-filter: blur(10px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.25);
   cursor: pointer;
-  transition: transform .18s ease, background .18s ease;
-
-  &:hover { transform: translateX(-50%) scale(1.04); background: rgba(255,255,255,0.22); }
-  img { width: 25px; height: 25px; opacity: .95; }
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    top: calc(var(--panel-h) + 8px);
-  }
 `;
 
 const GenderImageCard = styled.button<{ $img: string; $active?: boolean }>`
-  width: 80px;
-  height: 100%;
+  width: 70px;
+  height: 100px;
   padding: 0;
   border: 0;
   border-radius: 12px;
@@ -454,51 +368,28 @@ const GenderImageCard = styled.button<{ $img: string; $active?: boolean }>`
   ${({ $active }) =>
     $active &&
     `
-      box-shadow: 0 8px 22px rgba(0,0,0,.22);
-      outline: 3px solid #000;
+      outline: 3px solid #ffffffff;
       outline-offset: 0;
     `}
-  &:hover { transform: translateY(-1px); }
   &:active { transform: translateY(0); }
   &:focus-visible { outline: 3px solid #000 };
+  z-index: 2;
 `;
 
 const MainModelImg = styled.img`
-  max-width: 98%;
-  max-height: 100%;
-  object-fit: contain;
+  width: 200px;
+  height: 300px;
+  object-fit: cover;
   border-radius: 12px;
   user-select: none;
   pointer-events: none;
 `;
 
 const ModelGlassCard = styled(GlassBox)`
-  grid-column: 2;                     /* 메인(1번) */
-  width: 100%;
-  height: var(--panel-h);
-  display: grid;
-  place-items: center;
+display: flex;
+  width: 200px;
+  height: 300px;
   position: relative;
-  z-index: 2;
-  margin-top: 12px;
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    grid-column: 1;
-    min-height: 380px;
-  }
-`;
-
-const PanelBox = styled.div`
-  position: relative;
-  width: 2200px;
-  padding: 10px;
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 12px;
-  }
-`;
-
-const Centered = styled.div`
-  color: #fff; opacity: .85; text-align: center; padding: 60px 0;
 `;
 
 const TooltipGlobalStyles = createGlobalStyle`
@@ -531,17 +422,16 @@ const TooltipGlobalStyles = createGlobalStyle`
 `;
 
 const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
-  width: 80px;
-  height: 100%;
+  width: 70px;
+  height: 100px;
+  justify-content: center;
+  align-items: center;
   border-radius: 12px;
   position: relative;
-  display: grid;
-  place-items: center;
+  display: flex;
   cursor: pointer;
-  overflow: hidden;
   transition: transform .18s ease, background .18s ease;
 
-  &:hover { transform: translateY(-1px); }
 
   ${({ $hasImage }) => $hasImage && `
     background: rgba(255,255,255,0.06);
@@ -603,4 +493,34 @@ const CancelImg = styled.img`
   display: block;
   filter: brightness(0) invert(1); 
   opacity: .95;
+`;
+
+const HeadlineText = styled.div`
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -2px;
+  padding-bottom: 24px;
+  margin: 0;
+  background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+`;
+
+const SubText = styled.div`
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -1px;
+  text-align: center;
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #E9FAFF; 
+  padding-bottom: 24px;
+`;
+const StrongHighlight = styled.span`
+  color: #B8D2FF; 
 `;
