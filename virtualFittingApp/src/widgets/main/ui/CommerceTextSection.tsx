@@ -6,7 +6,7 @@ import { ScrollTrigger } from "gsap/all";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function ServiceTextSection() {
+function CommerceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null); 
 
@@ -40,15 +40,15 @@ function ServiceTextSection() {
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Service</ScreenText> 
+      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Commerce</ScreenText> 
       <Wrapper ref={wrapperRef}>
           <Content>
             <TextBox>
-              <ContentText>통합 플랫폼 및 역할별 접근성</ContentText>
+              <ContentText>고객 경험 극대화 및 운영 자동화</ContentText>
               <SubText>
-                원앱 및 통합 사이트에서 일반/기업 고객이 역할·권한에 따라 다른 화면을 봅니다.<br />
-                의류 브랜드 등록 및 입점은 "회원가입, 입점 요청, 데모/런칭" 3단계로 간소화됩니다.<br />
-                바실리움은 가상착용, 브랜드 입점, 운영 자동화를 제공하는 종합 플랫폼입니다.</SubText>
+                  재고·결제·정산·프로모션 자동화로 운영 효율성을 극대화합니다.<br />
+                  모델 확보와 가상착용 서비스 제공을 통해 브랜드 런칭 기회를 드립니다.
+              </SubText>
             </TextBox>
             <ImageBox></ImageBox>
           </Content>
@@ -90,6 +90,7 @@ const TextBox = styled.div`
   justify-content: center; 
   align-items: end; 
   overflow: hidden;
+  margin-top: 64px;
   margin-right:auto;
   height: 100%; 
 `;
@@ -111,7 +112,6 @@ const ScreenText = styled.div`
   color: #E9FAFF; 
   z-index: 3;
 `;
-
 
 const ContentText = styled.div`
   font-size: 28px;
@@ -149,4 +149,4 @@ const ImageBox = styled.div`
   will-change: background-size, background-position; 
 `;
 
-export { ServiceTextSection };
+export { CommerceTextSection };

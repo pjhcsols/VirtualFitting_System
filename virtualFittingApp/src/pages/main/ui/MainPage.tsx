@@ -2,6 +2,7 @@ import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { 
   ActionTextSection,
+  CommerceTextSection,
   HeroSection, 
   ServiceTextSection,
   AITextSection,
@@ -104,6 +105,10 @@ function MainPage() {
 
             <TextSection>
               <AITextSection/>
+            </TextSection>
+
+            <TextSection>
+              <CommerceTextSection/>
             </TextSection>
 
             <Section ref={saasRef}>

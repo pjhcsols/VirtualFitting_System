@@ -40,12 +40,18 @@ function AITextSection() {
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI</ScreenText>
+      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI/Tech</ScreenText>
       <Wrapper ref={wrapperRef}>
           <Content>
-            <ContentText>가상착용 AI</ContentText>
-            <SubText>착용부터 구매까지</SubText>
             <ImageBox></ImageBox>
+            <TextBox>
+              <ContentText>가상착용 AI</ContentText>
+              <SubText>
+                BASILIUM은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다.<br />
+                메타데이터 신뢰성, DID 인프라, 모듈형 API/SDK 아키텍처로 확장성을 확보합니다.<br />
+                고객은 비용 제약 없는 편리함을, 고객사는 낮은 초기비용과 빠른 ROI를 경험합니다.
+              </SubText>
+            </TextBox>
           </Content>
       </Wrapper>
     </SectionContainer>
@@ -60,7 +66,7 @@ const SectionContainer = styled.div`
 `;
 
 const ScreenText = styled.div`
-  font-size: 20vw;
+  font-size: 15vw;
   font-weight: 600;
   line-height: 1.5;
   letter-spacing: -1px;
@@ -89,12 +95,22 @@ const Wrapper = styled.div`
 
 const Content = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: center;
-  align-items: start;
+  align-items: stretch; 
   overflow: hidden;
-  gap: 16px;
+  gap: 16px; 
   margin-left: 10vw;
+`;
+
+const TextBox = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center; 
+  align-items: start; 
+  overflow: hidden;
+  margin-right:auto;
+  height: 100%; 
 `;
 
 const ContentText = styled.div`
@@ -103,6 +119,7 @@ const ContentText = styled.div`
   line-height: 1.5;
   letter-spacing: -1px;
   color: #fff;
+  padding-bottom: 24px;
 `;
 
 const SubText = styled.div`
@@ -111,10 +128,11 @@ const SubText = styled.div`
   line-height: 1.5;
   letter-spacing: -1px;
   color: #fff;
+  text-align:left;
 `;
 
 const ImageBox = styled.div`
-  width: 50vw;
+  width: 40vw;
   height: 50vh;
   display: flex;
   flex-direction: column;

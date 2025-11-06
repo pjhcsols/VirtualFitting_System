@@ -8,7 +8,7 @@ import img_paper2 from "../assets/images/paper-2.png";
 import img_paper3 from "../assets/images/paper-3.png";
 import img_paper4 from "../assets/images/paper-4.png";
 import img_paper_person from "../assets/images/paper-person.png";
-import img_paper_screen from "../assets/images/paper-screen.jpg";
+import img_paper_screen from "../assets/images/paper-screen.png";
 import img_paper_virtual from "../assets/images/paper-virtualfitting.png";
 
 export const PAPER_IMAGE_1 = img_paper1;
