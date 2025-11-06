@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { PAPER_WEB3 } from "../model/constants";
+import { PAPER_VIRTUAL } from "../model/constants";
 import { useRef, useEffect } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
@@ -142,7 +142,7 @@ const ImageBox = styled.div`
   overflow: hidden; 
   padding: 24px; 
   
-  background-image: url(${PAPER_WEB3}); 
+  background-image: url(${PAPER_VIRTUAL}); 
   background-size: contain;
   background-position: right top;
   background-repeat: no-repeat;

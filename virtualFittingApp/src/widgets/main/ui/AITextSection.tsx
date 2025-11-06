@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { PAPER_VIRTUAL } from "../model/constants";
+import { PAPER_WEB3 } from "../model/constants";
 import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
@@ -45,7 +45,7 @@ function AITextSection() {
           <Content>
             <ImageBox></ImageBox>
             <TextBox>
-              <ContentText>가상착용 AI</ContentText>
+              <ContentText>Web3.0 기반의 기술 혁신</ContentText>
               <SubText>
                 BASILIUM은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다.<br />
                 메타데이터 신뢰성, DID 인프라, 모듈형 API/SDK 아키텍처로 확장성을 확보합니다.<br />
@@ -141,7 +141,7 @@ const ImageBox = styled.div`
   overflow: hidden; 
   padding: 24px; 
   
-  background-image: url(${PAPER_VIRTUAL}); 
+  background-image: url(${PAPER_WEB3}); 
   background-size: contain;
   background-position: left top;
   background-repeat: no-repeat;
