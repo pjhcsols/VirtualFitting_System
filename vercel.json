@@ -2,13 +2,13 @@
   "rewrites": [
     {
       "source": "/b1/:path*",
-      "destination": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/b1/:path*"
+      "destination": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/:path*"
     }
   ],
   "routes": [
     {
       "src": "/b1/(.*)",
-      "dest": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/b1/$1"
+      "dest": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/$1"
     },
     {
       "handle": "filesystem"
