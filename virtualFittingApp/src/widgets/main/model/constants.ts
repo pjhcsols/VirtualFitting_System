@@ -10,6 +10,7 @@ import img_paper4 from "../assets/images/paper-4.png";
 import img_paper_person from "../assets/images/paper-person.png";
 import img_paper_screen from "../assets/images/paper-screen.png";
 import img_paper_virtual from "../assets/images/paper-virtualfitting.png";
+import img_paper_web3 from "../assets/images/paper-webthree.png";
 
 export const PAPER_IMAGE_1 = img_paper1;
 export const PAPER_IMAGE_2 = img_paper2;
@@ -18,6 +19,7 @@ export const PAPER_IMAGE_4 = img_paper4;
 export const PAPER_PERSON = img_paper_person;
 export const PAPER_SCREEN = img_paper_screen;
 export const PAPER_VIRTUAL = img_paper_virtual;
+export const PAPER_WEB3 = img_paper_web3;
 
 export const HOODIE_IMAGES = [
   { id: 1, src: img_hoodie1, name: "Classic Hoodie" },
