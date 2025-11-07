@@ -1,9 +1,8 @@
 {
-  "routes": [
+  "rewrites": [
     {
-      "src": "/b1/(.*)",
-      "dest": "https://api.basilium.ai.kr/b1/$1"
-    },
-    { "handle": "filesystem" }
+      "source": "/b1/:path*",
+      "destination": "https://api.basilium.ai.kr/b1/:path*"
+    }
   ]
 }
