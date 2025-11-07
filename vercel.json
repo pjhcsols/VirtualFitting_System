@@ -1,8 +1,9 @@
 {
-  "rewrites": [
+  "routes": [
     {
-      "source": "/b1/:path*",
-      "destination": "https://basillium-2081566897.ap-northeast-2.elb.amazonaws.com/:path*"
-    }
+      "src": "/b1/(.*)",
+      "dest": "https://api.basilium.ai.kr/b1/$1"
+    },
+    { "handle": "filesystem" }
   ]
 }
