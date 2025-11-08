@@ -34,6 +34,9 @@ export const Wrapper = styled.form`
       rgba(255, 255, 255, 0.8),
       transparent
     );
+    @media (max-width: 768px) {
+      padding: 0rem 1rem;
+    }
   }
 
   &::after {
@@ -53,9 +56,16 @@ export const Wrapper = styled.form`
 `;
 
 export const Title = styled.h1`
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #fffafa;
+  font-family: "Prata-Regular";
+  font-size: 32px;
+  font-weight: 600;
+  text-align: right;
+  letter-spacing: -4px;
+  margin: 0;
+  background-image: linear-gradient(to right, #e9faff, #b8d2ff);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
 `;
 
 export const InfoContainer = styled.div`
@@ -170,7 +180,7 @@ export const ButtonText = styled.span`
   text-transform: uppercase;
 `;
 
-export const LoginButtonWrapper = styled.div`
+export const LoginButtonWrapper = styled.button.attrs({ type: "submit" })`
   width: 100%;
   height: 2.5rem;
   display: flex;

@@ -1,24 +1,22 @@
+import { type NormalUserType } from "@/entities/auth/types/normal.d";
+import { InternationalPhoneInput } from "../../components/numberpad";
 import * as S from "./style";
-
-import { type BrandUserType } from "@/pages/brand";
-import { Dispatch, SetStateAction, type ChangeEvent } from "react";
-
 import { PasswordInput, TextInput } from "@/shared";
-import { InternationalPhoneInput } from "@/pages/auth/components/numberpad";
+import { ChangeEvent, Dispatch, SetStateAction } from "react";
 
-interface IBrandUserBasicInfoWidget {
-  data: BrandUserType;
+interface INormalUserSignUpWidget {
+  data: NormalUserType;
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void;
   phone: string;
   setPhone: Dispatch<SetStateAction<string>>;
-  onChangeText: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
-function BrandUserBasicInfoWidget({
+function NormalUserSignUpWidget({
   data,
+  onChange,
   phone,
   setPhone,
-  onChangeText,
-}: IBrandUserBasicInfoWidget) {
+}: INormalUserSignUpWidget) {
   return (
     <S.Wrapper>
       <S.InfoContainer>
@@ -31,24 +29,24 @@ function BrandUserBasicInfoWidget({
             title="ID"
             type="text"
             value={data.id}
-            onChange={onChangeText}
+            onChange={onChange}
           />
         </S.InfoBox>
         <S.InfoBox>
           <PasswordInput
             name="password"
-            title="password"
+            title="비밀번호"
             value={data.password}
-            onChange={onChangeText}
+            onChange={onChange}
           />
         </S.InfoBox>
         <S.InfoBox>
           <TextInput
-            value={data.emailAddress}
-            onChange={onChangeText}
-            name={"emailAddress"}
-            title="이메일"
+            name="nickname"
+            title="닉네임"
             type="text"
+            value={data.nickname}
+            onChange={onChange}
           />
         </S.InfoBox>
         <S.InfoBox>
@@ -62,4 +60,4 @@ function BrandUserBasicInfoWidget({
   );
 }
 
-export { BrandUserBasicInfoWidget };
+export { NormalUserSignUpWidget };

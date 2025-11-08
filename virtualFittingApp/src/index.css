@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 @font-face {
   font-size: 16px;
   font-family: "Prata-Regular";
@@ -15,9 +17,12 @@
   font-size: 16px;
   font-family: "studio-sans";
   font-weight: normal;
-  src: url("./assets/fonts/StudioSans-Bold.otf") url("./assets/fonts/StudioSans-ExtraBold.otf")
-    url("./assets/fonts/StudioSans-ExtraLight.otf") url("./assets/fonts/StudioSans-Light.otf")
-    url("./assets/fonts/StudioSans-Medium.otf") url("./assets/fonts/StudioSans.otf") format("oft");
+  src: url("./assets/fonts/StudioSans-Bold.otf")
+    url("./assets/fonts/StudioSans-ExtraBold.otf")
+    url("./assets/fonts/StudioSans-ExtraLight.otf")
+    url("./assets/fonts/StudioSans-Light.otf")
+    url("./assets/fonts/StudioSans-Medium.otf")
+    url("./assets/fonts/StudioSans.otf") format("oft");
 }
 
 :root {
