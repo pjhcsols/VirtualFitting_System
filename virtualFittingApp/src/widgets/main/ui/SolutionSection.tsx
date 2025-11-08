@@ -4,8 +4,10 @@ import { ScrollTrigger } from "gsap/all";
 import { GlassBox } from "@/shared/components/glass-box";
 import { useRef, useEffect, ReactNode } from "react";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
-import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
+import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
+import DataAnalyticsIcon from '@mui/icons-material/Assessment'; 
+import { BREAKPOINTS } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger); 
 
@@ -17,14 +19,15 @@ type FeatureCardProps = {
 
 const FeatureCard = ({ title, content, icon }: FeatureCardProps) => (
     <Card>
-        <CardIcon>{icon}</CardIcon>
-        <CardTitle>{title}</CardTitle>
-        <CardContent>{content}</CardContent>
+      <CardIcon>{icon}</CardIcon>
+      <CardTitle>{title}</CardTitle>
+      <CardContent>{content}</CardContent>
     </Card>
 );
+
 function SolutionSection() {
   const wrapperRef = useRef(null); 
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
   const headlineRef = useRef(null);
   const subTextRef = useRef(null);
 
@@ -47,7 +50,7 @@ function SolutionSection() {
         opacity: 1, 
         y: 0, 
         duration: 0.8,
-        stagger: 0.15,
+        stagger: 0.4,
         ease: "power2.out"
     });
 
@@ -56,42 +59,46 @@ function SolutionSection() {
   return (
     <Wrapper ref={wrapperRef}>
       <HeadlineText ref={headlineRef}>
-        지금 바실리움에서 가상착용 데모와 입점 기회를 확인하고, <br/>비즈니스를 업그레이드하세요.
+        AI 기반의 미래형 커머스 플랫폼으로 <br/>고객 경험과 비즈니스 효율을 혁신합니다.
       </HeadlineText>
-      <SubText ref={subTextRef}>
-        고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
-        바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
-        체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
-        매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
-      </SubText>
       <CardGrid>
         <div ref={el => cardRefs.current[0] = el as HTMLDivElement}> 
           <FeatureCard 
               icon={<TrendingUpIcon style={{ fontSize: '1em' }} />}
-              title="구매 확신 및 전환율 상승" 
+              title="높은 구매 전환율" 
               content={<>
-                  실감 나는 가상 피팅(Virtual Fitting) 경험을 제공하여 온라인 쇼핑의 불확실성을 해소합니다.<br/>
-                  고객의 ‘입어본 듯한 확신’을 선사하여 망설임 없이 즉시 결제로 유도합니다.
+                  AI 가상 피팅을 통해 온라인 쇼핑의 불확실성을 완전히 해소합니다.
+                  고객에게 망설임 없는 즉시 결제 확신을 선사하여 구매 전환율을 극대화합니다.
               </>}
             />
         </div>
         <div ref={el => cardRefs.current[1] = el as HTMLDivElement}>
           <FeatureCard 
               icon={<AddBusinessIcon style={{ fontSize: '1em' }} />}
-              title="정교한 매칭과 올인원 통합" 
+              title="반품 오류 최소화"
               content={<>
-                  정교한 사이즈 매칭 알고리즘 기반의 최적 핏 추천으로 반품 오류를 획기적으로 낮춥니다.<br/>
-                  쿠폰·결제·재고 연동을 올인원으로 지원하여 운영 자동화와 비용 절감을 달성합니다.
+                  정교한 사이즈 매칭 알고리즘 기반으로 고객에게 최적의 핏을 추천합니다.
+                  불필요한 반품 오류를 획기적으로 낮추고, 물류 및 운영 비용을 절감합니다.
               </>}
           />
         </div>
         <div ref={el => cardRefs.current[2] = el as HTMLDivElement}>
           <FeatureCard 
               icon={<AutoAwesomeIcon style={{ fontSize: '1em' }} />}
-              title="미래형 커머스 성장 인프라" 
+              title="입점 자동화" 
               content={<>
-                  가상착용·입점·운영 자동화를 통합 제공하는 미래형 커머스 플랫폼입니다.<br/>
-                  고객 경험 혁신을 통해 구매 전환율은 높이고 반품률은 낮추는 독보적인 성장 인프라를 제공합니다.
+                  복잡했던 입점·운영 절차를 3단계로 간소화하고, 쿠폰·결제·재고 연동을 올인원으로 통합 지원합니다.
+                  브랜드 성장에 필요한 모든 과정을 자동화하여 운영 효율을 높입니다.
+              </>}
+          />
+        </div>
+        <div ref={el => cardRefs.current[3] = el as HTMLDivElement}>
+          <FeatureCard 
+              icon={<DataAnalyticsIcon style={{ fontSize: '1em' }} />}
+              title="맞춤형 성장 지원" 
+              content={<>
+                  AI 기반의 고객 행동 및 구매 데이터를 실시간으로 분석하여 제공합니다.
+                  이를 통해 맞춤형 마케팅 전략을 수립하고, 비즈니스 성장의 방향을 정교하게 제시합니다.
               </>}
           />
         </div>
@@ -106,19 +113,19 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center; 
-  align-items: center;
+  align-items: start;
   gap: 40px;
   overflow: visible; 
-  padding: 5rem 2rem;
+  padding: 5rem 10rem;
 `;
 
 const HeadlineText = styled.div`
   font-size: 56px;
   font-weight: 700;
   line-height: 1.2;
-  text-align: center;
+  text-align: left;
   letter-spacing: -2px;
-  padding-bottom: 24px;
+  padding-bottom: 32px;
   margin: 0;
   background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
   -webkit-background-clip: text;
@@ -126,43 +133,25 @@ const HeadlineText = styled.div`
   color: transparent;
 `;
 
-const SubText = styled.div`
-  font-size: 1.2rem;
-  font-weight: 400;
-  line-height: 1.5;
-  letter-spacing: -1px;
-  text-align: center;
-  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #E9FAFF; 
-`;
-
-const StrongHighlight = styled.span`
-  color: #B8D2FF; 
-`;
-
 const Card = styled(GlassBox)`
   width: auto; 
   flex-shrink: 0; 
   scroll-snap-align: none;
-  padding: 24px;
+  padding: 24px; 
   display: flex;
   flex-direction: column;
   text-align: left;
-  gap: 12px;
 `;
 
 const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
+  gap: 14px;
   overflow-x: hidden; 
   scroll-snap-type: none;
   width: 100%;
   max-width: 1200px;
-  padding: 0 20px;
-  margin: 30px auto;
+  padding: 0 64px;
   justify-content: center;
 
   & > div {
@@ -173,35 +162,58 @@ const CardGrid = styled.div`
     }
   }
 
+  @media (max-width: ${BREAKPOINTS.lg}px) {
+    grid-template-columns: repeat(2, 1fr); 
+    
+    & > div {
+      align-self: stretch; 
+      
+      &:nth-child(even) {
+        margin-top: 0; 
+      }
+    }
+    @media (max-width: ${BREAKPOINTS.md}px) {
+        grid-template-columns: 1fr;
+    }
+  }
+
 `;
 
 const CardIcon = styled.div`
-  font-size: 2.5rem;
-  color: #E9FAFF;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%; 
+  background: rgba(233, 250, 255, 0.15); 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px; 
+  
+  font-size: 2rem;
+  color: #fff; 
+  
   svg {
-    font-size: 1em;
+    font-size: 1.2em; 
     color: currentColor;
   }
 `;
 
 const CardTitle = styled.h3`
-  font-size: 24px;
+  font-size: 28px;
   font-weight: 700;
   color: #E9FAFF;
-  margin: 0;
+  margin-bottom:16px;
   line-height: 1.3;
+  letter-spacing: -1px;
 `;
 
 const CardContent = styled.p`
   font-size: 16px;
   font-weight: 400;
-  color: rgba(255, 255, 255, 0.85);
+  color: #fff;
   margin: 0;
   line-height: 1.6;
-  strong {
-    font-weight: 800;
-    color: #7FFFD4;
-  }
+  letter-spacing: -1px;
 `;
 
 export { SolutionSection };

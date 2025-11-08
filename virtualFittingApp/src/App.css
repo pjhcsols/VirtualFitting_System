@@ -1,4 +1,5 @@
-@import url('https://fonts.googleapis.com/css2?family=Suez+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Suez+One&display=swap");
+@import "tailwindcss";
 
 #root {
   margin: 0 auto;
@@ -8,5 +9,5 @@
 
 ::selection {
   color: rgba(255, 255, 255, 0.8);
-  text-shadow: 0 0 6px #D0EFFF;
+  text-shadow: 0 0 6px #d0efff;
 }

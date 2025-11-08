@@ -19,8 +19,6 @@ export const useUpdateAddress = () => {
       if (updatedUserDetail) {
         queryClient.invalidateQueries({ queryKey: ['userDetails', 'me'] });
         queryClient.invalidateQueries({ queryKey: ['userInfo'] }); 
-
-        console.log("주소 변경 성공. 캐시 무효화 완료.");
       }
     },
     onError: (error) => {

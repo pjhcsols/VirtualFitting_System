@@ -3,9 +3,15 @@ import icon_minus from "../assets/icon-minus.svg";
 import icon_plus from "../assets/icon-plus.svg";
 import type { QuantityProps } from "./types";
 
-function SelectQuantity({ quantity, setQuantity, unitPrice, discountedPrice }: QuantityProps) {
-  const increase = () => setQuantity((q) => q + 1);
-  const decrease = () => setQuantity((q) => (q > 1 ? q - 1 : 1));
+function SelectQuantity({ quantity, setQuantity, unitPrice, discountedPrice, disabled = false }: QuantityProps) {
+  const increase = () => {
+    if (disabled) return;
+    setQuantity((q) => q + 1);
+  };
+  const decrease = () => {
+    if (disabled) return;
+    setQuantity((q) => (q > 1 ? q - 1 : 1));
+  };
 
   const hasDiscount = discountedPrice !== undefined && discountedPrice < unitPrice;
 

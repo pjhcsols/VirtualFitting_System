@@ -1,10 +1,10 @@
 import { PasswordInput, TextInput } from "@/shared";
 import * as S from "./style";
-import { useLogin } from "@/widgets/auth/hooks/useLogin";
+import { useLoginWidget } from "@/widgets/auth/hooks/useLoginWidget";
 
 function LoginForm() {
   const { loginInfo, onChangeUserId, onChangeUserPassword, onSubmitLoginInfo } =
-    useLogin();
+    useLoginWidget();
   return (
     <S.Wrapper>
       <S.Title>BASILIUM</S.Title>

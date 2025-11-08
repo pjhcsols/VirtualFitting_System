@@ -1,0 +1,164 @@
+import { useState, useEffect } from "react";
+import type { ProductDetail } from "@/entities/product";
+import { useProductDetails } from "../hooks/use-product-details";
+import * as S from "./product-details.styled";
+import { AITryOnButton } from "@/features/ai-try-on";
+import { ProductOptions } from "@/features/product-options";
+import { GlassButton } from "@/shared/components/glass-button";
+import { ProductLikeButton } from "@/features/product-like";
+
+type ProductWithQuantity = ProductDetail & { totalQuantity: number };
+
+type ProductDetailsProps = {
+  product: ProductWithQuantity;
+  onTryOn?: () => void; 
+};
+
+function DummyProductDetails({
+  product,
+  onTryOn,
+}: ProductDetailsProps) {
+  const {
+    selectedProductImages,
+  } = useProductDetails(product);
+
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const price = {
+    original: 81700
+  };
+  const quantity = 1;
+  const isSoldOut = false;
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+        setCurrentIndex((prevIndex) =>
+            prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1,
+        );
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [selectedProductImages.length]);
+
+  const handleTryOnClick = () => {
+    if (onTryOn) {
+      onTryOn();
+    }
+  };
+
+  const handleClick = () => {
+    };
+  
+  useEffect(() => {
+    setCurrentIndex(0);
+  }, [selectedProductImages]);
+
+  const goToPrevious = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === 0 ? selectedProductImages.length - 1 : prevIndex - 1,
+    );
+  };
+
+  const goToNext = () => {
+    setCurrentIndex((prevIndex) =>
+      prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1,
+    );
+  };
+
+  const goToSlide = (slideIndex: number) => {
+    setCurrentIndex(slideIndex);
+  };
+
+  const handleToggleDummy = () => {
+    return Promise.resolve();
+  };
+
+  if (!price) return null;
+
+  return (
+    <S.ProductBox>
+      <S.ImageCarouselContainer
+      >
+        {selectedProductImages && selectedProductImages.length > 0 ? (
+          <>
+            {selectedProductImages.length > 1 && (
+              <>
+                <S.CarouselButton onClick={goToPrevious} style={{ left: 10 }}>
+                  &#10094;
+                </S.CarouselButton>
+                <S.CarouselButton onClick={goToNext} style={{ right: 10 }}>
+                  &#10095;
+                </S.CarouselButton>
+              </>
+            )}
+            <S.ProductImage
+              src={selectedProductImages[currentIndex]}
+            />
+            <S.Pagination>
+              {selectedProductImages.map((_, slideIndex) => (
+                <S.Dot
+                  key={slideIndex}
+                  $isActive={currentIndex === slideIndex}
+                  onClick={() => goToSlide(slideIndex)}
+                />
+              ))}
+            </S.Pagination>
+          </>
+        ) : (
+          <S.ProductImage src="" alt="No Image Available" />
+        )}
+      </S.ImageCarouselContainer>
+      <S.ProductInfoBox>
+        <S.TopRow>
+          <S.Brand>BASILIUM</S.Brand>
+        </S.TopRow>
+        <S.TopRow>
+          <S.ProductName>로고 오버핏 후드티</S.ProductName>
+          <ProductLikeButton 
+            productId={2} 
+            isInitiallyLiked={true}
+            onToggle={handleToggleDummy}
+            isLoading={false}
+          />
+        </S.TopRow>
+        <S.TopRow>
+          <S.PriceGroup>
+              <S.DiscountRate>5%</S.DiscountRate>
+              <S.DiscountPrice>
+                77,900원
+              </S.DiscountPrice>
+              <S.OriginalPriceBox>
+                <S.OriginalPrice>
+                  82,000원
+                </S.OriginalPrice>
+              </S.OriginalPriceBox>
+            </S.PriceGroup>
+        </S.TopRow>
+        <S.Description>
+          BASILIUM 자체 제작 상품으로 트렌디한 오버핏 실루엣과 혼방 소재로 편안함과 스타일을 모두 갖춘 후드티입니다. 시크한 블랙 컬러에 로고 디자인이 특징입니다.
+        </S.Description>
+        <ProductOptions
+          productMaterials={["COTTON", "POLYSTER"]}
+          productColors={["BLACK"]}
+          sizesSorted={["S", "M"]}
+          price={price}
+          selectedColor="BLACK"
+          selectedSize="S"
+          quantity={quantity}
+          handleColorChange={handleClick}
+          setSelectedSize={handleClick}
+          setQuantity={handleClick}
+          disabled={isSoldOut}
+        />
+        <S.ButtonBox>
+          <GlassButton onClick={handleClick} width="200px">ADD TO CART</GlassButton>
+          <GlassButton onClick={handleClick} width="200px">BUY NOW</GlassButton>
+        </S.ButtonBox>
+        <S.ButtonBox>
+          <AITryOnButton onClick={handleTryOnClick} />
+        </S.ButtonBox>
+      </S.ProductInfoBox>
+    </S.ProductBox>
+  );
+}
+
+export { DummyProductDetails };

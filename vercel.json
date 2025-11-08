@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/b1/images/:*",
+      "destination": "http://basilium.co.kr:8080/b1/images:path*"
+    }
+  ]
+}

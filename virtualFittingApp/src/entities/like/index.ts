@@ -1,2 +1,2 @@
 export * from "./api/like.api";
-export type { LikedItem } from "./model/types";
+export * from "./model/types";

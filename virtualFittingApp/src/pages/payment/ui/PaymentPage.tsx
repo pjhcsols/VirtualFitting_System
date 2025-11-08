@@ -19,13 +19,13 @@ import {
 import { useOrderForm as useUserForm } from '@/entities/user';
 
 const calculateItemCouponDiscount = (
-    itemPriceAfterBrandDiscount: number,
-    itemQuantity: number,
-    coupon: ClaimableCoupon
+  itemPriceAfterBrandDiscount: number,
+  itemQuantity: number,
+  coupon: ClaimableCoupon
 ): number => {
-    const itemTotalBasePrice = itemPriceAfterBrandDiscount * itemQuantity;
-    const calculatedDiscount = Math.floor(itemTotalBasePrice * (coupon.percent / 100));
-    return Math.min(calculatedDiscount, coupon.maxDiscountPrice);
+  const itemTotalBasePrice = itemPriceAfterBrandDiscount * itemQuantity;
+  const calculatedDiscount = Math.floor(itemTotalBasePrice * (coupon.percent / 100));
+  return Math.min(calculatedDiscount, coupon.maxDiscountPrice);
 };
 
 export const PaymentPage = () => {
@@ -50,6 +50,17 @@ export const PaymentPage = () => {
   const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
   const [isModalOpen, setIsModalOpen] = useState(false);
 
+  const excludedWalletIds = useMemo(() => {
+    const ids = new Set<number>();
+    
+    selectedCouponMap.forEach(coupon => {
+      if (coupon && coupon.walletId) { 
+          ids.add(coupon.walletId);
+      }
+    });
+    return Array.from(ids);
+  }, [selectedCouponMap]);
+
   useEffect(() => {
     if (!isLoggedIn) {
       alert("로그인이 필요한 페이지입니다.");
@@ -66,22 +77,22 @@ export const PaymentPage = () => {
     let totalCouponDiscount = 0; 
 
     itemsToCheckout.forEach(item => {
-        const itemOriginalAmount = item.price * item.quantity;
-        const itemDiscountedAmount = (item.discountedPrice ?? item.price) * item.quantity;
-        
-        productAmount += itemOriginalAmount;
-        totalDiscountedPrice += itemDiscountedAmount; 
-        
-        const selectedCoupon = selectedCouponMap.get(item.id);
+      const itemOriginalAmount = item.price * item.quantity;
+      const itemDiscountedAmount = (item.discountedPrice ?? item.price) * item.quantity;
+      
+      productAmount += itemOriginalAmount;
+      totalDiscountedPrice += itemDiscountedAmount; 
+      
+      const selectedCoupon = selectedCouponMap.get(item.id);
 
-        if (selectedCoupon && selectedCoupon.walletId !== null) {
-            const couponDiscount = calculateItemCouponDiscount(
-                item.discountedPrice ?? item.price,
-                item.quantity,
-                selectedCoupon
-            );
-            totalCouponDiscount += couponDiscount;
-        }
+      if (selectedCoupon && selectedCoupon.walletId !== null) {
+        const couponDiscount = calculateItemCouponDiscount(
+          item.discountedPrice ?? item.price,
+          item.quantity,
+          selectedCoupon
+        );
+        totalCouponDiscount += couponDiscount;
+      }
     });
 
     const totalBrandDiscount = productAmount - totalDiscountedPrice;
@@ -91,20 +102,20 @@ export const PaymentPage = () => {
     const finalPayableAmount = finalProductPrice + shippingFee;
 
     return {
-        productAmount,
-        totalBrandDiscount,
-        totalCouponDiscount,
-        finalDiscount: Math.max(0, totalDiscount), 
-        shippingFee,
-        totalAmount: Math.max(0, finalPayableAmount),
+      productAmount,
+      totalBrandDiscount,
+      totalCouponDiscount,
+      finalDiscount: Math.max(0, totalDiscount), 
+      shippingFee,
+      totalAmount: Math.max(0, finalPayableAmount),
     };
   }, [itemsToCheckout, selectedCouponMap]);
 
   const handleCouponSelect = (coupon: ClaimableCoupon | null, itemId: number) => {
     setSelectedCouponMap(prevMap => {
-        const newMap = new Map(prevMap);
-        newMap.set(itemId, coupon);
-        return newMap;
+      const newMap = new Map(prevMap);
+      newMap.set(itemId, coupon);
+      return newMap;
     });
   };
 
@@ -128,19 +139,19 @@ export const PaymentPage = () => {
     };
 
     if (isBatchCheckout) {
-        const finalBatchData: BatchOfflineCheckoutData = {
-            ...sharedCheckoutData,
-            items: itemsToCheckout,
-            coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
-        };
-        batchHook.confirmAndProceed(finalBatchData);
+      const finalBatchData: BatchOfflineCheckoutData = {
+        ...sharedCheckoutData,
+        items: itemsToCheckout,
+        coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
+      };
+      batchHook.confirmAndProceed(finalBatchData);
     } else {
-        const finalSingleData: SingleOfflineCheckoutData = {
-            ...sharedCheckoutData,
-            item: itemsToCheckout[0],
-            coupon: selectedCouponMap.get(itemsToCheckout[0].id) || null,
-        }; 
-        singleHook.confirmAndProceed(finalSingleData);
+      const finalSingleData: SingleOfflineCheckoutData = {
+        ...sharedCheckoutData,
+        item: itemsToCheckout[0],
+        coupon: selectedCouponMap.get(itemsToCheckout[0].id) || null,
+      }; 
+      singleHook.confirmAndProceed(finalSingleData);
     }
   };
 
@@ -162,6 +173,7 @@ export const PaymentPage = () => {
               items={itemsToCheckout}
               selectedCouponMap={selectedCouponMap}
               onSelectCoupon={handleCouponSelect}
+              excludedWalletIds={excludedWalletIds}
             />
           </FormContainer>
         </MainContent>
@@ -178,7 +190,7 @@ export const PaymentPage = () => {
         onClose={() => setIsModalOpen(false)}
         onConfirm={handlePayment}
         totalAmount={paymentTotals.totalAmount}
-        selectedCoupon={selectedCouponMap.get(itemsToCheckout[0]?.id) || null} // Same as above
+        selectedCoupon={selectedCouponMap.get(itemsToCheckout[0]?.id) || null}
       />
     </PageContainer>
   );

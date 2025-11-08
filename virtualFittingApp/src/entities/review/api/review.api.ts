@@ -28,7 +28,7 @@ export async function fetchProductReviews({
     },
   };
   
-  const result = await apiClient<ReviewsResponseData>(config, `리뷰 목록 조회: 상품ID ${productId}`);
+  const result = await apiClient<ReviewsResponseData>(config);
   if (result === null) {
       throw new Error(`[리뷰 목록 조회] 데이터가 null 입니다.`);
   }

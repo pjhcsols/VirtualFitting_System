@@ -1,7 +1,8 @@
 import { NavLink, useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import { useCookies } from 'react-cookie';
-import { useCartCountQuery } from "@/features/count-cart";
+import { useRecoilState } from 'recoil';
+import { authState } from '@/entities/auth';
+// import { useCartCountQuery } from "@/features/count-cart";
 
 type HeaderProps = { 
   theme?: 'light' | 'dark';
@@ -10,9 +11,14 @@ type HeaderProps = {
 
 function Header({ theme = 'light', $sticky = true }: HeaderProps) {
   const router = useNavigate();
-  const [cookies] = useCookies(['access-token']);
-  const accessToken = cookies['access-token'];
-  const { data: cartItemCount = 0 } = useCartCountQuery(accessToken);
+  const [{ isLoggedIn }, setAuthState] = useRecoilState(authState);
+  // const { data: cartItemCount = 0 } = useCartCountQuery(accessToken);
+
+  const handleLogout = () => {
+    setAuthState({ isLoggedIn: false, userId: null });
+    document.cookie = "access-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+    router("/");
+  };
 
   return (
     <Wrapper theme={theme} $sticky={$sticky} >
@@ -31,14 +37,29 @@ function Header({ theme = 'light', $sticky = true }: HeaderProps) {
               <HeaderContent to="/cart" theme={theme}>
                 장바구니
               </HeaderContent>
-              {cartItemCount > 0 && <CartBadge>{cartItemCount}</CartBadge>}
+              {/* {cartItemCount > 0 && <CartBadge>{cartItemCount}</CartBadge>} */}
             </CartLinkWrapper>
           </li>
-          <li>
-            <HeaderContent to="/mypage" theme={theme}>
-              마이
-            </HeaderContent>
-          </li>
+          {isLoggedIn ? (
+            <>
+              <li>
+                <HeaderContent to="/mypage" theme={theme}>
+                  마이
+                </HeaderContent>
+              </li>
+              <li>
+                <HeaderButton onClick={handleLogout} theme={theme}>
+                  로그아웃
+                </HeaderButton>
+              </li>
+            </>
+          ) : (
+            <li>
+              <HeaderContent to="/login" theme={theme}>
+                로그인
+              </HeaderContent>
+            </li>
+          )}
         </RouterList>
       </nav>
     </Wrapper>
@@ -142,27 +163,47 @@ const HeaderContent = styled(NavLink)`
   }
 `;
 
+const HeaderButton = styled.button`
+  background: none;
+  border: none;
+  padding: 4px 2px;
+  position: relative;
+  
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+
+  text-decoration: none; 
+  
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: rgb(255, 255, 255);
+  }
+`;
+
 const CartLinkWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
 `;
 
-const CartBadge = styled.span`
-  position: absolute;
-  top: -6px;
-  right: -12px;
-  background-color: #ff4d4d;
-  color: white;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 11px;
-  font-weight: bold;
-  pointer-events: none;
-`;
+// const CartBadge = styled.span`
+//   position: absolute;
+//   top: -6px;
+//   right: -12px;
+//   background-color: #ff4d4d;
+//   color: white;
+//   width: 18px;
+//   height: 18px;
+//   border-radius: 50%;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   font-size: 11px;
+//   font-weight: bold;
+//   pointer-events: none;
+// `;
 
 export { Header };

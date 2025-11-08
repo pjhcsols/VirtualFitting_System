@@ -38,7 +38,6 @@ export const startPreparingOrder = async (
       null,
       { params: { authUserId } }
     );
-    console.log(`[주문 상태 전이] 주문 ID ${orderId}: 배송 준비중 시작 성공.`);
     return response.data;
   } catch (error) {
     console.error(`[주문 상태 전이] 주문 ID ${orderId}: 배송 준비중 시작 실패.`, error);
@@ -57,7 +56,6 @@ export const startInTransitOrder = async (
       body,
       { params: { authUserId } }
     );
-    console.log(`[주문 상태 전이] 주문 ID ${orderId}: 배송 중 시작 성공 (송장 ${body.trackingNo}).`);
     return response.data;
   } catch (error) {
     console.error(`[주문 상태 전이] 주문 ID ${orderId}: 배송 중 시작 실패.`, error);
@@ -75,7 +73,6 @@ export const markOrderAsDelivered = async (
       null,
       { params: { authUserId } }
     );
-    console.log(`[주문 상태 전이] 주문 ID ${orderId}: 배송 완료 성공.`);
     return response.data;
   } catch (error) {
     console.error(`[주문 상태 전이] 주문 ID ${orderId}: 배송 완료 실패.`, error);
@@ -93,7 +90,6 @@ export const confirmOrderPurchase = async (
       null,
       { params: { authUserId } }
     );
-    console.log(`[구매 확정] 주문 ID ${orderId}: 구매 확정 성공 (포인트 적립).`);
     return response.data;
   } catch (error) {
     console.error(`[구매 확정] 주문 ID ${orderId}: 구매 확정 실패.`, error);

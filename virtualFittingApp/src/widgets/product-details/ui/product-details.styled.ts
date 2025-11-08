@@ -30,13 +30,12 @@ export const ImageCarouselContainer = styled.div`
   }
 `;
 
-
 export const ProductImage = styled.img`
   width: 100%;
   aspect-ratio: 1 / 1;
-  max-height: 750px;
+  max-width: 600px;
   object-fit: cover;
-object-position: center;
+  object-position: center;
   height: auto;
   border-radius: 18px;
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
@@ -167,7 +166,7 @@ export const OriginalPriceBox = styled.div`
 export const OriginalPrice = styled.div`
   font-size: 18px;
   text-decoration: line-through;
-  color: #aaa;
+  color: #d7d7d7;
 `;
 
 export const DiscountRate = styled.div`
