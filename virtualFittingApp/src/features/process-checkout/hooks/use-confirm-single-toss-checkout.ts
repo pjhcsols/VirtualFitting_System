@@ -19,8 +19,7 @@ export interface SingleTossCheckoutData {
   customerEmail: string;
 }
 
-// const clientKey = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
-const clientKey = "test_ck_ORzdMaqN3wxZAZWjPQWgV5AkYXQG"
+const clientKey = import.meta.env.VITE_TOSS_PAYMENTS_CLIENT_KEY;
 
 export const useSingleTossConfirmCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -104,4 +103,3 @@ export const useSingleTossConfirmCheckout = () => {
 
   return { confirmAndPay, isLoading };
 };
-
