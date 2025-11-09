@@ -40,7 +40,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
     <Card onClick={onClick} borderRadius={"8px"} $isSoldOut={isSoldOut}>
       <ImageBox $imageUrl={product.productPhotoUrls[0]}>
         {isSoldOut && (
-            <SoldOutOverlay>SOLD OUT</SoldOutOverlay>
+            <SoldOutOverlay></SoldOutOverlay>
         )}
         <ColorSwatches>
           <ColorSwatchesList colors={product.productColors?.slice(0, maxVisibleColors) || []} />
@@ -71,7 +71,10 @@ function ProductCard({ product, onClick }: ProductCardProps) {
             />
           </ProductLikeButtonWrapper>
         </TitleRow>
-        <Name>{product.productName}</Name>
+        <NameRow>
+          <Name>{product.productName}</Name>
+          {isSoldOut && <SoldOutText>품절</SoldOutText>}
+        </NameRow>
         <PriceBox>
           {price && (
             <>
@@ -155,6 +158,24 @@ const Name = styled.div`
   font-size: 13px;
   color: #fff;
 `;
+
+const NameRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+`;
+
+const SoldOutText = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+`;
+
 
 const PriceBox = styled.div`
   display: flex;
