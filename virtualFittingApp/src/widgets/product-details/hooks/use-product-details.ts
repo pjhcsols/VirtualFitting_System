@@ -85,17 +85,17 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
 
     if (!price) return;
 
-    initiateCheckout({
-      productId: product.productId,
-      name: product.productName,
-      brand: product.brandUser.firmName,
-      image: selectedProductImages[0],
-      price: price.original,
-      discountedPrice: price.discounted,
-      color: selectedColor,
-      size: selectedSize,
-      quantity: quantity,
-    });
+    // initiateCheckout({
+    //   productId: product.productId,
+    //   name: product.productName,
+    //   brand: product.brandUser.firmName,
+    //   image: selectedProductImages[0],
+    //   price: price.original,
+    //   discountedPrice: price.discounted,
+    //   color: selectedColor,
+    //   size: selectedSize,
+    //   quantity: quantity,
+    // });
   };
   
   return {

@@ -4,6 +4,7 @@ import type { ReviewData } from "@/entities/review";
 import type { BodySize } from "@/entities/user/model/types";
 import type { ReviewOrderPayload } from "@/entities/order";
 import { postProductReview } from "@/features/write-review";
+import { getPaymentInfo } from "@/entities/payment";
 
 export const useReviewForm = () => {
   const navigate = useNavigate();
@@ -15,6 +16,8 @@ export const useReviewForm = () => {
   const [order, setOrder] = useState<ReviewOrderPayload | null>(
     statePayload ?? null
   );
+
+  const [paymentId, setPaymentId] = useState<number>(0);
 
   const title = "";
   const [rating, setRating] = useState<number>(0);
@@ -38,6 +41,25 @@ export const useReviewForm = () => {
     hemWidth: 0,
   };
   const [sizes, setSizes] = useState<BodySize>(initialSize);
+
+  useEffect(() => {
+    if (!order?.item?.productId) return;
+
+    const fetchPaymentInfo = async () => {
+      try {
+        const res = await getPaymentInfo({page: 0, size: 10});
+        const paymentId = res?.data?.content;
+        console.log(paymentId);
+
+        setPaymentId(paymentId);
+      } catch (e) {
+        console.error("paymentId 조회 실패:", e);
+        setPaymentId(0);
+      }
+    };
+
+    fetchPaymentInfo();
+  }, []);
 
   useEffect(() => {
     if (editReview) {
@@ -93,7 +115,7 @@ export const useReviewForm = () => {
 
     try {
       const body = {
-        paymentId: 0,
+        paymentId: paymentId,
         purchaseSize: order.item.options.size,
         purchaseColor: order.item.options.color,
         rating,

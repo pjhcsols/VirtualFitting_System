@@ -298,7 +298,7 @@ function VirtualFittingSection({ productId = 1 }: { productId?: number }) {
             product={product}
             productColors={productColors}
             onColorChange={() => {}}
-            onTryOn={openModal}
+            // onTryOn={openModal}
           />
         </PanelBox>
       </SectionWrap>
