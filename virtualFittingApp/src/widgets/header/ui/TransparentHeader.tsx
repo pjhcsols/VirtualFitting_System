@@ -116,16 +116,16 @@ export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScro
       <LogoContainer onClick={() => router("/")}>
         <LogoTitle>Basilium</LogoTitle>
       </LogoContainer>
+      
+      {/* 💡 NavContentWrapper 내부에 두 개의 nav 컨테이너를 항상 배치 */}
       <NavContentWrapper>
-          {isMainPage && (
-              <nav>
-                  {MainNav}
-              </nav>
-          )}
-          <nav>
-              {ShopNav}
+          <nav> 
+              {/* 💡 MainNav은 isMainPage일 때만 내용 렌더링 */}
+              {isMainPage && MainNav}
           </nav>
-          
+          <nav>
+              {ShopNav} {/* ShopNav은 항상 오른쪽에 붙어있습니다. */}
+          </nav>
       </NavContentWrapper>
 
     </Wrapper>
@@ -200,9 +200,11 @@ const Wrapper = styled.header<{ $sticky?: boolean; $isScrolled: boolean; $isVisi
 const NavContentWrapper = styled.div`
   display: flex;
   flex: 1;
-  justify-content: space-between;
+  justify-content: space-between; 
   align-items: center;
   margin-left: 32px;
+  & > nav:first-child {
+  }
 `;
 
 const LogoContainer = styled.div`
