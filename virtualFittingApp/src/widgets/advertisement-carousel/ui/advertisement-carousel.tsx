@@ -28,17 +28,6 @@ function AdvertisementCarousel() {
   }, []);
 
   useEffect(() => {
-    if (banners.length === 0) return;
-
-    const nextImage = () => {
-      setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
-    };
-
-    const intervalId = setInterval(nextImage, 5000);
-    return () => clearInterval(intervalId);
-  }, [banners.length]);
-
-  useEffect(() => {
     if (banners.length === 0 || isPaused) return;
 
     const nextImage = () => {
