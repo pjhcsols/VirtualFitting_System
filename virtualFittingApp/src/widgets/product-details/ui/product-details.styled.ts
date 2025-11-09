@@ -50,6 +50,28 @@ export const ImageWrapper = styled.div`
   align-items: center;
 `;
 
+export const FittingButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  z-index: 10;
+`;
+
 export const CarouselButton = styled.button`
   position: absolute;
   top: 50%;

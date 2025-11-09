@@ -1,3 +1,4 @@
+import styled, { keyframes} from "styled-components";
 import { useState, useEffect } from "react";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
@@ -7,16 +8,39 @@ import { ProductOptions } from "@/features/product-options";
 import { GlassButton } from "@/shared/components/glass-button";
 import { ProductLikeButton } from "@/features/product-like";
 
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+`;
+
+const AnimatedButtonContainer = styled.div`
+  animation: ${bounce} 1.5s infinite;
+  display: inline-block;
+`;
+
 type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
 type ProductDetailsProps = {
   product: ProductWithQuantity;
   onTryOn?: () => void; 
+  fittingResultUrl: string | null;
+  fittingDelay: number | null;
+  onViewResult: () => void;
 };
 
 function DummyProductDetails({
   product,
   onTryOn,
+  fittingResultUrl,
+  fittingDelay,
+  onViewResult,
 }: ProductDetailsProps) {
   const {
     selectedProductImages,
@@ -68,6 +92,11 @@ function DummyProductDetails({
   return (
     <S.ProductBox>
       <S.ImageCarouselContainer>
+        {fittingResultUrl && (
+          <S.FittingButton onClick={onViewResult}>
+              가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
+          </S.FittingButton>
+      )}
         <S.ImageWrapper>
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
@@ -125,6 +154,7 @@ function DummyProductDetails({
               </S.OriginalPriceBox>
             </S.PriceGroup>
         </S.TopRow>
+        <S.Description>오버핏 티셔츠</S.Description>
         <ProductOptions
           productMaterials={["COTTON", "POLYSTER"]}
           productColors={["BLACK"]}
@@ -143,7 +173,9 @@ function DummyProductDetails({
           <GlassButton onClick={handleClick} width="200px">BUY NOW</GlassButton>
         </S.ButtonBox>
         <S.ButtonBox>
-          <VirtualTryOnButton onClick={handleTryOnClick} />
+          <AnimatedButtonContainer>
+            <VirtualTryOnButton onClick={handleTryOnClick} />
+          </AnimatedButtonContainer>
         </S.ButtonBox>
       </S.ProductInfoBox>
     </S.ProductBox>
