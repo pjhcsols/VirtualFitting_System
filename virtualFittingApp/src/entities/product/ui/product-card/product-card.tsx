@@ -25,7 +25,10 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   useEffect(() => {
     async function loadPrice() {
       const priceData = await fetchProductPrice(product.productId);
-      if (priceData) {
+      
+      console.log(priceData);
+      if (priceData) { 
+        
         setPrice({
           original: priceData.baseUnitPrice,
           discounted: priceData.productDiscountedUnitPrice,
@@ -60,7 +63,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
       </ImageBox>
       <InfoBox>
         <TitleRow>
-          <Category>{product.categoryName}</Category>
+          <Category>{product.brandFirmName}</Category>
           <ProductLikeButtonWrapper>
             <ProductLikeButton 
               productId={product.productId} 
