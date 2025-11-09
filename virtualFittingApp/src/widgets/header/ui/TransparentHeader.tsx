@@ -92,7 +92,7 @@ export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScro
         <>
           <li>
             <StyledNavLink to="/mypage">
-              MyPage
+              My
             </StyledNavLink>
           </li>
           <li>
