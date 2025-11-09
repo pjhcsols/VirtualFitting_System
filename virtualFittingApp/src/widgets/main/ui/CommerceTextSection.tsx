@@ -23,25 +23,33 @@ function CommerceTextSection() {
         },
       });
 
-      tl.fromTo(
+      tl.set(screenTextRef.current, { yPercent: 200, opacity: 0 });
+
+      tl.to(
         screenTextRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "none" }
-      ).to(
+        { yPercent: 0, opacity: 1, duration: 3, ease: "none" }
+      )
+
+      .to(
         screenTextRef.current,
-        { opacity: 0, duration: 0.5, ease: "none" }
+        { yPercent: 0, opacity: 1, duration: 5, ease: "none" }
+      )
+
+      .to(
+        screenTextRef.current,
+        { opacity: 0, duration: 1, ease: "none" }
       );
     }
 
     return () => {
-        ScrollTrigger.getById('service-text-pin')?.kill();
+        ScrollTrigger.getById('ai-text-pin')?.kill();
     };
   }, []);
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Commerce</ScreenText> 
       <Wrapper ref={wrapperRef}>
+        <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Commerce</ScreenText> 
           <Content>
             <TextBox>
               <ContentText>고객 경험 극대화 및 운영 자동화</ContentText>
@@ -102,7 +110,7 @@ const ScreenText = styled.div`
   letter-spacing: -1px;
 
   position: absolute;
-  top: 50%;
+  top: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
   

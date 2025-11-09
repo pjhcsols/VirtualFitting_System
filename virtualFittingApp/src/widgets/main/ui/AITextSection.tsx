@@ -11,25 +11,33 @@ function AITextSection() {
   const wrapperRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
-    if (screenTextRef.current && wrapperRef.current) { 
+    if (screenTextRef.current && wrapperRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: wrapperRef.current,
+          trigger: wrapperRef.current, 
           start: "top top",
           end: "bottom top",
           scrub: true,
           pin: true,
-          id: 'ai-text-pin',
+          id: 'service-text-pin',
         },
       });
 
-      tl.fromTo(
+      tl.set(screenTextRef.current, { yPercent: 200, opacity: 0 });
+
+      tl.to(
         screenTextRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "none" }
-      ).to(
+        { yPercent: 0, opacity: 1, duration: 3, ease: "none" }
+      )
+
+      .to(
         screenTextRef.current,
-        { opacity: 0, duration: 0.5, ease: "none" }
+        { yPercent: 0, opacity: 1, duration: 5, ease: "none" }
+      )
+
+      .to(
+        screenTextRef.current,
+        { opacity: 0, duration: 1, ease: "none" }
       );
     }
 
@@ -40,8 +48,8 @@ function AITextSection() {
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI/Tech</ScreenText>
       <Wrapper ref={wrapperRef}>
+        <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI/Tech</ScreenText>
           <Content>
             <ImageBox></ImageBox>
             <TextBox>
@@ -104,7 +112,7 @@ const ScreenText = styled.div`
   letter-spacing: -1px;
 
   position: absolute;
-  top: 50%;
+  top: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
   
