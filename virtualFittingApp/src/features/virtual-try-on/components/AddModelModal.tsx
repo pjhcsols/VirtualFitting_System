@@ -1,9 +1,10 @@
 import { useEffect } from "react";
-import styled, { css } from "styled-components"; // css import 추가
+import styled from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { GlassBox } from "@/shared/components/glass-box";
 
 type AddModelModalProps = {
   open: boolean;
@@ -14,7 +15,6 @@ type AddModelModalProps = {
   onFileChange: React.ChangeEventHandler<HTMLInputElement>;
   onConfirmUpload: () => void;
   previewUrl: string | null;
-  // ⭐️ 로그인 상태 prop ⭐️
   isLoggedIn: boolean; 
 };
 
@@ -22,7 +22,6 @@ function AddModelModal({
   open, onClose, registeredLoading = false, registeredImageUrl, onUseExisting, onFileChange, onConfirmUpload, previewUrl, isLoggedIn,
 }: AddModelModalProps) {
 
-  // ESC로 닫기
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -34,16 +33,13 @@ function AddModelModal({
 
   const stop = (e: React.MouseEvent) => e.stopPropagation();
   
-  // ⭐️ 로그인 상태에 따른 버튼 비활성화 ⭐️
   const isUploadDisabled = !isLoggedIn || !previewUrl;
   const isExistingDisabled = !isLoggedIn || registeredLoading || !registeredImageUrl;
-  
-  // ⭐️ 새 이미지 업로드 영역 콘텐츠 ⭐️
+
   const UploadPaneContent = (
     <HalfPane>
       <PaneTitle>새로운 이미지 </PaneTitle>
       <UploadArea>
-        {/* 미리보기는 로그인 상태일 때만 표시 */}
         {previewUrl && isLoggedIn ? (
           <img src={previewUrl} alt="업로드 미리보기" />
         ) : (
@@ -54,7 +50,6 @@ function AddModelModal({
                   </UploadIcon>
                   <span>이미지를 드래그하거나 클릭해 업로드</span>
               </LabelInner>
-              {/* 파일 입력은 isLoggedIn일 때만 활성화 */}
               <input type="file" accept="image/*" onChange={onFileChange} disabled={!isLoggedIn} />
           </UploadLabel>
         )}
@@ -74,12 +69,8 @@ function AddModelModal({
                 <CloseIcon src={icon_cancel} alt="" aria-hidden="true" />
             </CloseBtn>
         </ModalHeader>
-
-        {/* ⭐️ ModalBody: 로그인 상태에 따른 분기 ⭐️ */}
         {isLoggedIn ? (
-            // ⭐️ 로그인 상태: 2단 레이아웃 (기존 이미지 vs 새 이미지) ⭐️
             <ModalBody>
-              {/* 1. 기존 이미지 패널 */}
               <HalfPane>
                 <PaneTitle>기존 이미지</PaneTitle>
                 <PreviewBox>
@@ -123,11 +114,6 @@ function AddModelModal({
 
 export {AddModelModal}
 
-
-// ----------------------------------------------------
-// ⭐️ 스타일 컴포넌트 정의 ⭐️
-// ----------------------------------------------------
-
 const ModalBackdrop = styled.div`
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.35);
@@ -136,15 +122,10 @@ const ModalBackdrop = styled.div`
   backdrop-filter: blur(2px);
 `;
 
-const ModalCard = styled.div`
+const ModalCard = styled(GlassBox)`
   width: min(960px, 92vw);
   border-radius: 18px;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.07));
-  border: 1px solid rgba(255,255,255,0.35);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: 24px;
   color: #fff;
 `;
 
@@ -200,11 +181,10 @@ const PaneTitle = styled.h4`
   margin: 4px 0 0; font-size: 16px; font-weight: 700; letter-spacing: .2px;
 `;
 
-const PreviewBox = styled.div`
+const PreviewBox = styled(GlassBox)`
   width: 100%; aspect-ratio: 4/3;
-  border-radius: 14px; overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.06);
+  border-radius: 14px; 
+  overflow: hidden;
   display: grid; place-items: center;
 
   img { width: 100%; height: 100%; object-fit: contain; }
@@ -227,7 +207,6 @@ const UploadLabel = styled.label`
   cursor: pointer;
   padding: 8px;
 
-  // input은 클릭 가능하게 유지 (isLoggedIn일 때)
   input {
     position: absolute; inset: 0;
     opacity: 0; 
@@ -288,7 +267,6 @@ const EmptyText = styled.div`
   font-size: 14px;
 `;
 
-// ⭐️ 로그인 유도 패널 스타일 ⭐️
 const LoginRequiredPane = styled.div`
     display: flex;
     flex-direction: column;
@@ -307,8 +285,6 @@ const LoginRequiredPane = styled.div`
 const LoginText = styled.div`
     font-size: 18px;
     font-weight: 500;
-    
-    // Bold 처리를 위해 텍스트 내부의 ** 태그를 CSS로 처리
     & b {
         font-weight: 700;
         color: #fff;
