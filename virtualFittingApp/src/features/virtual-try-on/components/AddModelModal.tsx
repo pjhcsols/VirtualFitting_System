@@ -54,7 +54,10 @@ function AddModelModal({
                   <UploadIcon aria-hidden="true">
                       <ErrorOutlineIcon />
                   </UploadIcon>
-                  <span>등록된 이미지가 없습니다.</span>
+                  <EmptyText style={{ pointerEvents: 'none' }}>
+                    현재 등록된 이미지가 없습니다.<br/>
+                    새로운 이미지를 업로드하고 가상착용을 경험해보세요.
+                  </EmptyText>
                 </LabelInner>
               )}
             </PreviewBox>

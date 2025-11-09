@@ -87,7 +87,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
               ) : (
                 <>
                   <PriceRow>
-                    <Price>{price.original.toLocaleString()}원</Price>
+                    <Price>{price?.original?.toLocaleString()}원</Price>
                   </PriceRow>
                 </>
               )}
