@@ -2,11 +2,11 @@ import styled from "styled-components";
 import { GlassButton } from "@/shared/components/glass-button";
 import icon_ai from "../assets/icon-ai.svg";
 
-type AITryOnButtonProps = {
+type VirtualTryOnButtonProps = {
   onClick?: () => void;
 };
 
-function AITryOnButton({ onClick }: AITryOnButtonProps) {
+function VirtualTryOnButton({ onClick }: VirtualTryOnButtonProps) {
   return (
     <GlassButton onClick={onClick} width="408px">
       <>
@@ -25,4 +25,4 @@ const Icon = styled.img`
   filter: brightness(0) invert(1);
 `;
 
-export { AITryOnButton };
+export { VirtualTryOnButton };

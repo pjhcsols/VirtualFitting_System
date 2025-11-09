@@ -42,7 +42,6 @@ function AddModelModal({
         </ModalHeader>
 
         <ModalBody>
-          {/* 왼쪽: 기존 사진 사용 */}
           <HalfPane>
             <PaneTitle>기존 이미지</PaneTitle>
             <PreviewBox>
@@ -59,12 +58,11 @@ function AddModelModal({
                 </LabelInner>
               )}
             </PreviewBox>
-            <PrimaryButton disabled={registeredLoading || !registeredImageUrl} onClick={onUseExisting}>현재 이미지 사용</PrimaryButton>
+            <PrimaryButton disabled={registeredLoading || !registeredImageUrl} onClick={onUseExisting}>현재 이미지로 가상착용</PrimaryButton>
           </HalfPane>
 
           <VerticalDivider />
 
-          {/* 오른쪽: 새 이미지 업로드 */}
           <HalfPane>
             <PaneTitle>새로운 이미지 </PaneTitle>
             <UploadArea>
@@ -83,7 +81,7 @@ function AddModelModal({
               )}
             </UploadArea>
             <PrimaryButton disabled={!previewUrl} onClick={onConfirmUpload}>
-              새로운 이미지 등록
+              새로운 이미지로 가상착용
             </PrimaryButton>
           </HalfPane>
         </ModalBody>
@@ -130,7 +128,7 @@ const CloseBtn = styled.button`
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255,255,255,0.35);
   cursor: pointer;
   transition: background .18s ease, transform .18s ease;
