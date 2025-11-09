@@ -18,6 +18,7 @@ type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
 type ProductDetailsProps = {
   product: ProductWithQuantity;
+  price: { original: number; discounted?: number } | null;
   productColors: string[];
   onColorChange?: (color: string) => void;
   onTryOn?: () => void;
@@ -32,6 +33,7 @@ type ProductDetailsProps = {
 
 function ProductDetails({
   product,
+  price: priceFromProp,
   productColors,
   onColorChange,
   onTryOn,
@@ -44,7 +46,7 @@ function ProductDetails({
     price, quantity, selectedColor, selectedSize, sizesSorted,
     selectedProductImages, setQuantity, setSelectedSize,
     handleAddToCart, handlePurchaseClick, handleColorChange, checkAuth
-  } = useProductDetails(product, onColorChange);
+  } = useProductDetails(product, priceFromProp, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -194,7 +196,7 @@ function ProductDetails({
               </S.OriginalPriceBox>
             </S.PriceGroup>
           ) : (
-            <S.Price>{price.original.toLocaleString()}원</S.Price>
+            <S.Price>{price.original?.toLocaleString()}원</S.Price>
           )}
           {!isSoldOut && (
             <div style={{ display: 'flex', gap: '8px' }}>

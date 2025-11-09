@@ -25,8 +25,6 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   useEffect(() => {
     async function loadPrice() {
       const priceData = await fetchProductPrice(product.productId);
-      
-      console.log(priceData);
       if (priceData) { 
         
         setPrice({

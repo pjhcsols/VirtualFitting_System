@@ -77,5 +77,5 @@ export const fetchProductsByCategory = async (categoryId: number): Promise<Produ
   } catch (error) {
     return null;
   }
-  // [seah] 추후필터링 기능에 ㅏ
+  // [seah] 추후필터링 기능에
 };

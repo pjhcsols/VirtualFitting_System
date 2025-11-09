@@ -5,7 +5,7 @@ import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 
 import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
-import type { ProductDetail } from "@/entities/product";
+import type { ProductDetail, ProductPrice } from "@/entities/product";
 
 import { BREAKPOINTS } from "@/shared";
 
@@ -22,6 +22,7 @@ import { AddModelModal } from "@/features/virtual-try-on";
 import { FittingResultModal } from "@/features/virtual-try-on";
 import { fetchMyRegisteredImageUrl } from "@/entities/user";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
+import { fetchProductPrice } from '@/entities/discount';
 
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -40,6 +41,8 @@ function ProductDetailPage() {
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [priceData, setPriceData] = useState<ProductPrice | null>(null);
+  
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
   const currentProductId = Number(id); 
@@ -203,6 +206,9 @@ function ProductDetailPage() {
         }
         setProduct(detailData);
 
+        const priceResponse = await fetchProductPrice(detailData.productId);
+        setPriceData(priceResponse);
+
       } catch (error) {
         navigate('/');
       } finally {
@@ -217,9 +223,15 @@ function ProductDetailPage() {
     return <div>Loading...</div>;
   }
 
-  const finalPrice = product.productPrice;
+  const priceForDetails = priceData
+    ? { original: priceData.baseUnitPrice, discounted: priceData.productDiscountedUnitPrice }
+    : { original: product.productPrice, discounted: product.productPrice };
+
+  const finalPrice = priceData ? priceData.productDiscountedUnitPrice : product.productPrice;
+
   const productDetailsProps = {
     product,
+    price: priceForDetails,
     productColors,
     onColorChange: (newColor: string) => {
       setSearchParams({ tab: activeTab, color: newColor }); 
