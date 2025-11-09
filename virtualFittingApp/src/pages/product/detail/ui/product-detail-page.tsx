@@ -19,6 +19,7 @@ import { useProductCoupon } from "@/features/coupon";
 import { fetchMyUserGender } from "@/entities/user";
 import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
 import { AddModelModal } from "@/features/virtual-try-on";
+import { FittingResultModal } from "@/features/virtual-try-on";
 import { fetchMyRegisteredImageUrl } from "@/entities/user";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
 
@@ -36,6 +37,9 @@ function ProductDetailPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [registeredImageUrl, setRegisteredImageUrl] = useState<string | null>(null);
   const [registeredLoading, setRegisteredLoading] = useState(false);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
   const currentProductId = Number(id); 
@@ -109,6 +113,16 @@ function ProductDetailPage() {
     setUploadPreview(null);
   }, [uploadPreview]);
 
+  const openResultModal = useCallback(() => {
+    if (generatedImageUrl) {
+        setIsResultModalOpen(true);
+    }
+  }, [generatedImageUrl]);
+
+  const closeResultModal = useCallback(() => {
+      setIsResultModalOpen(false);
+  }, []);
+
   const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -118,12 +132,11 @@ function ProductDetailPage() {
       if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev); 
       return URL.createObjectURL(file);
     });
-}, []);
+  }, []);
 
   const handleTabChange = (tab: string) => {
   setSearchParams({ tab: tab, color: color || "" });
   };
-
 
   const handleConfirmUpload = useCallback(async () => {
 
@@ -142,11 +155,15 @@ function ProductDetailPage() {
         authUserId: accessTokenString, 
       };
       const response = await tryOnPrivateFitting(params, selectedFile);
-
-      if (response?.data?.resultImageUrl) {
-        alert("새 이미지로 가상 착용이 완료되었습니다! 결과 이미지를 확인하세요.");
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      
+      if (resultImageUrl) {
+          setGeneratedImageUrl(resultImageUrl);
+          setSimulatedDelay(resultSimulatedDelay);
+          alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
       } else {
-        alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
+          alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
       }
       
       closeTryOn(); 
@@ -201,22 +218,25 @@ function ProductDetailPage() {
   }
 
   const finalPrice = product.productPrice;
-    const productDetailsProps = {
-      product,
-      productColors,
-      onColorChange: (newColor: string) => {
-        setSearchParams({ tab: activeTab, color: newColor }); 
-      },
-      coupons,
-      isCouponLoading,
-      handleDownloadCoupon,
-      finalPrice,
-      onTryOn: openTryOn, 
-    };
+  const productDetailsProps = {
+    product,
+    productColors,
+    onColorChange: (newColor: string) => {
+      setSearchParams({ tab: activeTab, color: newColor }); 
+    },
+    coupons,
+    isCouponLoading,
+    handleDownloadCoupon,
+    finalPrice,
+    onTryOn: openTryOn, 
+    fittingResultUrl: generatedImageUrl,
+    fittingDelay: simulatedDelay, 
+    onViewResult: openResultModal,
+  };
 
   return (
     <Wrapper>
-      <ProductDetails {...productDetailsProps} />
+      <ProductDetails {...productDetailsProps}/>
 
       <AddModelModal
         open={tryOnOpen}
@@ -229,6 +249,15 @@ function ProductDetailPage() {
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
+
+      {isResultModalOpen && generatedImageUrl && (
+        <FittingResultModal
+          open={isResultModalOpen}
+          onClose={closeResultModal}
+          imageUrl={generatedImageUrl}
+          delay={simulatedDelay}
+        />
+      )}  
       
       <ContentArea>
         <TabMenu>
@@ -293,7 +322,7 @@ const TabButton = styled.button<{ $active: boolean }>`
 
   text-decoration: none; 
   
-  color: rgba(255, 255, 255, 0.85);
+  color: #CCCCCC;
   transition: color 0.3s ease;
 
   &::after {
@@ -322,7 +351,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 
   &.active::after {
-    color: rgb(255, 255, 255);
+    /* color: rgb(255, 255, 255); */
   }
 
   @media (max-width: ${BREAKPOINTS.md}px) {

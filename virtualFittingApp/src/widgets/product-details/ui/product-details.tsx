@@ -25,6 +25,9 @@ type ProductDetailsProps = {
   isCouponLoading: boolean; 
   handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>; 
   finalPrice: number;
+  fittingResultUrl: string | null;
+  fittingDelay: number | null;
+  onViewResult: () => void;
 };
 
 function ProductDetails({
@@ -33,6 +36,9 @@ function ProductDetails({
   onColorChange,
   onTryOn,
   finalPrice,
+  fittingResultUrl,
+  fittingDelay,
+  onViewResult,
 }: ProductDetailsProps) {
   const {
     price, quantity, selectedColor, selectedSize, sizesSorted,
@@ -124,6 +130,12 @@ function ProductDetails({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
+        {fittingResultUrl && (
+          <S.FittingButton onClick={onViewResult}>
+              가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
+          </S.FittingButton>
+        )}
+        <S.ImageWrapper>
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {isHovering && selectedProductImages.length > 1 && (
@@ -153,6 +165,7 @@ function ProductDetails({
         ) : (
           <S.ProductImage src="" alt="No Image Available" />
         )}
+        </S.ImageWrapper>
       </S.ImageCarouselContainer>
       <S.ProductInfoBox>
         <S.TopRow>
