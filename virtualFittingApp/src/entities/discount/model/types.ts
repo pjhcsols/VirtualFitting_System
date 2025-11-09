@@ -17,12 +17,3 @@ export interface DiscountQuoteData {
   userExtraDiscountAmount: number;
   finalUnitPrice: number;
 }
-
-export interface DiscountQuoteResponse {
-  timestamp: string;
-  status: number;
-  code: string;
-  message: string;
-  data: DiscountQuoteData;
-}
-

@@ -15,7 +15,7 @@ export async function fetchProductReviews({
   size = 5,
   sort = "createdAt,DESC",
   ageGroup,
-}: FetchReviewsParams): Promise<ReviewsResponseData> {
+}: FetchReviewsParams): Promise<ReviewsResponseData | null> {
   
   const config = {
     method: 'get' as const,
@@ -28,10 +28,11 @@ export async function fetchProductReviews({
     },
   };
   
-  const result = await apiClient<ReviewsResponseData>(config);
-  if (result === null) {
-      throw new Error(`[리뷰 목록 조회] 데이터가 null 입니다.`);
+  const response = await apiClient<ReviewsResponseData>(config);
+  
+  if (response && (response.status === 200 || response.status === 0) && response.data) {
+    return response.data;
   }
-
-  return result;
+  console.error(`[리뷰 목록 조회] API 호출 실패:`, response);
+  return null;
 }
