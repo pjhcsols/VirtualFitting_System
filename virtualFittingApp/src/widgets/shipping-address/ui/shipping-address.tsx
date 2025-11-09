@@ -14,7 +14,7 @@ interface ShippingAddressWidgetProps {
 export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWidgetProps) => {
   const [name, setName] = useState(user.name);
   const [address, setAddress] = useState(user.address);
-  const [zonecode, setZonecode] = useState<string>("");
+  // const [zonecode, setZonecode] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
 
   const { mutate: updateAddressMutate, isPending: isUpdating } = useUpdateAddress();
@@ -35,7 +35,7 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
         const road = data.roadAddress?.trim();
         const jibun = data.jibunAddress?.trim();
         setAddress(road || jibun || "");
-        setZonecode(data.zonecode || "");
+        // setZonecode(data.zonecode || "");
       },
     }).open();
   };
