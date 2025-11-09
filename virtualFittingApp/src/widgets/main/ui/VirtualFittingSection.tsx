@@ -1,4 +1,4 @@
-import { useCallback, useState, useEffect, useRef } from "react";
+import { useCallback, useState, useEffect } from "react";
 import styled, { createGlobalStyle, css, keyframes } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
@@ -14,12 +14,19 @@ import manImg from "/img/user/base_m.png";
 import womanImg from "/img/user/base_w.png";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import RefreshIcon from '@mui/icons-material/Refresh';
-import { AddModelModal } from "@/features/ai-try-on";
-import gsap from "gsap";
+import { AddModelModal } from "@/features/virtual-try-on";
 import { ScrollTrigger } from "gsap/all";
 import { rawSvgDoubleContent } from "../model/constants";
+import { tryOnPublicFitting } from "@/entities/virtual-fitting";
+import { PublicTryOnQueryParams } from "@/entities/virtual-fitting";
+import { fetchMyRegisteredImageUrl } from "@/entities/user";
+import { useRecoilValue } from 'recoil'; 
+import { authState } from '@/entities/auth';
+import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
+import { getAccessTokenStringFromCookie } from "@/entities/auth";
+import { fetchMyUserGender } from "@/entities/user";
+import { FittingResultModal } from "@/features/virtual-try-on";
 
-gsap.registerPlugin(ScrollTrigger);
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% {
@@ -34,22 +41,29 @@ const bounce = keyframes`
 `;
 
 const MODEL = { MAN: "man", WOMAN: "woman", CUSTOM: "custom" } as const;
+const VIRTUAL_FITTING_PRODUCT_ID = 1;
+const VIRTUAL_FITTING_PRODUCT_COLOR = 'BLACK';
+
 type ModelKey = typeof MODEL[keyof typeof MODEL];
 
 const TXT = {
   addTooltip: "",
-  helpTooltip: "협약된 브랜드의 상품만 자신의 이미지로 가상착용이 가능합니다.",
+  helpTooltip: "협약된 브랜드의 상품만 가상착용 서비스를 이용할 수 있습니다.",
 };
 
-function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
+function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { productId?: number }) {
   const navigate = useNavigate();
+  const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
-
-  const WrapperRef = useRef<HTMLDivElement | null>(null);
-  const railRef = useRef<HTMLDivElement | null>(null);
-  const modelRef = useRef<HTMLDivElement | null>(null);
-  const panelRef = useRef<HTMLDivElement | null>(null);
+  const [userGender, setUserGender] = useState<'M' | 'W' | null>(null);
+  const apiGender: 'M' | 'W' | null =
+  selectedModel === MODEL.WOMAN 
+    ? 'W' 
+    : selectedModel === MODEL.MAN 
+      ? 'M' 
+      : (selectedModel === MODEL.CUSTOM ? userGender : null);
+  
 
   const [modelSrc, setModelSrc] = useState<Record<ModelKey, string>>({
     man: manImg,
@@ -61,17 +75,69 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [uploadPreview, setUploadPreview] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+
+  const loadUserGender = useCallback(async () => {
+    if (!isLoggedIn) return;
+    try {
+      const gender = await fetchMyUserGender(); 
+      if (gender) {
+        const formattedGender = gender === 'FEMALE' ? 'W' : (gender === 'MALE' ? 'M' : null);
+        setUserGender(formattedGender);
+      }
+    } catch (e) {
+      console.error("사용자 성별 정보 로딩 실패:", e);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    loadUserGender();
+  }, [loadUserGender]);
 
   const loadRegisteredImage = useCallback(async () => {
-    setRegisteredImageUrl(null); 
-    setRegisteredLoading(true); 
-    return null; 
-}, [setRegisteredImageUrl]);
+    setRegisteredLoading(true);
+    if (!isLoggedIn || !userId) {
+        setRegisteredImageUrl(null);
+        setRegisteredLoading(false);
+        return null;
+    }
+    try {
+        const url = await fetchMyRegisteredImageUrl(userId); 
+
+        if (url) {
+            let ImgUrl = url.startsWith('http:') ? url.replace('http:', 'https:') : url;
+            setRegisteredImageUrl(ImgUrl);
+            return ImgUrl;
+        }
+        setRegisteredImageUrl(null);
+        return null;
+
+    } catch (e) {
+        console.error("기존 이미지 로딩 실패:", e);
+        setRegisteredImageUrl(null);
+        return null;
+    } finally {
+        setRegisteredLoading(false);
+    }
+  }, [isLoggedIn, userId]);
 
   const openModal = async () => {
     await loadRegisteredImage();
     setIsModalOpen(true);
   };
+
+  const openResultModal = useCallback(() => {
+    if (generatedImageUrl) {
+        setIsResultModalOpen(true);
+    }
+  }, [generatedImageUrl]);
+
+  const closeResultModal = useCallback(() => {
+      setIsResultModalOpen(false);
+  }, []);
+
 
   const openReplace = async () => {
     setIsModalOpen(true);
@@ -79,9 +145,10 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
   
   const closeModal = useCallback(() => {
     setIsModalOpen(false);
+    
+    if (uploadPreview?.startsWith("blob:")) URL.revokeObjectURL(uploadPreview);
     setUploadPreview(null);
-    setSelectedFile(null);
-  }, []);
+  }, [uploadPreview]);
 
   const removeCustom = useCallback(() => {
     setModelSrc(prev => {
@@ -98,40 +165,182 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
     closeModal();
   };
 
-  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    setUploadPreview(prev => {
-      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev);
-      return prev;
-    });
-    
-    setSelectedFile(file);
-    const url = URL.createObjectURL(file);
-    setUploadPreview(url);
-  };
+      setSelectedFile(file); 
+      const newUrl = URL.createObjectURL(file);
+      setUploadPreview(prevUrl => {
+          if (prevUrl?.startsWith("blob:")) {
+              URL.revokeObjectURL(prevUrl);
+          }
+          return newUrl;
+      });
+  }, []);
 
-  const handleConfirmUpload = async () => {
-    if (!selectedFile) return;
+  const handleConfirmUpload = useCallback(async () => {
+    if (!selectedFile || !apiGender) {
+      alert("파일 또는 모델 성별 정보가 부족합니다.");
+      return; 
+    }
+
     try {
-      if (uploadPreview?.startsWith("blob:")) {
-        setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
+      if (uploadPreview) {
+          setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
+          setSelectedModel(MODEL.CUSTOM); 
+          
+          alert("새 이미지가 모델 슬롯에 등록되었습니다.");
+      } else {
+          throw new Error("미리보기 URL 없음");
       }
-        setSelectedModel(MODEL.CUSTOM);
-
-      alert("이미지가 성공적으로 등록되었습니다.");
+      
       closeModal();
     } catch (err) {
-      console.error(err);
+      console.error("이미지 등록 실패:", err);
+      alert("이미지 등록에 실패했습니다. 다시 시도해주세요.");
+    }
+  }, [selectedFile, apiGender, uploadPreview, setModelSrc, setSelectedModel, closeModal]);
+
+
+  const callPrivateTryOnAPI = useCallback(async () => {
+    const accessTokenString = getAccessTokenStringFromCookie();
+
+    if (!selectedFile || !apiGender || !product || !isLoggedIn || !accessTokenString) {
+        console.error("Private API 호출 실패: 필수 데이터 부족.");
+        alert("가상 착용을 위해 파일을 선택하고 로그인 상태를 확인해주세요.");
+        return; 
+    }
+
+    const currentProductColor = VIRTUAL_FITTING_PRODUCT_COLOR;
+
+    try {
+        const params = {
+            productId: VIRTUAL_FITTING_PRODUCT_ID,
+            color: currentProductColor,
+            gender: apiGender,
+            authUserId: accessTokenString,
+        };
+
+        const response = await tryOnPrivateFitting(params, selectedFile); 
+
+        const resultImageUrl = response?.data.resultImageUrl;
+        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+        
+        if (resultImageUrl) {
+            setGeneratedImageUrl(resultImageUrl);
+            setSimulatedDelay(resultSimulatedDelay);
+            alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        } else {
+            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
+        }
+    } catch (err) {
+        console.error("Private API 최종 처리 오류:", err);
+        alert("이미지 처리 중 오류가 발생했습니다.");
+    }
+  }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setModelSrc, setSelectedModel]);
+
+  const executeVirtualTryOn = async () => {
+    const isMan = selectedModel === MODEL.MAN;
+    const isWoman = selectedModel === MODEL.WOMAN;
+
+    if (!isMan && !isWoman) {
+        alert("가상 착용을 위해 남자 또는 여자 모델 슬롯을 선택해야 합니다.");
+        return; 
+    }
+
+    if (!product) { 
+        return; 
+    }
+    
+    const apiGender: 'M' | 'W' = isWoman ? 'W' : 'M';
+    const imageUrl = isWoman ? womanImg : manImg;
+    let imageBlob: Blob | null = null;
+    try {
+        const response = await fetch(imageUrl); 
+        if (!response.ok) throw new Error(`Failed to fetch default image: ${response.statusText}`);
+        imageBlob = await response.blob();
+    } catch (err) {
+        console.error("기본 이미지 Blob 변환 실패 (경로 오류 가능성):", err);
+        return;
+    }
+    try {
+        const params: PublicTryOnQueryParams = {
+            productId: VIRTUAL_FITTING_PRODUCT_ID,
+            color: VIRTUAL_FITTING_PRODUCT_COLOR,
+            gender: apiGender,
+        };
+        
+        const response = await tryOnPublicFitting(params, imageBlob); 
+        
+        const resultImageUrl = response?.data.resultImageUrl;
+        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+
+        if (resultImageUrl) {
+            setGeneratedImageUrl(resultImageUrl);
+            setSimulatedDelay(resultSimulatedDelay);
+            alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
+            console.log(
+                "debug:",
+                { 
+                productId: params.productId, 
+                color: params.color, 
+                gender: params.gender, 
+                imageUrl: imageUrl, 
+
+                fullResponse: response 
+              }
+            );
+
+            
+        } else {
+            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
+            console.log(
+                "API 호출 실패 디버그:",
+                { 
+                productId: params.productId, 
+                color: params.color, 
+                gender: params.gender, 
+                imageUrl: imageUrl, 
+                fullResponse: response 
+              }
+            );
+        }
+
+    } catch (err) {
+        console.error("가상 착용 최종 처리 오류:", err);
+        alert("이미지 처리 중 오류가 발생했습니다.");
     }
   };
+
+  const handleProductTryOn = useCallback(() => {
+    
+    if (selectedModel === MODEL.MAN || selectedModel === MODEL.WOMAN) {
+        executeVirtualTryOn(); 
+    } else if (selectedModel === MODEL.CUSTOM) {
+        if (!isLoggedIn) {
+             alert("본인의 이미지로 가상착용을 위해선 로그인이 필요합니다.");
+             return;
+        }
+
+        if (modelSrc.custom) {
+            callPrivateTryOnAPI(); 
+            
+        } else if (selectedFile) {
+            callPrivateTryOnAPI(); 
+
+        } else {
+            openModal();
+        }
+    }
+
+  }, [selectedModel, executeVirtualTryOn, callPrivateTryOnAPI, isLoggedIn, modelSrc.custom, selectedFile, openModal]); 
 
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const detail = await fetchProductDetailByColor(2, "BLACK");
+        const detail = await fetchProductDetailByColor(VIRTUAL_FITTING_PRODUCT_ID, VIRTUAL_FITTING_PRODUCT_COLOR);
         if (!detail) throw new Error("상품 상세를 찾을 수 없습니다.");
         
         if (mounted) {
@@ -144,34 +353,6 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
     })();
     return () => { mounted = false; };
   }, [productId]);
-
-  
-  useEffect(() => {
-    const ctx = gsap.context(() => {
-      const targets = [railRef.current, modelRef.current, panelRef.current].filter(
-        Boolean
-      ) as HTMLElement[];
-
-      gsap.set(targets, { opacity: 0, y: 40 });
-
-      gsap.to(targets, {
-          scrollTrigger: {
-          trigger: WrapperRef.current,
-          start: "top 75%",      
-          toggleActions: "play none none none",
-          anticipatePin: 1,    
-          invalidateOnRefresh: true,
-        },
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.15,
-        ease: "power2.out",
-      });
-    }, WrapperRef);
-
-    return () => ctx.revert();
-  }, []);
 
   useEffect(() => {
     const handleScrollToProduct = () => {
@@ -195,7 +376,7 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
     <>
       <TooltipGlobalStyles />
 
-      <SectionWrap ref={WrapperRef}>
+      <SectionWrap>
         <ContentWrapper>
         <Rail>
           <RailList>
@@ -267,13 +448,13 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
             <img src={icon_exclamatioin_mark} alt="" aria-hidden="true" />
           </RailInfoTip>
         </Model>
-
-        <ProductDetailContainer>
           <DummyProductDetails
             product={product as any}
-            onTryOn={openModal}
+            onTryOn={handleProductTryOn}
+            fittingResultUrl={generatedImageUrl}
+            fittingDelay={simulatedDelay}
+            onViewResult={openResultModal}
           />
-        </ProductDetailContainer>
         </ContentWrapper>
       </SectionWrap>
 
@@ -291,9 +472,18 @@ function VirtualFittingSection({ productId = 2 }: { productId?: number }) {
         onFileChange={handleFileChange}
         onConfirmUpload={handleConfirmUpload}
         previewUrl={uploadPreview}
+        isLoggedIn={isLoggedIn}
       />
       <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }} />
       
+      {isResultModalOpen && generatedImageUrl && (
+      <FittingResultModal
+          open={isResultModalOpen}
+          onClose={closeResultModal}
+          imageUrl={generatedImageUrl}
+          delay={simulatedDelay}
+      />
+    )}  
     </>
   );
 }
@@ -351,11 +541,6 @@ const AddIcon = styled.img`
   display: flex;
   width: 28px;
   height: 28px;
-`;
-
-const ProductDetailContainer = styled.div`
-  display: flex;
-  width: 1000px;
 `;
 
 const RailInfoTip = styled.div`
@@ -470,7 +655,7 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
 const CustomThumb = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: cover;     
+  object-fit: contain;  
   display: block;
 `;
 

@@ -227,6 +227,7 @@ function ProductDetailPage() {
         onFileChange={handleFileChange}
         onConfirmUpload={handleConfirmUpload}
         previewUrl={uploadPreview}
+        isLoggedIn={isLoggedIn}
       />
       
       <ContentArea>

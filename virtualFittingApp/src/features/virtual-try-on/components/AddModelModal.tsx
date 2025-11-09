@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components"; // css import 추가
 import { BREAKPOINTS } from "@/shared";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
@@ -14,11 +14,14 @@ type AddModelModalProps = {
   onFileChange: React.ChangeEventHandler<HTMLInputElement>;
   onConfirmUpload: () => void;
   previewUrl: string | null;
+  // ⭐️ 로그인 상태 prop ⭐️
+  isLoggedIn: boolean; 
 };
 
 function AddModelModal({
-  open, onClose, registeredLoading = false, registeredImageUrl, onUseExisting, onFileChange, onConfirmUpload, previewUrl
+  open, onClose, registeredLoading = false, registeredImageUrl, onUseExisting, onFileChange, onConfirmUpload, previewUrl, isLoggedIn,
 }: AddModelModalProps) {
+
   // ESC로 닫기
   useEffect(() => {
     if (!open) return;
@@ -30,64 +33,89 @@ function AddModelModal({
   if (!open) return null;
 
   const stop = (e: React.MouseEvent) => e.stopPropagation();
+  
+  // ⭐️ 로그인 상태에 따른 버튼 비활성화 ⭐️
+  const isUploadDisabled = !isLoggedIn || !previewUrl;
+  const isExistingDisabled = !isLoggedIn || registeredLoading || !registeredImageUrl;
+  
+  // ⭐️ 새 이미지 업로드 영역 콘텐츠 ⭐️
+  const UploadPaneContent = (
+    <HalfPane>
+      <PaneTitle>새로운 이미지 </PaneTitle>
+      <UploadArea>
+        {/* 미리보기는 로그인 상태일 때만 표시 */}
+        {previewUrl && isLoggedIn ? (
+          <img src={previewUrl} alt="업로드 미리보기" />
+        ) : (
+          <UploadLabel>
+              <LabelInner>
+                  <UploadIcon aria-hidden="true">
+                      <FileUploadIcon />
+                  </UploadIcon>
+                  <span>이미지를 드래그하거나 클릭해 업로드</span>
+              </LabelInner>
+              {/* 파일 입력은 isLoggedIn일 때만 활성화 */}
+              <input type="file" accept="image/*" onChange={onFileChange} disabled={!isLoggedIn} />
+          </UploadLabel>
+        )}
+      </UploadArea>
+      <PrimaryButton disabled={isUploadDisabled} onClick={onConfirmUpload}>
+        새로운 이미지로 가상착용
+      </PrimaryButton>
+    </HalfPane>
+  );
 
   return (
     <ModalBackdrop onClick={onClose} role="dialog" aria-modal="true" aria-label="모델 사진 선택">
       <ModalCard onClick={stop}>
         <ModalHeader>
-            <ModalTitle>가상착용 이미지</ModalTitle>
+            <ModalTitle>가상착용 이미지 등록</ModalTitle>
             <CloseBtn onClick={onClose} aria-label="닫기">
                 <CloseIcon src={icon_cancel} alt="" aria-hidden="true" />
             </CloseBtn>
         </ModalHeader>
 
-        <ModalBody>
-          <HalfPane>
-            <PaneTitle>기존 이미지</PaneTitle>
-            <PreviewBox>
-              {registeredLoading ? (
-                <EmptyText>불러오는 중…</EmptyText>
-              ) : registeredImageUrl ? (
-                <img src={registeredImageUrl} />
-              ) : (
-                <LabelInner>
-                  <UploadIcon aria-hidden="true">
-                      <ErrorOutlineIcon />
-                  </UploadIcon>
-                  <EmptyText style={{ pointerEvents: 'none' }}>
-                    현재 등록된 이미지가 없습니다.<br/>
-                    새로운 이미지를 업로드하고 가상착용을 경험해보세요.
-                  </EmptyText>
-                </LabelInner>
-              )}
-            </PreviewBox>
-            <PrimaryButton disabled={registeredLoading || !registeredImageUrl} onClick={onUseExisting}>현재 이미지로 가상착용</PrimaryButton>
-          </HalfPane>
-
-          <VerticalDivider />
-
-          <HalfPane>
-            <PaneTitle>새로운 이미지 </PaneTitle>
-            <UploadArea>
-              {previewUrl ? (
-                <img src={previewUrl} alt="업로드 미리보기" />
-              ) : (
-                <UploadLabel>
+        {/* ⭐️ ModalBody: 로그인 상태에 따른 분기 ⭐️ */}
+        {isLoggedIn ? (
+            // ⭐️ 로그인 상태: 2단 레이아웃 (기존 이미지 vs 새 이미지) ⭐️
+            <ModalBody>
+              {/* 1. 기존 이미지 패널 */}
+              <HalfPane>
+                <PaneTitle>기존 이미지</PaneTitle>
+                <PreviewBox>
+                  {registeredLoading ? (
+                    <EmptyText>불러오는 중…</EmptyText>
+                  ) : registeredImageUrl ? (
+                    <img src={registeredImageUrl} />
+                  ) : (
                     <LabelInner>
-                        <UploadIcon aria-hidden="true">
-                            <FileUploadIcon />
-                        </UploadIcon>
-                        <span>이미지를 드래그하거나 클릭해 업로드</span>
+                      <UploadIcon aria-hidden="true">
+                          <ErrorOutlineIcon />
+                      </UploadIcon>
+                      <EmptyText style={{ pointerEvents: 'none' }}>
+                        현재 등록된 이미지가 없습니다.<br/>
+                        새로운 이미지를 업로드하고 가상착용을 경험해보세요.
+                      </EmptyText>
                     </LabelInner>
-                    <input type="file" accept="image/*" onChange={onFileChange} />
-                </UploadLabel>
-              )}
-            </UploadArea>
-            <PrimaryButton disabled={!previewUrl} onClick={onConfirmUpload}>
-              새로운 이미지로 가상착용
-            </PrimaryButton>
-          </HalfPane>
-        </ModalBody>
+                  )}
+                </PreviewBox>
+                <PrimaryButton disabled={isExistingDisabled} onClick={onUseExisting}>현재 이미지로 가상착용</PrimaryButton>
+              </HalfPane>
+
+              <VerticalDivider />
+
+              {UploadPaneContent}
+            </ModalBody>
+        ) : (
+            <LoginRequiredPane>
+                <UploadIcon aria-hidden="true">
+                    <ErrorOutlineIcon style={{ fontSize: '3rem', color: '#fff' }} />
+                </UploadIcon>
+                <LoginText>
+                    로그인 후 사용자 이미지를 등록할 수 있어요.
+                </LoginText>
+            </LoginRequiredPane>
+        )}
       </ModalCard>
     </ModalBackdrop>
   );
@@ -95,6 +123,10 @@ function AddModelModal({
 
 export {AddModelModal}
 
+
+// ----------------------------------------------------
+// ⭐️ 스타일 컴포넌트 정의 ⭐️
+// ----------------------------------------------------
 
 const ModalBackdrop = styled.div`
   position: fixed; inset: 0;
@@ -195,9 +227,11 @@ const UploadLabel = styled.label`
   cursor: pointer;
   padding: 8px;
 
+  // input은 클릭 가능하게 유지 (isLoggedIn일 때)
   input {
     position: absolute; inset: 0;
-    opacity: 0; cursor: pointer;
+    opacity: 0; 
+    cursor: pointer;
   }
 `;
 
@@ -252,4 +286,31 @@ const VerticalDivider = styled.div`
 const EmptyText = styled.div`
   color: rgba(255,255,255,0.78);
   font-size: 14px;
+`;
+
+// ⭐️ 로그인 유도 패널 스타일 ⭐️
+const LoginRequiredPane = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px; 
+    padding: 32px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 18px;
+    gap: 20px;
+    line-height: 1.5;
+`;
+
+const LoginText = styled.div`
+    font-size: 18px;
+    font-weight: 500;
+    
+    // Bold 처리를 위해 텍스트 내부의 ** 태그를 CSS로 처리
+    & b {
+        font-weight: 700;
+        color: #fff;
+    }
 `;
