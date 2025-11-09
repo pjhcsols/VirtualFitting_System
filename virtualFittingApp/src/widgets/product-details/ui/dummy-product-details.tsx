@@ -33,6 +33,7 @@ type ProductDetailsProps = {
   fittingResultUrl: string | null;
   fittingDelay: number | null;
   onViewResult: () => void;
+  
 };
 
 function DummyProductDetails({
@@ -42,9 +43,15 @@ function DummyProductDetails({
   fittingDelay,
   onViewResult,
 }: ProductDetailsProps) {
+
+  const dummyPrice = {
+    original: 82000,
+    discounted: 77900,
+  };
+
   const {
     selectedProductImages,
-  } = useProductDetails(product);
+  } = useProductDetails(product, dummyPrice);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 

@@ -17,7 +17,6 @@ function ProductListPage() {
   useEffect(() => {
     const loadProducts = async () => {
       const data = await fetchOnSaleProducts({ page: 0, size: 20, sort: "productId,asc" });
-      console.log(data);
       if (data) {
         const productsWithStatus = data.map(product => ({
             ...product,
