@@ -37,7 +37,7 @@ export const useProductDetails = (product: ProductDetail, onColorChange?: (color
     const accessToken = cookiesInstance.get('access-token');
     fetchDiscountQuote({ productId: product.productId, userId: accessToken })
       .then(quote => {
-        if (quote?.data) setPrice({ original: quote.data.baseUnitPrice, discounted: quote.data.finalUnitPrice });
+        if (quote) setPrice({ original: quote.baseUnitPrice, discounted: quote.finalUnitPrice });
       })
       .catch(err => console.error("Failed to fetch discount quote", err));
   }, [product.productId]);

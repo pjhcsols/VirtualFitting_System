@@ -10,7 +10,7 @@ export type ReviewOrderPayload = {
 };
 
 export function ReviewableOrderCard({ order }: { order: ReviewOrderPayload }) {
-  const { orderId, deadline, item } = order;
+  const { item } = order;
 
   return (
     <div>
