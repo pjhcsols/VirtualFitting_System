@@ -13,9 +13,7 @@ export const useReviewForm = () => {
   const statePayload = (location.state as ReviewOrderPayload | undefined) ?? undefined;
   const editReview: ReviewData | undefined = (location.state as any)?.reviewData;
 
-  const [order, setOrder] = useState<ReviewOrderPayload | null>(
-    statePayload ?? null
-  );
+  const order: ReviewOrderPayload | null = statePayload ?? null;
 
   const [paymentId, setPaymentId] = useState<number>(0);
 

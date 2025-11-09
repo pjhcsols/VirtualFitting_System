@@ -8,32 +8,58 @@ import type { UserDetail, UpdateAddressRequest } from '@/entities/user/model/typ
 
 interface ShippingAddressWidgetProps {
   user: UserDetail;
-  onSaveAddress: () => void;
+  onSaveAddress: (data: { name: string; phoneNumber: string; address: string }) => void;
 }
 
 export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWidgetProps) => {
+  const [name, setName] = useState(user.name);
   const [address, setAddress] = useState(user.address);
+  const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
 
   const { mutate: updateAddressMutate, isPending: isUpdating } = useUpdateAddress();
 
+  const handlePhoneChange = (v: string) => {
+    const onlyDigits = v.replace(/\D/g, '');
+    setPhoneNumber(onlyDigits);
+  };
+
   const handleSave = () => {
     if (!address || address.trim().length < 5) {
-        alert("유효한 주소를 입력해 주세요.");
-        return;
+      alert('유효한 주소를 입력해 주세요.');
+      return;
+    }
+    if (!name || name.trim().length < 2) {
+      alert('이름을 입력해 주세요.');
+      return;
+    }
+    if (!phoneNumber || phoneNumber.length < 9) {
+      alert('전화번호를 확인해 주세요.');
+      return;
     }
 
     const updateData: UpdateAddressRequest = {
-        address: address,
+      name: name,
+      address: address,
+      phoneNumber: phoneNumber,
     };
     
     updateAddressMutate({ userId: user.id, addressData: updateData }, {
         onSuccess: () => {
-            onSaveAddress();
+          onSaveAddress({
+            name: updateData.name,
+            phoneNumber: updateData.phoneNumber,
+            address: updateData.address,
+          });
         }
     });
   };
 
-  const isSaveDisabled = isUpdating || address === user.address;
+  const nothingChanged =
+    (user.name ?? '') === name.trim() &&
+    (user.address ?? '') === address.trim() &&
+    (user.phoneNumber ?? '') === phoneNumber
+
+  const isSaveDisabled = isUpdating || nothingChanged;
 
   return (
     <GlassBox>
@@ -44,15 +70,34 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
         </GlassButton>
       </Header>
       <CardContainer>
-        <Name>{user.name}</Name>
-        <InputField 
-            type="text" 
-            value={address} 
-            onChange={(e) => setAddress(e.target.value)}
-            disabled={isUpdating}
+        <Label>받는분</Label>
+        <InputField
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          disabled={isUpdating}
+          placeholder="수령인 이름"
         />
-        
-        <InfoText>{formatPhoneNumber(user.phoneNumber)}</InfoText>
+
+        <Label>주소</Label>
+        <InputField
+          type="text"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          disabled={isUpdating}
+          placeholder="도로명주소 + 상세주소"
+        />
+
+        <Label>전화번호</Label>
+        <InputField
+          type="tel"
+          inputMode="numeric"
+          value={formatPhoneNumber(phoneNumber)}  
+          onChange={(e) => handlePhoneChange(e.target.value)}
+          disabled={isUpdating}
+          placeholder="010 부터 입력해주세요."
+        />
+
       </CardContainer>
     </GlassBox>
   );
@@ -81,11 +126,9 @@ const CardContainer = styled.div`
   text-align: left;
 `;
 
-const Name = styled.p`
-  font-weight: 600;
-  font-size: 14px;
-  color: white;
-  margin: 0;
+const Label = styled.label`
+  font-size: 13px;
+  color: rgba(255,255,255,0.75);
 `;
 
 const InputField = styled.input`
@@ -104,11 +147,4 @@ const InputField = styled.input`
         outline: none;
         border-color: #63cfef;
     }
-`;
-
-const InfoText = styled.p`
-  font-size: 14px;
-  color: white;
-  line-height: 1.4;
-  margin: 0;
 `;
