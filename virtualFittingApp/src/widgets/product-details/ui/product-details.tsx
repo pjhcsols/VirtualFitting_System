@@ -3,7 +3,7 @@ import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
 import { AddToCartButton } from "@/features/add-to-cart";
-import { AITryOnButton } from "@/features/ai-try-on";
+import { VirtualTryOnButton } from "@/features/virtual-try-on";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
 import type { ClaimableCoupon } from '@/entities/coupon';
@@ -183,9 +183,6 @@ function ProductDetails({
           ) : (
             <S.Price>{price.original.toLocaleString()}원</S.Price>
           )}
-          {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <S.IconImage src={ICON_SHARE} alt="share icon" />
-          </div> */}
           {!isSoldOut && (
             <div style={{ display: 'flex', gap: '8px' }}>
               <ProductCouponButton 
@@ -229,7 +226,7 @@ function ProductDetails({
           )}
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton onClick={onTryOn} />
+          <VirtualTryOnButton onClick={onTryOn} />
         </S.ButtonBox>
       </S.ProductInfoBox>
 
