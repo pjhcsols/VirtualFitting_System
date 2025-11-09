@@ -483,7 +483,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
           imageUrl={generatedImageUrl}
           delay={simulatedDelay}
       />
-    )}  
+      )}
     </>
   );
 }
@@ -717,7 +717,6 @@ const ScrollArrow = styled.div`
     height: 100px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 20;
     stroke-linecap: round;
     stroke-linejoin: round;
     display: block;

@@ -196,15 +196,14 @@ const ScrollArrow = styled.div`
   bottom: 140px;
   z-index: 10;
   animation: ${bounce} 2s infinite;
-  
+  border: none;
   color: #E9FAFF; 
 
   svg {
     width: 50px; 
-    height: 100px;
+    height: 80px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 20;
     stroke-linecap: round;
     stroke-linejoin: round;
     display: block;
