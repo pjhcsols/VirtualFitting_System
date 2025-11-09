@@ -4,8 +4,6 @@ import type { ReviewOrderPayload } from "@/entities/order";
 import { GlassButton } from "@/shared/components/glass-button";
 import { BREAKPOINTS } from "@/shared";
 
-const STORAGE_KEY = "reviewpayload";
-
 type ReviewActionsProps = {
   order: ReviewOrderPayload;
 };
@@ -13,12 +11,8 @@ type ReviewActionsProps = {
 export function ReviewActions({ order }: ReviewActionsProps) {
   const navigate = useNavigate();
 
-  const goWrite = () => {
-    sessionStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({ ...order, __ts: Date.now() })
-    );
-    navigate(`/mypage/review/${order.orderId}`);
+  const handleNavigate = () => {
+    navigate(`/mypage/review/${order.item.id}`, { state: order });
   };
 
   return (
@@ -29,7 +23,7 @@ export function ReviewActions({ order }: ReviewActionsProps) {
 
       <ActionButton
         size="medium"
-        onClick={goWrite}
+        onClick={handleNavigate}
         aria-label="스타일 리뷰 작성"
       >
         스타일 리뷰

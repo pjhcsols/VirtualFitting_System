@@ -1,26 +1,29 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
-import type { OrderItem } from "@/entities/order";
+import { useNavigate, useLocation } from "react-router-dom";
 import type { ReviewData } from "@/entities/review";
-import { orderDummyData } from "@/entities/order";
-import { postProductReview } from "@/features/write-review";
 import type { BodySize } from "@/entities/user/model/types";
+import type { ReviewOrderPayload } from "@/entities/order";
+import { postProductReview } from "@/features/write-review";
 
 export const useReviewForm = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { id } = useParams<{ id: string }>();
-  const editReview: ReviewData | undefined = location.state?.reviewData;
 
-  let title = "";
+  const statePayload = (location.state as ReviewOrderPayload | undefined) ?? undefined;
+  const editReview: ReviewData | undefined = (location.state as any)?.reviewData;
 
-  const [order, setOrder] = useState<OrderItem | null>(null);
+  const [order, setOrder] = useState<ReviewOrderPayload | null>(
+    statePayload ?? null
+  );
+
+  const title = "";
   const [rating, setRating] = useState<number>(0);
   const [reviewText, setReviewText] = useState<string>("");
 
   const [photoPreviewImages, setPhotoPreviewImages] = useState<string[]>([]);
   const [photoFiles, setPhotoFiles] = useState<File[]>([]);
   const photoInputRef = useRef<HTMLInputElement | null>(null);
+
   const initialSize: BodySize = {
     height: 0,
     weight: 0,
@@ -37,15 +40,12 @@ export const useReviewForm = () => {
   const [sizes, setSizes] = useState<BodySize>(initialSize);
 
   useEffect(() => {
-    const foundOrder = orderDummyData.find((item) => item.id === id);
-    setOrder(foundOrder || null);
-
     if (editReview) {
       setRating(editReview.rating);
       setReviewText(editReview.reviewText);
       setPhotoPreviewImages(editReview.photos || []);
     }
-  }, [id, editReview]);
+  }, [editReview]);
 
   const handleSizeChange = (field: keyof BodySize, value: number) => {
     setSizes((prev) => ({
@@ -86,37 +86,6 @@ export const useReviewForm = () => {
     setPhotoFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
-  // const handleRegister = () => {
-  //   if (!order) {
-  //     alert("주문 정보를 찾을 수 없습니다.");
-  //     return;
-  //   }
-  //   if (reviewText.length < 20) {
-  //     alert("리뷰를 20자 이상 작성해주세요.");
-  //     return;
-  //   }
-
-  //   const existingReviews: ReviewData[] = JSON.parse(localStorage.getItem("reviews") || "[]");
-  //   const newReview: ReviewData = {
-  //     id: order.id,
-  //     brand: order.brand,
-  //     productName: order.productName,
-  //     option: order.options,
-  //     rating,
-  //     reviewText,
-  //     photos: photoPreviewImages,
-  //     date: new Date().toISOString()
-  //   };
-
-  //   const updatedReviews = editReview
-  //     ? existingReviews.map((r) => r.id === editReview.id ? newReview : r)
-  //     : [...existingReviews, newReview];
-
-  //   localStorage.setItem("reviews", JSON.stringify(updatedReviews));
-  //   alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
-  //   navigate("/mypage/review");
-  // };
-
   const handleRegister = async () => {
     if (!order) return alert("주문 정보를 찾을 수 없습니다.");
     if (reviewText.trim().length < 20)
@@ -125,14 +94,14 @@ export const useReviewForm = () => {
     try {
       const body = {
         paymentId: 0,
-        purchaseSize: order.options.size,
-        purchaseColor: order.options.color,
+        purchaseSize: order.item.options.size,
+        purchaseColor: order.item.options.color,
         rating,
-        title: title.trim() || `${order.productName} 리뷰`,
+        title: title.trim() || `${order.item.productName} 리뷰`,
         comment: reviewText.trim(),
       };
 
-      await postProductReview(Number(order.id), body, photoFiles);
+      await postProductReview(order.item.productId, body, photoFiles);
       alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
       console.log(body);
       navigate("/mypage/review");

@@ -7,6 +7,8 @@ import { GlassBox } from '@/shared/components/glass-box';
 import { ShippingAddressCard } from '@/entities/shipping-address';
 import { BankAccountInfoCard } from '@/entities/payment';
 import { OrderInfoCard } from '@/entities/order';
+import { saveReviewPayload } from '@/widgets/review-list/utils/review-payload';
+import { searchProducts } from '@/entities/product';
 
 export function OrderConfirmationPage() {
   const navigate = useNavigate();
@@ -21,17 +23,40 @@ export function OrderConfirmationPage() {
     senderName,
   } = location.state || {};
 
-  useEffect(() => {
-    if (!orderId || !item || !deadline) return; 
-    const payload = { orderId, deadline, item };
+   useEffect(() => {
+    if (!orderId) return;
 
-    sessionStorage.setItem(
-      "reviewpayload",
-      JSON.stringify({
-        ...payload,
-        __ts: Date.now(), 
-      })
-    );
+    (async () => {
+      try {
+        const results = await searchProducts(item.productName);
+        console.log("전체", results);
+        const first = results?.[0];
+        console.log("첫번재", first);
+        
+        const addItem = {
+          ...item,
+          ...(first
+            ? {
+                productId: first.productId,
+                productImageUrl: first.productPhotoUrls?.[0] ?? item.productImageUrl,
+              }
+            : {}),
+        };
+
+        saveReviewPayload({
+          orderId: String(orderId),
+          item: addItem,
+          ...(deadline ? { deadline: String(deadline) } : {}),
+        });
+      } catch (e) {
+        // 실패해도 기존 item으로 저장
+        saveReviewPayload({
+          orderId: String(orderId),
+          item,
+          ...(deadline ? { deadline: String(deadline) } : {}),
+        });
+      }
+    })();
   }, [orderId, item, deadline]);
 
   return (
