@@ -56,6 +56,7 @@ function CommerceTextSection() {
     </SectionContainer>
   );
 }
+
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
@@ -90,7 +91,6 @@ const TextBox = styled.div`
   justify-content: center; 
   align-items: end; 
   overflow: hidden;
-  margin-top: 64px;
   margin-right:auto;
   height: 100%; 
 `;
@@ -111,7 +111,9 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+  mix-blend-mode: difference
 `;
+
 
 const ContentText = styled.div`
   font-size: 28px;
@@ -148,5 +150,4 @@ const ImageBox = styled.div`
   background-repeat: no-repeat;
   will-change: background-size, background-position; 
 `;
-
 export { CommerceTextSection };

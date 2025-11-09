@@ -110,6 +110,7 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+  mix-blend-mode: difference
 `;
 
 

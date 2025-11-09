@@ -6,7 +6,6 @@ import {
   HeroSection, 
   ServiceTextSection,
   AITextSection,
-  PaperSection,
   SolutionSection, 
   VirtualFittingSection,
   AboutSection,
@@ -90,16 +89,8 @@ function MainPage() {
             <Section ref={aboutRef}>
               <AboutSection />
             </Section>
-
-            <SectionEmptyMedium></SectionEmptyMedium>
             
-            <Section ref={serviceRef}>
-              <PaperSection />
-            </Section>
-
-            <SectionEmptyLarge></SectionEmptyLarge>
-            
-            <TextSection>
+            <TextSection ref={serviceRef}>
               <ServiceTextSection />
             </TextSection>
 

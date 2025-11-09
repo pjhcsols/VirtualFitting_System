@@ -58,28 +58,12 @@ function AITextSection() {
   );
 }
 
+
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
   height: 200vh;
   overflow: hidden;
-`;
-
-const ScreenText = styled.div`
-  font-size: 15vw;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: -1px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #E9FAFF; 
-  z-index: 3;
 `;
 
 const Wrapper = styled.div`
@@ -90,7 +74,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  overflow: hidden;
+  overflow: hidden; 
 `;
 
 const Content = styled.div`
@@ -113,6 +97,26 @@ const TextBox = styled.div`
   height: 100%; 
 `;
 
+const ScreenText = styled.div`
+  font-size: 15vw;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -1px;
+
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #E9FAFF; 
+  z-index: 3;
+  mix-blend-mode: difference
+`;
+
+
 const ContentText = styled.div`
   font-size: 28px;
   font-weight: 600;
@@ -131,12 +135,13 @@ const SubText = styled.div`
   text-align:left;
 `;
 
+
 const ImageBox = styled.div`
   width: 40vw;
   height: 50vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   overflow: hidden; 
   padding: 24px; 
