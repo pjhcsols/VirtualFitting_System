@@ -14,6 +14,7 @@ interface ShippingAddressWidgetProps {
 export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWidgetProps) => {
   const [name, setName] = useState(user.name);
   const [address, setAddress] = useState(user.address);
+  const [zonecode, setZonecode] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
 
   const { mutate: updateAddressMutate, isPending: isUpdating } = useUpdateAddress();
@@ -21,6 +22,22 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
   const handlePhoneChange = (v: string) => {
     const onlyDigits = v.replace(/\D/g, '');
     setPhoneNumber(onlyDigits);
+  };
+
+  const openDaumPostcode = () => {
+    if (!window?.daum?.Postcode) {
+      alert("주소 검색 스크립트가 로드되지 않았습니다.");
+      return;
+    }
+    new window.daum.Postcode({
+      oncomplete: (data: any) => {
+        // 도로명 주소 우선, 없으면 지번 주소
+        const road = data.roadAddress?.trim();
+        const jibun = data.jibunAddress?.trim();
+        setAddress(road || jibun || "");
+        setZonecode(data.zonecode || "");
+      },
+    }).open();
   };
 
   const handleSave = () => {
@@ -80,13 +97,18 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
         />
 
         <Label>주소</Label>
-        <InputField
-          type="text"
-          value={address}
-          onChange={(e) => setAddress(e.target.value)}
-          disabled={isUpdating}
-          placeholder="도로명주소 + 상세주소"
-        />
+        <AddressRow>
+          <InputField
+            type="text"
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            disabled={isUpdating}
+            placeholder="도로명주소 + 상세주소"
+          />
+          <SearchBtn onClick={openDaumPostcode} size='small' disabled={isUpdating}>
+            검색
+          </SearchBtn>
+        </AddressRow>
 
         <Label>전화번호</Label>
         <InputField
@@ -147,4 +169,13 @@ const InputField = styled.input`
         outline: none;
         border-color: #63cfef;
     }
+`;
+
+const AddressRow = styled.div`
+  display: flex; gap: 8px;
+  & > input { flex: 1; } /* 입력칸이 남는 너비 채우게 */
+`;
+
+const SearchBtn = styled(GlassButton)`
+  white-space: nowrap;
 `;
