@@ -37,20 +37,20 @@ function AdvertisementCarousel() {
   const goToSlide = (index: number) => {
     setCurrentIndex(index);
   };
-  
+
   if (banners.length === 0) {
     return;
   }
 
+  const cacheKey = banners.map(b => b.url).join('');
   const currentBannerUrl = banners[currentIndex]?.url;
-  // [seah] 나중에 수정해돌라고 부탁해야됨!
-  const imageUrl = currentBannerUrl && !currentBannerUrl.startsWith('http') 
-    ? `http://${currentBannerUrl}` 
-    : currentBannerUrl;
+  const uniqueUrl = currentBannerUrl 
+    ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}` 
+    : '';
 
   return (
     <Wrapper>
-      <Image src={imageUrl} alt={`Banner ${currentIndex + 1}`} />
+      <Image src={uniqueUrl} alt={`Banner ${currentIndex + 1}`} />
       
       <Pagination>
         {banners.map((_, index) => (
@@ -69,16 +69,14 @@ const Wrapper = styled.div`
   display: flex;
   position: relative;
   width: 100%;
-  height: auto;
+  height: 100vw;
   overflow: hidden;
 `;
 
 const Image = styled.img`
   width: 100%;
-  height: 100%;
-  min-height: 200px;
-  max-height: 400px;
-  object-fit: cover;
+  height: 90%;
+  object-fit: contain;
 `;
 
 const Pagination = styled.div`

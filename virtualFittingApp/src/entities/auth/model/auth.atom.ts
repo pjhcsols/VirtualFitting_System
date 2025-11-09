@@ -33,3 +33,12 @@ export const authState = atom<AuthState>({
   key: 'authState',
   default: getInitialAuthState(),
 });
+
+export const getAccessTokenStringFromCookie = (): string | null => {
+  const token = document.cookie
+    .split('; ')
+    .find(row => row.startsWith('access-token='))
+    ?.split('=')[1];
+
+  return token || null; 
+};
