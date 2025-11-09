@@ -279,7 +279,7 @@ function ProductDetailPage() {
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 16px 0px;
+  padding: 86px 66px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -288,7 +288,7 @@ const Wrapper = styled.div`
   position: relative;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 16px 16px;
+    padding: 86px 16px;
   }
 `;
 

@@ -17,6 +17,7 @@ function ProductListPage() {
   useEffect(() => {
     const loadProducts = async () => {
       const data = await fetchOnSaleProducts({ page: 0, size: 20, sort: "productId,asc" });
+      console.log(data);
       if (data) {
         const productsWithStatus = data.map(product => ({
             ...product,
@@ -54,7 +55,7 @@ function ProductListPage() {
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  // min-height: 100vh;
 `;
 
 const CarouselContainer = styled.div`
@@ -79,12 +80,11 @@ const ProductGrid = styled.div`
 
   @media (min-width: ${BREAKPOINTS.xl}px) {
     grid-template-columns: repeat(4, 1fr);
-    padding: 5em 10em;
   }
 
   @media (min-width: ${BREAKPOINTS.xlDouble}px) {
     max-width: 1400px;
-    padding: 5em 15em;
+    padding: 40px 100px;
   }
 `;
 

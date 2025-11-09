@@ -47,7 +47,7 @@ function AdvertisementCarousel() {
   const uniqueUrl = currentBannerUrl 
     ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}` 
     : '';
-
+    
   return (
     <Wrapper>
       <Image src={uniqueUrl} alt={`Banner ${currentIndex + 1}`} />
@@ -68,17 +68,16 @@ function AdvertisementCarousel() {
 const Wrapper = styled.div`
   display: flex;
   position: relative;
-  width: 100%;
-  height: 100vw;
+  width: 100vw;
+  height: 100vh;
   overflow: hidden;
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 90%;
-  object-fit: contain;
+  width: 100%; 
+  height: 100%; 
+  object-fit: cover;
 `;
-
 const Pagination = styled.div`
   position: absolute;
   bottom: 10px;
