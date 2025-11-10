@@ -6,6 +6,9 @@ declare global {
   }
 }
 
+export type Gender = "MALE" | "FEMALE" | ""; 
+export type FormGender = "M" | "F" | ""
+
 export interface SubmitUserFormData extends Omit<UserFormData, "address"> {
   address: string;
 }
@@ -18,24 +21,25 @@ export interface UserFormData {
   nickname: string;
   birthDate: string;
   address: Address;
-  // gender: "M" | "F" | "";
+  gender: FormGender;
   size: BodySize;
   userProfileImageUrl?: File | string;
   userImageUrl?: File | string;
 }
 
 export interface BodySize {
-  height: number;
-  weight: number;
-  totalLength: number;
-  chest: number;
-  shoulder: number;
-  arm: number;
-  pantsTotalLength: number;
-  waistWidth: number;
-  hipWidth: number;
-  rise: number;
-  hemWidth: number;
+  height: number | null;
+  weight: number | null;
+  totalLength: number | null;
+  chest: number | null;
+  shoulder: number | null;
+  arm: number | null;
+  pantsTotalLength: number | null;
+  waistWidth: number | null;
+  hipWidth: number | null;
+  thighWidth: number | null;
+  rise: number | null;
+  hemWidth: number | null;
 }
 
 export interface Address {
@@ -56,9 +60,9 @@ export interface UserDetail {
   phoneNumber: string;
   name: string;
   nickname: string;
-  gender: string;
+  gender: Gender; 
   birthDate: string;
-  address: string;
+  address: Address;
   userNumber: number;
   userGrade: string;
   loginType: string; 

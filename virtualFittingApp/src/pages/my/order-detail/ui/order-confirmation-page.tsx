@@ -65,10 +65,6 @@ export function OrderConfirmationPage() {
   return (
     <PageContainer>
       <TitleContainer>
-        {/* <PageTitle>주문이 완료되었습니다.</PageTitle>
-        <PageSubtitle>
-          {'아래 계좌정보로 입금해주시면 결제 완료 처리가 됩니다.'}
-        </PageSubtitle> */}
       </TitleContainer>
       <CardContainer>
         {totalAmount && senderName && deadline && (

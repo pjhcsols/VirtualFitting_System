@@ -1,7 +1,7 @@
 import styled from "styled-components";
 
 interface ProductCouponButtonProps {
-  onClick: () => void;
+  onClick: (() => void) | ((e: React.MouseEvent<HTMLButtonElement>) => void);
 }
 
 export const ProductCouponButton = ({ onClick }: ProductCouponButtonProps) => {

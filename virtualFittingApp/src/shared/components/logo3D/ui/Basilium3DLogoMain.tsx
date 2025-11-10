@@ -16,11 +16,11 @@ function CameraSetting({ scrollProgress }: CameraSettingProps) {
   const { camera } = useThree();
   
   return useFrame(({ clock }) => {
-    const yFloat = 1.5 + Math.sin(clock.elapsedTime * 0.4) * 0.1; 
+    const yFloat = 1.5 + Math.sin(clock.elapsedTime * 0.5) * 0.1; 
     const scrollValue = scrollProgress.current ? scrollProgress.current.value : 0;
-    const zScroll = 0.2 + scrollValue * 2; 
+    const zScroll = 0.4 + scrollValue * 2; 
     
-    camera.position.set(-0.15, yFloat, zScroll);
+    camera.position.set(-0.2, yFloat, zScroll);
     camera.lookAt(0, 0, 0);
   });
 }

@@ -1,5 +1,7 @@
 import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
-import type { UserDetail, UpdateAddressRequest, UserDetailResponse } from "../model/types";
+import { apiClient } from "@/shared/api/apiClient";
+import type { AxiosRequestConfig } from "axios";
+import type { UserDetail, UpdateAddressRequest, UserDetailResponse, Gender } from "../model/types";
 
 export const fetchUserData = async () => {
   try {
@@ -14,10 +16,8 @@ export const fetchUserData = async () => {
 export const fetchMyUserDetails = async (): Promise<UserDetailResponse | null> => {
   try {
     const response = await API_BASILIUM.get("/b1/normalUsers/me/detail");
-    console.log("[내 정보 상세 조회] API 응답 성공:", response.data);
     return response.data;
   } catch (error) {
-    console.error("[내 정보 상세 조회] API 요청 실패:", error);
     return null;
   }
 };
@@ -28,7 +28,6 @@ export const fetchMyUserLoginType = async (): Promise<UserDetail['loginType'] | 
     const loginType = response?.data?.loginType ?? null; 
 
     if (loginType) {
-      console.log(`[Login Type 조회 성공] Type: ${loginType}`);
     } else {
       console.warn("[Login Type 조회 실패] 사용자 상세 정보에 loginType 필드가 없습니다.");
     }
@@ -36,7 +35,6 @@ export const fetchMyUserLoginType = async (): Promise<UserDetail['loginType'] | 
     return loginType;
     
   } catch (error) {
-    console.error("[Login Type 조회] API 요청 실패:", error);
     return null;
   }
 };
@@ -49,11 +47,52 @@ export const updateAddress = async (
     const response = await API_BASILIUM.patch(`/b1/normalUsers/me`, addressData, {
       params: { userId },
     });
-    console.log("[주소 변경] API 응답 성공:", response.data);
     
     return response.data; 
   } catch (error) {
     console.error("[주소 변경] API 요청 실패:", error);
     throw error;
+  }
+};
+
+export const fetchMyUserGender = async (): Promise<Gender | null> => {
+  try {
+    const response = await fetchMyUserDetails(); 
+    
+    const gender = response?.data?.gender as (Gender | undefined) ?? null; 
+
+    if (!gender) {
+      console.warn("[Gender 조회 실패] 사용자 상세 정보에 gender 필드가 없거나 유효하지 않습니다.");
+    }
+
+    return gender;
+    
+  } catch (error) {
+
+    console.error("Error fetching user gender:", error);
+    return null;
+  }
+};
+
+export const fetchMyRegisteredImageUrl = async (userId: string): Promise<string | null> => {
+    
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: "/b1/users/me/image",
+    params: { userId },
+  };
+
+  try {
+    const response = await apiClient<string>(config);
+
+    if (response && response.status === 0 && response.data) {
+        return response.data;
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error("[현재이미지 조회 실패] 사용자 현재 이미지가 없습니다.", error);
+    return null;
   }
 };

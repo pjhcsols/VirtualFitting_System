@@ -11,12 +11,14 @@ interface OrderFormProps {
   items: CheckoutItemDetail[];
   selectedCouponMap: Map<number, ClaimableCoupon | null>;
   onSelectCoupon: (coupon: ClaimableCoupon | null, itemId: number) => void;
+  excludedWalletIds: number[];
 }
 
 export const OrderForm = ({ 
-    items, 
-    selectedCouponMap, 
-    onSelectCoupon, 
+  items, 
+  selectedCouponMap, 
+  onSelectCoupon, 
+  excludedWalletIds,
 }: OrderFormProps) => {
   const [activeCouponModal, setActiveCouponModal] = useState<number | null>(null);
 
@@ -30,6 +32,8 @@ export const OrderForm = ({
           const itemPrice = item.discountedPrice ?? item.price;
           const selectedCoupon = selectedCouponMap.get(item.id) || null;
           const finalPriceForItem = calculateFinalPrice(itemPrice, item.quantity, selectedCoupon);
+          const excludedIdsForThisItem = excludedWalletIds.filter(id => id !== selectedCoupon?.campaignId);
+
           return (
             <ItemWrapper key={item.id}>
               <OrderItemCard item={item} finalPrice={finalPriceForItem} />
@@ -45,6 +49,7 @@ export const OrderForm = ({
                   currentSelectedCoupon={selectedCoupon} 
                   showPopup={activeCouponModal === item.id}
                   setShowPopup={() => setActiveCouponModal(null)}
+                  excludedWalletIds={excludedIdsForThisItem}
                 />
               </ButtonContainer>
               {index < items.length - 1 && <ItemSeparator />}

@@ -1,38 +1,52 @@
-import { useState } from "react";
-import icon_liked from "../assets/icon-liked.svg";
-import icon_unliked from "../assets/icon-unliked.svg";
 import styled from "styled-components";
+import FavoriteOutlinedIcon from '@mui/icons-material/FavoriteOutlined';
+import FavoriteBorderOutlinedIcon from '@mui/icons-material/FavoriteBorderOutlined';
 
 type ProductLikeButtonProps = {
-  isInitiallyLiked?: boolean;
-  onToggle?: (liked: boolean) => void;
+  isInitiallyLiked: boolean;
+  onToggle: () => Promise<void>;
+  productId: number;
+  isLoading?: boolean;
 };
 
 export const ProductLikeButton = ({
-  isInitiallyLiked = false,
+  isInitiallyLiked,
   onToggle,
+  isLoading = false,
 }: ProductLikeButtonProps) => {
-  const [liked, setLiked] = useState(isInitiallyLiked);
 
-  const handleClick = (e: React.MouseEvent) => {
+  const handleClick = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const newLiked = !liked;
-    setLiked(newLiked);
-    onToggle?.(newLiked);
+    if (isLoading) return;
+
+    await onToggle(); 
   };
 
+  const IconComponent = isInitiallyLiked ? FavoriteOutlinedIcon : FavoriteBorderOutlinedIcon;
+  const iconColor = isInitiallyLiked ? '#FF4D4D' : '#ffffffff';
+
   return (
-    <IconImage
-      src={liked ? icon_liked : icon_unliked}
-      alt={liked ? "좋아요 취소" : "좋아요"}
+    <IconWrapper
       onClick={handleClick}
-    />
+      $isloading={isLoading}
+      title={isInitiallyLiked ? "좋아요 취소" : "좋아요"}
+    >
+      <IconComponent 
+        style={{ fontSize: 22, color: iconColor }}
+      />
+    </IconWrapper>
   );
 };
 
-const IconImage = styled.img`
-  width: 24px;
-  height: 24px;
+const IconWrapper = styled.div<{ $isloading: boolean }>`
+  width: 22px;
+  height: 22px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   cursor: pointer;
-  object-fit: contain;
+  opacity: ${props => props.$isloading ? 0.6 : 1};
+  transition: opacity 0.2s;
+  z-index: 10;
 `;
+

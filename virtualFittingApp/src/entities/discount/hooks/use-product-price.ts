@@ -8,10 +8,10 @@ export const useProductPriceQuery = (productId: number, accessToken: string | nu
             if (!accessToken) return null;
             const quote = await fetchDiscountQuote({ productId, userId: accessToken });
             
-            if (quote?.data) {
+            if (quote) {
                 return {
-                    original: quote.data.baseUnitPrice,
-                    discounted: quote.data.finalUnitPrice ?? quote.data.baseUnitPrice,
+                    original: quote.baseUnitPrice,
+                    discounted: quote.finalUnitPrice ?? quote.baseUnitPrice,
                 };
             }
             return null;

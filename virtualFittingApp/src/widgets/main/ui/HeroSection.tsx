@@ -87,7 +87,6 @@ function HeroSection() {
   return (
     <Wrapper>
       <Starfield theme="light"/>
-      <LogoText>Basilium</LogoText>
         <ModelContainer>
           <Basilium3DLogoMain scrollProgress={scrollProgress} />
         </ModelContainer>
@@ -119,20 +118,6 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-const LogoText = styled.span`
-  font-family: "Prata-Regular";
-  font-size: 24px;
-  color: white;
-  text-transform: uppercase;
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 80px;
-  padding: 16px 40px;
-  display: flex;
 `;
 
 const ModelContainer = styled.div`
@@ -211,15 +196,14 @@ const ScrollArrow = styled.div`
   bottom: 140px;
   z-index: 10;
   animation: ${bounce} 2s infinite;
-  
+  border: none;
   color: #E9FAFF; 
 
   svg {
     width: 50px; 
-    height: 100px;
+    height: 80px;
     fill: none;
     stroke: currentColor;
-    stroke-width: 20;
     stroke-linecap: round;
     stroke-linejoin: round;
     display: block;

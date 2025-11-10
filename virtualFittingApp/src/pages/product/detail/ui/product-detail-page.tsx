@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
 import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth';
 
 import { fetchProductDetailByColor, fetchProductColors } from "@/entities/product/api/product.api";
-import type { ProductDetail } from "@/entities/product";
+import type { ProductDetail, ProductPrice } from "@/entities/product";
 
 import { BREAKPOINTS } from "@/shared";
 
@@ -14,28 +16,170 @@ import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
 import { useProductCoupon } from "@/features/coupon";
 
+import { fetchMyUserGender } from "@/entities/user";
+import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
+import { AddModelModal } from "@/features/virtual-try-on";
+import { FittingResultModal } from "@/features/virtual-try-on";
+import { fetchMyRegisteredImageUrl } from "@/entities/user";
+import { getAccessTokenStringFromCookie } from "@/entities/auth";
+import { fetchProductPrice } from '@/entities/discount';
+
 function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [searchParams, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
-
+  const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [userGender, setUserGender] = useState<'M' | 'W' | null>(null);
   const [productColors, setProductColors] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-
+  const [tryOnOpen, setTryOnOpen] = useState(false);
+  const [uploadPreview, setUploadPreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [registeredImageUrl, setRegisteredImageUrl] = useState<string | null>(null);
+  const [registeredLoading, setRegisteredLoading] = useState(false);
+  const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
+  const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
+  const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [priceData, setPriceData] = useState<ProductPrice | null>(null);
+  
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
-  
   const currentProductId = Number(id); 
+    
+  const currentUserId: string | null = userId;
   const { 
     coupons, 
     isLoading: isCouponLoading, 
     handleDownloadCoupon,
   } = useProductCoupon(currentProductId);
 
+  const loadUserGender = useCallback(async () => {
+    if (!isLoggedIn) return;
+    try {
+      const gender = await fetchMyUserGender();
+      if (gender) {
+        const formattedGender = gender === 'FEMALE' ? 'W' : (gender === 'MALE' ? 'M' : null);
+        setUserGender(formattedGender);
+      }
+    } catch (e) {
+      console.error("사용자 성별 정보 로딩 실패:", e);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    loadUserGender();
+  }, [loadUserGender]);
+
+  const loadRegisteredImage = useCallback(async () => {
+    setRegisteredLoading(true);
+    if (!isLoggedIn || !userId) {
+        setRegisteredImageUrl(null);
+        setRegisteredLoading(false);
+        return null;
+    }
+
+    try {
+        const url = await fetchMyRegisteredImageUrl(userId); 
+
+        if (url) {
+            let ImgUrl = url.startsWith('http:') ? url.replace('http:', 'https:') : url;
+            
+            setRegisteredImageUrl(ImgUrl);
+            return ImgUrl;
+        }
+        setRegisteredImageUrl(null);
+        return null;
+
+    } catch (e) {
+        console.error("기존 이미지 로딩 실패:", e);
+        setRegisteredImageUrl(null);
+        return null;
+    } finally {
+        setRegisteredLoading(false);
+    }
+  }, [isLoggedIn, userId]);
+
+  const openTryOn = useCallback(async () => {
+    if (!isLoggedIn) {
+      alert("로그인이 필요한 서비스입니다.");
+      navigate("/login");
+      return;
+    }
+    setTryOnOpen(true);
+    await loadRegisteredImage(); 
+  }, [isLoggedIn, loadRegisteredImage, navigate]);
+
+  const closeTryOn = useCallback(() => {
+    setTryOnOpen(false);
+    if (uploadPreview?.startsWith("blob:")) URL.revokeObjectURL(uploadPreview);
+    setUploadPreview(null);
+  }, [uploadPreview]);
+
+  const openResultModal = useCallback(() => {
+    if (generatedImageUrl) {
+        setIsResultModalOpen(true);
+    }
+  }, [generatedImageUrl]);
+
+  const closeResultModal = useCallback(() => {
+      setIsResultModalOpen(false);
+  }, []);
+
+  const handleFileChange: React.ChangeEventHandler<HTMLInputElement> = useCallback((e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setSelectedFile(file); 
+
+    setUploadPreview(prev => {
+      if (prev?.startsWith("blob:")) URL.revokeObjectURL(prev); 
+      return URL.createObjectURL(file);
+    });
+  }, []);
+
   const handleTabChange = (tab: string) => {
-    setSearchParams({ tab: tab, color: color || "" });
+  setSearchParams({ tab: tab, color: color || "" });
   };
+
+  const handleConfirmUpload = useCallback(async () => {
+
+    const accessTokenString = getAccessTokenStringFromCookie();
+
+    if (!selectedFile || !color || !userGender || !accessTokenString) {
+      alert("필수 정보가 부족합니다 (파일, 색상, 성별, 사용자 ID).");
+      return; 
+    }
+
+    try {
+      const params = {
+        productId: currentProductId,
+        color: color,
+        gender: userGender,
+        authUserId: accessTokenString, 
+      };
+      const response = await tryOnPrivateFitting(params, selectedFile);
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      
+      if (resultImageUrl) {
+          setGeneratedImageUrl(resultImageUrl);
+          setSimulatedDelay(resultSimulatedDelay);
+          alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+      } else {
+          alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
+      }
+      
+      closeTryOn(); 
+    } catch (e) {
+      console.error("가상 착용 API 호출 실패:", e);
+      alert("새 이미지로 가상 착용에 실패했습니다.");
+    }
+  }, [selectedFile, currentProductId, color, userGender, currentUserId, closeTryOn]);
+
+    const handleUseExisting = useCallback(() => {
+    closeTryOn();
+  }, [closeTryOn]);
+
 
   useEffect(() => {
     if (!id) return;
@@ -43,7 +187,6 @@ function ProductDetailPage() {
     const loadProduct = async () => {
       setLoading(true);
       try {
-        
         const colors = await fetchProductColors(Number(id));
         if (!colors || colors.length === 0) {
           throw new Error("상품의 색상 정보를 찾을 수 없습니다.");
@@ -63,6 +206,9 @@ function ProductDetailPage() {
         }
         setProduct(detailData);
 
+        const priceResponse = await fetchProductPrice(detailData.productId);
+        setPriceData(priceResponse);
+
       } catch (error) {
         navigate('/');
       } finally {
@@ -77,22 +223,53 @@ function ProductDetailPage() {
     return <div>Loading...</div>;
   }
 
-  const finalPrice = product.productPrice;
-    const productDetailsProps = {
-      product,
-      productColors,
-      onColorChange: (newColor: string) => {
-          navigate(`/products/${id}?color=${newColor}&tab=${activeTab}`);
-      },
-      coupons,
-      isCouponLoading,
-      handleDownloadCoupon,
-      finalPrice,
-    };
+  const priceForDetails = priceData
+    ? { original: priceData.baseUnitPrice, discounted: priceData.productDiscountedUnitPrice }
+    : { original: product.productPrice, discounted: product.productPrice };
+
+  const finalPrice = priceData ? priceData.productDiscountedUnitPrice : product.productPrice;
+
+  const productDetailsProps = {
+    product,
+    price: priceForDetails,
+    productColors,
+    onColorChange: (newColor: string) => {
+      setSearchParams({ tab: activeTab, color: newColor }); 
+    },
+    coupons,
+    isCouponLoading,
+    handleDownloadCoupon,
+    finalPrice,
+    onTryOn: openTryOn, 
+    fittingResultUrl: generatedImageUrl,
+    fittingDelay: simulatedDelay, 
+    onViewResult: openResultModal,
+  };
 
   return (
     <Wrapper>
-      <ProductDetails {...productDetailsProps} />
+      <ProductDetails {...productDetailsProps}/>
+
+      <AddModelModal
+        open={tryOnOpen}
+        onClose={closeTryOn}
+        registeredLoading={registeredLoading}
+        registeredImageUrl={registeredImageUrl}
+        onUseExisting={handleUseExisting}
+        onFileChange={handleFileChange}
+        onConfirmUpload={handleConfirmUpload}
+        previewUrl={uploadPreview}
+        isLoggedIn={isLoggedIn}
+      />
+
+      {isResultModalOpen && generatedImageUrl && (
+        <FittingResultModal
+          open={isResultModalOpen}
+          onClose={closeResultModal}
+          imageUrl={generatedImageUrl}
+          delay={simulatedDelay}
+        />
+      )}  
       
       <ContentArea>
         <TabMenu>
@@ -102,7 +279,7 @@ function ProductDetailPage() {
           <TabButton $active={activeTab === "qna"} onClick={() => handleTabChange("qna")}>문의하기</TabButton>
         </TabMenu>
         <Divider />
-      
+
         {activeTab === "description" && <ProductDescription product={product} />}
         {activeTab === "size" && <ProductSizingInfo product={product} />}
         {activeTab === "review" && <ProductReviews productId={currentProductId} />}
@@ -114,7 +291,7 @@ function ProductDetailPage() {
 
 const Wrapper = styled.div`
   box-sizing: border-box;
-  padding: 16px 0px;
+  padding: 86px 66px;
   width: 100%;
   display: flex;
   flex-flow: column nowrap;
@@ -123,7 +300,7 @@ const Wrapper = styled.div`
   position: relative;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 16px 16px;
+    padding: 86px 16px;
   }
 `;
 
@@ -157,7 +334,7 @@ const TabButton = styled.button<{ $active: boolean }>`
 
   text-decoration: none; 
   
-  color: rgba(255, 255, 255, 0.85);
+  color: #CCCCCC;
   transition: color 0.3s ease;
 
   &::after {
@@ -186,7 +363,7 @@ const TabButton = styled.button<{ $active: boolean }>`
   }
 
   &.active::after {
-    transform: scaleX(1);
+    /* color: rgb(255, 255, 255); */
   }
 
   @media (max-width: ${BREAKPOINTS.md}px) {

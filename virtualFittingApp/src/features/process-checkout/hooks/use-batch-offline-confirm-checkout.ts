@@ -2,16 +2,19 @@ import { useState } from 'react';
 import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
-import { useQueryClient } from '@tanstack/react-query';
 import { authState } from '@/entities/auth';
-import {
-    createBatchPaymentReservation,
-    createPaymentIntent,
-    reportPaymentResult,
+import { 
+  confirmOrderPurchase, 
+} from '@/entities/order';
+import { 
+  createBatchPaymentReservation,
+  createPaymentIntent,
+  reportPaymentResult,
+  confirmFinalPayment,
  } from '@/entities/payment';
-import type {
-    BatchPaymentRequestBody,
-    ReservedItem,
+import type { 
+    BatchPaymentRequestBody, 
+    ReservedItem, 
     PaymentIntentLine,
  } from '@/entities/payment';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
@@ -53,11 +56,11 @@ export const useBatchOfflineConfirmCheckout = () => {
   const [cookies] = useCookies(['access-token']);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
-  const queryClient = useQueryClient();
 
   
   const confirmAndProceed = async (checkoutData: BatchOfflineCheckoutData) => {
     setIsLoading(true);
+    let reservedOrderId: string | undefined;
 
      try {
       if (!isLoggedIn) {
@@ -80,17 +83,17 @@ export const useBatchOfflineConfirmCheckout = () => {
         throw new Error("상품 재고를 예약하는 데 실패했습니다.");
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
-      console.log(`[배치 예약 ID] ${reservedOrderId}`);
 
       const intentLines: PaymentIntentLine[] = checkoutData.items.map((item, index) => {
         const coupon = checkoutData.coupons[index]; 
-        
+        const walletId = (coupon as any)?.walletId;
+
         return {
           productId: item.productId,
           size: item.size,
           color: item.color,
           quantity: item.quantity,
-          couponWalletId: (coupon as CouponInWallet)?.walletId ?? undefined, 
+          couponWalletId: walletId ?? undefined,
         };
       });
 
@@ -101,8 +104,6 @@ export const useBatchOfflineConfirmCheckout = () => {
         expiresAt: new Date(reservationData.expiresAt).toISOString(),
         pointsToUse: 0,
       };
-      
-      console.log("[결제 의도 생성 Body]", intentBody);
 
       const intentResponse = await createPaymentIntent(intentBody);
 
@@ -110,31 +111,65 @@ export const useBatchOfflineConfirmCheckout = () => {
       if (!intentData) {
         throw new Error("결제 정보를 확정하는 데 실패했습니다.");
       }
+      const FINAL_PAYMENT_KEY = `TEMP-${Date.now()}`;
 
-      await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
-      const itemIdsToDelete = checkoutData.items.map(item => item.id);
-      console.log(`[장바구니 정리] 결제 완료된 아이템 ID: ${itemIdsToDelete.join(', ')}`);
+      const confirmationParams = {
+        paymentType: checkoutData.paymentMethod,
+        amount: intentData.serverTotal,
+        orderId: intentData.orderId,
+        paymentKey: FINAL_PAYMENT_KEY,
+      };
+
+      await confirmFinalPayment(confirmationParams); 
       
-      await deleteCartItems(accessToken, itemIdsToDelete);
-      console.log("[장바구니 정리] 아이템 삭제 성공.");
+      await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
+      
+      const authUserId = accessToken;
+          const orderId = intentData.orderId;
 
-      queryClient.invalidateQueries({ queryKey: ['coupons', 'claimables'] });
-      console.log("[캐시 무효화] 모든 상품 쿠폰 쿼리를 무효화했습니다.");
+      await confirmOrderPurchase(authUserId, orderId); 
+      
+      const itemIdsToDelete = checkoutData.items.map(item => item.id);
+
+      await deleteCartItems(accessToken, itemIdsToDelete); 
+
+      const displayItem = checkoutData.items[0];
+      const isBatch = checkoutData.items.length > 1;
+
+      const representativeItemForUI = {
+        productName: isBatch
+          ? `${displayItem.name} 외 ${checkoutData.items.length - 1}개`
+          : displayItem.name,
+        options: {
+          color: displayItem.color,
+          size: displayItem.size,
+          quantity: checkoutData.items.reduce((sum: number, item) => sum + item.quantity, 0), // 총 수량
+        },
+        price: checkoutData.finalPrice,
+      };
 
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
         state: { 
           shippingAddress: checkoutData.shippingAddress,
           orderId: intentData.orderId,
-          items: checkoutData.items, // 전체 아이템 목록을 전달
+          items: checkoutData.items,
+          item: representativeItemForUI,
           totalAmount: checkoutData.finalPrice,
           senderName: checkoutData.customerName,
           deadline: reservationData.expiresAt,
-        } 
+        }
     });
 
     } catch (error: any) {
       console.error("Payment confirmation failed:", error);
+
+      if (reservedOrderId) {
+        try {
+            await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
+        } catch (rollbackError) {
+        }
+      }
       alert(`결제 처리 중 오류가 발생했습니다: ${error.message}`);
 
     } finally {

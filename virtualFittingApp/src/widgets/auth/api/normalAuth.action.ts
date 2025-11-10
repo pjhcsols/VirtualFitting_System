@@ -46,7 +46,7 @@ export const NormalUserGetProfile = async () => {
 export const NormalUserImgUpload = async (file: File) => {
   try {
     const formData = new FormData();
-    formData.append("file", file); 
+    formData.append("file", file);
 
     const res = await API_BASILIUM.post("/b1/users/me/image", formData, {
       headers: {

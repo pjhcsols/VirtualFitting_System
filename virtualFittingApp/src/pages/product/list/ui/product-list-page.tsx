@@ -18,7 +18,11 @@ function ProductListPage() {
     const loadProducts = async () => {
       const data = await fetchOnSaleProducts({ page: 0, size: 20, sort: "productId,asc" });
       if (data) {
-        setProducts(data);
+        const productsWithStatus = data.map(product => ({
+            ...product,
+            isSoldOut: product.totalQuantity === 0,
+        }));
+        setProducts(productsWithStatus);
       }
       setLoading(false);
     };
@@ -26,7 +30,7 @@ function ProductListPage() {
   }, []);
 
   if (loading) {
-    return <LoadingIndicator>Loading products...</LoadingIndicator>;
+    ;
   }
 
   return (
@@ -47,19 +51,10 @@ function ProductListPage() {
   );
 }
 
-const LoadingIndicator = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 50vh;
-  font-size: 1.2rem;
-  color: #888;
-`;
-
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  // min-height: 100vh;
 `;
 
 const CarouselContainer = styled.div`
@@ -84,12 +79,11 @@ const ProductGrid = styled.div`
 
   @media (min-width: ${BREAKPOINTS.xl}px) {
     grid-template-columns: repeat(4, 1fr);
-    padding: 5em 10em;
   }
 
   @media (min-width: ${BREAKPOINTS.xlDouble}px) {
     max-width: 1400px;
-    padding: 5em 15em;
+    padding: 40px 100px;
   }
 `;
 

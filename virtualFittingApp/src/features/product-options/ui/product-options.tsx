@@ -22,6 +22,7 @@ type ProductOptionsProps = {
   handleColorChange: (color: string) => void;
   setSelectedSize: (size: string) => void;
   setQuantity: Dispatch<SetStateAction<number>>;
+  disabled?: boolean;
 };
 
 export function ProductOptions({
@@ -35,6 +36,7 @@ export function ProductOptions({
   handleColorChange,
   setSelectedSize,
   setQuantity,
+  disabled = false,
 }: ProductOptionsProps) {
   
   const discountedPrice = price.discounted ?? price.original;
@@ -80,6 +82,7 @@ export function ProductOptions({
           discountedPrice={discountedPrice}
           quantity={quantity}
           setQuantity={setQuantity}
+          disabled={disabled}
         />
       </OptionBox>
     </>
