@@ -114,7 +114,7 @@ export const ActiveDivider = styled.div`
 export const OrderCard = styled.div`
   display: flex;
   gap: 20px;                 
-  width: 100%;
+  width: 800px;
   padding: 10px 2px;        
   
   @media (max-width: ${BREAKPOINTS.md}px) {
