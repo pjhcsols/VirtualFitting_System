@@ -77,7 +77,6 @@ const EmptyWrapper = styled.div`
 
 const Message = styled.p`
   font-size: 20px;
-  font-family: "Prata-Regular";
   margin-bottom: 20px;
   color: #d9d9d9;
 `;

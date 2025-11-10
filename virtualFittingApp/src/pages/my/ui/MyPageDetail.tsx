@@ -4,9 +4,15 @@ import icon_user from "@/shared/assets/icons/icon-user.svg";
 import icon_up from "@/shared/assets/icons/icon-up.svg";
 import icon_down from "@/shared/assets/icons/icon-down.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
-import { UserFormData } from "@/entities/user/model/types";
+import { UserFormData, Gender, FormGender } from "@/entities/user/model/types";
 import { submitUserInfo } from "@/shared/api/submit.api";
 import { handleImageFileChange } from "@/shared/lib/image.util";
+
+const mapGenderToFormGender = (gender: Gender | null | undefined): FormGender => {
+  if (gender === "MALE") return "M";
+  if (gender === "FEMALE") return "F";
+  return "";
+};
 import { sendVerificationEmail } from "@/shared/utils/email/sendVerificationEmail";
 import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
 import { formatTime } from "@/shared/utils/time/time.util";
@@ -37,9 +43,9 @@ function MypageDetail() {
         phoneNumber: "", 
         nickname: "",
         birthDate: "",
-        address: {address: "", zonecode: "", detailAddress: ""},
-        size: {
-            height: 0,
+                    address: {address: "", zonecode: "", detailAddress: ""},
+                    gender: "",
+                    size: {            height: 0,
             weight: 0,
             totalLength: 0,
             chest: 0,
@@ -50,6 +56,7 @@ function MypageDetail() {
             hipWidth: 0,
             rise: 0,
             hemWidth: 0,
+            thighWidth: 0,
         },
         userProfileImageUrl: "",
         userImageUrl: "",
@@ -77,6 +84,7 @@ function MypageDetail() {
               zonecode: "",
               detailAddress: ""
             },
+            gender: mapGenderToFormGender(userInfo.gender),
             size: {
               height: userInfo.height ?? 0,
               weight: userInfo.weight ?? 0,
@@ -87,6 +95,7 @@ function MypageDetail() {
               pantsTotalLength: userInfo.pantsTotalLength ?? 0,
               waistWidth: userInfo.waistWidth ?? 0,
               hipWidth: userInfo.hipWidth ?? 0,
+              thighWidth: userInfo.thighWidth ?? 0,
               rise: userInfo.rise ?? 0,
               hemWidth: userInfo.hemWidth ?? 0
             },
@@ -363,77 +372,77 @@ function MypageDetail() {
                       <TelForm style={{ flexWrap: 'wrap', gap: '8px' }}>
                         <SizeInput 
                           placeholder="키   cm"
-                          value={formData.size.height === 0 ? "" : formData.size.height}
+                          value={formData.size.height || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, height: Number(e.target.value) } })
                           }
                         />
                         <SizeInput 
                           placeholder="몸무게  kg"
-                          value={formData.size.weight === 0 ? "" : formData.size.weight}
+                          value={formData.size.weight || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, weight: Number(e.target.value) } })
                           }
                         />
                         <SizeInput
                           placeholder="총장  cm" 
-                          value={formData.size.totalLength === 0 ? "" : formData.size.totalLength}
+                          value={formData.size.totalLength || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, totalLength: Number(e.target.value) } })
                           }
                         />
                         <SizeInput 
                           placeholder="어깨  cm"
-                          value={formData.size.shoulder === 0 ? "" : formData.size.shoulder}
+                          value={formData.size.shoulder || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, shoulder: Number(e.target.value) } })
                           } 
                         />
                         <SizeInput 
                           placeholder="가슴둘레 cm"
-                          value={formData.size.chest === 0 ? "" : formData.size.chest}
+                          value={formData.size.chest || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, chest: Number(e.target.value) } })
                           } 
                         />
                         <SizeInput 
                           placeholder="팔길이  cm"
-                          value={formData.size.arm === 0 ? "" : formData.size.arm}
+                          value={formData.size.arm || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, arm: Number(e.target.value) } })
                           } 
                         />  
                         <SizeInput 
                           placeholder="바지총장  cm"
-                          value={formData.size.pantsTotalLength === 0 ? "" : formData.size.pantsTotalLength}
+                          value={formData.size.pantsTotalLength || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, pantsTotalLength: Number(e.target.value) } })
                           } 
                         /> 
                         <SizeInput 
                           placeholder="허리둘레  cm"
-                          value={formData.size.waistWidth === 0 ? "" : formData.size.waistWidth}
+                          value={formData.size.waistWidth || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, waistWidth: Number(e.target.value) } })
                           } 
                         />
                         <SizeInput 
                           placeholder="엉덩이둘레  cm"
-                          value={formData.size.hipWidth === 0 ? "" : formData.size.hipWidth}
+                          value={formData.size.hipWidth || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, hipWidth: Number(e.target.value) } })
                           } 
                         />
                         <SizeInput 
                           placeholder="밑위길이  cm"
-                          value={formData.size.rise === 0 ? "" : formData.size.rise}
+                          value={formData.size.rise || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, rise: Number(e.target.value) } })
                           } 
                         />
                         <SizeInput 
                           placeholder="밑단너비  cm"
-                          value={formData.size.hemWidth === 0 ? "" : formData.size.hemWidth}
+                          value={formData.size.hemWidth || ""}
                           onChange={(e) =>
                             setFormData({ ...formData, size: { ...formData.size, hemWidth: Number(e.target.value) } })
                           } 
@@ -529,8 +538,7 @@ const FormField = styled.div`
 const Label = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: white;
   display: flex;
   align-items: center;
 `;
@@ -538,87 +546,83 @@ const Label = styled.label`
 const Label1 = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: white;
   display: flex;
   align-items: flex-start;  
   justify-content: flex-start;
   align-self: start;
 `;
 
-  const Input = styled.input`
-    flex: 1;
-    min-width: 100px;
-    padding: 10px;
-    border: none;
-    background: rgba(200, 200, 200, 0.15);
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    color: #fff;
-    outline: none;
+const Input = styled.input`
+  flex: 1;
+  min-width: 100px;
+  padding: 10px;
+  border: none;
+  background: rgba(200, 200, 200, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #fff;
+  outline: none;
 
-    &::placeholder {
-        color: rgba(255,255,255,0.5);
-    }
+  &::placeholder {
+      color: rgba(255,255,255,0.5);
+  }
   `;
 
-  const TelForm = styled.div`
-    display: flex;
-    gap: 10px;
-    flex: 1;
-    justify-content: space-between;
-    flex-wrap: wrap;
+const TelForm = styled.div`
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
-  const AvatarContainer = styled.div`
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin-top: 15px;
-    margin-right: 20px;
-  `;
-
-  const AuthButton = styled.button`
-    width: 80px;
-    height: 40px;
-    background-color: #292E49;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    cursor: pointer;
-
-    &:hover {
-      background-color: #000; 
-    }
-  `;
-
- const SizeInput = styled(Input)`
-    flex: 1;
-    min-width: 50px;
-    max-width: 120px;
-    text-align: center;
-    font-family: "Prata-Regular";
-    font-size: 12px;
+const AvatarContainer = styled.div`
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-top: 15px;
+  margin-right: 20px;
 `;
 
- const PhoneInput = styled.input`
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: rgba(200, 200, 200, 0.15);
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    min-width: 100px;
-    color: #fff;
-    outline: none;
+const AuthButton = styled.button`
+  width: 80px;
+  height: 40px;
+  background-color: #292E49;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  cursor: pointer;
 
-    &::placeholder {
-        color: rgba(255,255,255,0.5);
-    }
+  &:hover {
+    background-color: #000; 
+  }
+`;
+
+const SizeInput = styled(Input)`
+  flex: 1;
+  min-width: 50px;
+  max-width: 120px;
+  text-align: center;
+  font-size: 12px;
+`;
+
+const PhoneInput = styled.input`
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: rgba(200, 200, 200, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 100px;
+  color: #fff;
+  outline: none;
+
+  &::placeholder {
+      color: rgba(255,255,255,0.5);
+  }
 `;
 
 const SharedBox = styled.div`
@@ -640,10 +644,10 @@ const PictureBox = styled(SharedBox).attrs({ as: 'label' })`
   cursor: pointer;
 `;
 
-  const AddImg = styled.img`
-    width: 40px;
-    height: 40px;
-  `;
+const AddImg = styled.img`
+  width: 40px;
+  height: 40px;
+`;
 
 const ImageBoxWrapper = styled.div`
   display: flex;
@@ -655,7 +659,6 @@ const ImageBoxWrapper = styled.div`
 const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   margin-top: 10px;
   font-size: 12px;
-  font-family: "Prata-Regular";
   border: none;
   border-radius: 6px;
   background-color: #292E49;
@@ -664,44 +667,41 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   cursor: pointer;
 
    &:hover {
-      background-color: #000; 
-    }
+    background-color: #000; 
+  }
 
 `;
 
-  const PreviewImg = styled.img`
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-  `;
-
-  const FieldWrapper = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+const PreviewImg = styled.img`
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
-  const VerifiedMessage = styled.p`
-    color: #007bff;
-    font-size: 12px;
-    font-family: "Prata-Regular";
-    margin-top: 4px;
-    margin-left: 4px;
-    margin-bottom: 1px;
-  `;
+const FieldWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
 
-  const TimerText = styled.p`
-    color: #007bff;
-    font-size: 12px;
-    font-family: "Prata-Regular";
-    margin-right: 160px;
+const VerifiedMessage = styled.p`
+  color: #007bff;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-bottom: 1px;
+`;
+
+const TimerText = styled.p`
+  color: #007bff;
+  font-size: 12px;
+  margin-right: 160px;
 `;
 
 const LabelWithIcon = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
   color: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;

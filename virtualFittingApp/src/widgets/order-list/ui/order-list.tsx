@@ -34,14 +34,9 @@ export function OrderList() {
 
 const Wrapper = styled.div`
   width: 100%;
-  max-width: 1000px;
-  padding: 20px;  
-  box-sizing: border-box;
-  margin: 0 auto;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     max-width: 100%;
-    padding: 10px;
   }
 `;
 

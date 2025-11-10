@@ -69,7 +69,7 @@ export function CanceledOrderCard({ order }: Props) {
 
 export const StyledGlassCard = styled(GlassBox)`
   width: 100%;
-  padding: 16px 20px;
+  padding: 24px;
   overflow: hidden;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -87,16 +87,14 @@ export const CardHeader = styled.div`
 export const DateText = styled.p`
   margin: 0;              
   font-weight: 600;
-  font-size: 16px;
-  line-height: 1.2;        
+  font-size: 16px;      
   color: #fff;
 `;
 
 export const CategoryText = styled.p`
   margin: 0;               
-  font-size: 16px;
-  line-height: 1.2;
-  color: rgba(255, 255, 255, 0.7);
+  font-size: 14px;
+  color: #bbbbbb;
 `;
 
 export const ActiveDivider = styled.div`
@@ -114,7 +112,7 @@ export const ActiveDivider = styled.div`
 export const OrderCard = styled.div`
   display: flex;
   gap: 20px;                 
-  width: 100%;
+  width: 800px;
   padding: 10px 2px;        
   
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -124,24 +122,17 @@ export const OrderCard = styled.div`
 `;
 
 export const ImageBox = styled.img`
-  width: 120px;              
-  height: 130px;             
-  background-color: #d9d9d9;
-  border-radius: 10px;       
+  width: 80px;
+  height: 100px;
   object-fit: cover;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    width: 72px;
-    height: 86px;
-    border-radius: 8px;
-  }
+  border-radius: 8px;
 `;
 
 export const RightSection = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  row-gap: 6px;              
+  row-gap: 2px;              
 `;
 
 export const TitleLine = styled.div`
@@ -152,16 +143,14 @@ export const TitleLine = styled.div`
 `;
 
 export const Brand = styled.div`
-  font-weight: 600; 
-  font-family: "Prata-Regular";
-  font-size: 18px;
+  font-wight: 600;
+  font-size: 14px;
   color: #fff;
 `;
 
 export const OrderDetail = styled.div`
-  font-size: 16px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 14px;
+  color: #bbbbbb;
   text-decoration: underline;
   cursor: pointer;
   transition: color 0.2s ease;
@@ -172,26 +161,20 @@ export const OrderDetail = styled.div`
 `;
 
 export const ProductName = styled.div`
-  font-size: 16px; 
-  font-family: "Prata-Regular";          
-  font-weight: 600;          
-  line-height: 1.3;
-  color: rgba(255, 255, 255, 0.95);
+  font-size: 14px;        
+  color: white;
   text-align: left;
 `;
 
 export const OptionText = styled.div`
-  font-size: 14px; 
-  font-family: "Prata-Regular";         
-  line-height: 1.35;
-  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;   
+  color: #bbbbbb;
   text-align: left;
 `;
 
 export const Price = styled.div`
   font-weight: 700;
-  font-family: "Prata-Regular";
-  font-size: 16px;          
+  font-size: 15px;          
   color: #fff;
   text-align: left;
 `;

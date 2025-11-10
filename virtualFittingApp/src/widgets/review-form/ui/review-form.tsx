@@ -246,8 +246,7 @@ export const ReviewLabel = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 18px;
-  font-family: "Prata-Regular";
+  font-size: 15px;
   margin-bottom: 6px;
   width: 100%;
   color: rgba(255, 255, 255, 0.9);
@@ -255,8 +254,7 @@ export const ReviewLabel = styled.div`
 
 export const LengthGuide = styled.span`
   font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.6);
+  color: #bbbbbb;
 `;
 
 export const ReviewTextarea = styled.textarea`
@@ -265,8 +263,7 @@ export const ReviewTextarea = styled.textarea`
   padding: 10px;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
-  font-family: "Prata-Regular";
+  font-size: 13px;
   background: rgba(200, 200, 200, 0.15);
   color: #fff;
   resize: none;
@@ -279,9 +276,8 @@ export const ReviewTextarea = styled.textarea`
 `;
 
 export const CharCount = styled.div`
-  font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  color: #bbbbbb;
   margin-top: 4px;
   text-align: right;
   width: 100%;
@@ -295,7 +291,6 @@ export const RegisterButton = styled.button`
   border: none;
   border-radius: 6px;
   font-size: 16px;
-  font-family: "Prata-Regular";
   cursor: pointer;
 
   &:hover {
@@ -362,7 +357,6 @@ export const UploadInner = styled.div`
 
 export const CountText = styled.div`
   font-size: 12px;
-  font-family: "Prata-Regular";
 `;
 
 export const AddIconImage = styled.img`
@@ -389,8 +383,7 @@ const SizeInput = styled.input`
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 16px;
-  font-family: "Prata-Regular";
+  font-size: 13px;
   text-align: left;
   resize: none;
   outline: none;

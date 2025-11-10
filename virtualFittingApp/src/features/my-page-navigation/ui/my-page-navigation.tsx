@@ -28,7 +28,6 @@ const MenuList = styled.div`
   flex-direction: column;
   gap: 16px;
   width: 100%;
-  max-width: 1200px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     max-width: 100%;
@@ -38,14 +37,12 @@ const MenuList = styled.div`
 const MenuItem = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 13px 5px;
-  font-size: 20px;
-  font-family: "Prata-Regular";
+  padding: 16px 8px;
+  font-size: 14px;
   color: rgba(255, 255, 255, 0.9);
   border-bottom: 1px solid rgba(255, 255, 255, 0.5);
   cursor: pointer;
   text-align: left;
-  margin-left: 8px;
 `;
 
 const ArrowIcon = styled.img`

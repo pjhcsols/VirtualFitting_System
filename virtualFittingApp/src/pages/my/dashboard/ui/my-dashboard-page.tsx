@@ -15,7 +15,7 @@ export function MyDashboardPage() {
 const PageWrapper = styled.div`
   position: relative;
   width: 100%;
-  min-height: 100vh;
+  padding: 70px 50px;
   display: flex;
   flex-direction: column;
   align-items: center;

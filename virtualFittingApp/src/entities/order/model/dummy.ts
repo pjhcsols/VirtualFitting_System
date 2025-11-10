@@ -6,6 +6,7 @@ export const orderDummyData: OrderItem[] = [
     date: "2025-01-20",
     brand: "BASILIUM",
     productName: "클래식 B 루즈핏 티셔츠",
+    productId: 1,
     options: {
       color: "black",
       size: "XL",
@@ -21,6 +22,7 @@ export const orderDummyData: OrderItem[] = [
     date: "2025-01-18",
     brand: "NIKE",
     productName: "에어포스1",
+    productId: 2,
     options: {
       color: "white",
       size: "270",
@@ -36,6 +38,7 @@ export const orderDummyData: OrderItem[] = [
     date: "2025-01-15",
     brand: "ADIDAS",
     productName: "슈퍼스타 오리지널",
+    productId: 3,
     options: {
       color: "black/white",
       size: "275",

@@ -37,9 +37,8 @@ const Wrapper = styled.div`
 const Stat = styled.div`
   flex: 1;
   text-align: center;
-  font-size: 20px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  color: white;
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -49,7 +48,6 @@ const Stat = styled.div`
 
 const Count = styled.span`
   font-size: 14px;
-  font-weight: bold;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  color: white;
 `;

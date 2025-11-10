@@ -35,6 +35,7 @@ export const useReviewForm = () => {
     pantsTotalLength: 0,
     waistWidth: 0,
     hipWidth: 0,
+    thighWidth: 0,
     rise: 0,
     hemWidth: 0,
   };
