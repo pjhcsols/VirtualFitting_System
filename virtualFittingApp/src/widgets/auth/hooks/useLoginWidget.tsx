@@ -34,7 +34,7 @@ function useLoginWidget() {
     });
   };
 
-  const onSubmitLoginInfo = async (e: MouseEvent<HTMLDivElement>) => {
+  const onSubmitLoginInfo = async (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const res = await userLogin(loginInfo);
     if (res === 401) {

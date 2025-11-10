@@ -1,33 +1,29 @@
 import { useQuery } from '@tanstack/react-query';
-import { useCookies } from 'react-cookie';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { fetchMyLikedProductIds } from '@/entities/like';
 
 const productLikeKeys = {
   all: ['product-likes'] as const,
-  lists: (userId: string | undefined) => [...productLikeKeys.all, 'list', userId] as const,
+  lists: (userId: string | null) => [...productLikeKeys.all, 'list', userId] as const,
 };
 
 export const useLikedProductIdsQuery = () => {
-  const [cookies] = useCookies(['access-token']);
-  const isLoggedIn = useRecoilValue(authState);
+  const { isLoggedIn, userId } = useRecoilValue(authState);
   
-  const accessToken = cookies['access-token']; 
-  const authUserId = accessToken;
-  const isQueryEnabled = isLoggedIn && !!authUserId;
+  const isQueryEnabled = isLoggedIn && !!userId;
   
   const { 
     data: likedProductIdsQueryData = [], 
     isLoading, 
     error 
   } = useQuery({
-    queryKey: productLikeKeys.lists(authUserId),
+    queryKey: productLikeKeys.lists(userId),
     queryFn: () => {
-      if (!authUserId) {
+      if (!userId) {
         return Promise.resolve([]); 
       }
-      return fetchMyLikedProductIds(authUserId); 
+      return fetchMyLikedProductIds(userId); 
     },
     enabled: isQueryEnabled, 
     staleTime: 1000 * 60 * 5,
@@ -39,7 +35,6 @@ export const useLikedProductIdsQuery = () => {
     likedProductIds,
     isLoading,
     error,
-
-    queryKey: productLikeKeys.lists(authUserId), 
+    queryKey: productLikeKeys.lists(userId), 
   };
 };

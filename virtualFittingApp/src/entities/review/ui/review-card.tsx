@@ -89,8 +89,6 @@ export const ReviewCard = ({ order, reviewData, onDelete }: ReviewCardProps) => 
 };
 
 
-
-
 export const CardWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -113,7 +111,6 @@ export const Header = styled.div`
 
 export const StatusText = styled.span`
   font-weight: bold;
-  font-family: "Prata-Regular";
   color: #fff;
 `;
 
@@ -134,7 +131,6 @@ export const StarImg = styled.img`
 
 export const DateText = styled.span`
   margin-left: 8px;
-  font-family: "Prata-Regular";
   color: rgba(255, 255, 255, 0.7);
 `;
 

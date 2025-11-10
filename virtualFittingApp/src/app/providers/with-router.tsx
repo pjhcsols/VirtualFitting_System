@@ -22,6 +22,7 @@ import { WriteReviewPage } from "@/pages/my/write-review";
 import { CartPage } from "@/pages/cart";
 import { TermsPage } from "@/pages/terms";
 import { PrivacyPage } from "@/pages/privacy";
+import { MypageDetail } from "@/pages/my/ui/MyPageDetail";
 
 import {
   MainPage,
@@ -98,6 +99,7 @@ const Routing = () => (
 
     <Route path="/mypage" element={<MyPageLayout />}>
       <Route index element={<MyDashboardPage />} />
+      <Route path="detail" element={<MypageDetail />} />
       <Route path="order" element={<MyOrderListPage />} />
       <Route path="order/confirmation" element={<OrderConfirmationPage />} />
       <Route path="order/:id" element={<MyOrderDetailPage />} />

@@ -23,8 +23,7 @@ const Wrapper = styled.div`
   cursor: pointer;
   width: 100%;
   justify-content: flex-start;
-  margin-top: 30px;
-  max-width: 1000px;
+  padding: 16px 4px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     max-width: 100%;
@@ -38,10 +37,9 @@ const Avatar = styled.img`
 `;
 
 const UserName = styled.span`
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 500;
   color: rgba(255, 255, 255, 0.9);
-  font-family: "Prata-Regular";
 `;
 
 const ArrowIcon = styled.img`

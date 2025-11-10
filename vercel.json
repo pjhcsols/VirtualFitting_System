@@ -2,7 +2,18 @@
   "rewrites": [
     {
       "source": "/b1/images/:*",
-      "destination": "http://basilium.co.kr:8080/b1/images:path*"
+      "destination": "https://api.basilium.ai.kr/b1/images:path*"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/img/:path*",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
     }
   ]
 }
