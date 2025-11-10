@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/b1/images/:*",
-      "destination": "https://api.basilium.ai.kr/b1/images:path*"
+      "source": "/b1/images/:path*",
+      "destination": "https://api.basilium.ai.kr/b1/images/:path*"
     }
   ],
   "headers": [
