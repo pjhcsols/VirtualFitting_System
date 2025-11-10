@@ -48,8 +48,8 @@ const OrderCard = styled.div`
 `;
 
 const ImageBox = styled.img`
-  width: 120px;
-  height: 130px;
+  width: 80px;
+  height: 100px;
   background-color: #d9d9d9;
   border-radius: 10px;
   object-fit: cover;
@@ -60,7 +60,7 @@ const RightSection = styled.div`
   flex-direction: column;
   justify-content: center;
   flex: 1;
-  gap: 8px;
+  gap: 2px;
 `;
 
 const TitleLine = styled.div`
@@ -71,22 +71,19 @@ const TitleLine = styled.div`
 `;
 
 const Brand = styled.div`
-  font-weight: bold;
-  font-family: "Prata-Regular";
-  font-size: 18px;
+  font-weight: 500;
+  font-size: 14px;
   color: #fff;
 `;
 
 const ProductName = styled.div`
-  font-size: 16px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  color: white;
   text-align: left;
 `;
 
 const OptionText = styled.div`
-  font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
+  color: #bbbbbb;
   text-align: left;
 `;
