@@ -100,3 +100,20 @@ export const reportPaymentResult = async (params: ReportPaymentResultParams): Pr
     console.error(`[재고 예약 정리] API 요청 실패:`, error);
   }
 };
+
+export const getPaymentInfo = async ({
+  page,
+  size,
+}: {
+  page: number;
+  size: number;
+}) => {
+  const res = await API_BASILIUM.get(
+    `/b1/payment/my?page=${page}&size=${size}`,
+  );
+  if (res.status === 200) {
+    console.log("결제 내역을 가져오는데 성공했습니다.");
+    return res.data;
+  }
+  throw new Error(`Failed to fetch payment: ${res.status}`); 
+};

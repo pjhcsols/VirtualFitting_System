@@ -83,7 +83,9 @@ export interface UserDetail {
 }
 
 export interface UpdateAddressRequest {
-  address: string;
+  name: string;
+  address: string;       
+  phoneNumber: string; 
 }
 
 export type UserDetailResponse = ApiResponse<UserDetail>;

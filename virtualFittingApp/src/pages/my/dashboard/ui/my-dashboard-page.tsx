@@ -29,7 +29,7 @@ const ContentWrapper = styled.div`
   flex: 1;
   width: 100%;
   padding: 20px;
-  margin-top: 50px;
+  margin-bottom: 100px;
   box-sizing: border-box;
 
   @media (max-width: ${BREAKPOINTS.md}px) {

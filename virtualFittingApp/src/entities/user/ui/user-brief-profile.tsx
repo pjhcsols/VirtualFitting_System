@@ -45,8 +45,8 @@ const UserName = styled.span`
 `;
 
 const ArrowIcon = styled.img`
-  width: 12px;
-  height: 12px;
+  width: 20px;
+  height: 20px;
   object-fit: contain;
   color: black;
   cursor: pointer;

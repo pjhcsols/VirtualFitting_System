@@ -14,11 +14,14 @@ export const useUpdateAddress = () => {
     mutationFn: ({ userId, addressData }) => {
       return updateAddress(userId, addressData);
     },
-    
+      
     onSuccess: (updatedUserDetail) => {
       if (updatedUserDetail) {
         queryClient.invalidateQueries({ queryKey: ['userDetails', 'me'] });
         queryClient.invalidateQueries({ queryKey: ['userInfo'] }); 
+
+        console.log("주소 변경 성공. 캐시 무효화 완료.");
+        alert("배송 정보가 수정되었습니다.")
       }
     },
     onError: (error) => {

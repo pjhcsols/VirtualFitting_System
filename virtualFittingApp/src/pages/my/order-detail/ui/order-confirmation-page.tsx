@@ -24,7 +24,10 @@ export function OrderConfirmationPage() {
   } = location.state || {};
 
    useEffect(() => {
-    if (!orderId) return;
+    if (!orderId) {
+      console.log(orderId);
+      return;
+    }
 
     (async () => {
       try {
