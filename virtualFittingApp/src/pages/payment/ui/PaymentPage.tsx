@@ -126,7 +126,7 @@ export const PaymentPage = () => {
 
     const shippingAddress = {
       name: user.name,
-      address: user.address,
+      address: `(${user.address.zonecode}) ${user.address.address} ${user.address.detailAddress}`,
       phone: user.phoneNumber,
     };
 

@@ -3,19 +3,19 @@ import { useEffect } from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import { GlassButton } from '@/shared/components/glass-button';
 import { BREAKPOINTS } from '@/shared';
-import { GlassBox } from '@/shared/components/glass-box';
-import { ShippingAddressCard } from '@/entities/shipping-address';
 import { BankAccountInfoCard } from '@/entities/payment';
 import { OrderInfoCard } from '@/entities/order';
 import { saveReviewPayload } from '@/widgets/review-list/utils/review-payload';
 import { searchProducts } from '@/entities/product';
+import { ShippingAddressWidget } from '@/widgets/shipping-address';
+import { useOrderForm as useUserForm } from '@/entities/user';
 
 export function OrderConfirmationPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  console.log('Location State:', location.state);
+  const { user, isLoading: isUserLoading, handleSaveAddress } = useUserForm();
+
   const { 
-    shippingAddress, 
     orderId, 
     item, 
     totalAmount,
@@ -25,16 +25,13 @@ export function OrderConfirmationPage() {
 
    useEffect(() => {
     if (!orderId) {
-      console.log(orderId);
       return;
     }
 
     (async () => {
       try {
         const results = await searchProducts(item.productName);
-        console.log("전체", results);
         const first = results?.[0];
-        console.log("첫번재", first);
         
         const addItem = {
           ...item,
@@ -52,7 +49,6 @@ export function OrderConfirmationPage() {
           ...(deadline ? { deadline: String(deadline) } : {}),
         });
       } catch (e) {
-        // 실패해도 기존 item으로 저장
         saveReviewPayload({
           orderId: String(orderId),
           item,
@@ -77,14 +73,14 @@ export function OrderConfirmationPage() {
         {orderId && item && (
           <OrderInfoCard orderId={orderId} item={item} />
         )}
-        {shippingAddress && (
-          <GlassBox>
-            <Header>
-              <SectionTitle>배송 정보</SectionTitle>
-            </Header>
-            <ShippingAddressCard {...shippingAddress} />
-          </GlassBox>
+        
+        {!isUserLoading && user && (
+          <ShippingAddressWidget 
+            user={user}
+            onSaveAddress={handleSaveAddress}
+          />
         )}
+
       </CardContainer>
       <ButtonContainer>
         <GlassButton size="medium" width="50%" onClick={() => navigate('/mypage/order')}>
@@ -112,24 +108,6 @@ const TitleContainer = styled.div`
   margin-bottom: 32px;
 `;
 
-// const PageTitle = styled.h1`
-//   font-size: 32px;
-//   font-weight: 700;
-//   color: #eeeeee;
-//   margin: 0 0 12px 0;
-//   text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
-// `;
-
-// const PageSubtitle = styled.p`
-//   font-size: 16px;
-//   font-weight: 400;
-//   color: rgba(255, 255, 255, 0.85)
-//   margin: 0;
-//   line-height: 1.6;
-//   white-space: pre-line;
-//   text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.6);
-// `;
-
 const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -147,19 +125,4 @@ const ButtonContainer = styled.div`
   @media (max-width: ${BREAKPOINTS.sm}px) {
     flex-direction: column;
   }
-`;
-
-const Header = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-`;
-
-const SectionTitle = styled.h2`
-  font-size: 17px;
-  font-weight: 600;
-  color: #fff;
-  margin: 0;
 `;
