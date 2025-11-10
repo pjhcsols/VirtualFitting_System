@@ -1,22 +1,30 @@
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { formatSimpleDate } from "@/shared/lib/date.util";
 import type { OrderItem } from "../model/types";
 import img_alert from "@/shared/assets/images/alert-fallback.png";
+import { CardHeader, DateText, ActiveDivider, Price } from "./canceled-order-card";
 
 export type ReviewOrderPayload = {
   orderId: string;
-  deadline: string;
   item: OrderItem;
+  deadline?: string; 
 };
 
 export function ReviewableOrderCard({ order }: { order: ReviewOrderPayload }) {
+  const navigate = useNavigate();
   const { item } = order;
 
   return (
     <div>
+      <CardHeader>
+        <DateText>{formatSimpleDate(item.date)}</DateText>
+      </CardHeader>
+      
+      <ActiveDivider />
+      
       <OrderCard>
-        {/* <ImageBox src={item.productImageUrl || img_alert} alt="상품 이미지" /> */}
-        <ImageBox src={img_alert} alt="상품 이미지" />
+        <ImageBox src={item.productImageUrl || img_alert} alt="상품 이미지" onClick={() => navigate(`/products/${item.productId}`)} />
         <RightSection>
           <TitleLine>
             {/* <Brand>{item.brand}</Brand> */}
@@ -25,9 +33,8 @@ export function ReviewableOrderCard({ order }: { order: ReviewOrderPayload }) {
           <ProductName>{item.productName}</ProductName>
           <OptionText>
             {item.options.color} / {item.options.size} / {item.options.quantity}개
-            {" | "}
-            {formatSimpleDate(item.date)} 구매
           </OptionText>
+          <Price>{item.price.toLocaleString()}원</Price>
         </RightSection>
       </OrderCard>
     </div>

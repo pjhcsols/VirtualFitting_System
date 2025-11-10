@@ -16,6 +16,7 @@ export type ReviewData = {
 };
 
 export type ReviewRequest = {
+  paymentId : number;
   purchaseSize: string;
   purchaseColor: string;
   rating: number;

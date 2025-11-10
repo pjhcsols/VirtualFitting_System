@@ -1,11 +1,12 @@
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
 
-const TABS = ["작성가능", "작성완료"];
-
+export const TABS = ["작성가능", "작성완료"] as const;
+export type Tab = typeof TABS[number];
+  
 type ReviewListFilterProps = {
-  activeTab: string;
-  onTabClick: (tab: string) => void;
+  activeTab: Tab;
+  onTabClick: (tab: Tab) => void;
 };
 
 export function ReviewListFilter({ activeTab, onTabClick }: ReviewListFilterProps) {

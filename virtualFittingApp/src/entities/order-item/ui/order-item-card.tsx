@@ -17,7 +17,7 @@ export const OrderItemCard = ({ item, finalPrice }: OrderItemCardProps) => {
       <ItemImage src={item.image} alt={item.name} />
       <ItemInfo>
         <div>
-          <Brand>{item.brand}</Brand>
+          <Brand>{item.brand}</Brand>   
           <Name>{item.name}</Name>
           <Option>
             {item.color} · {item.size} / {item.quantity}개
