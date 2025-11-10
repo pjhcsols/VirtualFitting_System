@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useCancelList } from "../hooks/use-cancel-list";
 import { CancelListFilter } from "@/features/cancel-list-filter";
 import { CanceledOrderCard } from '@/entities/order';
+import alertImg from "@/shared/assets/images/alert-fallback.png";
 import { BREAKPOINTS } from '@/shared';
 
 export function CancelList() {
@@ -19,7 +20,10 @@ export function CancelList() {
 
       <ContentWrapper>
         {filteredOrders.length === 0 ? (
-          <EmptyWrapper>...</EmptyWrapper>
+          <EmptyWrapper>
+            <AlertImage src={alertImg} alt="알림 아이콘" />
+            <Message>관련 내역이 없습니다.</Message>
+          </EmptyWrapper>
         ) : (
           <CardGrid>
             {filteredOrders.map((order) => (
@@ -63,4 +67,17 @@ const EmptyWrapper = styled.div`
   flex-direction: column;
   align-items: center;
   margin-top: 70px;
+  gap: 10px;
+`;
+
+const Message = styled.p`
+  font-size: 20px;
+  font-family: "Prata-Regular";
+  margin-bottom: 20px;
+  color: #d9d9d9;
+`;
+
+const AlertImage = styled.img`
+  width: 80px;
+  height: 80px;
 `;

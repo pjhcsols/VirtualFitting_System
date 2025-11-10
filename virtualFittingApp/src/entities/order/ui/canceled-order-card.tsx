@@ -69,11 +69,13 @@ export function CanceledOrderCard({ order }: Props) {
 
 export const StyledGlassCard = styled(GlassBox)`
   width: 100%;
+  max-width: 1000px;
   padding: 16px 20px;
   overflow: hidden;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 14px 16px;
+    width: 100%;
   }
 `;
 

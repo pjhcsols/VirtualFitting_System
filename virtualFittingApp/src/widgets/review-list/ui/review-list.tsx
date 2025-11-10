@@ -60,7 +60,7 @@ const OuterWrapper = styled.div`
 const ContentWrapper = styled.div`
   width: 100%;
   max-width: 1000px;
-  padding: 30px;
+  padding: 10px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 0 16px;
