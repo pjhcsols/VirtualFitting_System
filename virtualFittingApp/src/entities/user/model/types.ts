@@ -84,7 +84,7 @@ export interface UserDetail {
 
 export interface UpdateAddressRequest {
   name: string;
-  address: string;        
+  address: string;       
   phoneNumber: string; 
 }
 

@@ -5,6 +5,7 @@ import { GlassButton } from '@/shared/components/glass-button';
 import { formatPhoneNumber } from '@/shared/lib/format.util';
 import { useUpdateAddress } from '@/features/update-address/hooks/use-update-address'; 
 import type { UserDetail, UpdateAddressRequest } from '@/entities/user/model/types';
+import type { Address } from '@/entities/user/model/types';
 
 interface ShippingAddressWidgetProps {
   user: UserDetail;
@@ -13,7 +14,7 @@ interface ShippingAddressWidgetProps {
 
 export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWidgetProps) => {
   const [name, setName] = useState(user.name);
-  const [address, setAddress] = useState(user.address);
+  const [address, setAddress] = useState<Address>(user.address);
   // const [zonecode, setZonecode] = useState<string>("");
   const [phoneNumber, setPhoneNumber] = useState(user.phoneNumber);
 
@@ -31,17 +32,17 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
     }
     new window.daum.Postcode({
       oncomplete: (data: any) => {
-        // 도로명 주소 우선, 없으면 지번 주소
-        const road = data.roadAddress?.trim();
-        const jibun = data.jibunAddress?.trim();
-        setAddress(road || jibun || "");
-        // setZonecode(data.zonecode || "");
+        setAddress(prev => ({
+          ...prev,
+          address: data.roadAddress || data.jibunAddress || "",
+          // zonecode: data.zonecode || "",
+        }));
       },
     }).open();
   };
 
   const handleSave = () => {
-    if (!address || address.trim().length < 5) {
+    if (!address.address || address.address.trim().length < 5) {
       alert('유효한 주소를 입력해 주세요.');
       return;
     }
@@ -54,9 +55,10 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
       return;
     }
 
+    const addressText = `${address.address} ${address.detailAddress ?? ""}`.trim();
     const updateData: UpdateAddressRequest = {
       name: name,
-      address: address,
+      address: addressText,
       phoneNumber: phoneNumber,
     };
     
@@ -73,7 +75,8 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
 
   const nothingChanged =
     (user.name ?? '') === name.trim() &&
-    (user.address ?? '') === address.trim() &&
+    (user.address?.address ?? '') === (address.address ?? '') &&
+    (user.address?.detailAddress ?? '') === (address.detailAddress ?? '') &&
     (user.phoneNumber ?? '') === phoneNumber
 
   const isSaveDisabled = isUpdating || nothingChanged;
@@ -100,8 +103,8 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
         <AddressRow>
           <InputField
             type="text"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={address.address}
+            onChange={(e) => setAddress(prev => ({ ...prev, address: e.target.value }))}
             disabled={isUpdating}
             placeholder="도로명주소 + 상세주소"
           />
@@ -109,6 +112,24 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
             검색
           </SearchBtn>
         </AddressRow>
+
+        <Label>상세주소</Label>
+        <InputField
+          type="text"
+          value={address.detailAddress}
+          onChange={(e) => setAddress(prev => ({ ...prev, detailAddress: e.target.value }))}
+          disabled={isUpdating}
+          placeholder="상세주소"
+        />
+
+        {/* <Label>우편번호</Label>
+        <InputField
+          type="text"
+          value={address.zonecode}
+          onChange={(e) => setAddress(prev => ({ ...prev, zonecode: e.target.value }))}
+          disabled={isUpdating}
+          placeholder="우편번호"
+        /> */}
 
         <Label>전화번호</Label>
         <InputField
@@ -178,4 +199,4 @@ const AddressRow = styled.div`
 
 const SearchBtn = styled(GlassButton)`
   white-space: nowrap;
-`;
+`; 
