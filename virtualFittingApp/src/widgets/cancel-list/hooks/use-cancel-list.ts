@@ -1,11 +1,11 @@
-import { useState, useEffect } from 'react';
-import type { OrderItem } from '@/entities/order';
+import { useState, useEffect } from "react";
+import type { OrderItem } from "@/entities/order";
 // import { fetchCancelListApi } from '../api/cancel.api';
 // [민준] 나중에 연동하슈.
 
 export const useCancelList = () => {
   const [activeTab, setActiveTab] = useState<string>("전체");
-  const [allOrders, setAllOrders] = useState<OrderItem[]>([]);
+  const allOrders: OrderItem[] = [];
   const [filteredOrders, setFilteredOrders] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -16,7 +16,6 @@ export const useCancelList = () => {
         setIsLoading(true);
         // const data = await fetchCancelListApi();
         // setAllOrders(data);
-
       } catch (err) {
         setError(err as Error);
         console.error("취소/반품 목록을 불러오는 데 실패했습니다.", err);
@@ -33,7 +32,7 @@ export const useCancelList = () => {
       setFilteredOrders(allOrders);
     } else {
       setFilteredOrders(
-        allOrders.filter((order) => order.category === activeTab)
+        allOrders.filter((order) => order.category === activeTab),
       );
     }
   }, [activeTab, allOrders]);
