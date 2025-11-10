@@ -106,7 +106,7 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
             value={address.address}
             onChange={(e) => setAddress(prev => ({ ...prev, address: e.target.value }))}
             disabled={isUpdating}
-            placeholder="도로명주소 + 상세주소"
+            placeholder="도로명주소"
           />
           <SearchBtn onClick={openDaumPostcode} size='small' disabled={isUpdating}>
             검색
@@ -119,7 +119,7 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
           value={address.detailAddress}
           onChange={(e) => setAddress(prev => ({ ...prev, detailAddress: e.target.value }))}
           disabled={isUpdating}
-          placeholder="상세주소"
+          placeholder="상세주소를 입력해주세요."
         />
 
         {/* <Label>우편번호</Label>

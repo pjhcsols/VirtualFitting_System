@@ -42,7 +42,7 @@ const DashboardPanel = styled(GlassBox)`
   padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 16px;=
+  gap: 16px;
 `;
 
 const Divider = styled.hr`
