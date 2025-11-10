@@ -20,7 +20,7 @@ export function OrderSummaryCard({ order }: Props) {
 
       {/* 본문 */}
       <OrderCard>
-        <ImageBox src={order.productImageUrl} alt={order.productName} />
+        <ImageBox src={order.productImageUrl} alt={order.productName} onClick={() => navigate(`/products/${order.productId}`)}/>
         <RightSection>
           <TitleLine>
             <Brand>{order.brand}</Brand>

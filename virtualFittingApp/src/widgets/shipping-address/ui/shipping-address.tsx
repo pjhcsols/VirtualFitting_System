@@ -75,9 +75,9 @@ export const ShippingAddressWidget = ({ user, onSaveAddress }: ShippingAddressWi
 
   const nothingChanged =
     (user.name ?? '') === name.trim() &&
+    (user.phoneNumber ?? '') === phoneNumber &&
     (user.address?.address ?? '') === (address.address ?? '') &&
-    (user.address?.detailAddress ?? '') === (address.detailAddress ?? '') &&
-    (user.phoneNumber ?? '') === phoneNumber
+    (user.address?.detailAddress ?? '') === (address.detailAddress ?? '')
 
   const isSaveDisabled = isUpdating || nothingChanged;
 

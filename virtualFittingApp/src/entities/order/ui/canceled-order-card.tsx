@@ -74,6 +74,7 @@ export const StyledGlassCard = styled(GlassBox)`
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 14px 16px;
+    width: 100%;
   }
 `;
 

@@ -28,7 +28,6 @@ export function useReviewList() {
       const normalizedItem: OrderItem = {
         id: String(injected.item?.id ?? injected.orderId),
         productName: String(injected.item?.productName ?? ""),
-        productId: Number(injected.item.productId ?? 0),
         date: injected.item?.date
           ? new Date(injected.item.date).toISOString()
           : new Date().toISOString(),
@@ -36,6 +35,7 @@ export function useReviewList() {
         brand: injected.item?.brand ?? "",
         category: injected.item?.category ?? "",
         price: Number(injected.item?.price ?? 0),
+        productId: Number(injected.item?.productId ?? 0),
         options: injected.item?.options ?? { color: "", size: "", quantity: 1 },
       };
 

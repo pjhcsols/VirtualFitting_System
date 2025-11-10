@@ -1,13 +1,15 @@
 import { useOrderDetails } from "../hooks/use-order-details";
 import { formatSimpleDate } from "@/shared/lib/date.util";
 import alertImg from "@/shared/assets/images/alert-fallback.png";
+import Cookies from "js-cookie";
 import * as S from "./order-details.styled";
 
 export function OrderDetails() {
-  const { order, isLoading, error } = useOrderDetails();
+  const authUserId = Cookies.get("userId");
+  const { detail, isLoading, error } = useOrderDetails(authUserId);
 
   if (isLoading) return <div>주문 정보를 불러오는 중...</div>;
-  if (error || !order) return <div>주문 정보를 찾을 수 없습니다.</div>;
+  if (error || !detail) return <div>주문 정보를 찾을 수 없습니다.</div>;
 
   return (
     <S.Wrapper>
@@ -15,11 +17,11 @@ export function OrderDetails() {
         <S.SectionLabel>주문 정보</S.SectionLabel>
         <S.InfoRow>
           <S.InfoTitle>주문일자</S.InfoTitle>
-          <S.InfoContent>{formatSimpleDate(order.date)}</S.InfoContent>
+          <S.InfoContent>{formatSimpleDate(detail.createdAt)}</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
           <S.InfoTitle>주문번호</S.InfoTitle>
-          <S.InfoContent>{`20250922-${order.id}`}</S.InfoContent>
+          <S.InfoContent>{detail.orderId}</S.InfoContent>
         </S.InfoRow>
       </S.Section>
 
@@ -29,67 +31,62 @@ export function OrderDetails() {
         <S.SectionLabel>배송 정보</S.SectionLabel>
         <S.InfoRow>
           <S.InfoTitle>받는 분</S.InfoTitle>
-          <S.InfoContent>김**</S.InfoContent>
+          <S.InfoContent>{detail.recipientName}</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
           <S.InfoTitle>주소</S.InfoTitle>
-          <S.InfoContent>부산광역시 ** ******</S.InfoContent>
+          <S.InfoContent>{detail.addressFull}</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
           <S.InfoTitle>연락처</S.InfoTitle>
-          <S.InfoContent>010-****-1234</S.InfoContent>
+          <S.InfoContent>{detail.recipientPhone}</S.InfoContent>
         </S.InfoRow>
       </S.Section>
-      
+
       <S.Divider />
 
       <S.Section>
         <S.SectionLabel>주문 상품</S.SectionLabel>
-        <S.OrderCard>
-          <S.ImageBox src={order.productImageUrl || alertImg} alt={order.productName} />
-          <S.RightSection>
-            <S.Brand>{order.brand}</S.Brand>
-            <S.ProductName>{order.productName}</S.ProductName>
-            <S.OptionText>
-              {order.options.color} / {order.options.size} / {order.options.quantity}개
-            </S.OptionText>
-            <S.Price>{order.price.toLocaleString()}원</S.Price>
-          </S.RightSection>
-        </S.OrderCard>
+        {detail.items.map((it) => (
+          <S.OrderCard key={it.id}>
+            <S.ImageBox src={it.productImageUrl || alertImg} alt={it.productName} />
+            <S.RightSection>
+              <S.Brand>{it.brand}</S.Brand>
+              <S.ProductName>{it.productName}</S.ProductName>
+              <S.OptionText>
+                {it.options.color} / {it.options.size} / {it.options.quantity}개
+              </S.OptionText>
+              <S.Price>{it.price.toLocaleString()}원</S.Price>
+            </S.RightSection>
+          </S.OrderCard>
+        ))}
       </S.Section>
 
       <S.Divider />
-      
 
       <S.Section>
         <S.SectionLabel>결제 정보</S.SectionLabel>
         <S.InfoRow>
           <S.InfoTitle>상품 금액</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
+          <S.InfoContent>{detail.amounts.productAmount.toLocaleString()}원</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
           <S.InfoTitle>할인 금액</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
+          <S.InfoContent>{detail.amounts.brandDiscount.toLocaleString()}원</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
-          <S.InfoTitle>적립금 사용</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
+          <S.InfoTitle>쿠폰 사용</S.InfoTitle>
+          <S.InfoContent>{detail.amounts.couponDiscount.toLocaleString()}원</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
-          <S.InfoTitle>배송비</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
+          <S.InfoTitle>포인트 사용</S.InfoTitle>
+          <S.InfoContent>{detail.amounts.walletUsed.toLocaleString()}원</S.InfoContent>
         </S.InfoRow>
         <S.InfoRow>
           <S.InfoTitle>결제 금액</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
-        </S.InfoRow>
-        <S.InfoRow>
-          <S.InfoTitle>결제 수단</S.InfoTitle>
-          <S.InfoContent></S.InfoContent>
+          <S.InfoContent>{detail.amounts.finalPay.toLocaleString()}원</S.InfoContent>
         </S.InfoRow>
       </S.Section>
-
     </S.Wrapper>
   );
 }
-

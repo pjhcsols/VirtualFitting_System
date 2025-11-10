@@ -3,13 +3,13 @@ export interface OrderItem {
     date: string; 
     brand: string;
     productName: string;
-    productId: number;
     options: {
       color: string;
       size: string;
       quantity: number;
     };
     price: number;
+    productId: number;
     productImageUrl: string;
     category: string;
   }

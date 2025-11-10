@@ -96,3 +96,20 @@ export const confirmOrderPurchase = async (
     return null;
   }
 };
+
+export const getOrderinfoDetail = async (
+  authUserId: string,
+  orderId: string
+): Promise<ApiResponse<OrderStatusResponseData> | null> => {
+  try {
+    const response = await API_BASILIUM.post<ApiResponse<OrderStatusResponseData>>(
+      `/b1/orders/my/${orderId}`,
+      null,
+      { params: { authUserId } }
+    );
+    return response.data;
+  } catch (error) {
+    console.error(`주문상세정보 불러오기 실패.`, error);
+    return null;
+  }
+};
