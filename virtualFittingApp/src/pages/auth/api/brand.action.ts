@@ -1,29 +1,30 @@
-"use server";
-
 import { type BrandUserType } from "@/pages/brand";
 import { BasiliumResponse, NOT_LOGGED_BASILIUM_API } from "@/shared";
-import { combineKey } from "../utils/type";
-import { TPhoneNumerPart } from "@/pages/brand/types/brandUser";
-import { globalEventBus } from "@/shared/event/types/event";
+import { globalEventBus } from "@/shared/event/types/event.d";
 import { AUTH_ERROR_STATUS } from "../constants";
 
 interface ISignUpBrand {
   user: BrandUserType;
-  phoneNumber: TPhoneNumerPart;
-  firmPhoneNumber: TPhoneNumerPart;
+  firmPhone: string;
+  phone: string;
+  businessRegistration: string;
 }
 
 interface ISignUpResponse extends BasiliumResponse {}
 
 export const signUpBrand = async ({
   user,
-  phoneNumber,
-  firmPhoneNumber,
+  phone,
+  firmPhone,
+  businessRegistration,
 }: ISignUpBrand) => {
+  const phoneNumber = "+82" + phone.replace(/[^0-9]/g, "");
+  const firmNumber = "+82" + firmPhone.replace(/[^0-9]/g, "");
   const request: BrandUserType = {
     ...user,
-    ["firmEmail"]: combineKey(phoneNumber),
-    ["phoneNumber"]: combineKey(firmPhoneNumber),
+    phoneNumber: phoneNumber,
+    firmPhone: firmNumber,
+    businessRegistration: businessRegistration,
   };
   const res = await NOT_LOGGED_BASILIUM_API.post<ISignUpResponse>(
     "/b1/brandUsers/signup",

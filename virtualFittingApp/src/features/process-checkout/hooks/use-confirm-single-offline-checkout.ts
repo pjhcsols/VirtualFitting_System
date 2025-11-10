@@ -39,8 +39,6 @@ export const useSingleOfflineConfirmCheckout = () => {
     setIsLoading(true);
     let reservedOrderId: string | undefined;
 
-    console.log("[INPUT LOG] Selected Coupon:", checkoutData.coupon);
-
     try {
       if (!isLoggedIn) {
         alert("결제 처리를 위해 로그인이 필요합니다.");
@@ -62,8 +60,6 @@ export const useSingleOfflineConfirmCheckout = () => {
         throw new Error("상품 재고를 예약하는 데 실패했습니다.");
       }
       const reservedOrderId = reservationData.reserveTaskOrderPayId;
-      console.log(reservedOrderId);
-
       const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
                              ?? (checkoutData.coupon as any)?.walletId 
                              ?? undefined;
@@ -134,7 +130,6 @@ export const useSingleOfflineConfirmCheckout = () => {
       if (reservedOrderId) {
         try {
             await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
-            console.log(`[재고 롤백 성공] ${reservedOrderId}`);
             shouldReAddToCart = true;
         } catch (rollbackError) {
             console.error("[재고 롤백 실패]", rollbackError);

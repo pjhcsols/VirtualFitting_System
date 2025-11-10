@@ -1,6 +1,7 @@
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
-import { Cart, PostCartMeRequest, UpdateCartItemRequest } from "../model/types";
+import type { Cart, PostCartMeRequest, UpdateCartItemRequest } from "../model/types"; 
+
 
 export const upsertCart = async (
     authUserId: string,
@@ -16,8 +17,13 @@ export const upsertCart = async (
         data: requestData || {},
     };
 
-    const action = requestData ? "장바구니 아이템 추가" : "장바구니 조회/생성";
-    return apiClient<Cart>(config, action);
+    const response = await apiClient<Cart>(config); 
+    
+    if (response && (response.status === 200 || response.status === 0) && response.data) {
+        return response.data;
+    }
+    
+    return null;
 };
 
 export const updateCartItem = async (
@@ -33,7 +39,13 @@ export const updateCartItem = async (
     data: updateData,
   };
 
-  return apiClient<Cart>(config, `장바구니 아이템 ID ${itemId} 수정`);
+  const response = await apiClient<Cart>(config); 
+
+  if (response && (response.status === 200 || response.status === 0) && response.data) {
+    return response.data;
+  }
+
+  return null;
 };
 
 export async function deleteCartItems(
@@ -54,5 +66,11 @@ export async function deleteCartItems(
     data: null, 
   };
 
-  return apiClient<Cart>(config, `장바구니 아이템 ID [${itemIds.join(', ')}] 삭제`);
+  const response = await apiClient<Cart>(config); 
+
+  if (response && (response.status === 200 || response.status === 0) && response.data) {
+    return response.data;
+  }
+  
+  return null;
 }

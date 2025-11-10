@@ -4,9 +4,13 @@ import { ColorPopup } from "./color-pop-up";
 import { ColorSwatchesList } from "./color-swatches-list";
 import { fetchProductPrice } from "@/entities/discount";
 import { GlassBox } from "@/shared/components/glass-box";
+import { useProductLike } from "@/features/product-like"; 
+import { ProductLikeButton } from "@/features/product-like";
+
+type ProductWithStatus = any & { isSoldOut: boolean }; 
 
 type ProductCardProps = {
-  product: any;
+  product: ProductWithStatus;
   onClick?: () => void;
 };
 
@@ -15,11 +19,14 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   const [price, setPrice] = useState<{ original: number; discounted: number } | null>(null);
   const maxVisibleColors = 3;
   const remainingColors = (product.productColors?.length || 0) - maxVisibleColors;
+  const { isLiked, toggleLike, isLoading: isLikeToggling } = useProductLike(product.productId);
+  const isSoldOut = product.isSoldOut;
 
   useEffect(() => {
     async function loadPrice() {
       const priceData = await fetchProductPrice(product.productId);
-      if (priceData) {
+      if (priceData) { 
+        
         setPrice({
           original: priceData.baseUnitPrice,
           discounted: priceData.productDiscountedUnitPrice,
@@ -30,11 +37,11 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   }, [product.productId]);
 
   return (
-    <Card onClick={onClick} borderRadius={"8px"}>
+    <Card onClick={onClick} borderRadius={"8px"} $isSoldOut={isSoldOut}>
       <ImageBox $imageUrl={product.productPhotoUrls[0]}>
-        <ProductLikeButtonWrapper>
-          {/* <ProductLikeButton productId={product.productId} isInitiallyLiked={product.isLiked} /> */}
-        </ProductLikeButtonWrapper>
+        {isSoldOut && (
+            <SoldOutOverlay></SoldOutOverlay>
+        )}
         <ColorSwatches>
           <ColorSwatchesList colors={product.productColors?.slice(0, maxVisibleColors) || []} />
           {remainingColors > 0 && (
@@ -53,8 +60,21 @@ function ProductCard({ product, onClick }: ProductCardProps) {
         )}
       </ImageBox>
       <InfoBox>
-        <Brand>{product.categoryName}</Brand>
-        <Name>{product.productName}</Name>
+        <TitleRow>
+          <Category>{product.brandFirmName}</Category>
+          <ProductLikeButtonWrapper>
+            <ProductLikeButton 
+              productId={product.productId} 
+              isInitiallyLiked={isLiked}
+              onToggle={toggleLike}
+              isLoading={isLikeToggling}
+            />
+          </ProductLikeButtonWrapper>
+        </TitleRow>
+        <NameRow>
+          <Name>{product.productName}</Name>
+          {isSoldOut && <SoldOutText>품절</SoldOutText>}
+        </NameRow>
         <PriceBox>
           {price && (
             <>
@@ -71,7 +91,7 @@ function ProductCard({ product, onClick }: ProductCardProps) {
               ) : (
                 <>
                   <PriceRow>
-                    <Price>{price.original.toLocaleString()}원</Price>
+                    <Price>{price?.original?.toLocaleString()}원</Price>
                   </PriceRow>
                 </>
               )}
@@ -83,13 +103,29 @@ function ProductCard({ product, onClick }: ProductCardProps) {
   );
   }
 
-const Card = styled(GlassBox)`
+const Card = styled(GlassBox)<{ $isSoldOut: boolean }>`
   display: flex;
   flex-direction: column;
   position: relative;
   overflow: hidden;
   cursor: pointer;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+`;
+
+const SoldOutOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5;
 `;
 
 const ImageBox = styled.div<{ $imageUrl: string }>`
@@ -107,7 +143,7 @@ const InfoBox = styled.div`
   aspect-ratio: 5 / 1;
 `;
 
-const Brand = styled.div`
+const Category = styled.div`
   display: flex;
   font-family: "pretendard";
   font-size: 11px;
@@ -122,6 +158,24 @@ const Name = styled.div`
   font-size: 13px;
   color: #fff;
 `;
+
+const NameRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+`;
+
+const SoldOutText = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
+`;
+
 
 const PriceBox = styled.div`
   display: flex;
@@ -161,6 +215,13 @@ const Price = styled.div`
   font-weight: 600;
 `;
 
+const TitleRow = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+`;
+
 const ColorSwatches = styled.div`
   position: absolute;
   bottom: 8px;
@@ -171,12 +232,12 @@ const ColorSwatches = styled.div`
 `;
 
 const ProductLikeButtonWrapper = styled.div`
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  z-index: 2;
-  width: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  /* width: 24px;
   height: 24px;
+  z-index: 2;
 `;
 
 const ExtraIcon = styled.div`

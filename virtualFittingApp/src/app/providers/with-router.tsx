@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ScrollToTop } from "@/shared/lib/ui/ScrollToTop";
 
 import {
   PaymentFailPage,
@@ -10,9 +11,9 @@ import { ProductDetailPage } from "@/pages/product/detail";
 import { ProductListPage } from "@/pages/product/list";
 import { MyDashboardPage } from "@/pages/my/dashboard";
 import { MyOrderListPage } from "@/pages/my/order-list";
-import { 
+import {
   MyOrderDetailPage,
-  OrderConfirmationPage, 
+  OrderConfirmationPage,
 } from "@/pages/my/order-detail";
 import { MyCancelListPage } from "@/pages/my/cancel-list";
 import { MyLikeListPage } from "@/pages/my/like-list";
@@ -31,11 +32,11 @@ import {
   LoginPage,
   AdminLogin,
   NormalSignUpPage,
-  BrandSignUpPage,
   SuccessSignUpPage,
   FailedPage,
   AdminHome,
   AdminBanner,
+  BrandSignUp,
   AdminBrandUsers,
 } from "@/pages";
 
@@ -62,7 +63,7 @@ const Routing = () => (
     <Route path="signup" element={<SignUpLayout />}>
       <Route index element={<AuthLobby />} />
       <Route path="normal" element={<NormalSignUpPage />} />
-      <Route path="brand" element={<BrandSignUpPage />} />
+      <Route path="brand" element={<BrandSignUp />} />
       <Route path="success" element={<SuccessSignUpPage />} />
       <Route path="failed" element={<FailedPage />} />
     </Route>
@@ -112,7 +113,10 @@ const Routing = () => (
 );
 
 export const withRouter = (component: () => React.ReactNode) => () => (
-  <BrowserRouter>{component()}</BrowserRouter>
+  <BrowserRouter>
+    <ScrollToTop />
+    {component()}
+  </BrowserRouter>
 );
 
 export default Routing;

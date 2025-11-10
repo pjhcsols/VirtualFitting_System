@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { Header } from "@/widgets/header";
+import { TransparentHeader } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
 import { BREAKPOINTS } from "@/shared";
 import { Starfield } from "@/shared/components/star";
@@ -9,7 +9,7 @@ function CartLayout() {
   return (
     <Wrapper>
       <Starfield />
-      <Header theme="dark" /> 
+      <TransparentHeader />
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
@@ -20,8 +20,7 @@ function CartLayout() {
 
 const Wrapper = styled.main`
   position: relative;
-  max-width: 100vw;
-  min-height: 100vh;
+  height: 100vh;
   display: flex;
   flex-flow: column wrap;
   justify-content: flex-start;

@@ -18,10 +18,12 @@ export function useProductReviewsQuery({
   
   const queryKey = [REVIEW_QUERY_KEY, productId, { page, size, ageGroup }];
 
-  return useQuery<ReviewsResponseData>({
+  const queryResult = useQuery({ 
     queryKey: queryKey,
     queryFn: () => fetchProductReviews({ productId, page, size, ageGroup }),
     staleTime: 5 * 60 * 1000, 
     enabled: productId > 0,
   });
+
+  return queryResult as UseQueryResult<ReviewsResponseData>;
 }

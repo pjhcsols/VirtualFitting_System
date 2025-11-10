@@ -53,6 +53,7 @@ const Wrapper = styled.footer`
   color: #888;
   font-size: 13px;
   z-index: 50;
+  margin-top: auto; 
 `;
 
 const Content = styled.div`

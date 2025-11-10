@@ -1,10 +1,17 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, MouseEvent, useState } from "react";
 import type { TLoginUser } from "@/pages/auth/types/auth";
 import { login } from "@/pages/auth/api/login.action";
 import { globalEventBus } from "@/shared/event";
 import { LOGIN_ERROR_STATUS } from "@/pages/auth/constants";
 import { isLoginKey } from "@/pages/auth/utils/type";
+import { useSetRecoilState } from 'recoil';
+import { authState } from "@/entities/auth";
 import Swal from "sweetalert2";
+import { jwtDecode, JwtPayload } from "jwt-decode";
+
+interface BasiliumJwtPayload extends JwtPayload {
+  role: string;
+}
 
 function useLogin() {
   const [user, setUser] = useState<TLoginUser>({
@@ -28,10 +35,15 @@ function useLogin() {
     });
   };
 
+  const setAuth = useSetRecoilState(authState);
+
   // 나중에 EventBus 오류 발생 지점 컴포넌트로 따로 빼도 될듯
-  const onSubmit = async () => {
+  const onSubmit = async (e: MouseEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
-      await login(user);
+      const token = await login(user);
+      const decodedToken = jwtDecode<BasiliumJwtPayload>(token);
+      setAuth({ isLoggedIn: true, userId: decodedToken.sub ?? null });
       Swal.fire({
         title: "Success!",
         text: "로그인에 성공했습니다.",
@@ -60,7 +72,7 @@ function useLogin() {
         globalEventBus.emit("api-error", LOGIN_ERROR_STATUS.get("NO_USER"));
         setErrMsg({
           ...errMsg,
-          userId: message, // 404는 userId에 대한 에러
+          userId: message,
         });
       }
     }

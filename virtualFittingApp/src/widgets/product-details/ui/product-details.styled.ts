@@ -8,6 +8,7 @@ export const ProductBox = styled.section`
   max-width: 1200px;
   flex-direction: row;
   align-items: flex-start;
+  justify-content: center;
   gap: 24px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -19,27 +20,18 @@ export const ProductBox = styled.section`
 
 export const ImageCarouselContainer = styled.div`
   position: relative;
-  width: 100%;
-  order: 1;
+  max-width: 600px;
+  max-height: 600px;
   flex: 1 1 auto;
-  min-width: 0;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    order: 1;
-    flex: none;
-  }
+  display: flex;
 `;
 
-
 export const ProductImage = styled.img`
-  width: 100%;
-  aspect-ratio: 1 / 1;
-  max-height: 750px;
+  width: 100%; 
+  max-height: 600px;
   object-fit: cover;
-object-position: center;
-  height: auto;
   border-radius: 18px;
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
 
   @media (max-width: ${BREAKPOINTS.lg}px) {
     max-width: 510px;
@@ -47,27 +39,57 @@ object-position: center;
   }
 `;
 
+export const ImageWrapper = styled.div`
+  position: relative;
+  width: 100%; 
+  margin: 0 auto;
+
+  aspect-ratio: 1 / 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const FittingButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+
+  &:hover {
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  z-index: 10;
+`;
+
 export const CarouselButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background-color: rgba(0, 0, 0, 0.5);
-  color: white;
+  z-index: 5;
+  background-color: rgba(0,0,0,0.45);
   border: none;
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 1;
-  font-size: 20px;
-  line-height: 1;
+  color: white;
   width: 40px;
   height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.8);
+    background-color: rgba(0,0,0,0.7);
   }
 `;
 
@@ -167,7 +189,7 @@ export const OriginalPriceBox = styled.div`
 export const OriginalPrice = styled.div`
   font-size: 18px;
   text-decoration: line-through;
-  color: #aaa;
+  color: #d7d7d7;
 `;
 
 export const DiscountRate = styled.div`
