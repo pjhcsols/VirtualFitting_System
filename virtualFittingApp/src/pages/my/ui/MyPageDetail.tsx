@@ -538,8 +538,7 @@ const FormField = styled.div`
 const Label = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: white;
   display: flex;
   align-items: center;
 `;
@@ -547,87 +546,83 @@ const Label = styled.label`
 const Label1 = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
-  color: rgba(255,255,255,0.9);
+  color: white;
   display: flex;
   align-items: flex-start;  
   justify-content: flex-start;
   align-self: start;
 `;
 
-  const Input = styled.input`
-    flex: 1;
-    min-width: 100px;
-    padding: 10px;
-    border: none;
-    background: rgba(200, 200, 200, 0.15);
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    color: #fff;
-    outline: none;
+const Input = styled.input`
+  flex: 1;
+  min-width: 100px;
+  padding: 10px;
+  border: none;
+  background: rgba(200, 200, 200, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  color: #fff;
+  outline: none;
 
-    &::placeholder {
-        color: rgba(255,255,255,0.5);
-    }
+  &::placeholder {
+      color: rgba(255,255,255,0.5);
+  }
   `;
 
-  const TelForm = styled.div`
-    display: flex;
-    gap: 10px;
-    flex: 1;
-    justify-content: space-between;
-    flex-wrap: wrap;
+const TelForm = styled.div`
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  justify-content: space-between;
+  flex-wrap: wrap;
 `;
 
-  const AvatarContainer = styled.div`
-    position: relative;
-    width: 120px;
-    height: 120px;
-    margin-top: 15px;
-    margin-right: 20px;
-  `;
-
-  const AuthButton = styled.button`
-    width: 80px;
-    height: 40px;
-    background-color: #292E49;
-    color: #fff;
-    border: none;
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    cursor: pointer;
-
-    &:hover {
-      background-color: #000; 
-    }
-  `;
-
- const SizeInput = styled(Input)`
-    flex: 1;
-    min-width: 50px;
-    max-width: 120px;
-    text-align: center;
-    font-family: "Prata-Regular";
-    font-size: 12px;
+const AvatarContainer = styled.div`
+  position: relative;
+  width: 120px;
+  height: 120px;
+  margin-top: 15px;
+  margin-right: 20px;
 `;
 
- const PhoneInput = styled.input`
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: rgba(200, 200, 200, 0.15);
-    border-radius: 6px;
-    font-size: 14px;
-    font-family: "Prata-Regular";
-    min-width: 100px;
-    color: #fff;
-    outline: none;
+const AuthButton = styled.button`
+  width: 80px;
+  height: 40px;
+  background-color: #292E49;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-family: "Prata-Regular";
+  cursor: pointer;
 
-    &::placeholder {
-        color: rgba(255,255,255,0.5);
-    }
+  &:hover {
+    background-color: #000; 
+  }
+`;
+
+const SizeInput = styled(Input)`
+  flex: 1;
+  min-width: 50px;
+  max-width: 120px;
+  text-align: center;
+  font-size: 12px;
+`;
+
+const PhoneInput = styled.input`
+  flex: 1;
+  padding: 10px;
+  border: none;
+  background: rgba(200, 200, 200, 0.15);
+  border-radius: 6px;
+  font-size: 13px;
+  min-width: 100px;
+  color: #fff;
+  outline: none;
+
+  &::placeholder {
+      color: rgba(255,255,255,0.5);
+  }
 `;
 
 const SharedBox = styled.div`
@@ -649,10 +644,10 @@ const PictureBox = styled(SharedBox).attrs({ as: 'label' })`
   cursor: pointer;
 `;
 
-  const AddImg = styled.img`
-    width: 40px;
-    height: 40px;
-  `;
+const AddImg = styled.img`
+  width: 40px;
+  height: 40px;
+`;
 
 const ImageBoxWrapper = styled.div`
   display: flex;
@@ -664,7 +659,6 @@ const ImageBoxWrapper = styled.div`
 const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   margin-top: 10px;
   font-size: 12px;
-  font-family: "Prata-Regular";
   border: none;
   border-radius: 6px;
   background-color: #292E49;
@@ -673,44 +667,41 @@ const RegisterButton = styled(SharedBox).attrs({ as: 'button' })`
   cursor: pointer;
 
    &:hover {
-      background-color: #000; 
-    }
+    background-color: #000; 
+  }
 
 `;
 
-  const PreviewImg = styled.img`
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-  `;
-
-  const FieldWrapper = styled.div`
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+const PreviewImg = styled.img`
     width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
-  const VerifiedMessage = styled.p`
-    color: #007bff;
-    font-size: 12px;
-    font-family: "Prata-Regular";
-    margin-top: 4px;
-    margin-left: 4px;
-    margin-bottom: 1px;
-  `;
+const FieldWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+`;
 
-  const TimerText = styled.p`
-    color: #007bff;
-    font-size: 12px;
-    font-family: "Prata-Regular";
-    margin-right: 160px;
+const VerifiedMessage = styled.p`
+  color: #007bff;
+  font-size: 12px;
+  margin-top: 4px;
+  margin-left: 4px;
+  margin-bottom: 1px;
+`;
+
+const TimerText = styled.p`
+  color: #007bff;
+  font-size: 12px;
+  margin-right: 160px;
 `;
 
 const LabelWithIcon = styled.label`
   width: 120px;
   font-size: 14px;
-  font-family: "Prata-Regular";
   color: rgba(255,255,255,0.9);
   display: flex;
   align-items: center;
