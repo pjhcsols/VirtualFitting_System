@@ -1,4 +1,4 @@
-import svg_scroll_arrow from "../assets/icons/scroll.svg";
+import svg_scroll_arrow from "../assets/icons/scroll.svg?raw";
 import svg_scroll_double_arrow from "../assets/icons/scroll-double.svg";
 import img_hoodie1 from '../assets/images/hoodie-1.png';
 import img_hoodie2 from '../assets/images/hoodie-2.png';

@@ -1,4 +1,5 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { ScrollToTop } from "@/shared/lib/ui/ScrollToTop";
 
 import {
   PaymentFailPage,
@@ -112,7 +113,10 @@ const Routing = () => (
 );
 
 export const withRouter = (component: () => React.ReactNode) => () => (
-  <BrowserRouter>{component()}</BrowserRouter>
+  <BrowserRouter>
+    <ScrollToTop />
+    {component()}
+  </BrowserRouter>
 );
 
 export default Routing;

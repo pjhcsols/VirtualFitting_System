@@ -39,13 +39,14 @@ export const searchProducts = async (productName: string): Promise<Product[] | n
 };
 
 export const fetchOnSaleProducts = async (
-  params = { page: 0, size: 20, sort: "productId,asc" }
+  params: { page: number; size: number; sort: string } = { page: 0, size: 20, sort: "productId,asc" }
 ): Promise<Product[] | null> => {
   try {
     const response = await API_BASILIUM.get("/b1/products/on-sale", {
       params,
     });
-    return response.data; 
+    
+    return response.data as Product[]; 
   } catch (error) {
     return null;
   }
@@ -76,5 +77,5 @@ export const fetchProductsByCategory = async (categoryId: number): Promise<Produ
   } catch (error) {
     return null;
   }
-  // [seah] 추후필터링 기능에 ㅏ
+  // [seah] 추후필터링 기능에
 };

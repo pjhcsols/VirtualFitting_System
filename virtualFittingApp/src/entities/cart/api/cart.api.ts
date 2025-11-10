@@ -1,6 +1,7 @@
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
-import { Cart, PostCartMeRequest, UpdateCartItemRequest } from "../model/types";
+import type { Cart, PostCartMeRequest, UpdateCartItemRequest } from "../model/types"; 
+
 
 export const upsertCart = async (
     authUserId: string,
@@ -15,7 +16,14 @@ export const upsertCart = async (
         },
         data: requestData || {},
     };
-    return apiClient<Cart>(config);
+
+    const response = await apiClient<Cart>(config); 
+    
+    if (response && (response.status === 200 || response.status === 0) && response.data) {
+        return response.data;
+    }
+    
+    return null;
 };
 
 export const updateCartItem = async (
@@ -31,7 +39,13 @@ export const updateCartItem = async (
     data: updateData,
   };
 
-  return apiClient<Cart>(config);
+  const response = await apiClient<Cart>(config); 
+
+  if (response && (response.status === 200 || response.status === 0) && response.data) {
+    return response.data;
+  }
+
+  return null;
 };
 
 export async function deleteCartItems(
@@ -52,5 +66,11 @@ export async function deleteCartItems(
     data: null, 
   };
 
-  return apiClient<Cart>(config);
+  const response = await apiClient<Cart>(config); 
+
+  if (response && (response.status === 200 || response.status === 0) && response.data) {
+    return response.data;
+  }
+  
+  return null;
 }

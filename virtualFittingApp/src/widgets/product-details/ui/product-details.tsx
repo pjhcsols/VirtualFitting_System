@@ -3,7 +3,7 @@ import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
 import { AddToCartButton } from "@/features/add-to-cart";
-import { AITryOnButton } from "@/features/ai-try-on";
+import { VirtualTryOnButton } from "@/features/virtual-try-on";
 import { InitiateCheckoutSingleButton } from "features/initiate-checkout-single";
 import { ProductOptions } from "@/features/product-options";
 import type { ClaimableCoupon } from '@/entities/coupon';
@@ -18,6 +18,7 @@ type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
 type ProductDetailsProps = {
   product: ProductWithQuantity;
+  price: { original: number; discounted?: number } | null;
   productColors: string[];
   onColorChange?: (color: string) => void;
   onTryOn?: () => void;
@@ -25,20 +26,27 @@ type ProductDetailsProps = {
   isCouponLoading: boolean; 
   handleDownloadCoupon: (brandCampaignId: number) => Promise<number | null>; 
   finalPrice: number;
+  fittingResultUrl: string | null;
+  fittingDelay: number | null;
+  onViewResult: () => void;
 };
 
 function ProductDetails({
   product,
+  price: priceFromProp,
   productColors,
   onColorChange,
   onTryOn,
   finalPrice,
+  fittingResultUrl,
+  fittingDelay,
+  onViewResult,
 }: ProductDetailsProps) {
   const {
     price, quantity, selectedColor, selectedSize, sizesSorted,
     selectedProductImages, setQuantity, setSelectedSize,
     handleAddToCart, handlePurchaseClick, handleColorChange, checkAuth
-  } = useProductDetails(product, onColorChange);
+  } = useProductDetails(product, priceFromProp, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -124,6 +132,12 @@ function ProductDetails({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
+        {fittingResultUrl && (
+          <S.FittingButton onClick={onViewResult}>
+              가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
+          </S.FittingButton>
+        )}
+        <S.ImageWrapper>
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {isHovering && selectedProductImages.length > 1 && (
@@ -153,6 +167,7 @@ function ProductDetails({
         ) : (
           <S.ProductImage src="" alt="No Image Available" />
         )}
+        </S.ImageWrapper>
       </S.ImageCarouselContainer>
       <S.ProductInfoBox>
         <S.TopRow>
@@ -181,11 +196,8 @@ function ProductDetails({
               </S.OriginalPriceBox>
             </S.PriceGroup>
           ) : (
-            <S.Price>{price.original.toLocaleString()}원</S.Price>
+            <S.Price>{price.original?.toLocaleString()}원</S.Price>
           )}
-          {/* <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-            <S.IconImage src={ICON_SHARE} alt="share icon" />
-          </div> */}
           {!isSoldOut && (
             <div style={{ display: 'flex', gap: '8px' }}>
               <ProductCouponButton 
@@ -229,7 +241,7 @@ function ProductDetails({
           )}
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton onClick={onTryOn} />
+          <VirtualTryOnButton onClick={onTryOn} />
         </S.ButtonBox>
       </S.ProductInfoBox>
 

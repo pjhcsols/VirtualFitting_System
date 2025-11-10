@@ -4,6 +4,7 @@ import { BREAKPOINTS } from "@/shared";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+import { GlassBox } from "@/shared/components/glass-box";
 
 type AddModelModalProps = {
   open: boolean;
@@ -14,12 +15,13 @@ type AddModelModalProps = {
   onFileChange: React.ChangeEventHandler<HTMLInputElement>;
   onConfirmUpload: () => void;
   previewUrl: string | null;
+  isLoggedIn: boolean; 
 };
 
 function AddModelModal({
-  open, onClose, registeredLoading = false, registeredImageUrl, onUseExisting, onFileChange, onConfirmUpload, previewUrl
+  open, onClose, registeredLoading = false, registeredImageUrl, onUseExisting, onFileChange, onConfirmUpload, previewUrl, isLoggedIn,
 }: AddModelModalProps) {
-  // ESC로 닫기
+
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => e.key === "Escape" && onClose();
@@ -30,70 +32,87 @@ function AddModelModal({
   if (!open) return null;
 
   const stop = (e: React.MouseEvent) => e.stopPropagation();
+  
+  const isUploadDisabled = !isLoggedIn || !previewUrl;
+  const isExistingDisabled = !isLoggedIn || registeredLoading || !registeredImageUrl;
+
+  const UploadPaneContent = (
+    <HalfPane>
+      <PaneTitle>새로운 이미지 </PaneTitle>
+      <UploadArea>
+        {previewUrl && isLoggedIn ? (
+          <img src={previewUrl} alt="업로드 미리보기" />
+        ) : (
+          <UploadLabel>
+              <LabelInner>
+                  <UploadIcon aria-hidden="true">
+                      <FileUploadIcon />
+                  </UploadIcon>
+                  <span>이미지를 드래그하거나 클릭해 업로드</span>
+              </LabelInner>
+              <input type="file" accept="image/*" onChange={onFileChange} disabled={!isLoggedIn} />
+          </UploadLabel>
+        )}
+      </UploadArea>
+      <PrimaryButton disabled={isUploadDisabled} onClick={onConfirmUpload}>
+        새로운 이미지로 가상착용
+      </PrimaryButton>
+    </HalfPane>
+  );
 
   return (
     <ModalBackdrop onClick={onClose} role="dialog" aria-modal="true" aria-label="모델 사진 선택">
       <ModalCard onClick={stop}>
         <ModalHeader>
-            <ModalTitle>가상착용 이미지</ModalTitle>
+            <ModalTitle>가상착용 이미지 등록</ModalTitle>
             <CloseBtn onClick={onClose} aria-label="닫기">
                 <CloseIcon src={icon_cancel} alt="" aria-hidden="true" />
             </CloseBtn>
         </ModalHeader>
-
-        <ModalBody>
-          {/* 왼쪽: 기존 사진 사용 */}
-          <HalfPane>
-            <PaneTitle>기존 이미지</PaneTitle>
-            <PreviewBox>
-              {registeredLoading ? (
-                <EmptyText>불러오는 중…</EmptyText>
-              ) : registeredImageUrl ? (
-                <img src={registeredImageUrl} />
-              ) : (
-                <LabelInner>
-                  <UploadIcon aria-hidden="true">
-                      <ErrorOutlineIcon />
-                  </UploadIcon>
-                  <span>등록된 이미지가 없습니다.</span>
-                </LabelInner>
-              )}
-            </PreviewBox>
-            <PrimaryButton disabled={registeredLoading || !registeredImageUrl} onClick={onUseExisting}>현재 이미지 사용</PrimaryButton>
-          </HalfPane>
-
-          <VerticalDivider />
-
-          {/* 오른쪽: 새 이미지 업로드 */}
-          <HalfPane>
-            <PaneTitle>새로운 이미지 </PaneTitle>
-            <UploadArea>
-              {previewUrl ? (
-                <img src={previewUrl} alt="업로드 미리보기" />
-              ) : (
-                <UploadLabel>
+        {isLoggedIn ? (
+            <ModalBody>
+              <HalfPane>
+                <PaneTitle>기존 이미지</PaneTitle>
+                <PreviewBox>
+                  {registeredLoading ? (
+                    <EmptyText>불러오는 중…</EmptyText>
+                  ) : registeredImageUrl ? (
+                    <img src={registeredImageUrl} />
+                  ) : (
                     <LabelInner>
-                        <UploadIcon aria-hidden="true">
-                            <FileUploadIcon />
-                        </UploadIcon>
-                        <span>이미지를 드래그하거나 클릭해 업로드</span>
+                      <UploadIcon aria-hidden="true">
+                          <ErrorOutlineIcon />
+                      </UploadIcon>
+                      <EmptyText style={{ pointerEvents: 'none' }}>
+                        현재 등록된 이미지가 없습니다.<br/>
+                        새로운 이미지를 업로드하고 가상착용을 경험해보세요.
+                      </EmptyText>
                     </LabelInner>
-                    <input type="file" accept="image/*" onChange={onFileChange} />
-                </UploadLabel>
-              )}
-            </UploadArea>
-            <PrimaryButton disabled={!previewUrl} onClick={onConfirmUpload}>
-              새로운 이미지 등록
-            </PrimaryButton>
-          </HalfPane>
-        </ModalBody>
+                  )}
+                </PreviewBox>
+                <PrimaryButton disabled={isExistingDisabled} onClick={onUseExisting}>현재 이미지로 가상착용</PrimaryButton>
+              </HalfPane>
+
+              <VerticalDivider />
+
+              {UploadPaneContent}
+            </ModalBody>
+        ) : (
+            <LoginRequiredPane>
+                <UploadIcon aria-hidden="true">
+                    <ErrorOutlineIcon style={{ fontSize: '3rem', color: '#fff' }} />
+                </UploadIcon>
+                <LoginText>
+                    로그인 후 사용자 이미지를 등록할 수 있어요.
+                </LoginText>
+            </LoginRequiredPane>
+        )}
       </ModalCard>
     </ModalBackdrop>
   );
 }
 
 export {AddModelModal}
-
 
 const ModalBackdrop = styled.div`
   position: fixed; inset: 0;
@@ -103,15 +122,10 @@ const ModalBackdrop = styled.div`
   backdrop-filter: blur(2px);
 `;
 
-const ModalCard = styled.div`
+const ModalCard = styled(GlassBox)`
   width: min(960px, 92vw);
   border-radius: 18px;
-  padding: 16px;
-  background: linear-gradient(135deg, rgba(255,255,255,0.14), rgba(255,255,255,0.07));
-  border: 1px solid rgba(255,255,255,0.35);
-  box-shadow: 0 18px 60px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.25);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
+  padding: 24px;
   color: #fff;
 `;
 
@@ -130,7 +144,7 @@ const CloseBtn = styled.button`
   border-radius: 10px;
   display: grid;
   place-items: center;
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
   border: 1px solid rgba(255,255,255,0.35);
   cursor: pointer;
   transition: background .18s ease, transform .18s ease;
@@ -167,11 +181,10 @@ const PaneTitle = styled.h4`
   margin: 4px 0 0; font-size: 16px; font-weight: 700; letter-spacing: .2px;
 `;
 
-const PreviewBox = styled.div`
+const PreviewBox = styled(GlassBox)`
   width: 100%; aspect-ratio: 4/3;
-  border-radius: 14px; overflow: hidden;
-  border: 1px solid rgba(255,255,255,0.25);
-  background: rgba(255,255,255,0.06);
+  border-radius: 14px; 
+  overflow: hidden;
   display: grid; place-items: center;
 
   img { width: 100%; height: 100%; object-fit: contain; }
@@ -196,7 +209,8 @@ const UploadLabel = styled.label`
 
   input {
     position: absolute; inset: 0;
-    opacity: 0; cursor: pointer;
+    opacity: 0; 
+    cursor: pointer;
   }
 `;
 
@@ -251,4 +265,28 @@ const VerticalDivider = styled.div`
 const EmptyText = styled.div`
   color: rgba(255,255,255,0.78);
   font-size: 14px;
+`;
+
+const LoginRequiredPane = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px; 
+    padding: 32px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.95);
+    background: rgba(255, 255, 255, 0.04);
+    border-radius: 18px;
+    gap: 20px;
+    line-height: 1.5;
+`;
+
+const LoginText = styled.div`
+    font-size: 18px;
+    font-weight: 500;
+    & b {
+        font-weight: 700;
+        color: #fff;
+    }
 `;

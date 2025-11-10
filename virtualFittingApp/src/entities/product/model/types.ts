@@ -26,6 +26,7 @@ export interface ProductBase {
   productName: string;
   productPrice: number;
   categoryName: string;
+  brandFirmName: string;
 }
 
 export interface Product extends ProductBase {

@@ -23,13 +23,21 @@ function ServiceTextSection() {
         },
       });
 
-      tl.fromTo(
+      tl.set(screenTextRef.current, { yPercent: 200, opacity: 0 });
+
+      tl.to(
         screenTextRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "none" }
-      ).to(
+        { yPercent: 0, opacity: 1, duration: 3, ease: "none" }
+      )
+
+      .to(
         screenTextRef.current,
-        { opacity: 0, duration: 0.5, ease: "none" }
+        { yPercent: 0, opacity: 1, duration: 5, ease: "none" }
+      )
+
+      .to(
+        screenTextRef.current,
+        { opacity: 0, duration: 1, ease: "none" }
       );
     }
 
@@ -40,8 +48,9 @@ function ServiceTextSection() {
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Service</ScreenText> 
+      
       <Wrapper ref={wrapperRef}>
+        <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Service</ScreenText> 
           <Content>
             <TextBox>
               <ContentText>통합 플랫폼 및 역할별 접근성</ContentText>
@@ -101,7 +110,7 @@ const ScreenText = styled.div`
   letter-spacing: -1px;
 
   position: absolute;
-  top: 50%;
+  top: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
   
@@ -110,6 +119,7 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+  mix-blend-mode: difference
 `;
 
 

@@ -1,26 +1,57 @@
+import styled, { keyframes} from "styled-components";
 import { useState, useEffect } from "react";
 import type { ProductDetail } from "@/entities/product";
 import { useProductDetails } from "../hooks/use-product-details";
 import * as S from "./product-details.styled";
-import { AITryOnButton } from "@/features/ai-try-on";
+import { VirtualTryOnButton } from "@/features/virtual-try-on";
 import { ProductOptions } from "@/features/product-options";
 import { GlassButton } from "@/shared/components/glass-button";
 import { ProductLikeButton } from "@/features/product-like";
+
+const bounce = keyframes`
+  0%, 20%, 50%, 80%, 100% {
+    transform: translateY(0);
+  }
+  40% {
+    transform: translateY(-5px);
+  }
+  60% {
+    transform: translateY(-2px);
+  }
+`;
+
+const AnimatedButtonContainer = styled.div`
+  animation: ${bounce} 1.5s infinite;
+  display: inline-block;
+`;
 
 type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
 type ProductDetailsProps = {
   product: ProductWithQuantity;
   onTryOn?: () => void; 
+  fittingResultUrl: string | null;
+  fittingDelay: number | null;
+  onViewResult: () => void;
+  
 };
 
 function DummyProductDetails({
   product,
   onTryOn,
+  fittingResultUrl,
+  fittingDelay,
+  onViewResult,
 }: ProductDetailsProps) {
+
+  const dummyPrice = {
+    original: 82000,
+    discounted: 77900,
+  };
+
   const {
     selectedProductImages,
-  } = useProductDetails(product);
+  } = useProductDetails(product, dummyPrice);
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -29,15 +60,6 @@ function DummyProductDetails({
   };
   const quantity = 1;
   const isSoldOut = false;
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-        setCurrentIndex((prevIndex) =>
-            prevIndex === selectedProductImages.length - 1 ? 0 : prevIndex + 1,
-        );
-    }, 3000);
-    return () => clearInterval(interval);
-  }, [selectedProductImages.length]);
 
   const handleTryOnClick = () => {
     if (onTryOn) {
@@ -76,8 +98,13 @@ function DummyProductDetails({
 
   return (
     <S.ProductBox>
-      <S.ImageCarouselContainer
-      >
+      <S.ImageCarouselContainer>
+        {fittingResultUrl && (
+          <S.FittingButton onClick={onViewResult}>
+              가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
+          </S.FittingButton>
+      )}
+        <S.ImageWrapper>
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {selectedProductImages.length > 1 && (
@@ -106,6 +133,7 @@ function DummyProductDetails({
         ) : (
           <S.ProductImage src="" alt="No Image Available" />
         )}
+        </S.ImageWrapper>
       </S.ImageCarouselContainer>
       <S.ProductInfoBox>
         <S.TopRow>
@@ -133,9 +161,7 @@ function DummyProductDetails({
               </S.OriginalPriceBox>
             </S.PriceGroup>
         </S.TopRow>
-        <S.Description>
-          BASILIUM 자체 제작 상품으로 트렌디한 오버핏 실루엣과 혼방 소재로 편안함과 스타일을 모두 갖춘 후드티입니다. 시크한 블랙 컬러에 로고 디자인이 특징입니다.
-        </S.Description>
+        <S.Description>오버핏 티셔츠</S.Description>
         <ProductOptions
           productMaterials={["COTTON", "POLYSTER"]}
           productColors={["BLACK"]}
@@ -154,7 +180,9 @@ function DummyProductDetails({
           <GlassButton onClick={handleClick} width="200px">BUY NOW</GlassButton>
         </S.ButtonBox>
         <S.ButtonBox>
-          <AITryOnButton onClick={handleTryOnClick} />
+          <AnimatedButtonContainer>
+            <VirtualTryOnButton onClick={handleTryOnClick} />
+          </AnimatedButtonContainer>
         </S.ButtonBox>
       </S.ProductInfoBox>
     </S.ProductBox>
@@ -162,3 +190,4 @@ function DummyProductDetails({
 }
 
 export { DummyProductDetails };
+

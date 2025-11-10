@@ -23,25 +23,33 @@ function CommerceTextSection() {
         },
       });
 
-      tl.fromTo(
+      tl.set(screenTextRef.current, { yPercent: 200, opacity: 0 });
+
+      tl.to(
         screenTextRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "none" }
-      ).to(
+        { yPercent: 0, opacity: 1, duration: 3, ease: "none" }
+      )
+
+      .to(
         screenTextRef.current,
-        { opacity: 0, duration: 0.5, ease: "none" }
+        { yPercent: 0, opacity: 1, duration: 5, ease: "none" }
+      )
+
+      .to(
+        screenTextRef.current,
+        { opacity: 0, duration: 1, ease: "none" }
       );
     }
 
     return () => {
-        ScrollTrigger.getById('service-text-pin')?.kill();
+        ScrollTrigger.getById('ai-text-pin')?.kill();
     };
   }, []);
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Commerce</ScreenText> 
       <Wrapper ref={wrapperRef}>
+        <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>Commerce</ScreenText> 
           <Content>
             <TextBox>
               <ContentText>고객 경험 극대화 및 운영 자동화</ContentText>
@@ -56,6 +64,7 @@ function CommerceTextSection() {
     </SectionContainer>
   );
 }
+
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
@@ -90,7 +99,6 @@ const TextBox = styled.div`
   justify-content: center; 
   align-items: end; 
   overflow: hidden;
-  margin-top: 64px;
   margin-right:auto;
   height: 100%; 
 `;
@@ -102,7 +110,7 @@ const ScreenText = styled.div`
   letter-spacing: -1px;
 
   position: absolute;
-  top: 50%;
+  top: 2%;
   left: 50%;
   transform: translate(-50%, -50%);
   
@@ -111,7 +119,9 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+  mix-blend-mode: difference
 `;
+
 
 const ContentText = styled.div`
   font-size: 28px;
@@ -148,5 +158,4 @@ const ImageBox = styled.div`
   background-repeat: no-repeat;
   will-change: background-size, background-position; 
 `;
-
 export { CommerceTextSection };

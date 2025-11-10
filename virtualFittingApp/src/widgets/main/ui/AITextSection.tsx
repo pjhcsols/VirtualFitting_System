@@ -11,25 +11,33 @@ function AITextSection() {
   const wrapperRef = useRef<HTMLDivElement>(null); 
 
   useEffect(() => {
-    if (screenTextRef.current && wrapperRef.current) { 
+    if (screenTextRef.current && wrapperRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: wrapperRef.current,
+          trigger: wrapperRef.current, 
           start: "top top",
           end: "bottom top",
           scrub: true,
           pin: true,
-          id: 'ai-text-pin',
+          id: 'service-text-pin',
         },
       });
 
-      tl.fromTo(
+      tl.set(screenTextRef.current, { yPercent: 200, opacity: 0 });
+
+      tl.to(
         screenTextRef.current,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, ease: "none" }
-      ).to(
+        { yPercent: 0, opacity: 1, duration: 3, ease: "none" }
+      )
+
+      .to(
         screenTextRef.current,
-        { opacity: 0, duration: 0.5, ease: "none" }
+        { yPercent: 0, opacity: 1, duration: 5, ease: "none" }
+      )
+
+      .to(
+        screenTextRef.current,
+        { opacity: 0, duration: 1, ease: "none" }
       );
     }
 
@@ -40,8 +48,8 @@ function AITextSection() {
 
   return (
     <SectionContainer>
-      <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI/Tech</ScreenText>
       <Wrapper ref={wrapperRef}>
+        <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>AI/Tech</ScreenText>
           <Content>
             <ImageBox></ImageBox>
             <TextBox>
@@ -58,28 +66,12 @@ function AITextSection() {
   );
 }
 
+
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
   height: 200vh;
   overflow: hidden;
-`;
-
-const ScreenText = styled.div`
-  font-size: 15vw;
-  font-weight: 600;
-  line-height: 1.5;
-  letter-spacing: -1px;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  
-  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: #E9FAFF; 
-  z-index: 3;
 `;
 
 const Wrapper = styled.div`
@@ -90,7 +82,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: start;
-  overflow: hidden;
+  overflow: hidden; 
 `;
 
 const Content = styled.div`
@@ -113,6 +105,26 @@ const TextBox = styled.div`
   height: 100%; 
 `;
 
+const ScreenText = styled.div`
+  font-size: 15vw;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -1px;
+
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #E9FAFF; 
+  z-index: 3;
+  mix-blend-mode: difference
+`;
+
+
 const ContentText = styled.div`
   font-size: 28px;
   font-weight: 600;
@@ -131,12 +143,13 @@ const SubText = styled.div`
   text-align:left;
 `;
 
+
 const ImageBox = styled.div`
   width: 40vw;
   height: 50vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   overflow: hidden; 
   padding: 24px; 

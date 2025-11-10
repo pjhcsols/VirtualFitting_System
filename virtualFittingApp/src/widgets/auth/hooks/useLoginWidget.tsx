@@ -55,7 +55,7 @@ function useLoginWidget() {
     } else if (decodedToken.role === "SUPER") {
       router("/admin");
     } else {
-      router("/products");
+      router("/");
     }
   };
 
