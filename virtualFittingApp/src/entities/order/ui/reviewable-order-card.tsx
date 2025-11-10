@@ -50,9 +50,8 @@ const OrderCard = styled.div`
 const ImageBox = styled.img`
   width: 80px;
   height: 100px;
-  background-color: #d9d9d9;
-  border-radius: 10px;
   object-fit: cover;
+  border-radius: 8px;
 `;
 
 const RightSection = styled.div`
