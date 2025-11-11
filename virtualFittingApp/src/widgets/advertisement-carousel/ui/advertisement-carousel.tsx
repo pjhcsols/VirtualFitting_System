@@ -51,10 +51,24 @@ function AdvertisementCarousel() {
   const uniqueUrl = currentBannerUrl
     ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}`
     : "";
+  let finalBannerUrl = "";
+
+  if (uniqueUrl) {
+    try {
+      const urlObj = new URL(uniqueUrl);
+      finalBannerUrl = urlObj.pathname + urlObj.search;
+    } catch (error) {
+      console.error("잘못된 URL 형식입니다:", uniqueUrl, error);
+      finalBannerUrl = uniqueUrl;
+    }
+  }
 
   return (
     <Wrapper>
-      <Image src={uniqueUrl} alt={`Banner ${currentIndex + 1}`} />
+      <Image
+        src={`https://api.basilium.co.kr${finalBannerUrl}`}
+        alt={`Banner ${currentIndex + 1}`}
+      />
 
       <Pagination>
         {banners.map((_, index) => (
