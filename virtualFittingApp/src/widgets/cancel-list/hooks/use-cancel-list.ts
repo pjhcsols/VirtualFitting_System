@@ -5,7 +5,7 @@ import type { OrderItem } from '@/entities/order';
 
 export const useCancelList = () => {
   const [activeTab, setActiveTab] = useState<string>("전체");
-  const [allOrders, setAllOrders] = useState<OrderItem[]>([]);
+  const [allOrders] = useState<OrderItem[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
