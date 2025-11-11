@@ -48,25 +48,13 @@ function AdvertisementCarousel() {
 
   const cacheKey = banners.map((b) => b.url).join("");
   const currentBannerUrl = banners[currentIndex]?.url;
-  console.log(currentBannerUrl);
   const uniqueUrl = currentBannerUrl
     ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}`
     : "";
-  let finalBannerUrl = "";
-
-  if (uniqueUrl) {
-    try {
-      const urlObj = new URL(uniqueUrl);
-      finalBannerUrl = urlObj.pathname + urlObj.search;
-    } catch (error) {
-      console.error("잘못된 URL 형식입니다:", uniqueUrl, error);
-      finalBannerUrl = uniqueUrl;
-    }
-  }
 
   return (
     <Wrapper>
-      <Image src={finalBannerUrl} alt={`Banner ${currentIndex + 1}`} />
+      <Image src={uniqueUrl} alt={`Banner ${currentIndex + 1}`} />
 
       <Pagination>
         {banners.map((_, index) => (
