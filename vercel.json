@@ -1,8 +1,8 @@
 {
   "rewrites": [
     {
-      "source": "/b1/superUsers/me/banners:path*",
-      "destination": "https://api.basilium.ai.kr/b1/superUsers/me/banners:path*"
+      "source": "/b1/images/adBannerImageStorage/:path*",
+      "destination": "https://b1/images/adBannerImageStorage/:path*"
     }
   ],
   "headers": [
