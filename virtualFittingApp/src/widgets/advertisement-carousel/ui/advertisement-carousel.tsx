@@ -47,7 +47,19 @@ function AdvertisementCarousel() {
   };
 
   const cacheKey = banners.map(b => b.url).join('');
-  const currentBannerUrl = banners[currentIndex]?.url;
+  let currentBannerUrl = banners[currentIndex]?.url;
+  
+  if (currentBannerUrl) {
+      if (currentBannerUrl.startsWith('http:')) {
+          currentBannerUrl = currentBannerUrl.replace('http:', '');
+      } else if (currentBannerUrl.startsWith('https:')) {
+          currentBannerUrl = currentBannerUrl.replace('https:', '');
+      }
+      
+      if (!currentBannerUrl.startsWith('//')) {
+          currentBannerUrl = `//${currentBannerUrl.replace(/^\/\//, '')}`;
+      }
+  }
   const uniqueUrl = currentBannerUrl 
     ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}` 
     : '';
