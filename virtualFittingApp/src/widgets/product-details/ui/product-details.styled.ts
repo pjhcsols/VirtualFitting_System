@@ -1,6 +1,44 @@
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { BREAKPOINTS } from "@/shared";
 import { GlassBox } from "@/shared/components/glass-box";
+
+export const rotate = keyframes`
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+`;
+
+export const Spinner = styled.div`
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-top: 4px solid #fff;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: ${rotate} 0.8s linear infinite;
+  margin-bottom: 10px;
+`;
+
+export const LoadingOverlay = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  border-radius: 18px; /* 이미지 border-radius와 일치 */
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  backdrop-filter: blur(2px);
+`;
+
+export const LoadingText = styled.p`
+  font-size: 14px;
+  font-weight: 500;
+  margin: 0;
+`;
 
 export const ProductBox = styled.section`
   display: flex;
