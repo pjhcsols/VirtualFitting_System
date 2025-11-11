@@ -66,7 +66,7 @@ function AdvertisementCarousel() {
   return (
     <Wrapper>
       <Image
-        src={`https://api.basilium.co.kr${finalBannerUrl}`}
+        src={`https://api.basilium.ai.kr${finalBannerUrl}`}
         alt={`Banner ${currentIndex + 1}`}
       />
 
