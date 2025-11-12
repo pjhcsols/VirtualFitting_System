@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useRecoilState } from 'recoil';
 import { authState } from '@/entities/auth';
