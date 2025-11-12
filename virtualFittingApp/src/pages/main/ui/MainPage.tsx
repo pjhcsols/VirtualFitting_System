@@ -55,16 +55,6 @@ function MainPage() {
   };
   }, []);
 
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
-    if (ref.current && lenisRef.current?.lenis) {
-      lenisRef.current.lenis.scrollTo(ref.current, { offset: -64, duration: 1.2 });
-    }
-  };
-
-  const handleDescriptionScroll = () => scrollToSection(aboutRef);
-  const handleSolutionScroll = () => scrollToSection(saasRef);
-  const handleServiceScroll = () => scrollToSection(serviceRef);
-
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
@@ -73,11 +63,7 @@ function MainPage() {
     >
       <TooltipGlobalStyles /> 
       <GlobalCursorStyle />
-      <TransparentHeader 
-        onAboutScroll={handleDescriptionScroll}
-        onServiceScroll={handleServiceScroll}
-        onSolutionScroll={handleSolutionScroll}
-      />
+      <TransparentHeader />
       <CustomCursor ref={cursorRef} />
       <MainSection>
         <Article className="slider" ref={sliderRef}>
