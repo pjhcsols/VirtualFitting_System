@@ -2,11 +2,8 @@ import styled from "styled-components";
 import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
-import { HOODIE_IMAGES } from "../model/constants"; 
 
 gsap.registerPlugin(ScrollTrigger);
-
-const imageTrack = [...HOODIE_IMAGES, ...HOODIE_IMAGES]; 
 
 function DescriptionSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -87,22 +84,16 @@ function DescriptionSection() {
           </Letter>
         ))}
       </BasiliumText>
-      <DescriptionBox ref={descriptionRef}>
-        <Title>casual & street brand</Title>
-          <Text>
-            <StrongHighlight>BASILIUM</StrongHighlight>은 '왕과 여왕의 장식'이라는 의미를 담아 고대 군주들이 착용한
-            은장식의 모토 아래 탄생했습니다.<br/>
-            기본 실루엣에 트렌디하고 모던한 감성을 더한 새로운 디자인으로,
-            고급스러움과 신선함을 잃지 않는 브랜드로 성장할 것을 약속드립니다.
-          </Text>
-      </DescriptionBox>
-      <CarouselWrapper>
-        <CardTrack ref={trackRef}> 
-          {imageTrack.map((hoodie, index) => (
-              <HoodieImg src={hoodie.src} alt={hoodie.name} key={index} />
-          ))}
-        </CardTrack>
-      </CarouselWrapper>
+        <TextBlock ref={descriptionRef}>
+        <Paragraph>
+          우리는 기술로 패션의 경계를 허물고,<br />
+          브랜드와 고객을 가장 자연스럽게 이어줍니다.<br /><br />
+          AI가 만든 첫 번째 피팅룸으로,<br />
+          누가, 언제, 어디서든 자신만의 스타일을 입을 수 있는 세상을 엽니다.<br /><br />
+           <Highlight>BASILIUM</Highlight>은 패션 산업의 새로운 길을 제시합니다.<br />
+          입는 모든 순간,  <Highlight>BASILIUM</Highlight>에서 시작됩니다.
+        </Paragraph>
+      </TextBlock>
     </Wrapper>
   );
 }
@@ -118,34 +109,6 @@ const Wrapper = styled.div`
   height: auto; 
 `;
 
-const CarouselWrapper = styled.div`
-  width: 100%;
-  display: flex;
-  overflow: hidden; 
-  -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-`;
-
-const CardTrack = styled.div`
-  display: flex;
-  gap: 4rem;
-  white-space: nowrap; 
-`;
-
-const HoodieImg = styled.img`
-  width: 200px;
-  height: 270px;
-  object-fit: cover;
-  border-radius: 8px;
-  flex-shrink: 0;
-`;
-
-const DescriptionBox = styled.div`
-  max-width: 1200px;
-  text-align: center;
-  color: #fff;
-`;
-
 const BasiliumText = styled.span`
   font-family: "Prata-Regular";
   font-size: 10vw; 
@@ -154,32 +117,32 @@ const BasiliumText = styled.span`
   display: inline-block;
 `;
 
+const TextBlock = styled.div`
+  max-width: 960px;
+  display: flex;
+  flex-direction: column;
+  gap: 2.2rem;
+`;
+
+const Paragraph = styled.p`
+  font-size: 1.2vw;
+  font-weight: 400;
+  line-height: 2.0;
+  letter-spacing: -0.3px;
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #E9FAFF; 
+  z-index: 3;
+`;
+
+const Highlight = styled.span`
+  font-family: "Prata-Regular";
+  font-weight: 700;
+`;
+
 const Letter = styled.span`
   display: inline-block;
-`;
-
-const Title = styled.h2`
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: #B8D2FF; 
-  text-transform: uppercase;
-  margin-bottom: 3rem;
-  opacity: 0;
-`;
-
-const Text = styled.p`
-  font-size: 1.2rem;
-  font-weight: 400;
-  letter-spacing: -1px;
-  color: #E9FAFF; 
-  margin-bottom: 7rem;
-  opacity: 0;
-`;
-
-const StrongHighlight = styled.span`
-  font-family: "Prata-Regular";
-  letter-spacing: 0;
 `;
 
 export { DescriptionSection };
