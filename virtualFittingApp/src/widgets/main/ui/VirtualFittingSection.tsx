@@ -26,6 +26,7 @@ import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { fetchMyUserGender } from "@/entities/user";
 import { FittingResultModal } from "@/features/virtual-try-on";
+import { cleanServerMessage } from "@/shared";
 
 
 const bounce = keyframes`
@@ -217,30 +218,36 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     setIsProcessing(true);
 
     try {
-        const params = {
-            productId: VIRTUAL_FITTING_PRODUCT_ID,
-            color: currentProductColor,
-            gender: apiGender,
-            authUserId: accessTokenString,
-        };
+      const params = {
+        productId: VIRTUAL_FITTING_PRODUCT_ID,
+        color: currentProductColor,
+        gender: apiGender,
+        authUserId: accessTokenString,
+      };
 
-        const response = await tryOnPrivateFitting(params, selectedFile); 
+      const response = await tryOnPrivateFitting(params, selectedFile); 
 
-        const resultImageUrl = response?.data.resultImageUrl;
-        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
-        
-        if (resultImageUrl) {
-            setGeneratedImageUrl(resultImageUrl);
-            setSimulatedDelay(resultSimulatedDelay);
-            alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
-        } else {
-            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
-        }
-    } catch (err) {
-        console.error("Private API 최종 처리 오류:", err);
-        alert("이미지 처리 중 오류가 발생했습니다.");
+      if (!response || response.status !== 200) {
+        const serverMessage = response?.message;
+        throw new Error(serverMessage); 
+      }
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      
+      if (resultImageUrl) {
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+      } else {
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
+      }
+   } catch (e) {
+      console.error("가상 착용 API 호출 실패:", e);
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      alert(cleanedMessage);
     } finally {
-      setIsProcessing(false);
+        setIsProcessing(false);
     }
   }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
 
@@ -271,31 +278,31 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         return;
     }
     try {
-        const params: PublicTryOnQueryParams = {
-            productId: VIRTUAL_FITTING_PRODUCT_ID,
-            color: VIRTUAL_FITTING_PRODUCT_COLOR,
-            gender: apiGender,
-        };
-        
-        const response = await tryOnPublicFitting(params, imageBlob); 
-        
-        const resultImageUrl = response?.data.resultImageUrl;
-        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      const params: PublicTryOnQueryParams = {
+        productId: VIRTUAL_FITTING_PRODUCT_ID,
+        color: VIRTUAL_FITTING_PRODUCT_COLOR,
+        gender: apiGender,
+      };
+      
+      const response = await tryOnPublicFitting(params, imageBlob); 
+      
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
 
-        if (resultImageUrl) {
-            setGeneratedImageUrl(resultImageUrl);
-            setSimulatedDelay(resultSimulatedDelay);
-            alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
-            
-        } else {
-            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
-        }
+      if (resultImageUrl) {
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
+          
+      } else {
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
+      }
 
     } catch (err) {
-        console.error("가상 착용 최종 처리 오류:", err);
-        alert("이미지 처리 중 오류가 발생했습니다.");
+      console.error("가상 착용 최종 처리 오류:", err);
+      alert("이미지 처리 중 오류가 발생했습니다.");
     } finally {
-        setIsProcessing(false);
+      setIsProcessing(false);
     }
   };
 
@@ -457,7 +464,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         onUseExisting={handleUseExisting}
 
         onFileChange={handleFileChange}
-        onConfirmUpload={handleConfirmUpload}
+        onConfirmUpload={handleUseExisting}
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
@@ -531,7 +538,7 @@ const AddIcon = styled.img`
 `;
 
 const RailInfoTip = styled.div`
-position: absolute;
+  position: absolute;
   top: 10px;
   right: 10px;
   z-index: 10;
@@ -541,11 +548,15 @@ position: absolute;
   border-radius: 100px;
   justify-content: center;
   align-items: center;
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.25); 
   border: 1px solid rgba(255,255,255,0.38);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.25);
   cursor: pointer;
+
+  img {
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(0,0,0,0.6));
+  }
 `;
 
 const GenderImageCard = styled.button<{ $img: string; $active?: boolean }>`
@@ -581,7 +592,7 @@ const MainModelImg = styled.img`
 `;
 
 const ModelGlassCard = styled(GlassBox)`
-display: flex;
+  display: flex;
   width: 200px;
   height: 300px;
   position: relative;
@@ -626,7 +637,7 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
   display: flex;
   cursor: pointer;
   transition: transform .18s ease, background .18s ease;
-
+  overflow: hidden;
 
   ${({ $hasImage }) => $hasImage && `
     background: rgba(255,255,255,0.06);
@@ -634,7 +645,7 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
 
   ${({ $active }) => $active && css`
     box-shadow: 0 8px 22px rgba(0,0,0,.22);
-    outline: 3px solid #000;
+    outline: 3px solid #ffffff;
     outline-offset: 0;
   `}
 `;
@@ -642,14 +653,13 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
 const CustomThumb = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;  
+  object-fit: cover;
   display: block;
 `;
 
 const SlotActions = styled.div`
   position: absolute;
-  top: 6px;
-  right: 6px;
+  bottom: 6px;
   display: flex;
   gap: 6px;
 `;

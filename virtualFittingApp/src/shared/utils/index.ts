@@ -6,3 +6,4 @@ export * from "./slide/slide.utils";
 export { getUserRole } from "./auth/getUserRole";
 export * from "./path/index";
 export * from "./url";
+export * from "./messages";
