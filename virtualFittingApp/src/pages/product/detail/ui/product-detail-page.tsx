@@ -16,11 +16,13 @@ import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
 import { useProductCoupon } from "@/features/coupon";
 
-import { fetchMyUserGender } from "@/entities/user";
+import { 
+  fetchMyUserGender,
+  uploadUserImage,
+  fetchMyRegisteredImageUrl
+} from "@/entities/user";
 import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
-import { AddModelModal } from "@/features/virtual-try-on";
-import { FittingResultModal } from "@/features/virtual-try-on";
-import { fetchMyRegisteredImageUrl } from "@/entities/user";
+import { AddModelModal, FittingResultModal } from "@/features/virtual-try-on";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { fetchProductPrice } from '@/entities/discount';
 
@@ -155,6 +157,12 @@ function ProductDetailPage() {
     closeTryOn(); 
 
     try {
+      const uploadResponse = await uploadUserImage(accessTokenString, selectedFile);
+      
+      if (!uploadResponse) {
+        throw new Error("사용자 이미지 서버 등록에 실패");
+      }
+
       const params = {
         productId: currentProductId,
         color: color,

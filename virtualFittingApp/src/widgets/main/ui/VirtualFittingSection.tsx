@@ -232,6 +232,18 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         if (resultImageUrl) {
             setGeneratedImageUrl(resultImageUrl);
             setSimulatedDelay(resultSimulatedDelay);
+            console.log(
+                "✅ PUBLIC Try-On Success Debug Info:",
+                { 
+                  productId: params.productId, 
+                  color: params.color, 
+                  gender: params.gender, 
+                  modelImageUsed: resultImageUrl, 
+                  generatedImageUrl: resultImageUrl, // 반환된 이미지 주소
+                  simulatedDelay: resultSimulatedDelay,
+                  fullResponseData: response.data 
+                }
+            );
             alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
         } else {
             alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
