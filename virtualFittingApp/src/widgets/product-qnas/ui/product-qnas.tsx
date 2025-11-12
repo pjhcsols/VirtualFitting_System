@@ -81,6 +81,7 @@ const InfoRow = styled.div`
   display: flex;
   justify-content: flex-start; 
   font-size: 14px;
+  width: 100%;
 `;
 
 const Label = styled.span`
@@ -92,7 +93,7 @@ const Label = styled.span`
 
 const Value = styled.span`
   font-weight: 500;
-  text-align: right;
+  text-align: left
   word-break: break-all;
 `;
 
