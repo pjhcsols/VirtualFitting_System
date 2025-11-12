@@ -27,6 +27,7 @@ import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { fetchMyUserGender } from "@/entities/user";
 import { FittingResultModal } from "@/features/virtual-try-on";
 import { cleanServerMessage } from "@/shared";
+import { uploadUserImage } from "@/entities/user";
 
 
 const bounce = keyframes`
@@ -164,6 +165,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     if (!registeredImageUrl) return;
     setModelSrc(prev => ({ ...prev, custom: registeredImageUrl }));
     setSelectedModel(MODEL.CUSTOM);
+    setSelectedFile(null); 
+
     closeModal();
   };
 
@@ -182,50 +185,67 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   }, []);
 
   const handleConfirmUpload = useCallback(async () => {
-    if (!selectedFile || !apiGender) {
-      alert("파일 또는 모델 성별 정보가 부족합니다.");
+    const accessTokenString = getAccessTokenStringFromCookie();
+    if (!selectedFile || !apiGender || !accessTokenString) { 
+      // alert("필수 정보가 부족합니다 (파일, 모델 성별, 로그인 상태).");
       return; 
     }
+    closeModal(); 
 
     try {
+      const uploadResponseUrl = await uploadUserImage(accessTokenString, selectedFile); 
+      
+      if (!uploadResponseUrl) {
+        throw new Error("사용자 이미지 등록에 실패했습니다.");
+      }
+      setModelSrc(prev => ({ ...prev, custom: uploadResponseUrl }));
+      setSelectedModel(MODEL.CUSTOM); 
+
       if (uploadPreview) {
-          setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
-          setSelectedModel(MODEL.CUSTOM); 
-          
-          alert("새 이미지가 모델 슬롯에 등록되었습니다.");
-      } else {
-          throw new Error("미리보기 URL 없음");
+          URL.revokeObjectURL(uploadPreview);
       }
       
-      closeModal();
-    } catch (err) {
-      console.error("이미지 등록 실패:", err);
-      alert("이미지 등록에 실패했습니다. 다시 시도해주세요.");
+    } catch (e) {
+      console.error("이미지 등록 실패:", e);
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      
+      alert(`${cleanedMessage}`);
     }
-  }, [selectedFile, apiGender, uploadPreview, setModelSrc, setSelectedModel, closeModal]);
+  }, [selectedFile, apiGender, uploadPreview, setModelSrc, setSelectedModel, closeModal, cleanServerMessage]);
 
 
   const callPrivateTryOnAPI = useCallback(async () => {
     const accessTokenString = getAccessTokenStringFromCookie();
 
-    if (!selectedFile || !apiGender || !product || !isLoggedIn || !accessTokenString) {
+    if ((!selectedFile && !modelSrc.custom) || !apiGender || !product || !isLoggedIn || !accessTokenString) {
         console.error("Private API 호출 실패: 필수 데이터 부족.");
         alert("가상 착용을 위해 파일을 선택하고 로그인 상태를 확인해주세요.");
         return; 
     }
 
-    const currentProductColor = VIRTUAL_FITTING_PRODUCT_COLOR;
     setIsProcessing(true);
+    let imageBlob: Blob | File | null = selectedFile;
 
     try {
+      if (!imageBlob && modelSrc.custom) {
+        const response = await fetch(modelSrc.custom);
+        if (!response.ok) throw new Error(`커스텀 모델 이미지를 가져오지 못했습니다: ${response.statusText}`);
+        imageBlob = await response.blob();
+      }
+
+      if (!imageBlob) {
+        throw new Error("모델 이미지를 준비할 수 없습니다.");
+      }
+
       const params = {
         productId: VIRTUAL_FITTING_PRODUCT_ID,
-        color: currentProductColor,
+        color: VIRTUAL_FITTING_PRODUCT_COLOR,
         gender: apiGender,
         authUserId: accessTokenString,
       };
 
-      const response = await tryOnPrivateFitting(params, selectedFile); 
+      const response = await tryOnPrivateFitting(params, imageBlob); 
 
       if (!response || response.status !== 200) {
         const serverMessage = response?.message;
@@ -249,7 +269,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     } finally {
         setIsProcessing(false);
     }
-  }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
+  }, [selectedFile, modelSrc.custom, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
 
   const executeVirtualTryOn = async () => {
     const isMan = selectedModel === MODEL.MAN;
@@ -464,7 +484,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         onUseExisting={handleUseExisting}
 
         onFileChange={handleFileChange}
-        onConfirmUpload={handleUseExisting}
+        onConfirmUpload={handleConfirmUpload}
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
