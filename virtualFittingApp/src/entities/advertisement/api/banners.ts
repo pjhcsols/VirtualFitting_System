@@ -1,6 +1,7 @@
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
 import type { Banner } from "../model/types";
+import { getCorrectedImageUrl } from "@/shared/utils/url";
 
 export const fetchBanners = async (adminId: string): Promise<Banner[] | null> => {
   const config: AxiosRequestConfig = {
@@ -12,8 +13,18 @@ export const fetchBanners = async (adminId: string): Promise<Banner[] | null> =>
   try {
     const response = await apiClient<Banner[]>(config);
     if (response && response.data) {
-      return response.data; 
+      const correctedBanners = response.data.map(banner => {
+        
+        if (banner.url) {
+          banner.url = getCorrectedImageUrl(banner.url);
+        }
+        
+        return banner;
+      });
+      
+      return correctedBanners; 
     }
+
     return null;
 
   } catch (error) {

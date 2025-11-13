@@ -2,7 +2,7 @@ import { apiClient } from "@/shared/api/apiClient";
 import type { ApiResponse } from "@/shared/types/api";
 import type { AxiosRequestConfig } from "axios";
 import type { TryOnResponseData, TryOnQueryParams, PublicTryOnQueryParams } from "../model/types"; 
-
+import { getCorrectedImageUrl } from "@/shared/utils/url";
 
 export const tryOnPrivateFitting = async (
   params: TryOnQueryParams,
@@ -24,6 +24,9 @@ export const tryOnPrivateFitting = async (
 
   try {
     const response = await apiClient<TryOnResponseData>(config);
+    if (response?.data?.resultImageUrl) {
+        response.data.resultImageUrl = getCorrectedImageUrl(response.data.resultImageUrl);
+    }
     return response as unknown as ApiResponse<TryOnResponseData>;
 
   } catch (error) {
@@ -55,8 +58,11 @@ export const tryOnPublicFitting = async (
   };
 
 try {
-
     const response = await apiClient<TryOnResponseData>(config); 
+    if (response?.data?.resultImageUrl) {
+        response.data.resultImageUrl = getCorrectedImageUrl(response.data.resultImageUrl);
+    }
+
     return response;
   } catch (error) {
     return null;

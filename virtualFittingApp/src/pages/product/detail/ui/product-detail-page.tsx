@@ -8,6 +8,7 @@ import { fetchProductDetailByColor, fetchProductColors } from "@/entities/produc
 import type { ProductDetail, ProductPrice } from "@/entities/product";
 
 import { BREAKPOINTS } from "@/shared";
+import { cleanServerMessage } from "@/shared";
 
 import { ProductDetails } from "@/widgets/product-details";
 import { ProductDescription } from "@/widgets/product-description";
@@ -16,11 +17,13 @@ import { ProductSizingInfo } from "@/widgets/product-sizing-info";
 import { ProductQnAs } from "@/widgets/product-qnas";
 import { useProductCoupon } from "@/features/coupon";
 
-import { fetchMyUserGender } from "@/entities/user";
+import { 
+  fetchMyUserGender,
+  uploadUserImage,
+  fetchMyRegisteredImageUrl
+} from "@/entities/user";
 import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
-import { AddModelModal } from "@/features/virtual-try-on";
-import { FittingResultModal } from "@/features/virtual-try-on";
-import { fetchMyRegisteredImageUrl } from "@/entities/user";
+import { AddModelModal, FittingResultModal } from "@/features/virtual-try-on";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { fetchProductPrice } from '@/entities/discount';
 
@@ -155,6 +158,12 @@ function ProductDetailPage() {
     closeTryOn(); 
 
     try {
+      const uploadResponse = await uploadUserImage(accessTokenString, selectedFile);
+      
+      if (!uploadResponse) {
+        throw new Error("사용자 이미지 서버 등록에 실패");
+      }
+
       const params = {
         productId: currentProductId,
         color: color,
@@ -162,28 +171,94 @@ function ProductDetailPage() {
         authUserId: accessTokenString, 
       };
       const response = await tryOnPrivateFitting(params, selectedFile);
+
+      if (!response || response.status !== 200) {
+          const serverMessage = response?.message;
+          throw new Error(serverMessage); 
+      }
       const resultImageUrl = response?.data.resultImageUrl;
       const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
       
       if (resultImageUrl) {
-          setGeneratedImageUrl(resultImageUrl);
-          setSimulatedDelay(resultSimulatedDelay);
-          alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
       } else {
-          alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
       }
 
     } catch (e) {
       console.error("가상 착용 API 호출 실패:", e);
-      alert("새 이미지로 가상 착용에 실패했습니다.");
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      alert(cleanedMessage);
     } finally {
-      setIsProcessing(false);
+        setIsProcessing(false);
     }
-  }, [selectedFile, currentProductId, color, userGender, currentUserId, closeTryOn]);
+  }, [selectedFile, currentProductId, color, userGender, currentUserId, closeTryOn, cleanServerMessage]);
 
-    const handleUseExisting = useCallback(() => {
+  const handleUseRegisteredImage = useCallback(async () => {
+    const accessTokenString = getAccessTokenStringFromCookie();
+
+    if (!registeredImageUrl || !color || !userGender || !accessTokenString || !currentUserId) {
+      alert("필수 정보가 부족합니다 (등록된 이미지, 색상, 성별, 사용자 ID).");
+      return;
+    }
+
+    setIsProcessing(true);
     closeTryOn();
-  }, [closeTryOn]);
+
+    let imageBlob: Blob | null = null;
+    try {
+        const response = await fetch(registeredImageUrl);
+        if (!response.ok) throw new Error("등록된 이미지 URL을 가져오는 데 실패했습니다.");
+        imageBlob = await response.blob();
+    } catch (e) {
+        console.error("등록 이미지 Blob 변환 실패:", e);
+        setIsProcessing(false);
+        alert("등록된 이미지 처리 중 오류가 발생했습니다.");
+        return;
+    }
+
+    try {
+      const params = {
+        productId: currentProductId,
+        color: color,
+        gender: userGender,
+        authUserId: accessTokenString,
+      };
+      const response = await tryOnPrivateFitting(params, imageBlob); 
+
+      if (!response || response.status !== 200) {
+        const serverMessage = response?.message;
+        throw new Error(serverMessage); 
+      }
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      
+      if (resultImageUrl) {
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("기존 이미지로 가상 착용 이미지가 생성되었습니다.");
+      } else {
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
+      }
+
+    } catch (e) {
+      console.error("가상 착용 API 호출 실패:", e);
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      alert(cleanedMessage);
+    } finally {
+        setIsProcessing(false);
+    }
+  }, [registeredImageUrl, color, userGender, currentUserId, closeTryOn, cleanServerMessage]);
+
+
+  const handleUseExisting = useCallback(() => {
+    closeTryOn();
+    handleUseRegisteredImage();
+  }, [closeTryOn, handleUseRegisteredImage]);
 
 
   useEffect(() => {

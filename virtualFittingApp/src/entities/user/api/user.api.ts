@@ -2,6 +2,7 @@ import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
 import type { UserDetail, UpdateAddressRequest, UserDetailResponse, Gender } from "../model/types";
+import { getCorrectedImageUrl } from "@/shared/utils/url";
 
 export const fetchUserData = async () => {
   try {
@@ -85,8 +86,8 @@ export const fetchMyRegisteredImageUrl = async (userId: string): Promise<string 
   try {
     const response = await apiClient<string>(config);
 
-    if (response && response.status === 0 && response.data) {
-        return response.data;
+    if (response?.data) {
+        return getCorrectedImageUrl(response.data);
     }
 
     return null;
@@ -95,4 +96,37 @@ export const fetchMyRegisteredImageUrl = async (userId: string): Promise<string 
     console.error("[현재이미지 조회 실패] 사용자 현재 이미지가 없습니다.", error);
     return null;
   }
+};
+
+export const uploadUserImage = async (
+    userId: string, 
+    file: File | Blob
+): Promise<string | null> => {
+    
+    const formData = new FormData();
+    formData.append('file', file); 
+    
+    const config: AxiosRequestConfig = {
+        method: 'post',
+        url: "/b1/users/me/image",
+        params: { userId },
+        data: formData,
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        }
+    };
+
+    try {
+        const response = await apiClient<string>(config); 
+
+        if (response?.data) {
+            return getCorrectedImageUrl(response.data);
+        }
+
+        return null;
+        
+    } catch (error) {
+        console.error("[이미지 업로드 실패] API 요청 실패:", error);
+        return null;
+    }
 };

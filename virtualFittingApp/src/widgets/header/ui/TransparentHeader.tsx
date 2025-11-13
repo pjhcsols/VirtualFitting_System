@@ -1,22 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
-import { NavLink, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useRecoilState } from 'recoil';
 import { authState } from '@/entities/auth';
 
 type TransparentHeaderProps = { 
   $sticky?: boolean;
-  onAboutScroll?: () => void;
-  onServiceScroll?: () => void;
-  onSolutionScroll?: () => void;
 }
 
-export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScroll, onSolutionScroll }: TransparentHeaderProps) {
+export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
   const router = useNavigate();
-  const location = useLocation();
   const [{ isLoggedIn }, setAuthState] = useRecoilState(authState);
-
-  const isMainPage = location.pathname === '/';
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
@@ -24,29 +18,20 @@ export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScro
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-      
-      const scrolledPastThreshold = currentScrollY > 100; 
-      if (scrolledPastThreshold !== isScrolled) {
-        setIsScrolled(scrolledPastThreshold);
-      }
+      const scrolledPastThreshold = currentScrollY > 100;
+      setIsScrolled(scrolledPastThreshold);
 
-      const scrollingDown = currentScrollY > lastScrollY.current;
-      const scrollingUp = currentScrollY < lastScrollY.current;
-
-      if (scrollingDown && scrolledPastThreshold) {
+      if (currentScrollY > lastScrollY.current && scrolledPastThreshold) {
         setIsVisible(false);
-      } else if (scrollingUp || currentScrollY < 50) {
+      } else if (currentScrollY < lastScrollY.current || currentScrollY < 50) {
         setIsVisible(true);
       }
-      
       lastScrollY.current = currentScrollY;
     };
 
     window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isScrolled, isVisible]); 
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleLogout = () => {
     setAuthState({ isLoggedIn: false, userId: null });
@@ -54,83 +39,60 @@ export function TransparentHeader({ $sticky = true, onAboutScroll, onServiceScro
     router("/");
   };
 
- const MainNav = (
-    <RouterList isCenter={true}>
-      <li>
-        <StyledHeaderButton onClick={onAboutScroll}>
-          About
-        </StyledHeaderButton>
-      </li>
-      <li>
-        <StyledHeaderButton onClick={onServiceScroll}>
-          Services
-        </StyledHeaderButton>
-      </li>
-      <li>
-        <StyledHeaderButton onClick={onSolutionScroll}>
-          SaaS
-        </StyledHeaderButton>
-      </li>
-    </RouterList>
-  );
-
-  const ShopNav = (
-    <RouterList>
-      <li>
-        <StyledNavLink to="/products">
-          Store
-        </StyledNavLink>
-      </li>
-      <li>
-        <CartLinkWrapper>
-          <StyledNavLink to="/cart">
-            Cart
-          </StyledNavLink>
-        </CartLinkWrapper>
-      </li>
-      {isLoggedIn ? (
-        <>
-          <li>
-            <StyledNavLink to="/mypage">
-              My
-            </StyledNavLink>
-          </li>
-          <li>
-            <StyledHeaderButton as="button" onClick={handleLogout}>
-              Logout
-            </StyledHeaderButton>
-          </li>
-        </>
-      ) : (
-        <li>
-          <StyledNavLink to="/login">
-            Login
-          </StyledNavLink>
-        </li>
-      )}
-    </RouterList>
-  );
-
   return (
-    <Wrapper $sticky={$sticky} $isScrolled={isScrolled} $isVisible={isVisible} $isMainPage={isMainPage}>
+    <Wrapper $sticky={$sticky} $isScrolled={isScrolled} $isVisible={isVisible} $isMainPage={false}>
       <LogoContainer onClick={() => router("/")}>
         <LogoTitle>Basilium</LogoTitle>
       </LogoContainer>
-      
-      {/* 💡 NavContentWrapper 내부에 두 개의 nav 컨테이너를 항상 배치 */}
-      <NavContentWrapper>
-          <nav> 
-              {/* 💡 MainNav은 isMainPage일 때만 내용 렌더링 */}
-              {isMainPage && MainNav}
-          </nav>
-          <nav>
-              {ShopNav} {/* ShopNav은 항상 오른쪽에 붙어있습니다. */}
-          </nav>
-      </NavContentWrapper>
 
+      <NavContentWrapper>
+        <nav>
+          <RouterList isCenter={true}>
+            <li>
+              <StyledNavLink to="/about">About</StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/service">Services</StyledNavLink>
+            </li>
+            <li>
+              <StyledNavLink to="/saas">SaaS</StyledNavLink>
+            </li>
+          </RouterList>
+        </nav>
+
+        <nav>
+          <RouterList>
+            <li>
+              <StyledNavLink to="/products">Store</StyledNavLink>
+            </li>
+            <li>
+              <CartLinkWrapper>
+                <StyledNavLink to="/cart">Cart</StyledNavLink>
+              </CartLinkWrapper>
+            </li>
+            {isLoggedIn ? (
+              <>
+                <li>
+                  <StyledNavLink to="/mypage">My</StyledNavLink>
+                </li>
+                <li>
+                  <StyledHeaderButton as="button" onClick={handleLogout}>
+                    Logout
+                  </StyledHeaderButton>
+                </li>
+              </>
+            ) : (
+              <li>
+                <StyledNavLink to="/login">Login</StyledNavLink>
+              </li>
+            )}
+          </RouterList>
+        </nav>
+      </NavContentWrapper>
     </Wrapper>
   );
 }
+
 
 const SharedLinkButtonStyles = css`
   background: none;

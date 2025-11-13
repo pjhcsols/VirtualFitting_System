@@ -52,10 +52,23 @@ import { BrandLayout } from "../layouts/brand";
 import { BrandLobby } from "@/pages/brand/ui/lobby";
 import { BrandProduct } from "@/pages/brand/ui/product";
 
+import { AboutPage } from "@/pages/about";
+import { SasSPage } from "@/pages/saas/ui/SaaSPage";
+import { ServicePage } from "@/pages/service";
+
 const Routing = () => (
   <Routes>
     <Route path="" element={<MainLayout />}>
       <Route index element={<MainPage />} />
+    </Route>
+    <Route path="about" element={<MainLayout />}>
+      <Route index element={<AboutPage />} />
+    </Route>
+    <Route path="saas" element={<MainLayout />}>
+      <Route index element={<SasSPage />} />
+    </Route>
+    <Route path="service" element={<MainLayout />}>
+      <Route index element={<ServicePage />} />
     </Route>
     <Route path="login">
       <Route index element={<LoginPage />} />

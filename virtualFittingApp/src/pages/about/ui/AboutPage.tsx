@@ -1,33 +1,25 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { 
-  ActionTextSection,
-  CommerceTextSection,
-  HeroSection, 
-  ServiceTextSection,
-  AITextSection,
-  SolutionSection, 
-  VirtualFittingSection,
   AboutSection,
-} from "@/widgets/main";
+  DescriptionSection,
+} from "@/widgets/about";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
+import { Starfield } from "@/shared/components/star";
+import { Footer } from "@/widgets/footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function MainPage() {
+function AboutPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
   
   const aboutRef = useRef<HTMLDivElement>(null);
-  const serviceRef = useRef<HTMLDivElement>(null);
-
-  const saasRef = useRef<HTMLDivElement>(null);
-
   useEffect(() => {
     function update(time: number) {
       lenisRef.current?.lenis?.raf(time * 1000);
@@ -61,6 +53,7 @@ function MainPage() {
       ref={lenisRef}
       root
     >
+      <Starfield theme="light"/>
       <TooltipGlobalStyles /> 
       <GlobalCursorStyle />
       <TransparentHeader />
@@ -68,46 +61,21 @@ function MainPage() {
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
-            <Section>
-              <HeroSection />
-            </Section>
-
-            <Section ref={aboutRef}>
+            <TextSection>
               <AboutSection />
+            </TextSection>
+            <Section ref={aboutRef}>
+              <DescriptionSection />
             </Section>
-            
-            <TextSection ref={serviceRef}>
-              <ServiceTextSection />
-            </TextSection>
-
-            <TextSection>
-              <AITextSection/>
-            </TextSection>
-
-            <TextSection>
-              <CommerceTextSection/>
-            </TextSection>
-
-            <Section ref={saasRef}>
-              <SolutionSection />
-            </Section>
-            <SectionEmptyMedium></SectionEmptyMedium>
-            <SectionEmptyLarge>
-              <ActionTextSection />
-            </SectionEmptyLarge>
-
-            <SaaSSection>
-              <VirtualFittingSection />
-            </SaaSSection>
-            <SectionEmptyLarge></SectionEmptyLarge>
           </ModelContainer>
         </Article>
+        <Footer />
       </MainSection>
     </Wrapper>
   );
 }
 
-export { MainPage };
+export { AboutPage };
 
 const Wrapper = styled(ReactLenis)``;
 const MainSection = styled.section`
@@ -161,15 +129,6 @@ const TextSection = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-const SaaSSection = styled.div`
-  width: 100%;
-  heitht: 130vh;
-  display: flex;
-  justify-content: flex-start;;
-  align-items: center;
-`;
-
 // const SectionEmptySmall = styled.div`
 //   width: 100%;
 //   height: 100px;
@@ -178,21 +137,21 @@ const SaaSSection = styled.div`
 //   align-items: center;
 // `;
 
-const SectionEmptyMedium = styled.div`
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const SectionEmptyMedium = styled.div`
+//   width: 100%;
+//   height: 200px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
-const SectionEmptyLarge = styled.div`
-  width: 100%;
-  height: 50vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
+// const SectionEmptyLarge = styled.div`
+//   width: 100%;
+//   height: 50vh;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// `;
 
 const TooltipGlobalStyles = createGlobalStyle`
   .basil-tooltip {

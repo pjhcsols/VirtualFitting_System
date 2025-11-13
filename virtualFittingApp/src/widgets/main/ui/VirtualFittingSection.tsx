@@ -26,6 +26,8 @@ import { tryOnPrivateFitting } from "@/entities/virtual-fitting";
 import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { fetchMyUserGender } from "@/entities/user";
 import { FittingResultModal } from "@/features/virtual-try-on";
+import { cleanServerMessage } from "@/shared";
+import { uploadUserImage } from "@/entities/user";
 
 
 const bounce = keyframes`
@@ -163,6 +165,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     if (!registeredImageUrl) return;
     setModelSrc(prev => ({ ...prev, custom: registeredImageUrl }));
     setSelectedModel(MODEL.CUSTOM);
+    setSelectedFile(null); 
+
     closeModal();
   };
 
@@ -181,68 +185,91 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   }, []);
 
   const handleConfirmUpload = useCallback(async () => {
-    if (!selectedFile || !apiGender) {
-      alert("파일 또는 모델 성별 정보가 부족합니다.");
+    const accessTokenString = getAccessTokenStringFromCookie();
+    if (!selectedFile || !apiGender || !accessTokenString) { 
+      // alert("필수 정보가 부족합니다 (파일, 모델 성별, 로그인 상태).");
       return; 
     }
+    closeModal(); 
 
     try {
+      const uploadResponseUrl = await uploadUserImage(accessTokenString, selectedFile); 
+      
+      if (!uploadResponseUrl) {
+        throw new Error("사용자 이미지 등록에 실패했습니다.");
+      }
+      setModelSrc(prev => ({ ...prev, custom: uploadResponseUrl }));
+      setSelectedModel(MODEL.CUSTOM); 
+
       if (uploadPreview) {
-          setModelSrc(prev => ({ ...prev, custom: uploadPreview }));
-          setSelectedModel(MODEL.CUSTOM); 
-          
-          alert("새 이미지가 모델 슬롯에 등록되었습니다.");
-      } else {
-          throw new Error("미리보기 URL 없음");
+          URL.revokeObjectURL(uploadPreview);
       }
       
-      closeModal();
-    } catch (err) {
-      console.error("이미지 등록 실패:", err);
-      alert("이미지 등록에 실패했습니다. 다시 시도해주세요.");
+    } catch (e) {
+      console.error("이미지 등록 실패:", e);
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      
+      alert(`${cleanedMessage}`);
     }
-  }, [selectedFile, apiGender, uploadPreview, setModelSrc, setSelectedModel, closeModal]);
+  }, [selectedFile, apiGender, uploadPreview, setModelSrc, setSelectedModel, closeModal, cleanServerMessage]);
 
 
   const callPrivateTryOnAPI = useCallback(async () => {
     const accessTokenString = getAccessTokenStringFromCookie();
 
-    if (!selectedFile || !apiGender || !product || !isLoggedIn || !accessTokenString) {
+    if ((!selectedFile && !modelSrc.custom) || !apiGender || !product || !isLoggedIn || !accessTokenString) {
         console.error("Private API 호출 실패: 필수 데이터 부족.");
         alert("가상 착용을 위해 파일을 선택하고 로그인 상태를 확인해주세요.");
         return; 
     }
 
-    const currentProductColor = VIRTUAL_FITTING_PRODUCT_COLOR;
     setIsProcessing(true);
+    let imageBlob: Blob | File | null = selectedFile;
 
     try {
-        const params = {
-            productId: VIRTUAL_FITTING_PRODUCT_ID,
-            color: currentProductColor,
-            gender: apiGender,
-            authUserId: accessTokenString,
-        };
+      if (!imageBlob && modelSrc.custom) {
+        const response = await fetch(modelSrc.custom);
+        if (!response.ok) throw new Error(`커스텀 모델 이미지를 가져오지 못했습니다: ${response.statusText}`);
+        imageBlob = await response.blob();
+      }
 
-        const response = await tryOnPrivateFitting(params, selectedFile); 
+      if (!imageBlob) {
+        throw new Error("모델 이미지를 준비할 수 없습니다.");
+      }
 
-        const resultImageUrl = response?.data.resultImageUrl;
-        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
-        
-        if (resultImageUrl) {
-            setGeneratedImageUrl(resultImageUrl);
-            setSimulatedDelay(resultSimulatedDelay);
-            alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
-        } else {
-            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
-        }
-    } catch (err) {
-        console.error("Private API 최종 처리 오류:", err);
-        alert("이미지 처리 중 오류가 발생했습니다.");
+      const params = {
+        productId: VIRTUAL_FITTING_PRODUCT_ID,
+        color: VIRTUAL_FITTING_PRODUCT_COLOR,
+        gender: apiGender,
+        authUserId: accessTokenString,
+      };
+
+      const response = await tryOnPrivateFitting(params, imageBlob); 
+
+      if (!response || response.status !== 200) {
+        const serverMessage = response?.message;
+        throw new Error(serverMessage); 
+      }
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      
+      if (resultImageUrl) {
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+      } else {
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
+      }
+   } catch (e) {
+      console.error("가상 착용 API 호출 실패:", e);
+      const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
+      const cleanedMessage = cleanServerMessage(rawMessage); 
+      alert(cleanedMessage);
     } finally {
-      setIsProcessing(false);
+        setIsProcessing(false);
     }
-  }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
+  }, [selectedFile, modelSrc.custom, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
 
   const executeVirtualTryOn = async () => {
     const isMan = selectedModel === MODEL.MAN;
@@ -271,53 +298,31 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         return;
     }
     try {
-        const params: PublicTryOnQueryParams = {
-            productId: VIRTUAL_FITTING_PRODUCT_ID,
-            color: VIRTUAL_FITTING_PRODUCT_COLOR,
-            gender: apiGender,
-        };
-        
-        const response = await tryOnPublicFitting(params, imageBlob); 
-        
-        const resultImageUrl = response?.data.resultImageUrl;
-        const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      const params: PublicTryOnQueryParams = {
+        productId: VIRTUAL_FITTING_PRODUCT_ID,
+        color: VIRTUAL_FITTING_PRODUCT_COLOR,
+        gender: apiGender,
+      };
+      
+      const response = await tryOnPublicFitting(params, imageBlob); 
+      
+      const resultImageUrl = response?.data.resultImageUrl;
+      const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
 
-        if (resultImageUrl) {
-            setGeneratedImageUrl(resultImageUrl);
-            setSimulatedDelay(resultSimulatedDelay);
-            alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
-            console.log(
-                "debug:",
-                { 
-                productId: params.productId, 
-                color: params.color, 
-                gender: params.gender, 
-                imageUrl: imageUrl, 
-
-                fullResponse: response 
-              }
-            );
-
-            
-        } else {
-            alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
-            console.log(
-                "API 호출 실패 디버그:",
-                { 
-                productId: params.productId, 
-                color: params.color, 
-                gender: params.gender, 
-                imageUrl: imageUrl, 
-                fullResponse: response 
-              }
-            );
-        }
+      if (resultImageUrl) {
+        setGeneratedImageUrl(resultImageUrl);
+        setSimulatedDelay(resultSimulatedDelay);
+        alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
+          
+      } else {
+        throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
+      }
 
     } catch (err) {
-        console.error("가상 착용 최종 처리 오류:", err);
-        alert("이미지 처리 중 오류가 발생했습니다.");
+      console.error("가상 착용 최종 처리 오류:", err);
+      alert("이미지 처리 중 오류가 발생했습니다.");
     } finally {
-        setIsProcessing(false);
+      setIsProcessing(false);
     }
   };
 
@@ -553,7 +558,7 @@ const AddIcon = styled.img`
 `;
 
 const RailInfoTip = styled.div`
-position: absolute;
+  position: absolute;
   top: 10px;
   right: 10px;
   z-index: 10;
@@ -563,11 +568,15 @@ position: absolute;
   border-radius: 100px;
   justify-content: center;
   align-items: center;
-  background: rgba(255,255,255,0.16);
+  background: rgba(255,255,255,0.25); 
   border: 1px solid rgba(255,255,255,0.38);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(2px);
   box-shadow: 0 8px 24px rgba(0,0,0,0.22), inset 0 1px 0 rgba(255,255,255,0.25);
   cursor: pointer;
+
+  img {
+    filter: drop-shadow(0 0 1px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(0,0,0,0.6));
+  }
 `;
 
 const GenderImageCard = styled.button<{ $img: string; $active?: boolean }>`
@@ -603,7 +612,7 @@ const MainModelImg = styled.img`
 `;
 
 const ModelGlassCard = styled(GlassBox)`
-display: flex;
+  display: flex;
   width: 200px;
   height: 300px;
   position: relative;
@@ -648,7 +657,7 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
   display: flex;
   cursor: pointer;
   transition: transform .18s ease, background .18s ease;
-
+  overflow: hidden;
 
   ${({ $hasImage }) => $hasImage && `
     background: rgba(255,255,255,0.06);
@@ -656,7 +665,7 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
 
   ${({ $active }) => $active && css`
     box-shadow: 0 8px 22px rgba(0,0,0,.22);
-    outline: 3px solid #000;
+    outline: 3px solid #ffffff;
     outline-offset: 0;
   `}
 `;
@@ -664,14 +673,13 @@ const CustomSlot = styled(GlassBox)<{ $hasImage: boolean; $active?: boolean }>`
 const CustomThumb = styled.img`
   width: 100%;
   height: 100%;
-  object-fit: contain;  
+  object-fit: cover;
   display: block;
 `;
 
 const SlotActions = styled.div`
   position: absolute;
-  top: 6px;
-  right: 6px;
+  bottom: 6px;
   display: flex;
   gap: 6px;
 `;

@@ -1,32 +1,20 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { 
-  ActionTextSection,
-  CommerceTextSection,
-  HeroSection, 
-  ServiceTextSection,
-  AITextSection,
-  SolutionSection, 
-  VirtualFittingSection,
-  AboutSection,
-} from "@/widgets/main";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
+import { Starfield } from "@/shared/components/star";
+import { SaaSSection } from "@/widgets/saas";
+import { Footer } from "@/widgets/footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-function MainPage() {
+function SasSPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
-  
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const serviceRef = useRef<HTMLDivElement>(null);
-
-  const saasRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function update(time: number) {
@@ -55,12 +43,14 @@ function MainPage() {
   };
   }, []);
 
+
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
       ref={lenisRef}
       root
     >
+      <Starfield theme="light"/>
       <TooltipGlobalStyles /> 
       <GlobalCursorStyle />
       <TransparentHeader />
@@ -69,45 +59,17 @@ function MainPage() {
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
             <Section>
-              <HeroSection />
+              <SaaSSection />
             </Section>
-
-            <Section ref={aboutRef}>
-              <AboutSection />
-            </Section>
-            
-            <TextSection ref={serviceRef}>
-              <ServiceTextSection />
-            </TextSection>
-
-            <TextSection>
-              <AITextSection/>
-            </TextSection>
-
-            <TextSection>
-              <CommerceTextSection/>
-            </TextSection>
-
-            <Section ref={saasRef}>
-              <SolutionSection />
-            </Section>
-            <SectionEmptyMedium></SectionEmptyMedium>
-            <SectionEmptyLarge>
-              <ActionTextSection />
-            </SectionEmptyLarge>
-
-            <SaaSSection>
-              <VirtualFittingSection />
-            </SaaSSection>
-            <SectionEmptyLarge></SectionEmptyLarge>
           </ModelContainer>
         </Article>
+        <Footer />
       </MainSection>
     </Wrapper>
   );
 }
 
-export { MainPage };
+export { SasSPage };
 
 const Wrapper = styled(ReactLenis)``;
 const MainSection = styled.section`
@@ -149,46 +111,6 @@ const ModelContainer = styled.section`
 const Section = styled.div`
   width: 100%;
   height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const TextSection = styled.div`
-  width: 100%;
-  height: 200vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SaaSSection = styled.div`
-  width: 100%;
-  heitht: 130vh;
-  display: flex;
-  justify-content: flex-start;;
-  align-items: center;
-`;
-
-// const SectionEmptySmall = styled.div`
-//   width: 100%;
-//   height: 100px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
-
-const SectionEmptyMedium = styled.div`
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-`;
-
-const SectionEmptyLarge = styled.div`
-  width: 100%;
-  height: 50vh;
   display: flex;
   justify-content: center;
   align-items: center;

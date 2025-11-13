@@ -112,7 +112,7 @@ const ScreenText = styled.div`
   letter-spacing: -1px;
 
   position: absolute;
-  top: 2%;
+  top: 10vh;
   left: 50%;
   transform: translate(-50%, -50%);
   
@@ -142,7 +142,6 @@ const SubText = styled.div`
   color: #fff;
   text-align:left;
 `;
-
 
 const ImageBox = styled.div`
   width: 40vw;
