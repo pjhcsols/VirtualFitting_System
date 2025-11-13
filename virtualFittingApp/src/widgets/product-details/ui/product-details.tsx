@@ -135,18 +135,25 @@ function ProductDetails({
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
       >
-        {fittingResultUrl && (
-          <S.FittingButton onClick={onViewResult}>
-              가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
-          </S.FittingButton>
-        )}
+      {isProcessing ? (
+        <S.FittingButton disabled>
+          <CircularProgress size={20} style={{ color: '#fff', marginRight: '8px' }} />
+          <S.LoadingText>AI 이미지 생성 중...</S.LoadingText>
+        </S.FittingButton>
+      ) : (
+        fittingResultUrl && (
+          <S.FittingResultButton onClick={onViewResult}>
+            가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
+          </S.FittingResultButton>
+        )
+      )}
         <S.ImageWrapper>
-        {isProcessing && (
+        {/* {isProcessing && (
           <S.LoadingOverlay>
             <CircularProgress size={30} style={{ color: '#fff' }} />
             <S.LoadingText>AI 이미지 생성 중...</S.LoadingText>
           </S.LoadingOverlay>
-        )}
+        )} */}
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {isHovering && selectedProductImages.length > 1 && (

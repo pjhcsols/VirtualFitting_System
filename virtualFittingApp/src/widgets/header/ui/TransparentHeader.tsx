@@ -47,7 +47,7 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
 
       <NavContentWrapper>
         <nav>
-          <RouterList isCenter={true}>
+          <RouterList $isCenter={true}>
             <li>
               <StyledNavLink to="/about">About</StyledNavLink>
             </li>
@@ -188,10 +188,10 @@ const LogoTitle = styled.h1`
   transition: color 0.3s ease;
 `;
 
-const RouterList = styled.ul<{ isCenter?: boolean }>`
+const RouterList = styled.ul<{ $isCenter?: boolean }>`
   display: flex;
   align-items: center;
-  gap: ${props => props.isCenter ? '40px' : '20px'}; 
+  gap: ${props => props.$isCenter ? '40px' : '20px'}; 
   list-style: none;
   margin: 0;
   padding: 0;
