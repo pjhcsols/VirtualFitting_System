@@ -13,6 +13,7 @@ import { useProductLike } from "@/features/product-like";
 import { ProductLikeButton } from "@/features/product-like";
 import { SoldOutButton } from "@/features/product-options";
 import { PopUpBottom } from "@/shared/ui/PopUpBottom";
+import CircularProgress from '@mui/material/CircularProgress';
 
 type ProductWithQuantity = ProductDetail & { totalQuantity: number };
 
@@ -29,6 +30,7 @@ type ProductDetailsProps = {
   fittingResultUrl: string | null;
   fittingDelay: number | null;
   onViewResult: () => void;
+  isProcessing: boolean;
 };
 
 function ProductDetails({
@@ -41,6 +43,7 @@ function ProductDetails({
   fittingResultUrl,
   fittingDelay,
   onViewResult,
+  isProcessing,
 }: ProductDetailsProps) {
   const {
     price, quantity, selectedColor, selectedSize, sizesSorted,
@@ -138,6 +141,12 @@ function ProductDetails({
           </S.FittingButton>
         )}
         <S.ImageWrapper>
+        {isProcessing && (
+          <S.LoadingOverlay>
+            <CircularProgress size={30} style={{ color: '#fff' }} />
+            <S.LoadingText>AI 이미지 생성 중...</S.LoadingText>
+          </S.LoadingOverlay>
+        )}
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {isHovering && selectedProductImages.length > 1 && (

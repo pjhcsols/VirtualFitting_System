@@ -42,6 +42,7 @@ function ProductDetailPage() {
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [priceData, setPriceData] = useState<ProductPrice | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
   
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
@@ -150,6 +151,9 @@ function ProductDetailPage() {
       return; 
     }
 
+    setIsProcessing(true);
+    closeTryOn(); 
+
     try {
       const params = {
         productId: currentProductId,
@@ -168,11 +172,12 @@ function ProductDetailPage() {
       } else {
           alert("가상 착용 요청에 실패했습니다. 서버 응답 오류.");
       }
-      
-      closeTryOn(); 
+
     } catch (e) {
       console.error("가상 착용 API 호출 실패:", e);
       alert("새 이미지로 가상 착용에 실패했습니다.");
+    } finally {
+      setIsProcessing(false);
     }
   }, [selectedFile, currentProductId, color, userGender, currentUserId, closeTryOn]);
 
@@ -244,6 +249,7 @@ function ProductDetailPage() {
     fittingResultUrl: generatedImageUrl,
     fittingDelay: simulatedDelay, 
     onViewResult: openResultModal,
+    isProcessing: isProcessing,
   };
 
   return (

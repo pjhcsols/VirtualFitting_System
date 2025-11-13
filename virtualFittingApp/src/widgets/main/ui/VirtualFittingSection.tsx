@@ -78,6 +78,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const [generatedImageUrl, setGeneratedImageUrl] = useState<string | null>(null);
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const loadUserGender = useCallback(async () => {
     if (!isLoggedIn) return;
@@ -213,6 +214,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     }
 
     const currentProductColor = VIRTUAL_FITTING_PRODUCT_COLOR;
+    setIsProcessing(true);
 
     try {
         const params = {
@@ -237,8 +239,10 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     } catch (err) {
         console.error("Private API 최종 처리 오류:", err);
         alert("이미지 처리 중 오류가 발생했습니다.");
+    } finally {
+      setIsProcessing(false);
     }
-  }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setModelSrc, setSelectedModel]);
+  }, [selectedFile, apiGender, product, isLoggedIn, userId, setGeneratedImageUrl, setSimulatedDelay])
 
   const executeVirtualTryOn = async () => {
     const isMan = selectedModel === MODEL.MAN;
@@ -256,6 +260,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     const apiGender: 'M' | 'W' = isWoman ? 'W' : 'M';
     const imageUrl = isWoman ? womanImg : manImg;
     let imageBlob: Blob | null = null;
+    setIsProcessing(true);
+
     try {
         const response = await fetch(imageUrl); 
         if (!response.ok) throw new Error(`Failed to fetch default image: ${response.statusText}`);
@@ -310,6 +316,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     } catch (err) {
         console.error("가상 착용 최종 처리 오류:", err);
         alert("이미지 처리 중 오류가 발생했습니다.");
+    } finally {
+        setIsProcessing(false);
     }
   };
 
@@ -454,6 +462,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
             fittingResultUrl={generatedImageUrl}
             fittingDelay={simulatedDelay}
             onViewResult={openResultModal}
+            isProcessing={isProcessing}
           />
         </ContentWrapper>
       </SectionWrap>

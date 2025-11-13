@@ -7,6 +7,7 @@ import { VirtualTryOnButton } from "@/features/virtual-try-on";
 import { ProductOptions } from "@/features/product-options";
 import { GlassButton } from "@/shared/components/glass-button";
 import { ProductLikeButton } from "@/features/product-like";
+import CircularProgress from '@mui/material/CircularProgress';
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% {
@@ -33,7 +34,7 @@ type ProductDetailsProps = {
   fittingResultUrl: string | null;
   fittingDelay: number | null;
   onViewResult: () => void;
-  
+  isProcessing: boolean;
 };
 
 function DummyProductDetails({
@@ -42,6 +43,7 @@ function DummyProductDetails({
   fittingResultUrl,
   fittingDelay,
   onViewResult,
+  isProcessing,
 }: ProductDetailsProps) {
 
   const dummyPrice = {
@@ -105,6 +107,12 @@ function DummyProductDetails({
           </S.FittingButton>
       )}
         <S.ImageWrapper>
+        {isProcessing && (
+          <S.LoadingOverlay>
+            <CircularProgress size={30} style={{ color: '#fff' }} />
+            <S.LoadingText>AI 이미지 생성 중...</S.LoadingText>
+          </S.LoadingOverlay>
+        )}
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {selectedProductImages.length > 1 && (
