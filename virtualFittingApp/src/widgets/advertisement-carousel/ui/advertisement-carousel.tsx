@@ -46,16 +46,27 @@ function AdvertisementCarousel() {
     setIsPaused((prev) => !prev);
   };
 
-  const cacheKey = banners.map(b => b.url).join('');
+  const cacheKey = banners.map((b) => b.url).join("");
   let currentBannerUrl = banners[currentIndex]?.url;
-  const uniqueUrl = currentBannerUrl 
-    ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}` 
-    : '';
-    
+  if (currentBannerUrl) {
+    if (currentBannerUrl.startsWith("http:")) {
+      currentBannerUrl = currentBannerUrl.replace("http:", "");
+    } else if (currentBannerUrl.startsWith("https:")) {
+      currentBannerUrl = currentBannerUrl.replace("https:", "");
+    }
+
+    if (!currentBannerUrl.startsWith("//")) {
+      currentBannerUrl = `//${currentBannerUrl.replace(/^\/\//, "")}`;
+    }
+  }
+  const uniqueUrl = currentBannerUrl
+    ? `${currentBannerUrl}?v=${encodeURIComponent(cacheKey)}`
+    : "";
+
   return (
     <Wrapper>
       <Image
-        src={`https://api.basilium.ai.kr${finalBannerUrl}`}
+        src={`https://api.basilium.ai.kr${uniqueUrl}`}
         alt={`Banner ${currentIndex + 1}`}
       />
 
