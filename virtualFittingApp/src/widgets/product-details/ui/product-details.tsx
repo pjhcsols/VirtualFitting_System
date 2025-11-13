@@ -142,9 +142,9 @@ function ProductDetails({
         </S.FittingButton>
       ) : (
         fittingResultUrl && (
-          <S.FittingButton onClick={onViewResult}>
+          <S.FittingResultButton onClick={onViewResult}>
             가상 착용 결과 확인 ({fittingDelay ?? '--'}ms)
-          </S.FittingButton>
+          </S.FittingResultButton>
         )
       )}
         <S.ImageWrapper>

@@ -112,6 +112,32 @@ export const FittingButton = styled.button`
   z-index: 10;
 `;
 
+export const FittingResultButton = styled.button`
+  position: absolute;
+  display: flex;
+  flex-direction: row;
+  top: 10px;
+  right: 10px;
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #fff;
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+  backdrop-filter: blur(4px);
+  background-color: rgba(174, 174, 174, 0.4);
+  &:hover {rgba(150, 150, 150, 0.4)
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.4);
+    // background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  z-index: 10;
+`;
+
+
 export const CarouselButton = styled.button`
   position: absolute;
   top: 50%;
