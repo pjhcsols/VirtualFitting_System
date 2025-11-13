@@ -90,6 +90,8 @@ export const ImageWrapper = styled.div`
 
 export const FittingButton = styled.button`
   position: absolute;
+  display: flex;
+  flex-direction: row;
   top: 10px;
   right: 10px;
   background: none;
