@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { fetchBanners } from "@/entities/advertisement";
 import type { Banner } from "@/entities/advertisement";
-import PlayCircleIcon from '@mui/icons-material/PlayCircle';
-import PauseCircleIcon from '@mui/icons-material/PauseCircle';
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import PauseCircleIcon from "@mui/icons-material/PauseCircle";
 import { rawSvgContent } from "@/widgets/main/model/constants";
 
 function AdvertisementCarousel() {
@@ -43,7 +43,7 @@ function AdvertisementCarousel() {
   };
 
   const handleTogglePause = () => {
-    setIsPaused(prev => !prev); 
+    setIsPaused((prev) => !prev);
   };
 
   const cacheKey = banners.map(b => b.url).join('');
@@ -54,19 +54,26 @@ function AdvertisementCarousel() {
     
   return (
     <Wrapper>
-      <Image src={uniqueUrl} alt={`Banner ${currentIndex + 1}`} />
-      
+      <Image
+        src={`https://api.basilium.ai.kr${finalBannerUrl}`}
+        alt={`Banner ${currentIndex + 1}`}
+      />
+
       <Pagination>
         {banners.map((_, index) => (
-          <GaugeBarWrapper
-            key={index}
-            onClick={() => goToSlide(index)}
-          >
-            <GaugeFill $isActive={index === currentIndex} $isPaused={isPaused} />
+          <GaugeBarWrapper key={index} onClick={() => goToSlide(index)}>
+            <GaugeFill
+              $isActive={index === currentIndex}
+              $isPaused={isPaused}
+            />
           </GaugeBarWrapper>
         ))}
         <PlayPauseButton onClick={handleTogglePause}>
-            {isPaused ? <PlayCircleIcon fontSize="large" /> : <PauseCircleIcon fontSize="large" />}
+          {isPaused ? (
+            <PlayCircleIcon fontSize="large" />
+          ) : (
+            <PauseCircleIcon fontSize="large" />
+          )}
         </PlayPauseButton>
       </Pagination>
       <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} />
@@ -83,8 +90,8 @@ const Wrapper = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%; 
-  height: 100%; 
+  width: 100%;
+  height: 100%;
   object-fit: cover;
 `;
 const Pagination = styled.div`
@@ -126,7 +133,7 @@ const GaugeBarWrapper = styled.div`
   cursor: pointer;
 `;
 
-const GaugeFill = styled.div<{ $isActive: boolean, $isPaused: boolean }>`
+const GaugeFill = styled.div<{ $isActive: boolean; $isPaused: boolean }>`
   width: 100%;
   height: 100%;
   background-color: white;
@@ -139,7 +146,7 @@ const GaugeFill = styled.div<{ $isActive: boolean, $isPaused: boolean }>`
     $isActive &&
     css`
       animation: ${fillAnimation} 5s linear forwards;
-      animation-play-state: ${$isPaused ? 'paused' : 'running'};
+      animation-play-state: ${$isPaused ? "paused" : "running"};
     `}
 `;
 
@@ -165,14 +172,14 @@ const ScrollArrow = styled.div`
   z-index: 10;
   animation: ${bounce} 2s infinite;
   border: none;
-  color: #E9FAFF; 
+  color: #e9faff;
 
   left: 50%;
   transform: translateX(-50%);
   transform: translateX(-50%) translateY(0);
-  
+
   svg {
-    width: 50px; 
+    width: 50px;
     height: 80px;
     fill: none;
     stroke: currentColor;

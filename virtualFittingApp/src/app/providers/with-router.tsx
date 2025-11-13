@@ -124,6 +124,7 @@ const Routing = () => (
 
     <Route path="/terms" element={<TermsPage />} />
     <Route path="/privacy" element={<PrivacyPage />} />
+    <Route path="/*" element={<MainPage />} />
   </Routes>
 );
 
