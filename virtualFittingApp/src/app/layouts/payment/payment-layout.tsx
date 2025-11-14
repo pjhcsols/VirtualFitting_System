@@ -1,6 +1,6 @@
 import { Outlet } from "react-router-dom";
 import styled from "styled-components";
-import { Header } from "@/widgets/header";
+import { TransparentHeader } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared";
 import { Footer } from "@/widgets/footer";
 import { Starfield } from "@/shared/components/star";
@@ -9,7 +9,7 @@ function PaymentLayout() {
   return (
     <Wrapper>
       <Starfield />
-      <Header theme="dark"/>
+      <TransparentHeader />
       <ContentWrapper>
         <Outlet />
       </ContentWrapper>
