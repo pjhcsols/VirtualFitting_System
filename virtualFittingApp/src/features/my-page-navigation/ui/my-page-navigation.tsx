@@ -4,7 +4,7 @@ import icon_arrow from '@/shared/assets/icons/icon-arrow.svg';
 import { BREAKPOINTS } from '@/shared';
 
 const MENU_ITEMS = [
-  { title: "좋아요", path: "/mypage/like" },
+  { title: "좋아요", path: "/like" },
   { title: "주문내역", path: "/mypage/order" },
   { title: "취소/반품/교환 내역", path: "/mypage/cancel" },
 ];

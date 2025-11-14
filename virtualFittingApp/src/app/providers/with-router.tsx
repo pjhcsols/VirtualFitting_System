@@ -117,9 +117,13 @@ const Routing = () => (
       <Route path="order/confirmation" element={<OrderConfirmationPage />} />
       <Route path="order/:id" element={<MyOrderDetailPage />} />
       <Route path="cancel" element={<MyCancelListPage />} />
-      <Route path="like" element={<MyLikeListPage />} />
+      {/* <Route path="like" element={<MyLikeListPage />} /> */}
       <Route path="review" element={<MyReviewListPage />} />
       <Route path="review/:id" element={<WriteReviewPage />} />
+    </Route>
+
+    <Route path="/like" element={<MyPageLayout />}>
+      <Route index element={<MyLikeListPage />} />
     </Route>
 
     <Route path="/terms" element={<TermsPage />} />

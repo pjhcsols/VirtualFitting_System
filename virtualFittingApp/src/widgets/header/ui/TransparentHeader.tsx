@@ -73,6 +73,9 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
             {isLoggedIn ? (
               <>
                 <li>
+                  <StyledNavLink to="/like">Likes</StyledNavLink>
+                </li>
+                <li>
                   <StyledNavLink to="/mypage">My</StyledNavLink>
                 </li>
                 <li>
