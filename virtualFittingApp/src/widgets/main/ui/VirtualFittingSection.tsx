@@ -57,6 +57,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const navigate = useNavigate();
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string>(VIRTUAL_FITTING_PRODUCT_COLOR);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
   const [userGender, setUserGender] = useState<'M' | 'W' | null>(null);
   const apiGender: 'M' | 'W' | null =
@@ -240,7 +241,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
 
       const params = {
         productId: VIRTUAL_FITTING_PRODUCT_ID,
-        color: VIRTUAL_FITTING_PRODUCT_COLOR,
+        color: selectedColor,
         gender: apiGender,
         authUserId: accessTokenString,
       };
@@ -300,7 +301,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     try {
       const params: PublicTryOnQueryParams = {
         productId: VIRTUAL_FITTING_PRODUCT_ID,
-        color: VIRTUAL_FITTING_PRODUCT_COLOR,
+        color: selectedColor,
         gender: apiGender,
       };
       
@@ -308,6 +309,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
       
       const resultImageUrl = response?.data.resultImageUrl;
       const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
+      console.log(resultImageUrl);
 
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);
@@ -349,11 +351,17 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
 
   }, [selectedModel, executeVirtualTryOn, callPrivateTryOnAPI, isLoggedIn, modelSrc.custom, selectedFile, openModal]); 
 
+  const handleColorChangeFromDetails = useCallback((newColor: string) => {
+    setSelectedColor(newColor);
+    setGeneratedImageUrl(null)
+    setSimulatedDelay(null);
+  }, []);
+
   useEffect(() => {
     let mounted = true;
     (async () => {
       try {
-        const detail = await fetchProductDetailByColor(VIRTUAL_FITTING_PRODUCT_ID, VIRTUAL_FITTING_PRODUCT_COLOR);
+        const detail = await fetchProductDetailByColor(VIRTUAL_FITTING_PRODUCT_ID, selectedColor);
         if (!detail) throw new Error("상품 상세를 찾을 수 없습니다.");
         
         if (mounted) {
@@ -365,7 +373,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
       }
     })();
     return () => { mounted = false; };
-  }, [productId]);
+  }, [productId, selectedColor]);
 
   useEffect(() => {
     const handleScrollToProduct = () => {
@@ -468,6 +476,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
             fittingDelay={simulatedDelay}
             onViewResult={openResultModal}
             isProcessing={isProcessing}
+            onColorChange={handleColorChangeFromDetails}
           />
         </ContentWrapper>
       </SectionWrap>
@@ -507,7 +516,6 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  heitht: 130vh;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
