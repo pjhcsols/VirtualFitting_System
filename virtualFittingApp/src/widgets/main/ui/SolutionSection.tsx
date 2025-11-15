@@ -150,7 +150,6 @@ const CardGrid = styled.div`
   overflow-x: hidden; 
   scroll-snap-type: none;
   width: 100%;
-  max-width: 1200px;
   padding: 0 64px;
   justify-content: center;
 
