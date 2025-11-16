@@ -530,9 +530,10 @@ const ContentWrapper = styled.div`
   margin-top: 30px;
   gap: 14px;
 
-  @media (max-width: ${BREAKPOINTS.lg}px) {
-    grid-template-columns: 1fr;
-    row-gap: 14px;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
     padding: 0 10px;
   }
 `
@@ -540,6 +541,12 @@ const Rail = styled.div`
   display: flex;
   flex-direction: column;
   width: 100px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+  }
 `;
 
 const Model = styled.div`
@@ -557,6 +564,11 @@ const RailList = styled.div`
   flex-direction: column; 
   align-items: end;
   gap: 16px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: row;
+    align-items: center;
+  }
 `;
 
 const AddIcon = styled.img`

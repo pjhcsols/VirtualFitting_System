@@ -117,6 +117,13 @@ const Wrapper = styled.div`
   gap: 40px;
   overflow: visible; 
   padding: 5rem 10rem;
+
+  @media (max-width: ${BREAKPOINTS.lg}px) {
+    padding: 4rem 5rem;
+  }
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 3rem 2rem;
+  }
 `;
 
 const HeadlineText = styled.div`
@@ -131,6 +138,11 @@ const HeadlineText = styled.div`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 32px;
+    text-align: left;
+  }    
 `;
 
 const Card = styled(GlassBox)`
@@ -145,37 +157,25 @@ const Card = styled(GlassBox)`
 
 const CardGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); 
-  gap: 14px;
-  overflow-x: hidden; 
-  scroll-snap-type: none;
   width: 100%;
-  padding: 0 64px;
-  justify-content: center;
+  gap: 1.5rem;
+  grid-template-columns: repeat(4, 1fr);
 
-  & > div {
-    align-self: flex-start;
-
-    &:nth-child(even) {
-      margin-top: 40px;
-    }
+  & > div:nth-child(even) {
+    margin-top: 40px;
   }
 
   @media (max-width: ${BREAKPOINTS.lg}px) {
-    grid-template-columns: repeat(2, 1fr); 
-    
-    & > div {
-      align-self: stretch; 
-      
-      &:nth-child(even) {
-        margin-top: 0; 
-      }
-    }
-    @media (max-width: ${BREAKPOINTS.md}px) {
-        grid-template-columns: 1fr;
+    & > div:nth-child(even) {
+      margin-top: 0;
+
     }
   }
 
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    /* 1 column on mobile */
+    grid-template-columns: 1fr;
+  }
 `;
 
 const CardIcon = styled.div`

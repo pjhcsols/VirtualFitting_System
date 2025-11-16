@@ -3,6 +3,9 @@ import { NavLink, useNavigate } from "react-router-dom";
 import styled, { css } from "styled-components";
 import { useRecoilState } from 'recoil';
 import { authState } from '@/entities/auth';
+import { BREAKPOINTS } from '@/shared/constants';
+import { Box, Drawer, IconButton, List, ListItem, ListItemButton, ListItemText, Divider } from '@mui/material';
+import MenuIcon from '@mui/icons-material/Menu';
 
 type TransparentHeaderProps = { 
   $sticky?: boolean;
@@ -13,6 +16,7 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
   const [{ isLoggedIn }, setAuthState] = useRecoilState(authState);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
   const lastScrollY = useRef(0);
 
   useEffect(() => {
@@ -39,6 +43,73 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
     router("/");
   };
 
+  const toggleDrawer = (open: boolean) => (event: React.KeyboardEvent | React.MouseEvent) => {
+    if (
+      event.type === 'keydown' &&
+      ((event as React.KeyboardEvent).key === 'Tab' || (event as React.KeyboardEvent).key === 'Shift')
+    ) {
+      return;
+    }
+    setIsDrawerOpen(open);
+  };
+
+  const mainLinks = [
+    { path: '/about', text: 'About' },
+    { path: '/service', text: 'Services' },
+    { path: '/saas', text: 'SaaS' },
+  ];
+
+  const userLinks = [
+    { path: '/products', text: 'Store' },
+    { path: '/cart', text: 'Cart' },
+    ...(isLoggedIn ? [
+      { path: '/like', text: 'Likes' },
+      { path: '/mypage', text: 'My' },
+    ] : []),
+  ];
+
+  const drawerList = (
+    <Box
+      sx={{ width: 250, height: '100%', background: '#1a1a1a', color: 'white' }}
+      role="presentation"
+      onClick={toggleDrawer(false)}
+      onKeyDown={toggleDrawer(false)}
+    >
+      <List>
+        {mainLinks.map((link) => (
+          <ListItem key={link.text} disablePadding>
+            <ListItemButton component={NavLink} to={link.path}>
+              <ListItemText primary={link.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+      <Divider sx={{ bgcolor: 'rgba(255, 255, 255, 0.1)' }} />
+      <List>
+        {userLinks.map((link) => (
+          <ListItem key={link.text} disablePadding>
+            <ListItemButton component={NavLink} to={link.path}>
+              <ListItemText primary={link.text} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+        {isLoggedIn ? (
+          <ListItem disablePadding>
+            <ListItemButton onClick={handleLogout}>
+              <ListItemText primary="Logout" />
+            </ListItemButton>
+          </ListItem>
+        ) : (
+          <ListItem disablePadding>
+            <ListItemButton component={NavLink} to="/login">
+              <ListItemText primary="Login" />
+            </ListItemButton>
+          </ListItem>
+        )}
+      </List>
+    </Box>
+  );
+
   return (
     <Wrapper $sticky={$sticky} $isScrolled={isScrolled} $isVisible={isVisible} $isMainPage={false}>
       <LogoContainer onClick={() => router("/")}>
@@ -48,42 +119,23 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
       <NavContentWrapper>
         <nav>
           <RouterList $isCenter={true}>
-            <li>
-              <StyledNavLink to="/about">About</StyledNavLink>
-            </li>
-            <li>
-              <StyledNavLink to="/service">Services</StyledNavLink>
-            </li>
-            <li>
-              <StyledNavLink to="/saas">SaaS</StyledNavLink>
-            </li>
+            {mainLinks.map(link => (
+              <li key={link.path}><StyledNavLink to={link.path}>{link.text}</StyledNavLink></li>
+            ))}
           </RouterList>
         </nav>
 
         <nav>
           <RouterList>
-            <li>
-              <StyledNavLink to="/products">Store</StyledNavLink>
-            </li>
-            <li>
-              <CartLinkWrapper>
-                <StyledNavLink to="/cart">Cart</StyledNavLink>
-              </CartLinkWrapper>
-            </li>
+            {userLinks.map(link => (
+              <li key={link.path}><StyledNavLink to={link.path}>{link.text}</StyledNavLink></li>
+            ))}
             {isLoggedIn ? (
-              <>
-                <li>
-                  <StyledNavLink to="/like">Likes</StyledNavLink>
-                </li>
-                <li>
-                  <StyledNavLink to="/mypage">My</StyledNavLink>
-                </li>
-                <li>
-                  <StyledHeaderButton as="button" onClick={handleLogout}>
-                    Logout
-                  </StyledHeaderButton>
-                </li>
-              </>
+              <li>
+                <StyledHeaderButton as="button" onClick={handleLogout}>
+                  Logout
+                </StyledHeaderButton>
+              </li>
             ) : (
               <li>
                 <StyledNavLink to="/login">Login</StyledNavLink>
@@ -92,6 +144,26 @@ export function TransparentHeader({ $sticky = true }: TransparentHeaderProps) {
           </RouterList>
         </nav>
       </NavContentWrapper>
+
+      <MobileMenuContainer>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="end"
+          onClick={toggleDrawer(true)}
+        >
+          <MenuIcon sx={{ color: 'white' }} />
+        </IconButton>
+      </MobileMenuContainer>
+      
+      <Drawer
+        anchor="right"
+        open={isDrawerOpen}
+        onClose={toggleDrawer(false)}
+        PaperProps={{ sx: { background: 'transparent' } }}
+      >
+        {drawerList}
+      </Drawer>
     </Wrapper>
   );
 }
@@ -160,6 +232,10 @@ const Wrapper = styled.header<{ $sticky?: boolean; $isScrolled: boolean; $isVisi
     background 0.3s ease, 
     border-bottom 0.3s ease, 
     transform 0.3s ease;
+  
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 0 20px;
+  }
 `;
 
 const NavContentWrapper = styled.div`
@@ -168,7 +244,16 @@ const NavContentWrapper = styled.div`
   justify-content: space-between; 
   align-items: center;
   margin-left: 32px;
-  & > nav:first-child {
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    display: none;
+  }
+`;
+
+const MobileMenuContainer = styled.div`
+  display: none;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    display: block;
   }
 `;
 
@@ -236,10 +321,4 @@ const StyledHeaderButton = styled.button`
 
 const StyledNavLink = styled(NavLink)`
   ${SharedLinkButtonStyles}
-`;
-
-const CartLinkWrapper = styled.div`
-  position: relative;
-  display: flex;
-  align-items: center;
 `;
