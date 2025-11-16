@@ -112,7 +112,14 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
-  mix-blend-mode: difference
+  mix-blend-mode: difference;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    top: 3vh;
+    left: 50%;
+    font-size: clamp(60px, 15vw, 100px);
+    transform: translate(-50%, 0);
+  }
 `;
 
 const Wrapper = styled.div`
@@ -159,12 +166,12 @@ const TextBox = styled.div`
   justify-content: center; 
   align-items: start; 
   overflow: hidden;
-  margin-right:auto;
+  margin-right: auto;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     align-items: center;
     text-align: center;
-    margin-left: 0;
+    margin-left: auto;
   }
 `;
 
@@ -180,7 +187,7 @@ const ContentText = styled.div`
   color: transparent;
   padding-bottom: 24px;
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 22px;
+    font-size: 28px;
     text-align: center;
   }
 `;
@@ -201,7 +208,6 @@ const SubText = styled.div`
     text-align: center;
   }
 `;
-
 
 const ImageBox = styled.div`
   width: 500px; 

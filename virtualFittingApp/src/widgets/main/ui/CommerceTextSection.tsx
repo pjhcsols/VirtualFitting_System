@@ -60,7 +60,7 @@ function CommerceTextSection() {
         <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>SaaS</ScreenText> 
           <Content>
             <TextBox>
-              <ContentText>SaaS</ContentText>
+              <ContentText>Commerce</ContentText>
               <SubText>함께 나아갈 파트너십 기반의 기술 레퍼런스</SubText>
             </TextBox>
             <ImageBox>
@@ -110,7 +110,14 @@ const ScreenText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
-  mix-blend-mode: difference
+  mix-blend-mode: difference;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    top: 3vh;
+    left: 50%;
+    font-size: clamp(60px, 15vw, 100px);
+    transform: translate(-50%, 0);
+  }
 `;
 
 const Wrapper = styled.div`

@@ -173,7 +173,6 @@ const CardGrid = styled.div`
   }
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    /* 1 column on mobile */
     grid-template-columns: 1fr;
   }
 `;
