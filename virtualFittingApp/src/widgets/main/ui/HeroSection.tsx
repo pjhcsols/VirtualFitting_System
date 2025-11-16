@@ -140,7 +140,7 @@ const ModelContainer = styled.div`
     width: 100%;
     height: 40vh;
     margin-left: 0;
-    order: 2;
+    order: 1;
   }
 `;
 
@@ -156,7 +156,7 @@ const BackContainer = styled.div`
     flex: none;
     min-height: auto;
     width: 100%;
-    order: 1;
+    order: 2;
   }
 `;
 
