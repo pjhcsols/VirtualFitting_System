@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { GlassBox } from "@/shared/components/glass-box";
+import { BREAKPOINTS } from "@/shared/constants";
 
 function SaaSSection() {
   return (
@@ -55,7 +56,7 @@ function SaaSSection() {
 const Wrapper = styled.section`
   max-width: 1200px;
   margin: 0 auto;
-  padding: 4rem 2rem;
+  padding: 6rem 2rem;
   color: #fff;
   text-align: center;
 `;
@@ -77,9 +78,10 @@ const Description = styled.p`
 `;
 
 const BoxesWrapper = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
   gap: 2rem;
+  justify-content: center;
 `;
 
 const GlassBoxStyled = styled(GlassBox)`
@@ -88,6 +90,16 @@ const GlassBoxStyled = styled(GlassBox)`
   flex-direction: column;
   align-items: center;
   text-align: center;
+
+  flex-basis: 100%;
+
+  @media (min-width: ${BREAKPOINTS.md}px) {
+    flex-basis: 45%;
+  }
+
+  @media (min-width: ${BREAKPOINTS.lg}px) {
+    flex-basis: 30%;
+  }
 `;
 
 const BoxTitle = styled.h3`
