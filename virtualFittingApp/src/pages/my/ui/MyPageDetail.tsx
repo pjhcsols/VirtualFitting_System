@@ -1,12 +1,15 @@
 import { useState, useRef, useEffect} from "react";
+import { useRecoilValue } from 'recoil';
+import { authState } from '@/entities/auth';
+import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import styled from "styled-components"; 
 import icon_user from "@/shared/assets/icons/icon-user.svg";
 import icon_up from "@/shared/assets/icons/icon-up.svg";
 import icon_down from "@/shared/assets/icons/icon-down.svg";
 import icon_add from "@/shared/assets/icons/icon-add.svg";
 import { UserFormData, Gender, FormGender } from "@/entities/user/model/types";
-import { submitUserInfo } from "@/shared/api/submit.api";
 import { handleImageFileChange } from "@/shared/lib/image.util";
+import { removeUndefined } from "@/shared/utils/object";
 
 const mapGenderToFormGender = (gender: Gender | null | undefined): FormGender => {
   if (gender === "MALE") return "M";
@@ -17,15 +20,25 @@ import { sendVerificationEmail } from "@/shared/utils/email/sendVerificationEmai
 import { verifyAuthCode } from "@/shared/utils/email/verifyAuthCode";
 import { formatTime } from "@/shared/utils/time/time.util";
 import { fetchUserInfo } from "@/shared/api/get.api";
+import { splitAddressString } from "@/shared/utils/address";
 import { EmailVerificationInput } from "@/features/user-profile/ui/email-verification-input";
-import { fetchUserImage, fetchUserProfileImage } from "@/shared/api/image.api";
-import { uploadUserProfileImage, uploadUserImage } from "@/shared/api/image.api";
+
+import { 
+  fetchMyProfileImageUrl, 
+  uploadUserProfileImage,
+  fetchMyRegisteredImageUrl,
+  uploadUserImage,
+  updateUserDetail,
+  UpdateUserDetailRequest,
+} from "@/entities/user";
+
 import { BREAKPOINTS } from "@/shared";
 import { formatDateAuto } from "@/shared/utils/date/dateAuto.util";
 import { StyledGlassCard, ActiveDivider } from "@/entities/order";
 import { ActionButton } from "@/features/review-actions/review-actions";
 
 function MypageDetail() {
+    const { userId } = useRecoilValue(authState);
     const profileInputRef = useRef<HTMLInputElement | null>(null);
     const photoInputRef = useRef<HTMLInputElement | null>(null);  
     const [loading, setLoading] = useState<boolean>(false);
@@ -70,8 +83,10 @@ function MypageDetail() {
 
       useEffect(() => {
         const loadUserInfo = async () => {
+          if (!userId) return;
           const res = await fetchUserInfo();
           const userInfo = res.data;
+          const addressParts = splitAddressString(userInfo.address);
           setFormData({
             name: userInfo.name ?? "",
             password: userInfo.password ?? "",
@@ -80,9 +95,9 @@ function MypageDetail() {
             nickname: userInfo.nickname ?? "",
             birthDate: userInfo.birthDate?.split("T")[0] ?? "",
             address: {
-              address: userInfo.address ?? "",
-              zonecode: "",
-              detailAddress: ""
+              zonecode: addressParts.zonecode,
+              address: addressParts.address,
+              detailAddress: addressParts.detailAddress
             },
             gender: mapGenderToFormGender(userInfo.gender),
             size: {
@@ -103,15 +118,15 @@ function MypageDetail() {
             userImageUrl: userInfo.userImageUrl ?? "",
           });
 
-          const profileUrl = await fetchUserProfileImage();
-          const photoUrl = await fetchUserImage();
+          const profileUrl = await fetchMyProfileImageUrl(userId);
+          const photoUrl = await fetchMyRegisteredImageUrl(userId);
 
           if (profileUrl) setProfilePreviewImage(profileUrl);
           if (photoUrl) setPhotoPreviewImage(photoUrl);
         };
 
         loadUserInfo();
-      }, []);
+      }, [userId]);
       
       useEffect(() => {
         if (!isTimerActive || timer <= 0) return;
@@ -136,25 +151,76 @@ function MypageDetail() {
 
       const handleSubmit = async () => {
         if (saving) return;
-          setSaving(true);
+        setSaving(true);
         
+        const currentUserId = userId;
+        const accessTokenString = getAccessTokenStringFromCookie();
+        const getValidNumber = (val: number | null | undefined): number | undefined => {
+          if (val === null || val === undefined || val === 0) {
+              return undefined;
+          }
+          return Number(val); 
+        };
+
+        const getValidString = (val: string | undefined): string | undefined => {
+          return (val === undefined || val === null || val === '') ? undefined : val;
+        };
+
         try {
-          await submitUserInfo(formData);
+          if (!currentUserId || !accessTokenString) {
+              throw new Error("인증 정보가 부족하여 저장할 수 없습니다.");
+          }
+
+          const updatePayload: Partial<UpdateUserDetailRequest> = {
+            password: (formData.password && !formData.password.startsWith('{bcrypt}') && formData.password.length > 0)
+                ? formData.password
+                : undefined,
+            emailAddress: getValidString(formData.emailAddress),
+            phoneNumber: getValidString(formData.phoneNumber),
+            name: getValidString(formData.name),
+            nickname: getValidString(formData.nickname),
+
+            address: formData.address.address 
+                ? `${formData.address.zonecode} ${formData.address.address} ${formData.address.detailAddress}`.trim()
+                : undefined,
+                
+            birthDate: formData.birthDate 
+                ? new Date(formData.birthDate).toISOString() 
+                : undefined,
+            height: getValidNumber(formData.size.height),
+            weight: getValidNumber(formData.size.weight),
+            totalLength: getValidNumber(formData.size.totalLength),
+            chest: getValidNumber(formData.size.chest),
+            shoulder: getValidNumber(formData.size.shoulder),
+            arm: getValidNumber(formData.size.arm),
+            pantsTotalLength: getValidNumber(formData.size.pantsTotalLength),
+            waistWidth: getValidNumber(formData.size.waistWidth),
+            hipWidth: getValidNumber(formData.size.hipWidth),
+            thighWidth: getValidNumber(formData.size.thighWidth),
+            rise: getValidNumber(formData.size.rise),
+            hemWidth: getValidNumber(formData.size.hemWidth),
+          };
+
+          const filteredPayload = removeUndefined(updatePayload);
+
+          if (Object.keys(filteredPayload).length > 0) {
+              await updateUserDetail(currentUserId, filteredPayload);
+          }
 
           if (profileImageFile) {
-            const uploadedProfileUrl = await uploadUserProfileImage(profileImageFile);
+            const uploadedProfileUrl = await uploadUserProfileImage(currentUserId, profileImageFile);
             if (!uploadedProfileUrl) throw new Error("프로필 이미지 업로드 실패");
           }
 
           if (photoImageFile) {
-            const uploadedPhotoUrl = await uploadUserImage(photoImageFile);
+            const uploadedPhotoUrl = await uploadUserImage(currentUserId, photoImageFile);
             if (!uploadedPhotoUrl) throw new Error("전신 이미지 업로드 실패");
           }
-
-          alert("회원정보 저장 완료!");
-        } catch {
-          alert("저장 실패");
-          console.log(formData);
+          // alert("저장 완료");
+        } catch (error) {
+          // const errorMessage = error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.";
+          
+          // alert(`저장 실패: ${errorMessage}`);
         } finally {
           setSaving(false);
         }

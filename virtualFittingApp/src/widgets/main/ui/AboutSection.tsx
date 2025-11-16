@@ -3,6 +3,7 @@ import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
 import { HOODIE_IMAGES } from "../model/constants"; 
+import { BREAKPOINTS } from "@/shared/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -124,6 +125,10 @@ const Wrapper = styled.div`
   align-items: center;
   overflow: hidden; 
   padding: 24px; 
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 16px;
+  }
 `;
 
 
@@ -139,6 +144,10 @@ const CardTrack = styled.div`
   display: flex;
   gap: 4rem;
   white-space: nowrap; 
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    gap: 2rem;
+  }
 `;
 
 const HoodieImg = styled.img`
@@ -147,6 +156,11 @@ const HoodieImg = styled.img`
   object-fit: cover;
   border-radius: 8px;
   flex-shrink: 0;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 120px;
+    height: 162px;
+  }
 `;
 
 const HeadlineText = styled.div`
@@ -155,6 +169,12 @@ const HeadlineText = styled.div`
   font-weight: 700;
   text-transform: uppercase;
   display: inline-block;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 32px;
+    text-align: center;
+    margin-bottom: 2rem;
+  }
 `;
 
 const DescriptionBox = styled.div`
@@ -170,6 +190,10 @@ const Title = styled.h2`
   color: #B8D2FF; 
   text-transform: uppercase;
   margin-bottom: 2rem;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 20px;
+  }
 `;
 
 const Text = styled.p`
@@ -178,6 +202,11 @@ const Text = styled.p`
   letter-spacing: -1px;
   color: #E9FAFF; 
   margin-bottom: 7rem;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 1rem;
+    margin-bottom: 4rem;
+  }
 `;
 
 const Letter = styled.span`

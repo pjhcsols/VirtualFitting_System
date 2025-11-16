@@ -1,7 +1,13 @@
 import { API_BASILIUM } from "@/shared/config/axios/AxiosConfig";
 import { apiClient } from "@/shared/api/apiClient";
 import type { AxiosRequestConfig } from "axios";
-import type { UserDetail, UpdateAddressRequest, UserDetailResponse, Gender } from "../model/types";
+import type { 
+  UserDetail, 
+  UpdateAddressRequest, 
+  UserDetailResponse, 
+  Gender, 
+  UpdateUserDetailRequest 
+} from "../model/types";
 import { getCorrectedImageUrl } from "@/shared/utils/url";
 
 export const fetchUserData = async () => {
@@ -129,4 +135,83 @@ export const uploadUserImage = async (
         console.error("[이미지 업로드 실패] API 요청 실패:", error);
         return null;
     }
+};
+
+export const fetchMyProfileImageUrl = async (userId: string): Promise<string | null> => {
+    
+  const config: AxiosRequestConfig = {
+    method: 'get',
+    url: "/b1/users/me/profile-image",
+    params: { userId },
+  };
+
+  try {
+    const response = await apiClient<string>(config); 
+
+    if (response?.data) {
+        return getCorrectedImageUrl(response.data);
+    }
+
+    return null;
+
+  } catch (error) {
+    console.error("[프로필 이미지 조회 실패] 사용자 프로필 이미지가 없습니다.", error);
+    return null;
+  }
+};
+
+export const uploadUserProfileImage = async (
+  userId: string, 
+  file: File | Blob
+): Promise<string | null> => {
+    
+  const formData = new FormData();
+  formData.append('file', file); 
+  
+  const config: AxiosRequestConfig = {
+    method: 'post',
+    url: "/b1/users/me/profile-image",
+    params: { userId },
+    data: formData,
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    }
+  };
+
+  try {
+    const response = await apiClient<{ data: string }>(config); 
+
+    if (typeof response?.data === 'string') {
+      return getCorrectedImageUrl(response.data); 
+    }
+
+    return null;
+      
+  } catch (error) {
+    console.error("[프로필 이미지 업로드 실패] API 요청 실패:", error);
+    return null;
+  }
+};
+
+export const updateUserDetail = async (
+  userId: string,
+  data: Partial<UpdateUserDetailRequest>
+): Promise<UserDetailResponse | null> => {
+  
+  const body: Partial<UpdateUserDetailRequest> = data;
+
+  try {
+    const response = await API_BASILIUM.patch(`/b1/normalUsers/me`, body, {
+      params: { userId },
+    });
+
+    if (response.status === 200) {
+      return response.data;
+    }
+    return null;
+    
+  } catch (error) {
+    console.error("[사용자 상세 정보 업데이트] API 요청 실패:", error);
+    throw error;
+  }
 };

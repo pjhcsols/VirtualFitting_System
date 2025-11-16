@@ -8,6 +8,7 @@ import { ProductOptions } from "@/features/product-options";
 import { GlassButton } from "@/shared/components/glass-button";
 import { ProductLikeButton } from "@/features/product-like";
 import CircularProgress from '@mui/material/CircularProgress';
+import { PopUpBottom } from "@/shared/ui/PopUpBottom";
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% {
@@ -35,6 +36,7 @@ type ProductDetailsProps = {
   fittingDelay: number | null;
   onViewResult: () => void;
   isProcessing: boolean;
+  onColorChange?: (color: string) => void;
 };
 
 function DummyProductDetails({
@@ -44,6 +46,7 @@ function DummyProductDetails({
   fittingDelay,
   onViewResult,
   isProcessing,
+  onColorChange,
 }: ProductDetailsProps) {
 
   const dummyPrice = {
@@ -52,15 +55,22 @@ function DummyProductDetails({
   };
 
   const {
-    selectedProductImages,
-  } = useProductDetails(product, dummyPrice);
+    selectedProductImages, 
+    selectedColor, handleColorChange: handleColorChangeInternal,
+    quantity, setQuantity,
+  } = useProductDetails(product, dummyPrice, onColorChange);
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [showSoldOutPopup, setShowSoldOutPopup] = useState(false);
+  const POPUP_DURATION = 2200;
 
   const price = {
-    original: 81700
+    original: 77900
   };
-  const quantity = 1;
+
+  const handleClick = () => {
+  };
+
   const isSoldOut = false;
 
   const handleTryOnClick = () => {
@@ -68,10 +78,20 @@ function DummyProductDetails({
       onTryOn();
     }
   };
-
-  const handleClick = () => {
-    };
   
+  const handleDummyActionAndShowPopup = () => {
+      setShowSoldOutPopup(true);
+  };
+
+  useEffect(() => {
+    if (showSoldOutPopup) {
+      const timer = setTimeout(() => {
+        setShowSoldOutPopup(false);
+      }, POPUP_DURATION); 
+      return () => clearTimeout(timer);
+    }
+  }, [showSoldOutPopup]);
+
   useEffect(() => {
     setCurrentIndex(0);
   }, [selectedProductImages]);
@@ -114,12 +134,6 @@ function DummyProductDetails({
           )
         )}
         <S.ImageWrapper>
-        {/* {isProcessing && (
-          <S.LoadingOverlay>
-            <CircularProgress size={30} style={{ color: '#fff' }} />
-            <S.LoadingText>AI 이미지 생성 중...</S.LoadingText>
-          </S.LoadingOverlay>
-        )} */}
         {selectedProductImages && selectedProductImages.length > 0 ? (
           <>
             {selectedProductImages.length > 1 && (
@@ -179,20 +193,20 @@ function DummyProductDetails({
         <S.Description>오버핏 티셔츠</S.Description>
         <ProductOptions
           productMaterials={["COTTON", "POLYSTER"]}
-          productColors={["BLACK"]}
-          sizesSorted={["S", "M"]}
+          productColors={["BLACK", "WHITE"]}
+          sizesSorted={["S"]}
           price={price}
-          selectedColor="BLACK"
+          selectedColor={selectedColor}
           selectedSize="S"
           quantity={quantity}
-          handleColorChange={handleClick}
+          handleColorChange={handleColorChangeInternal}
           setSelectedSize={handleClick}
-          setQuantity={handleClick}
+          setQuantity={setQuantity}
           disabled={isSoldOut}
         />
         <S.ButtonBox>
-          <GlassButton onClick={handleClick} width="200px">ADD TO CART</GlassButton>
-          <GlassButton onClick={handleClick} width="200px">BUY NOW</GlassButton>
+          <GlassButton onClick={handleDummyActionAndShowPopup} width="200px">ADD TO CART</GlassButton>
+          <GlassButton onClick={handleDummyActionAndShowPopup} width="200px">BUY NOW</GlassButton>
         </S.ButtonBox>
         <S.ButtonBox>
           <AnimatedButtonContainer>
@@ -200,6 +214,9 @@ function DummyProductDetails({
           </AnimatedButtonContainer>
         </S.ButtonBox>
       </S.ProductInfoBox>
+      {showSoldOutPopup && (
+          <PopUpBottom message="품절된 상품입니다." />
+      )}
     </S.ProductBox>
   );
 }

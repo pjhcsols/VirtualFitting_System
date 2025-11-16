@@ -8,6 +8,7 @@ import { GlassButton } from "@/shared/components/glass-button";
 import { Starfield } from "@/shared/components/star";
 import { useRef, useEffect } from "react";
 import { rawSvgContent } from "../model/constants";
+import { BREAKPOINTS } from "@/shared/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -97,7 +98,7 @@ function HeroSection() {
             <ContentText ref={textRef2}>지금, 비즈니스의 성장을 시작하세요.</ContentText>
             <ButtonContainer ref={buttonRef}>
               <GlassButton onClick={handleScheduleClick} size='large'>
-              일정상담
+              입점상담
               </GlassButton>
               <GlassButton onClick={handleStoreClick} size='large'>
               스토어
@@ -118,6 +119,12 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: column;
+    height: auto;
+    padding-top: 5rem;
+  }
 `;
 
 const ModelContainer = styled.div`
@@ -127,6 +134,14 @@ const ModelContainer = styled.div`
   justify-content: center;
   align-items: center;
   margin-left: 64px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex: none;
+    width: 100%;
+    height: 40vh;
+    margin-left: 0;
+    order: 1;
+  }
 `;
 
 const BackContainer = styled.div`
@@ -136,6 +151,13 @@ const BackContainer = styled.div`
   flex-flow: column;
   justify-content: center;
   align-items: flex-end;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex: none;
+    min-height: auto;
+    width: 100%;
+    order: 2;
+  }
 `;
 
 const ContentContainer = styled.div`
@@ -149,6 +171,15 @@ const ContentContainer = styled.div`
   justify-content: center;
   align-items: flex-end;
   z-index: 2;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    position: relative;
+    min-height: auto;
+    align-items: flex-start;
+    text-align: left;
+    z-index: auto;
+    padding: 2rem;
+  }
 `;
 
 const TitleText = styled.div`
@@ -164,6 +195,13 @@ const TitleText = styled.div`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 48px;
+    padding-right: 0;
+    text-align: left;
+    letter-spacing: -2px;
+  }
 `;
 
 const ContentText = styled.div`
@@ -178,6 +216,12 @@ const ContentText = styled.div`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 18px;
+    padding-right: 0;
+    text-align: left;
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -189,6 +233,15 @@ const ButtonContainer = styled.div`
   padding-right: 90px;
   gap: 16px;
   width: 100%; 
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding-right: 0;
+    padding-top: 2rem;
+    gap: 1rem;
+  }
 `;
 
 const ScrollArrow = styled.div`
@@ -208,5 +261,9 @@ const ScrollArrow = styled.div`
     stroke-linejoin: round;
     display: block;
     vertical-align: middle;
+  }
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    display: none;
   }
 `;
