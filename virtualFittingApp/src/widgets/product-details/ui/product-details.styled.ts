@@ -128,7 +128,7 @@ export const FittingResultButton = styled.button`
   transition: all 0.2s;
   backdrop-filter: blur(4px);
   background-color: rgba(174, 174, 174, 0.4);
-  &:hover {rgba(150, 150, 150, 0.4)
+  &:hover {
     color: #fff;
     border-color: rgba(255, 255, 255, 0.4);
     // background-color: rgba(255, 255, 255, 0.1);

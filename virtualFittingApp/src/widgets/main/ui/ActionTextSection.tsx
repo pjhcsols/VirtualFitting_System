@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
+import { BREAKPOINTS } from "@/shared/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -61,6 +62,12 @@ const Wrapper = styled.div`
   overflow: hidden; 
   padding: 24px; 
   height: 300px; 
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 16px;
+    height: auto;
+    min-height: 200px;
+  }
 `;
 const HeadlineText = styled.div`
   font-size: 56px;
@@ -74,6 +81,11 @@ const HeadlineText = styled.div`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 32px;
+    padding-bottom: 32px;
+  }
 `;
 
 const SubText = styled.div`
@@ -87,6 +99,10 @@ const SubText = styled.div`
   background-clip: text;
   color: #E9FAFF; 
   padding-bottom: 24px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 1rem;
+  }
 `;
 
 const StrongHighlight = styled.span`
