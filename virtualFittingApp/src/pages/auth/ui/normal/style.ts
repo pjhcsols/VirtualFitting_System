@@ -24,14 +24,16 @@ export const ButtonContainer = styled.div`
   padding: 0.5rem 8rem;
   width: 100%;
   display: flex;
-  flex-flow: column nowrap;
+  flex-flow: row nowrap;
   justify-content: center;
   align-items: center;
   gap: 1rem;
 `;
 
 export const CancelButton = styled(NavLink)`
-  min-width: 30rem;
+  width: 50%;
+  max-width: 30rem;
+  min-width: 5rem;
   height: 2.5rem;
   border-radius: 1.5rem;
   cursor: pointer;
@@ -45,7 +47,9 @@ export const CancelButton = styled(NavLink)`
 `;
 
 export const NextButton = styled.button`
-  min-width: 30rem;
+  width: 50%;
+  max-width: 30rem;
+  min-width: 5rem;
   height: 2.5rem;
   border-radius: 1.5rem;
   cursor: pointer;

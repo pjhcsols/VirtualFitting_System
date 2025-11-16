@@ -4,6 +4,7 @@ import { signUpNormal } from "../api/normal.action";
 import { useNavigate } from "react-router-dom";
 import { isNormalUserKey } from "../utils/type";
 import { validateEmail, validatePassword } from "../utils/validation";
+import dayjs, { Dayjs } from "dayjs";
 
 function useNormal() {
   const router = useNavigate();
@@ -32,7 +33,7 @@ function useNormal() {
     weight: 0,
   });
   const [phone, setPhone] = useState<string>("");
-  const [birthday, setBirthday] = useState<string>("");
+  const [birthday, setBirthday] = useState<Dayjs | null>(dayjs(new Date()));
 
   const onChangeText = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -44,10 +45,26 @@ function useNormal() {
     }
     if (name === "emailAddress" && !validateEmail(value)) {
     }
-    setUser({
-      ...user,
-      [name]: value,
-    });
+    setUser((prev) => ({
+      ...prev,
+      [name]:
+        name.includes("Length") ||
+        name.includes("Width") ||
+        name === "chest" ||
+        name === "shoulder" ||
+        name === "arm" ||
+        name === "rise" ||
+        name === "height" ||
+        name === "weight" ||
+        name === "totalLength" ||
+        name === "pantsTotalLength" ||
+        name === "waistWidth" ||
+        name === "hipWidth" ||
+        name === "thighWidth" ||
+        name === "hemWidth"
+          ? parseFloat(value) || 0
+          : value,
+    }));
   };
 
   const prev = () => {

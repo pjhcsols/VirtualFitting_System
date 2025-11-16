@@ -42,6 +42,15 @@ function NormalUserSignUpWidget({
         </S.InfoBox>
         <S.InfoBox>
           <TextInput
+            name="name"
+            title="이름"
+            type="text"
+            value={data.name}
+            onChange={onChange}
+          />
+        </S.InfoBox>
+        <S.InfoBox>
+          <TextInput
             name="nickname"
             title="닉네임"
             type="text"
