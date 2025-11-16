@@ -399,6 +399,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
 
       <SectionWrap>
         <ContentWrapper>
+          <RailAndModelWrapper>
         <Rail>
           <RailList>
             <GenderImageCard
@@ -469,6 +470,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
             <img src={icon_exclamatioin_mark} alt="" aria-hidden="true" />
           </RailInfoTip>
         </Model>
+        </RailAndModelWrapper>
           <DummyProductDetails
             product={product as any}
             onTryOn={handleProductTryOn}
@@ -537,16 +539,16 @@ const ContentWrapper = styled.div`
     padding: 0 10px;
   }
 `
+const RailAndModelWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 24px;
+`;
+
 const Rail = styled.div`
   display: flex;
   flex-direction: column;
   width: 100px;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-  }
 `;
 
 const Model = styled.div`
@@ -564,11 +566,6 @@ const RailList = styled.div`
   flex-direction: column; 
   align-items: end;
   gap: 16px;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    flex-direction: row;
-    align-items: center;
-  }
 `;
 
 const AddIcon = styled.img`
