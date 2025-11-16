@@ -82,6 +82,29 @@ export interface UserDetail {
   weight: number | null;
 }
 
+// DTO 스키마 맞춘다고 옵셔널 썼음
+export type UpdateUserDetailRequest = {
+  password?: string;
+  emailAddress?: string;
+  phoneNumber?: string;
+  name?: string;
+  nickname?: string;
+  birthDate?: string;
+  address?: string;
+  totalLength?: number;
+  chest?: number;
+  shoulder?: number;
+  arm?: number;
+  pantsTotalLength?: number;
+  waistWidth?: number;
+  hipWidth?: number;
+  thighWidth?: number;
+  rise?: number;
+  hemWidth?: number;
+  height?: number;
+  weight?: number;
+};
+
 export interface UpdateAddressRequest {
   name: string;
   address: string;       
