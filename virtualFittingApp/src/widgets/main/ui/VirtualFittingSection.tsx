@@ -1,5 +1,6 @@
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useRef, useEffect } from "react";
 import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import gsap from "gsap"; 
 import { useNavigate } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { DummyProductDetails } from "@/widgets/product-details";
@@ -55,8 +56,48 @@ const TXT = {
 
 function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { productId?: number }) {
   const navigate = useNavigate();
+  const wrapperRef = useRef(null); 
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
+  const headlineRef = useRef(null);
+  const subTextRef = useRef(null);
+  const scrollArrowRef = useRef(null);
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
+
+  useEffect(() => {
+    if (!product) return;
+
+    const cards = cardRefs.current.filter(ref => ref !== null);
+    const elementsToAnimate = [
+      headlineRef.current,
+      subTextRef.current,
+      ...cards
+    ].filter(el => el !== null);
+
+    if (elementsToAnimate.length === 0) return;
+
+    gsap.set(elementsToAnimate, { opacity: 0, y: 50 });
+
+    const tl = gsap.to(elementsToAnimate, {
+        scrollTrigger: {
+            trigger: wrapperRef.current,
+            start: "top center+=100", 
+            toggleActions: "play none none none", 
+        },
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8,
+        stagger: 0.4,
+        ease: "power2.out"
+    });
+
+    return () => {
+      tl.scrollTrigger?.kill();
+      tl.kill();
+    }
+
+  }, [product]);
+
   const [selectedColor, setSelectedColor] = useState<string>(VIRTUAL_FITTING_PRODUCT_COLOR);
   const [selectedModel, setSelectedModel] = useState<ModelKey>(MODEL.MAN);
   const [userGender, setUserGender] = useState<'M' | 'W' | null>(null);
@@ -376,20 +417,29 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   }, [productId, selectedColor]);
 
   useEffect(() => {
-    const handleScrollToProduct = () => {
-      const scrollPosition = window.scrollY;
-      const totalHeight = document.documentElement.scrollHeight;
-      const viewportHeight = window.innerHeight;
+    if (!product || !scrollArrowRef.current || !wrapperRef.current) return;
 
-      if (scrollPosition + viewportHeight >= totalHeight - 10) {
-        window.removeEventListener('scroll', handleScrollToProduct);
-        navigate('/products');
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: wrapperRef.current,
+        start: "bottom bottom-=100",
+        end: "+=200",
+        scrub: 1,
+        onLeave: () => navigate('/products'),
+        id: 'scroll-arrow-nav'
       }
-    };
-    window.addEventListener('scroll', handleScrollToProduct);
+    });
 
-    return () => window.removeEventListener('scroll', handleScrollToProduct);
-  }, [navigate]);
+    tl.to(scrollArrowRef.current, {
+      scaleY: 2.5,
+      transformOrigin: "50% 100%",
+      ease: "none"
+    });
+
+    return () => {
+      ScrollTrigger.getById('scroll-arrow-nav')?.kill();
+    };
+  }, [product, navigate]);
   
   if (!product) return;
 
@@ -397,7 +447,16 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
     <>
       <TooltipGlobalStyles />
 
-      <SectionWrap>
+      <SectionWrap ref={wrapperRef}>
+        <HeadlineText ref={headlineRef}>
+        지금 바실리움에서 가상착용 데모를 확인하세요.
+      </HeadlineText>
+      <SubText ref={subTextRef}>
+        고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
+        바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
+        체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
+        매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+      </SubText>
         <ContentWrapper>
           <RailAndModelWrapper>
         <Rail>
@@ -499,7 +558,11 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
-      <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }} />
+            <ScrollArrow
+        ref={scrollArrowRef}
+        onClick={() => navigate('/products')}
+        dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }}
+      />
       
       {isResultModalOpen && generatedImageUrl && (
       <FittingResultModal
@@ -594,6 +657,46 @@ const RailInfoTip = styled.div`
   img {
     filter: drop-shadow(0 0 1px rgba(0,0,0,0.4)) drop-shadow(0 0 2px rgba(0,0,0,0.6));
   }
+`;
+
+const HeadlineText = styled.div`
+  font-size: 56px;
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  letter-spacing: -2px;
+  padding-bottom: 64px;
+  margin: 0;
+  background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 32px;
+    padding-bottom: 32px;
+  }
+`;
+
+const SubText = styled.div`
+  font-size: 1.2rem;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -1px;
+  text-align: center;
+  background-image: linear-gradient(to right, #E9FAFF, #D0EFFF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: #E9FAFF; 
+  padding-bottom: 24px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 1rem;
+  }
+`;
+
+const StrongHighlight = styled.span`
+  color: #B8D2FF; 
 `;
 
 const GenderImageCard = styled.button<{ $img: string; $active?: boolean }>`
@@ -739,12 +842,13 @@ const CancelImg = styled.img`
 
 const ScrollArrow = styled.div`
   position: absolute;
-  bottom: 200px;
+  bottom: 100px;
   z-index: 10;
   animation: ${bounce} 2s infinite;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 0);
   color: #E9FAFF; 
+  cursor: pointer;
 
   svg {
     width: 80px; 

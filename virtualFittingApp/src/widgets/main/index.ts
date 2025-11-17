@@ -1,5 +1,4 @@
 export * from "./ui/AboutSection";
-export * from "./ui/ActionTextSection";
 export * from "./ui/CommerceTextSection";
 export * from "./ui/HeroSection";
 export * from "./ui/ServiceTextSection";
