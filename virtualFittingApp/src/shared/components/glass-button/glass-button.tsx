@@ -28,7 +28,7 @@ export function GlassButton({ onClick, children, className, width, size = 'mediu
 const Wrapper = styled.button<{ $width?: string; $size: 'small' | 'medium' | 'large'; }>`
   width: ${({ $width }) => $width || 'auto'};
   height: 50px;
-  padding: 0 2rem;
+  padding: 0;
   border-radius: 24px;
   font-size: 16px;
 

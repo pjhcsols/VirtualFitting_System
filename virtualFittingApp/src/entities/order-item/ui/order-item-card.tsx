@@ -37,7 +37,6 @@ export const OrderItemCard = ({ item, finalPrice }: OrderItemCardProps) => {
 const CardContainer = styled.div`
   display: flex;
   gap: 16px;
-  padding: 24px;
   text-align: left;
 `;
 

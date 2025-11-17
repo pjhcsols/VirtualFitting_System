@@ -25,6 +25,7 @@ const bounce = keyframes`
 const AnimatedButtonContainer = styled.div`
   animation: ${bounce} 1.5s infinite;
   display: inline-block;
+  width: 100%;
 `;
 
 type ProductWithQuantity = ProductDetail & { totalQuantity: number };
@@ -65,7 +66,7 @@ function DummyProductDetails({
   const POPUP_DURATION = 2200;
 
   const price = {
-    original: 77900
+    original: 50350
   };
 
   const handleClick = () => {
@@ -169,7 +170,7 @@ function DummyProductDetails({
           <S.Brand>BASILIUM</S.Brand>
         </S.TopRow>
         <S.TopRow>
-          <S.ProductName>로고 오버핏 후드티</S.ProductName>
+          <S.ProductName>Crown Silver T-shirts</S.ProductName>
           <ProductLikeButton 
             productId={2} 
             isInitiallyLiked={true}
@@ -181,11 +182,11 @@ function DummyProductDetails({
           <S.PriceGroup>
               <S.DiscountRate>5%</S.DiscountRate>
               <S.DiscountPrice>
-                77,900원
+                50,350원
               </S.DiscountPrice>
               <S.OriginalPriceBox>
                 <S.OriginalPrice>
-                  82,000원
+                  53,000원
                 </S.OriginalPrice>
               </S.OriginalPriceBox>
             </S.PriceGroup>
@@ -210,7 +211,7 @@ function DummyProductDetails({
         </S.ButtonBox>
         <S.ButtonBox>
           <AnimatedButtonContainer>
-            <VirtualTryOnButton onClick={handleTryOnClick} />
+            <VirtualTryOnButton onClick={handleTryOnClick}/>
           </AnimatedButtonContainer>
         </S.ButtonBox>
       </S.ProductInfoBox>

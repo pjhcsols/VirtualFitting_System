@@ -113,7 +113,7 @@ const ScreenText = styled.div`
   mix-blend-mode: difference;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    top: 3vh;
+    top: 10vh;
     left: 50%;
     font-size: clamp(60px, 15vw, 100px);
     transform: translate(-50%, 0);
@@ -134,6 +134,7 @@ const Wrapper = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     align-items: center;
     padding-right: 0;
+    justify-content: flex-start;
   }
 `;
 
@@ -155,6 +156,7 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
+    margin-top: 20vh;
   }
 `;
 

@@ -20,12 +20,10 @@ function CartLayout() {
 
 const Wrapper = styled.main`
   position: relative;
-  height: 100vh;
   display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-  background-color: #fffafa;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
 `;
 
 const ContentWrapper = styled.article`
@@ -33,6 +31,7 @@ const ContentWrapper = styled.article`
   padding: 70px 50px;
   width: 100%;
   display: flex;
+  flex: 1 0 auto;
   justify-content: flex-start;
   align-items: flex-start;
   background: white;

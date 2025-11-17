@@ -1,7 +1,6 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
 import { 
-  ActionTextSection,
   CommerceTextSection,
   HeroSection, 
   ServiceTextSection,
@@ -10,11 +9,12 @@ import {
   VirtualFittingSection,
   AboutSection,
 } from "@/widgets/main";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
+import { BREAKPOINTS } from "@/shared/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -27,6 +27,20 @@ function MainPage() {
   const serviceRef = useRef<HTMLDivElement>(null);
 
   const saasRef = useRef<HTMLDivElement>(null);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < BREAKPOINTS.md);
+    };
+
+    checkMobile(); 
+    window.addEventListener('resize', checkMobile); 
+
+    return () => {
+      window.removeEventListener('resize', checkMobile);
+    };
+  }, []);
 
   useEffect(() => {
     function update(time: number) {
@@ -37,23 +51,25 @@ function MainPage() {
   }, []);
     
   useEffect(() => {
-  const cursor = cursorRef.current;
+    if (isMobile) return;
 
-  const handleMouseMove = (e: MouseEvent) => {
-    gsap.to(cursor, {
-      x: e.clientX - 20, 
-      y: e.clientY - 20, 
-      duration: 0.3, 
-      ease: "power2.out",
-    });
-  };
+    const cursor = cursorRef.current;
 
-  window.addEventListener('mousemove', handleMouseMove);
+    const handleMouseMove = (e: MouseEvent) => {
+      gsap.to(cursor, {
+        x: e.clientX - 20, 
+        y: e.clientY - 20, 
+        duration: 0.3, 
+        ease: "power2.out",
+      });
+    };
 
-  return () => {
-    window.removeEventListener('mousemove', handleMouseMove);
-  };
-  }, []);
+    window.addEventListener('mousemove', handleMouseMove);
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, [isMobile]);
 
   return (
     <Wrapper
@@ -62,9 +78,9 @@ function MainPage() {
       root
     >
       <TooltipGlobalStyles /> 
-      <GlobalCursorStyle />
+      {!isMobile && <GlobalCursorStyle />}
       <TransparentHeader />
-      <CustomCursor ref={cursorRef} />
+      {!isMobile && <CustomCursor ref={cursorRef} />}
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
@@ -87,15 +103,11 @@ function MainPage() {
             <TextSection>
               <CommerceTextSection/>
             </TextSection>
-
+            <SectionEmptySmall></SectionEmptySmall>
             <Section ref={saasRef}>
               <SolutionSection />
             </Section>
             <SectionEmptyMedium></SectionEmptyMedium>
-            <SectionEmptyLarge>
-              <ActionTextSection />
-            </SectionEmptyLarge>
-
             <SaaSSection>
               <VirtualFittingSection />
             </SaaSSection>
@@ -170,13 +182,13 @@ const SaaSSection = styled.div`
   align-items: center;
 `;
 
-// const SectionEmptySmall = styled.div`
-//   width: 100%;
-//   height: 100px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// `;
+const SectionEmptySmall = styled.div`
+  width: 100%;
+  height: 100px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
 
 const SectionEmptyMedium = styled.div`
   width: 100%;

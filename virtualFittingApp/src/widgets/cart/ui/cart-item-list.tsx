@@ -11,6 +11,7 @@ import type { ClaimableCoupon } from '@/entities/coupon';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import { PaymentCouponButton } from '@/features/coupon';
 import { ProductCoupon } from "@/features/coupon";
+import { BREAKPOINTS } from '@/shared';
 
 function groupByBrand(items: CartItem[]) {
   const brandMap = new Map<string, CartItem[]>();
@@ -123,10 +124,12 @@ export function CartItemList({
                 
                 return (
                   <ItemWrapper key={item.id}>
-                    <OrderItemCard 
-                        item={item as CheckoutItemDetail} 
-                        finalPrice={finalItemPrice} 
-                    />
+                    <ItemInfoContainer>
+                      <OrderItemCard 
+                          item={item as CheckoutItemDetail} 
+                          finalPrice={finalItemPrice} 
+                      />
+                    </ItemInfoContainer>
                     <ButtonContainer>
                       <PaymentCouponButton 
                         onClick={() => setActiveCouponItemId(item.id)}
@@ -207,15 +210,30 @@ const BrandSection = styled.div`
 
 const ItemWrapper = styled.div`
   position: relative;
+  padding: 24px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-direction: column;
+    align-items: stretch;
+  }
+`;
+
+const ItemInfoContainer = styled.div`
+    flex-grow: 1;
 `;
 
 const ButtonContainer = styled.div`
-    position: absolute;
-    bottom: 24px;
-    right: 24px;
-    display: flex;
-    gap: 8px;
-    z-index: 100;
+  display: flex;
+  gap: 8px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    margin-top: 16px;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+  }
 `;
 
 const RemoveButton = styled.button`
