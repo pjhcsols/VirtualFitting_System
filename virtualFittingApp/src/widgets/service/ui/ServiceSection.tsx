@@ -7,6 +7,7 @@ import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SecurityIcon from '@mui/icons-material/Security';
 import { useNavigate } from "react-router-dom";
+import { BREAKPOINTS } from "@/shared";
 
 function ServiceSection() {
   const navigate = useNavigate();
@@ -47,7 +48,7 @@ function ServiceSection() {
           </ServicesGrid>
 
           <ButtonWrapper>
-            <GlassButton onClick={() => navigate("/signup/brand")}>
+            <GlassButton size="large" onClick={() => navigate("/signup/brand")}>
               시작하기
             </GlassButton>
           </ButtonWrapper>
@@ -84,7 +85,7 @@ function ServiceSection() {
           </ServicesGrid>
 
           <ButtonWrapper>
-            <GlassButton onClick={() => navigate("/signup/normal")}>
+            <GlassButton size="large" onClick={() => navigate("/signup/normal")}>
               시작하기
             </GlassButton>
           </ButtonWrapper>
@@ -100,6 +101,10 @@ const Wrapper = styled.section`
   padding: 4rem 2rem;
   color: #fff;
   text-align: center;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 3rem 1rem;
+  }
 `;
 
 const Headline = styled.h2`
@@ -110,6 +115,10 @@ const Headline = styled.h2`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 2.2rem;
+  }
 `;
 
 const BoxesWrapper = styled.div`
@@ -119,6 +128,7 @@ const BoxesWrapper = styled.div`
 
   @media (max-width: 1200px) {
     flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -126,6 +136,11 @@ const GlassBoxStyled = styled(GlassBox)`
   flex: 1;
   padding: 2rem;
   width: 500px;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+    max-width: 500px;
+  }
 `;
 
 const ColumnTitle = styled.h3`
