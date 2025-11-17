@@ -29,7 +29,6 @@ import {
   AdminUser,
   BasiliumRedirect,
   BrandPage,
-  AuthLobby,
   LoginPage,
   AdminLogin,
   NormalSignUpPage,
@@ -75,7 +74,6 @@ const Routing = () => (
       <Route path="admin" element={<AdminLogin />} />
     </Route>
     <Route path="signup" element={<SignUpLayout />}>
-      <Route index element={<AuthLobby />} />
       <Route path="normal" element={<NormalSignUpPage />} />
       <Route path="brand" element={<BrandSignUp />} />
       <Route path="success" element={<SuccessSignUpPage />} />

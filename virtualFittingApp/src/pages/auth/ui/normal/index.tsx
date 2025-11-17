@@ -3,10 +3,21 @@ import * as S from "./style";
 import { Basilium3DLogo } from "@/shared";
 import { NormalUserSignUpWidget } from "../../widgets/normal";
 import { useNormal } from "../../hooks/useNormal";
+import { NormalUserSecondWidget } from "../../widgets/normal/second";
 
 function NormalSignUpPage() {
-  const { user, prev, next, step, onChangeText, phone, setPhone, onSubmit } =
-    useNormal();
+  const {
+    user,
+    prev,
+    next,
+    step,
+    onChangeText,
+    phone,
+    setPhone,
+    birthday,
+    setBirthday,
+    onSubmit,
+  } = useNormal();
   return (
     <S.Wrapper>
       <Starfield theme="light" />
@@ -14,12 +25,21 @@ function NormalSignUpPage() {
         <Basilium3DLogo />
       </S.StepInformation>
       <S.ContentCardContainer>
-        <NormalUserSignUpWidget
-          data={user}
-          onChange={onChangeText}
-          phone={phone}
-          setPhone={setPhone}
-        />
+        {step === 1 ? (
+          <NormalUserSignUpWidget
+            data={user}
+            onChange={onChangeText}
+            phone={phone}
+            setPhone={setPhone}
+          />
+        ) : (
+          <NormalUserSecondWidget
+            data={user}
+            onChange={onChangeText}
+            birthday={birthday}
+            setBirthday={setBirthday}
+          />
+        )}
         <S.ButtonContainer>
           <S.NextButton onClick={step === 2 ? onSubmit : next}>
             {step === 2 ? "신청" : "다음"}
