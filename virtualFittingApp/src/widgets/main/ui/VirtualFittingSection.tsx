@@ -64,6 +64,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const mounted = useRef(false);
+  const isMobile =
+  typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
 
   useEffect(() => {
     mounted.current = true;
@@ -478,7 +480,14 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
 
       <SectionWrap ref={wrapperRef}>
         <HeadlineText ref={headlineRef}>
-        지금 바실리움에서 가상착용 데모을 확인하세요.
+        {isMobile ? (
+            <>
+              지금 바실리움에서<br />
+              가상착용 데모를 확인하세요.
+            </>
+          ) : (
+            "지금 바실리움에서 가상착용 데모를 확인하세요."
+          )}
       </HeadlineText>
       <SubText ref={subTextRef}>
         고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
@@ -702,7 +711,7 @@ const HeadlineText = styled.div`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 32px;
+    font-size: 36px;
     padding-bottom: 32px;
   }
 `;

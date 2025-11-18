@@ -203,6 +203,10 @@ const CardTitle = styled.h3`
   margin-bottom:16px;
   line-height: 1.3;
   letter-spacing: -1px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 22px;
+  }
 `;
 
 const CardContent = styled.p`
@@ -212,6 +216,10 @@ const CardContent = styled.p`
   margin: 0;
   line-height: 1.6;
   letter-spacing: -1px;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 14px;
+  }
 `;
 
 export { SolutionSection };
