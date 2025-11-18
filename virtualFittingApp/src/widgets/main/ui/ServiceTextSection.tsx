@@ -13,9 +13,28 @@ function ServiceTextSection() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINTS.md);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BREAKPOINTS.md);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = () => {
-    navigate("/service");
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/service");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/service");
+    }
   };
 
   useEffect(() => {
@@ -65,12 +84,12 @@ function ServiceTextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+                onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_SCREEN} alt="Service" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>

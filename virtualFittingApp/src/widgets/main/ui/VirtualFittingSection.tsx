@@ -454,7 +454,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         start: "bottom bottom-=100",
         end: "+=200",
         scrub: 1,
-        onLeave: () => navigate('/products'),
+        onLeave: () => setTimeout(() => navigate('/products'), 0),
         id: 'scroll-arrow-nav'
       }
     });

@@ -14,6 +14,16 @@ function CommerceTextSection() {
   const [isHovered, setIsHovered] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINTS.md);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BREAKPOINTS.md);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = () => {
     const isMobile = window.innerWidth <= BREAKPOINTS.md;
@@ -37,7 +47,7 @@ function CommerceTextSection() {
           end: "bottom top",
           scrub: true,
           pin: true,
-          id: 'service-text-pin',
+          id: 'commerce-text-pin',
         },
       });
 
@@ -60,7 +70,7 @@ function CommerceTextSection() {
     }
 
     return () => {
-        ScrollTrigger.getById('ai-text-pin')?.kill();
+        ScrollTrigger.getById('commerce-text-pin')?.kill();
     };
   }, []);
 
@@ -75,8 +85,8 @@ function CommerceTextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+                onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_VIRTUAL} alt="virtual" />

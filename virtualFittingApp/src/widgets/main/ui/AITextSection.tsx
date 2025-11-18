@@ -14,9 +14,18 @@ function AITextSection() {
   const [isHovered, setIsHovered] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINTS.md);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BREAKPOINTS.md);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = () => {
-    const isMobile = window.innerWidth <= BREAKPOINTS.md;
     if (isMobile) {
       if (isOverlayVisible) {
         navigate("/about");
@@ -75,8 +84,8 @@ function AITextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+                onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_WEB3} alt="about" />
