@@ -12,7 +12,7 @@ function AITextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false); // New state
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleImageClick = () => {
