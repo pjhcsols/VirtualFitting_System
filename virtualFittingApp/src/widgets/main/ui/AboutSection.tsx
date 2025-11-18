@@ -16,6 +16,20 @@ function AboutSection() {
   const titleRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
 
+  const isMobile =
+    typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
+
+  const lines = isMobile
+    ? ["공식입점 브랜드부터,", "다양한 스토어를."]
+    : ["공식입점 브랜드부터, 다양한 스토어를."];
+
+  const descriptionLines = [
+  "공식 계약을 통해 입점한 검증된 브랜드의 제품만을 취급하여 고객들에게 확실한 정품과 최상의 경험을 제공합니다.",
+  "매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.",
+  "브랜드 오너에게 안정적인 판매 채널을, 고객에게 믿고 구매할 수 있는 안전한 쇼핑 환경을.",
+  "모든 취향을 만족시킬 수 있는 무한한 선택의 폭을 만나보세요. 지금, 비즈니스의 성장을 시작하세요."
+  ];
+
   useEffect(() => {
     const masterTl = gsap.timeline({
         scrollTrigger: {
@@ -27,14 +41,16 @@ function AboutSection() {
     });
 
     const letters = textRefs.current.filter(ref => ref !== null);
-    gsap.set(letters, { opacity: 0, y: 30 });
+    gsap.set(letters, { opacity: 0 });
 
     masterTl.to(letters, {
         opacity: 1,
-        y: 0,
-        duration: 0.5,
-        stagger: 0.12,
-        ease: "power2.out"
+        duration: 0.8,
+        stagger: {
+          each: 0.1,
+          from: "start",
+        },
+        ease: "power2.inOut"
     });
 
     if (descriptionRef.current && titleRef.current) {
@@ -85,20 +101,36 @@ function AboutSection() {
   return (
     <Wrapper ref={sectionRef}>
       <HeadlineText>
-        {"공식입점 브랜드부터, 다양한 스토어를.".split("").map((char, index) => (
-          <Letter 
-            key={index} ref={el => textRefs.current[index] = el as HTMLSpanElement}
-            style={{ 
-                display: 'inline-block', 
-                whiteSpace: 'pre' 
-            }}
-            >
-            {char}
-          </Letter>
+        {lines.map((line, lineIndex) => (
+          <div key={lineIndex}>
+            {line.split("").map((char, charIndex) => {
+              const globalIndex = `${lineIndex}-${charIndex}`;
+              return (
+                <Letter
+                  key={globalIndex}
+                  ref={(el) => {
+                    textRefs.current.push(el);
+                  }}
+                  style={{ display: "inline-block", whiteSpace: "pre" }}
+                >
+                  {char}
+                </Letter>
+              );
+            })}
+          </div>
         ))}
-        </HeadlineText>
+      </HeadlineText>
       <DescriptionBox ref={descriptionRef}>
-        <Title ref={titleRef}>Virtual Fitting System & Brand Onboarding Website</Title>
+        <Title ref={titleRef}>
+          {isMobile ? (
+            <>
+              Virtual Fitting System & <br />
+              Brand Onboarding Website
+            </>
+          ) : (
+            "Virtual Fitting System & Brand Onboarding Website"
+          )}
+        </Title>
         <Text>
           공식 계약을 통해 입점한 검증된 브랜드의 제품만을 취급하여 고객들에게 확실한 정품과 최상의 경험을 제공합니다. <br/>
           매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
@@ -130,7 +162,6 @@ const Wrapper = styled.div`
     padding: 16px;
   }
 `;
-
 
 const CarouselWrapper = styled.div`
   width: 100%;
@@ -168,10 +199,11 @@ const HeadlineText = styled.div`
   color: #E9FAFF;
   font-weight: 700;
   text-transform: uppercase;
-  display: inline-block;
+  display: block;
+  white-space: pre-line;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 32px;
+    font-size: 36px;
     text-align: center;
     margin-bottom: 2rem;
   }
