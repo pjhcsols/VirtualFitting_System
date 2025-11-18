@@ -12,20 +12,10 @@ function ServiceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    const isMobile = window.innerWidth <= BREAKPOINTS.md;
-    if (isMobile) {
-      if (isOverlayVisible) {
-        navigate("/service");
-      } else {
-        setIsOverlayVisible(true);
-      }
-    } else {
-      navigate("/service");
-    }
+    navigate("/service");
   };
 
   useEffect(() => {
@@ -80,7 +70,7 @@ function ServiceTextSection() {
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_SCREEN} alt="Service" />
-                {(isHovered || isOverlayVisible) && (
+                {isHovered && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>
@@ -170,7 +160,7 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
-    margin-top: 20vh;
+    margin-top: 22vh;
   }
 `;
 
@@ -203,6 +193,7 @@ const ContentText = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 28px;
     text-align: center;
+    padding-bottom: 4px;
   }
 `;
 
@@ -223,7 +214,6 @@ const SubText = styled.div`
   }
 `;
 
-
 const ImageBox = styled.div`
   width: 500px; 
   height: 600px;
@@ -233,7 +223,7 @@ const ImageBox = styled.div`
   margin-left: auto; 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 90vw;
-    height: 60vh;
+    height: 50vh;
     margin-left: 0;
   }
 `;

@@ -166,7 +166,7 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
-    margin-top: 20vh;
+    margin-top: 22vh;
   }
 `;
 
@@ -199,6 +199,7 @@ const ContentText = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 22px;
     text-align: center;
+    padding-bottom: 4px;
   }
 `;
 
@@ -229,7 +230,7 @@ const ImageBox = styled.div`
   margin-left: auto; 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 90vw;
-    height: 60vh;
+    height: 50vh;
     margin-left: 0;
   }
 `;
