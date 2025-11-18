@@ -112,14 +112,15 @@ const ModelContainer = styled.section`
 
 const Section = styled.div`
   width: 100%;
-  height: 150vh;
+  height: 180vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 5rem;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     height: auto;
-    padding: 8rem 0;
+    padding: 4rem 0;
   }
 `;
 

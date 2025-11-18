@@ -11,11 +11,21 @@ import { BREAKPOINTS } from "@/shared";
 
 function ServiceSection() {
   const navigate = useNavigate();
+  const isMobile =
+  typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
 
   return (
     <Wrapper>
-      <Headline>멤버만을 위한 혜택 한눈에 보기.</Headline>
-
+      <Headline>
+        {isMobile ? (
+            <>
+              멤버만을 위한<br />
+              혜택 한눈에 보기.
+            </>
+          ) : (
+            "멤버만을 위한 혜택 한눈에 보기."
+          )}
+      </Headline>
       <BoxesWrapper>
         <GlassBoxStyled>
           <ColumnTitle>브랜드 유저 혜택</ColumnTitle>
@@ -101,10 +111,6 @@ const Wrapper = styled.section`
   padding: 4rem 2rem;
   color: #fff;
   text-align: center;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    padding: 3rem 1rem;
-  }
 `;
 
 const Headline = styled.h2`
@@ -117,7 +123,7 @@ const Headline = styled.h2`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 2.2rem;
+    font-size: 36px;
   }
 `;
 
@@ -126,7 +132,7 @@ const BoxesWrapper = styled.div`
   gap: 2rem;
   justify-content: space-between;
 
-  @media (max-width: 1200px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
     align-items: center;
   }
