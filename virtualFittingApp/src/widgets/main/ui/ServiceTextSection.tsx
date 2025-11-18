@@ -12,10 +12,20 @@ function ServiceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    navigate("/service");
+    const isMobile = window.innerWidth <= BREAKPOINTS.md;
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/service");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/service");
+    }
   };
 
   useEffect(() => {
@@ -70,7 +80,7 @@ function ServiceTextSection() {
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_SCREEN} alt="Service" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>
