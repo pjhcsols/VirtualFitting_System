@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { createBrowserRouter, RouteObject, Outlet } from "react-router-dom";
 import { ScrollToTop } from "@/shared/lib/ui/ScrollToTop";
 
 import {
@@ -56,86 +56,251 @@ import { AboutPage } from "@/pages/about";
 import { SasSPage } from "@/pages/saas/ui/SaaSPage";
 import { ServicePage } from "@/pages/service";
 
-const Routing = () => (
-  <Routes>
-    <Route path="" element={<MainLayout />}>
-      <Route index element={<MainPage />} />
-    </Route>
-    <Route path="about" element={<MainLayout />}>
-      <Route index element={<AboutPage />} />
-    </Route>
-    <Route path="saas" element={<MainLayout />}>
-      <Route index element={<SasSPage />} />
-    </Route>
-    <Route path="service" element={<MainLayout />}>
-      <Route index element={<ServicePage />} />
-    </Route>
-    <Route path="login">
-      <Route index element={<LoginPage />} />
-      <Route path="admin" element={<AdminLogin />} />
-    </Route>
-    <Route path="signup" element={<SignUpLayout />}>
-      <Route index element={<AuthLobby />} />
-      <Route path="normal" element={<NormalSignUpPage />} />
-      <Route path="brand" element={<BrandSignUp />} />
-      <Route path="success" element={<SuccessSignUpPage />} />
-      <Route path="failed" element={<FailedPage />} />
-    </Route>
-    <Route path="admin" element={<AdminLayout />}>
-      <Route index element={<AdminHome />} />
-      <Route path="banner" element={<AdminBanner />} />
-      <Route path="brand" element={<AdminBrandUsers />} />
-      <Route path="user" element={<AdminUser />} />
-      {/* <Route path="product" element={<AdminProduct />} /> */}
-      <Route path="*" element={<BasiliumRedirect />} />
-    </Route>
-    <Route path="brand">
-      <Route index element={<BrandPage />} />
-      <Route element={<BrandLayout />}>
-        <Route path="dashboard" element={<BrandLobby />} />
-        <Route path="products" element={<BrandProduct />} />
-      </Route>
-      <Route path="*" element={<BasiliumRedirect />} />
-    </Route>
-    <Route path="/cart" element={<CartLayout />}>
-      <Route index element={<CartPage />} />
-    </Route>
-    <Route path="products" element={<ProductLayout />}>
-      <Route index element={<ProductListPage />} />
-      <Route path=":id" element={<ProductDetailPage />} />
-    </Route>
-    <Route path="/payment" element={<PaymentLayout />}>
-      <Route index element={<PaymentPage />} />
-      <Route path="success" element={<PaymentSuccessPage />} />
-      <Route path="fail" element={<PaymentFailPage />} />
-    </Route>
+const RootLayout = () => {
+  return (
+    <>
+      <ScrollToTop />
+      <Outlet />
+    </>
+  );
+};
 
-    <Route path="/mypage" element={<MyPageLayout />}>
-      <Route index element={<MyDashboardPage />} />
-      <Route path="detail" element={<MypageDetail />} />
-      <Route path="order" element={<MyOrderListPage />} />
-      <Route path="order/confirmation" element={<OrderConfirmationPage />} />
-      <Route path="order/:id" element={<MyOrderDetailPage />} />
-      <Route path="cancel" element={<MyCancelListPage />} />
-      {/* <Route path="like" element={<MyLikeListPage />} /> */}
-      <Route path="review" element={<MyReviewListPage />} />
-      <Route path="review/:id" element={<WriteReviewPage />} />
-    </Route>
+const routes: RouteObject[] = [
+  {
+    element: <RootLayout />,
+    children: [
+      {
+        path: "",
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <MainPage />,
+          },
+        ],
+      },
+      {
+        path: "about",
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <AboutPage />,
+          },
+        ],
+      },
+      {
+        path: "saas",
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <SasSPage />,
+          },
+        ],
+      },
+      {
+        path: "service",
+        element: <MainLayout />,
+        children: [
+          {
+            index: true,
+            element: <ServicePage />,
+          },
+        ],
+      },
+      {
+        path: "login",
+        children: [
+          {
+            index: true,
+            element: <LoginPage />,
+          },
+          {
+            path: "admin",
+            element: <AdminLogin />,
+          },
+        ],
+      },
+      {
+        path: "signup",
+        element: <SignUpLayout />,
+        children: [
+          {
+            index: true,
+            element: <AuthLobby />,
+          },
+          {
+            path: "normal",
+            element: <NormalSignUpPage />,
+          },
+          {
+            path: "brand",
+            element: <BrandSignUp />,
+          },
+          {
+            path: "success",
+            element: <SuccessSignUpPage />,
+          },
+          {
+            path: "failed",
+            element: <FailedPage />,
+          },
+        ],
+      },
+      {
+        path: "admin",
+        element: <AdminLayout />,
+        children: [
+          {
+            index: true,
+            element: <AdminHome />,
+          },
+          {
+            path: "banner",
+            element: <AdminBanner />,
+          },
+          {
+            path: "brand",
+            element: <AdminBrandUsers />,
+          },
+          {
+            path: "user",
+            element: <AdminUser />,
+          },
+          {
+            path: "*",
+            element: <BasiliumRedirect />,
+          },
+        ],
+      },
+      {
+        path: "brand",
+        children: [
+          {
+            index: true,
+            element: <BrandPage />,
+          },
+          {
+            element: <BrandLayout />,
+            children: [
+              {
+                path: "dashboard",
+                element: <BrandLobby />,
+              },
+              {
+                path: "products",
+                element: <BrandProduct />,
+              },
+            ],
+          },
+          {
+            path: "*",
+            element: <BasiliumRedirect />,
+          },
+        ],
+      },
+      {
+        path: "/cart",
+        element: <CartLayout />,
+        children: [
+          {
+            index: true,
+            element: <CartPage />,
+          },
+        ],
+      },
+      {
+        path: "products",
+        element: <ProductLayout />,
+        children: [
+          {
+            index: true,
+            element: <ProductListPage />,
+          },
+          {
+            path: ":id",
+            element: <ProductDetailPage />,
+          },
+        ],
+      },
+      {
+        path: "/payment",
+        element: <PaymentLayout />,
+        children: [
+          {
+            index: true,
+            element: <PaymentPage />,
+          },
+          {
+            path: "success",
+            element: <PaymentSuccessPage />,
+          },
+          {
+            path: "fail",
+            element: <PaymentFailPage />,
+          },
+        ],
+      },
+      {
+        path: "/mypage",
+        element: <MyPageLayout />,
+        children: [
+          {
+            index: true,
+            element: <MyDashboardPage />,
+          },
+          {
+            path: "detail",
+            element: <MypageDetail />,
+          },
+          {
+            path: "order",
+            element: <MyOrderListPage />,
+          },
+          {
+            path: "order/confirmation",
+            element: <OrderConfirmationPage />,
+          },
+          {
+            path: "order/:id",
+            element: <MyOrderDetailPage />,
+          },
+          {
+            path: "cancel",
+            element: <MyCancelListPage />,
+          },
+          {
+            path: "review",
+            element: <MyReviewListPage />,
+          },
+          {
+            path: "review/:id",
+            element: <WriteReviewPage />,
+          },
+        ],
+      },
+      {
+        path: "/like",
+        element: <MyPageLayout />,
+        children: [
+          {
+            index: true,
+            element: <MyLikeListPage />,
+          },
+        ],
+      },
+      {
+        path: "/terms",
+        element: <TermsPage />,
+      },
+      {
+        path: "/privacy",
+        element: <PrivacyPage />,
+      },
+    ],
+  }
+];
 
-    <Route path="/like" element={<MyPageLayout />}>
-      <Route index element={<MyLikeListPage />} />
-    </Route>
+export const router = createBrowserRouter(routes);
 
-    <Route path="/terms" element={<TermsPage />} />
-    <Route path="/privacy" element={<PrivacyPage />} />
-  </Routes>
-);
-
-export const withRouter = (component: () => React.ReactNode) => () => (
-  <BrowserRouter>
-    <ScrollToTop />
-    {component()}
-  </BrowserRouter>
-);
-
-export default Routing;

@@ -211,7 +211,7 @@ function DummyProductDetails({
         </S.ButtonBox>
         <S.ButtonBox>
           <AnimatedButtonContainer>
-            <VirtualTryOnButton onClick={handleTryOnClick}/>
+            <VirtualTryOnButton onClick={handleTryOnClick} disabled={isProcessing}/>
           </AnimatedButtonContainer>
         </S.ButtonBox>
       </S.ProductInfoBox>
