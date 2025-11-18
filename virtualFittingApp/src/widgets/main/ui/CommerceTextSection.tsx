@@ -12,10 +12,20 @@ function CommerceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null); 
   const [isHovered, setIsHovered] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false); // New state
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    navigate("/saas");
+    const isMobile = window.innerWidth <= BREAKPOINTS.md;
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/saas");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/saas");
+    }
   };
 
   useEffect(() => {
@@ -70,7 +80,7 @@ function CommerceTextSection() {
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_VIRTUAL} alt="virtual" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
                     <OverlayText>

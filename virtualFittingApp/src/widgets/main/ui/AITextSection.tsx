@@ -12,10 +12,20 @@ function AITextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false); // New state
   const navigate = useNavigate();
 
   const handleImageClick = () => {
-    navigate("/about");
+    const isMobile = window.innerWidth <= BREAKPOINTS.md;
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/about");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/about");
+    }
   };
 
   useEffect(() => {
@@ -70,7 +80,7 @@ function AITextSection() {
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_WEB3} alt="about" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗Web3.0 기반의 기술 혁신</OverlayHeaderText>
                     <OverlayText>
