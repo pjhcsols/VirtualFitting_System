@@ -21,7 +21,7 @@ export function MyDashboard() {
       Cookies.set("userId", userId as string);
     };
     loadUserInfo();
-  })
+  }, [])
 
   return (
     <DashboardPanel>

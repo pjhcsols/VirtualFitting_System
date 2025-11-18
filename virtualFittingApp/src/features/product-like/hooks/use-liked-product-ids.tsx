@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { fetchMyLikedProductIds } from '@/entities/like';
+import { useMemo } from 'react';
 
 const productLikeKeys = {
   all: ['product-likes'] as const,
@@ -14,7 +15,7 @@ export const useLikedProductIdsQuery = () => {
   const isQueryEnabled = isLoggedIn && !!userId;
   
   const { 
-    data: likedProductIdsQueryData = [], 
+    data: likedProductIdsQueryData, 
     isLoading, 
     error 
   } = useQuery({
@@ -29,7 +30,7 @@ export const useLikedProductIdsQuery = () => {
     staleTime: 1000 * 60 * 5,
   });
   
-  const likedProductIds: number[] = likedProductIdsQueryData ?? [];
+  const likedProductIds: number[] = useMemo(() => likedProductIdsQueryData ?? [], [likedProductIdsQueryData]);
 
   return {
     likedProductIds,
