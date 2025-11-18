@@ -6,13 +6,24 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SecurityIcon from '@mui/icons-material/Security';
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 
 function ServiceSection() {
   const navigate = useNavigate();
-  const isMobile =
-  typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md
+  );
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < BREAKPOINTS.md);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <Wrapper>

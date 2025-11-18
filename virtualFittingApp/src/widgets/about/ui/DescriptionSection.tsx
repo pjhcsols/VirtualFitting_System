@@ -2,6 +2,7 @@ import styled from "styled-components";
 import { useRef, useEffect } from "react";
 import gsap from "gsap"; 
 import { ScrollTrigger } from "gsap/all"; 
+import { BREAKPOINTS } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -115,6 +116,10 @@ const BasiliumText = styled.span`
   color: #E9FAFF;
   text-transform: uppercase;
   display: inline-block;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 5rem;
+    line-height: 1.6;
+  }
 `;
 
 const TextBlock = styled.div`
@@ -125,7 +130,7 @@ const TextBlock = styled.div`
 `;
 
 const Paragraph = styled.p`
-  font-size: 1.2vw;
+  font-size: 18px;
   font-weight: 400;
   line-height: 2.0;
   letter-spacing: -0.3px;
@@ -134,6 +139,11 @@ const Paragraph = styled.p`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 1rem;
+    line-height: 1.6;
+  }
 `;
 
 const Highlight = styled.span`
