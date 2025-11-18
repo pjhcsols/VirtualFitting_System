@@ -35,7 +35,7 @@ function ServiceTextSection() {
 
       tl.to(
         screenTextRef.current,
-        { opacity: 1, duration: 3, ease: "none" }
+        { opacity: 1, duration: 4, ease: "none" }
       )
 
       .to(
@@ -45,7 +45,7 @@ function ServiceTextSection() {
 
       .to(
         screenTextRef.current,
-        { opacity: 0, duration: 1, ease: "none" }
+        { opacity: 0, duration: 4, ease: "none" }
       );
     }
 

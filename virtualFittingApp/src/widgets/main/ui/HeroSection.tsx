@@ -56,14 +56,14 @@ function HeroSection() {
       textRef1.current, 
       { y: 50, opacity: 0 },
       { y: 0, opacity: 1 },
-      "-=1.2"
+      "-=1.1"
     ) 
 
     .fromTo(
       textRef2.current, 
       { y: 50, opacity: 0 },
       { y: 0, opacity: 1 },
-      "-=1.4"
+      "-=1.1"
     ) 
     
     .fromTo(
