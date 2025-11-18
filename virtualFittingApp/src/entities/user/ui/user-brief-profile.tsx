@@ -3,13 +3,26 @@ import { getMaskedUserName } from '@/shared/lib/mask.util';
 import icon_user from "@/shared/assets/icons/icon-user.svg";
 import icon_arrow from "@/shared/assets/icons/icon-arrow.svg";
 import { BREAKPOINTS } from '@/shared';
+import { useState, useEffect } from 'react';
+import { fetchMyProfileImageUrl } from '../api/user.api';
 
 type Props = { userId: string; onClick: () => void; };
 
 export function UserBriefProfile({ userId, onClick }: Props) {
+  const [userProfileImage, setUserProfileImage] = useState<string | undefined>(undefined);
+  useEffect(() => {
+    const loadImage = async () => {
+      if (userId) {
+        const imageUrl = await fetchMyProfileImageUrl(userId);
+        setUserProfileImage(imageUrl || undefined);
+      }
+    };
+    loadImage();
+  }, [userId]);  
+
   return (
     <Wrapper onClick={onClick}>
-      <Avatar src={icon_user} alt="유저 이미지" />
+      <Avatar src={userProfileImage || icon_user} alt="유저 이미지" />
       <UserName>{getMaskedUserName(userId)}</UserName>
       <ArrowIcon src={icon_arrow} alt=">" />
     </Wrapper>
@@ -34,6 +47,7 @@ const Avatar = styled.img`
   width: 50px;
   height: 50px;
   border-radius: 50%;
+  object-fit: cover;
 `;
 
 const UserName = styled.span`

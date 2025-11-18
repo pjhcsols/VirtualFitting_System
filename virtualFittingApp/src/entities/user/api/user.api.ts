@@ -141,7 +141,7 @@ export const fetchMyProfileImageUrl = async (userId: string): Promise<string | n
     
   const config: AxiosRequestConfig = {
     method: 'get',
-    url: "/b1/users/me/profile-image",
+    url: "/b1/users/me/profile-image/url",
     params: { userId },
   };
 
@@ -151,7 +151,6 @@ export const fetchMyProfileImageUrl = async (userId: string): Promise<string | n
     if (response?.data) {
         return getCorrectedImageUrl(response.data);
     }
-
     return null;
 
   } catch (error) {
