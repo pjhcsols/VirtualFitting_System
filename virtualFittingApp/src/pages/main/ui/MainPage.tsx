@@ -104,7 +104,7 @@ function MainPage() {
               <CommerceTextSection/>
             </TextSection>
 
-            <SectionEmpty></SectionEmpty>
+            <SectionEmptyMedium></SectionEmptyMedium>
             <Section ref={saasRef}>
               <SolutionSection />
             </Section>
@@ -169,10 +169,14 @@ const Section = styled.div`
 
 const TextSection = styled.div`
   width: 100%;
-  height: 200vh;
+  height: 110vh;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: 100vh;
+  }
 `;
 
 const SaaSSection = styled.div`
