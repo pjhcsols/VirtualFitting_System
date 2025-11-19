@@ -29,7 +29,6 @@ import {
   AdminUser,
   BasiliumRedirect,
   BrandPage,
-  AuthLobby,
   LoginPage,
   AdminLogin,
   NormalSignUpPage,
@@ -39,6 +38,7 @@ import {
   AdminBanner,
   BrandSignUp,
   AdminBrandUsers,
+  AuthLobby,
 } from "@/pages";
 
 import { MainLayout } from "@/app/layouts/main/MainLayout";
@@ -299,8 +299,7 @@ const routes: RouteObject[] = [
         element: <PrivacyPage />,
       },
     ],
-  }
+  },
 ];
 
 export const router = createBrowserRouter(routes);
-

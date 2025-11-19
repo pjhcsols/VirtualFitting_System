@@ -65,11 +65,11 @@ export const ImageCarouselContainer = styled.div`
 `;
 
 export const ProductImage = styled.img`
-  width: 100%; 
+  width: 100%;
   max-height: 600px;
   object-fit: cover;
   border-radius: 18px;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.37);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
 
   @media (max-width: ${BREAKPOINTS.lg}px) {
     max-width: 510px;
@@ -79,7 +79,7 @@ export const ProductImage = styled.img`
 
 export const ImageWrapper = styled.div`
   position: relative;
-  width: 100%; 
+  width: 100%;
   margin: 0 auto;
 
   aspect-ratio: 1 / 1;
@@ -131,19 +131,18 @@ export const FittingResultButton = styled.button`
   &:hover {
     color: #fff;
     border-color: rgba(255, 255, 255, 0.4);
-    // background-color: rgba(255, 255, 255, 0.1);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   z-index: 10;
 `;
-
 
 export const CarouselButton = styled.button`
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   z-index: 5;
-  background-color: rgba(0,0,0,0.45);
+  background-color: rgba(0, 0, 0, 0.45);
   border: none;
   color: white;
   width: 40px;
@@ -155,7 +154,7 @@ export const CarouselButton = styled.button`
   justify-content: center;
 
   &:hover {
-    background-color: rgba(0,0,0,0.7);
+    background-color: rgba(0, 0, 0, 0.7);
   }
 `;
 
@@ -172,7 +171,8 @@ export const Dot = styled.div<{ $isActive: boolean }>`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${(props) => (props.$isActive ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.5)")};
+  background-color: ${(props) =>
+    props.$isActive ? "rgba(255, 255, 255, 1)" : "rgba(255, 255, 255, 0.5)"};
   cursor: pointer;
   transition: background-color 0.3s ease;
 
@@ -185,13 +185,13 @@ export const ProductInfoBox = styled(GlassBox)`
   display: flex;
   flex-direction: column;
   order: 2;
-  
+
   flex: 0 0 408px;
   color: white;
   padding: 32px;
-  
+
   @media (max-width: ${BREAKPOINTS.lg}px) {
-    flex-basis: 360px; 
+    flex-basis: 360px;
   }
 
   @media (max-width: ${BREAKPOINTS.md}px) {
@@ -299,7 +299,7 @@ export const TabOverlay = styled.div`
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -345,9 +345,9 @@ export const PaymentMethodContainer = styled.div`
 
 export const PaymentMethodButton = styled.button<{ $selected: boolean }>`
   padding: 12px 16px;
-  border: 2px solid ${props => props.$selected ? '#000' : '#ddd'};
-  background-color: ${props => props.$selected ? '#000' : 'white'};
-  color: ${props => props.$selected ? 'white' : 'black'};
+  border: 2px solid ${(props) => (props.$selected ? "#000" : "#ddd")};
+  background-color: ${(props) => (props.$selected ? "#000" : "white")};
+  color: ${(props) => (props.$selected ? "white" : "black")};
   border-radius: 8px;
   cursor: pointer;
   font-size: 14px;
