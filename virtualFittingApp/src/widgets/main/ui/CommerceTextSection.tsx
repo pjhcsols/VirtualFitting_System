@@ -12,10 +12,30 @@ function CommerceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null); 
   const [isHovered, setIsHovered] = useState(false);
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINTS.md);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BREAKPOINTS.md);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = () => {
-    navigate("/saas");
+    const isMobile = window.innerWidth <= BREAKPOINTS.md;
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/saas");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/saas");
+    }
   };
 
   useEffect(() => {
@@ -27,7 +47,7 @@ function CommerceTextSection() {
           end: "bottom top",
           scrub: true,
           pin: true,
-          id: 'service-text-pin',
+          id: 'commerce-text-pin',
         },
       });
 
@@ -35,7 +55,7 @@ function CommerceTextSection() {
 
       tl.to(
         screenTextRef.current,
-        { opacity: 1, duration: 3, ease: "none" }
+        { opacity: 1, duration: 4, ease: "none" }
       )
 
       .to(
@@ -45,12 +65,12 @@ function CommerceTextSection() {
 
       .to(
         screenTextRef.current,
-        { opacity: 0, duration: 1, ease: "none" }
+        { opacity: 0, duration: 5, ease: "none" }
       );
     }
 
     return () => {
-        ScrollTrigger.getById('ai-text-pin')?.kill();
+        ScrollTrigger.getById('commerce-text-pin')?.kill();
     };
   }, []);
 
@@ -65,12 +85,12 @@ function CommerceTextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+                onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_VIRTUAL} alt="virtual" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
                     <OverlayText>
@@ -156,7 +176,7 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
-    margin-top: 20vh;
+    margin-top: 22vh;
   }
 `;
 
@@ -189,6 +209,7 @@ const ContentText = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 22px;
     text-align: center;
+    padding-bottom: 4px;
   }
 `;
 
@@ -219,7 +240,7 @@ const ImageBox = styled.div`
   margin-left: auto; 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 90vw;
-    height: 60vh;
+    height: 50vh;
     margin-left: 0;
   }
 `;

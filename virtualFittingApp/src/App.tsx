@@ -1,9 +1,9 @@
-import { withProviders } from "./app/providers";
-import Routing from "./app/providers/with-router";
+import { RouterProvider } from "react-router-dom";
+import { router } from "./app/providers/with-router";
 import "./App.css";
 
 const App = () => {
-  return <Routing />;
+  return <RouterProvider router={router} />;
 };
 
 document.addEventListener('contextmenu', (event) => {
@@ -15,4 +15,4 @@ document.addEventListener('contextmenu', (event) => {
   }
 });
 
-export default withProviders(App);
+export default App;

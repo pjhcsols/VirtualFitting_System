@@ -6,15 +6,37 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import LocalOfferIcon from '@mui/icons-material/LocalOffer';
 import LocalShippingIcon from '@mui/icons-material/LocalShipping';
 import SecurityIcon from '@mui/icons-material/Security';
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { BREAKPOINTS } from "@/shared";
 
 function ServiceSection() {
   const navigate = useNavigate();
+  const [isMobile, setIsMobile] = useState(
+    typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md
+  );
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < BREAKPOINTS.md);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
 
   return (
     <Wrapper>
-      <Headline>멤버만을 위한 혜택 한눈에 보기.</Headline>
-
+      <Headline>
+        {isMobile ? (
+            <>
+              멤버만을 위한<br />
+              혜택 한눈에 보기.
+            </>
+          ) : (
+            "멤버만을 위한 혜택 한눈에 보기."
+          )}
+      </Headline>
       <BoxesWrapper>
         <GlassBoxStyled>
           <ColumnTitle>브랜드 유저 혜택</ColumnTitle>
@@ -47,7 +69,7 @@ function ServiceSection() {
           </ServicesGrid>
 
           <ButtonWrapper>
-            <GlassButton onClick={() => navigate("/signup/brand")}>
+            <GlassButton size="large" onClick={() => navigate("/signup/brand")}>
               시작하기
             </GlassButton>
           </ButtonWrapper>
@@ -84,7 +106,7 @@ function ServiceSection() {
           </ServicesGrid>
 
           <ButtonWrapper>
-            <GlassButton onClick={() => navigate("/signup/normal")}>
+            <GlassButton size="large" onClick={() => navigate("/signup/normal")}>
               시작하기
             </GlassButton>
           </ButtonWrapper>
@@ -110,6 +132,10 @@ const Headline = styled.h2`
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 36px;
+  }
 `;
 
 const BoxesWrapper = styled.div`
@@ -117,8 +143,9 @@ const BoxesWrapper = styled.div`
   gap: 2rem;
   justify-content: space-between;
 
-  @media (max-width: 1200px) {
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
+    align-items: center;
   }
 `;
 
@@ -126,6 +153,11 @@ const GlassBoxStyled = styled(GlassBox)`
   flex: 1;
   padding: 2rem;
   width: 500px;
+
+  @media (max-width: 1200px) {
+    width: 100%;
+    max-width: 500px;
+  }
 `;
 
 const ColumnTitle = styled.h3`

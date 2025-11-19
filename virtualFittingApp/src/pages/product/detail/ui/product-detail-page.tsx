@@ -1,6 +1,6 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import styled from "styled-components";
-import { useParams, useSearchParams, useNavigate } from "react-router-dom";
+import { useParams, useSearchParams, useNavigate, useBlocker } from "react-router-dom";
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 
@@ -46,6 +46,31 @@ function ProductDetailPage() {
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [priceData, setPriceData] = useState<ProductPrice | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
+
+  const blocker = useBlocker(
+    useCallback(() => isProcessing, [isProcessing])
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      const confirmNavigation = window.confirm(
+        "가상 착용이 진행 중입니다. 페이지를 이동하면 작업이 취소될 수 있어요. 그래도 이동하시겠어요?"
+      );
+      if (confirmNavigation) {
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
+    }
+  }, [blocker]);
   
   const activeTab = searchParams.get("tab") || "description";
   const color = searchParams.get("color");
@@ -182,7 +207,9 @@ function ProductDetailPage() {
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);
         setSimulatedDelay(resultSimulatedDelay);
-        alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        if (mounted.current) {
+          alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        }
       } else {
         throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
       }
@@ -191,7 +218,9 @@ function ProductDetailPage() {
       console.error("가상 착용 API 호출 실패:", e);
       const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
       const cleanedMessage = cleanServerMessage(rawMessage); 
-      alert(cleanedMessage);
+      if (mounted.current) {
+        alert(cleanedMessage);
+      }
     } finally {
         setIsProcessing(false);
     }
@@ -216,7 +245,9 @@ function ProductDetailPage() {
     } catch (e) {
         console.error("등록 이미지 Blob 변환 실패:", e);
         setIsProcessing(false);
-        alert("등록된 이미지 처리 중 오류가 발생했습니다.");
+        if (mounted.current) {
+          alert("등록된 이미지 처리 중 오류가 발생했습니다.");
+        }
         return;
     }
 
@@ -239,7 +270,9 @@ function ProductDetailPage() {
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);
         setSimulatedDelay(resultSimulatedDelay);
-        alert("기존 이미지로 가상 착용 이미지가 생성되었습니다.");
+        if (mounted.current) {
+          alert("기존 이미지로 가상 착용 이미지가 생성되었습니다.");
+        }
       } else {
         throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
       }
@@ -248,7 +281,9 @@ function ProductDetailPage() {
       console.error("가상 착용 API 호출 실패:", e);
       const rawMessage = e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.";
       const cleanedMessage = cleanServerMessage(rawMessage); 
-      alert(cleanedMessage);
+      if (mounted.current) {
+        alert(cleanedMessage);
+      }
     } finally {
         setIsProcessing(false);
     }

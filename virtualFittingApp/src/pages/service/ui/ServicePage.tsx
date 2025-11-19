@@ -8,6 +8,7 @@ import { TransparentHeader } from "@/widgets/header";
 import { Starfield } from "@/shared/components/star";
 import { ServiceSection } from "@/widgets/service";
 import { Footer } from "@/widgets/footer";
+import { BREAKPOINTS } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -111,10 +112,16 @@ const ModelContainer = styled.section`
 
 const Section = styled.div`
   width: 100%;
-  height: 150vh;
+  height: 180vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
+  padding-top: 5rem;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: auto;
+    padding: 4rem 0;
+  }
 `;
 
 const TooltipGlobalStyles = createGlobalStyle`

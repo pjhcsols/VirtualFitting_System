@@ -13,9 +13,28 @@ function ServiceTextSection() {
   const wrapperRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= BREAKPOINTS.md);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= BREAKPOINTS.md);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const handleImageClick = () => {
-    navigate("/service");
+    if (isMobile) {
+      if (isOverlayVisible) {
+        navigate("/service");
+      } else {
+        setIsOverlayVisible(true);
+      }
+    } else {
+      navigate("/service");
+    }
   };
 
   useEffect(() => {
@@ -35,7 +54,7 @@ function ServiceTextSection() {
 
       tl.to(
         screenTextRef.current,
-        { opacity: 1, duration: 3, ease: "none" }
+        { opacity: 1, duration: 4, ease: "none" }
       )
 
       .to(
@@ -45,7 +64,7 @@ function ServiceTextSection() {
 
       .to(
         screenTextRef.current,
-        { opacity: 0, duration: 1, ease: "none" }
+        { opacity: 0, duration: 4, ease: "none" }
       );
     }
 
@@ -65,12 +84,12 @@ function ServiceTextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
+                onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
+                onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
               >
                 <Img src={PAPER_SCREEN} alt="Service" />
-                {isHovered && (
+                {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>
@@ -160,7 +179,7 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
-    margin-top: 20vh;
+    margin-top: 22vh;
   }
 `;
 
@@ -193,6 +212,7 @@ const ContentText = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 28px;
     text-align: center;
+    padding-bottom: 4px;
   }
 `;
 
@@ -213,7 +233,6 @@ const SubText = styled.div`
   }
 `;
 
-
 const ImageBox = styled.div`
   width: 500px; 
   height: 600px;
@@ -223,7 +242,7 @@ const ImageBox = styled.div`
   margin-left: auto; 
   @media (max-width: ${BREAKPOINTS.md}px) {
     width: 90vw;
-    height: 60vh;
+    height: 50vh;
     margin-left: 0;
   }
 `;

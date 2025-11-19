@@ -50,7 +50,7 @@ function MyLikeListPage() {
           <EmptyContent>
             <Message>목록에 해당하는 상품이 없습니다.</Message>
             <ButtonContainer>
-              <GlassButton size="medium" onClick={() => navigate('/products')}>
+              <GlassButton size="large" onClick={() => navigate('/products')}>
                 쇼핑하러 가기
               </GlassButton>
             </ButtonContainer>

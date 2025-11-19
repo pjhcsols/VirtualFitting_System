@@ -1,7 +1,7 @@
 import { useCallback, useState, useRef, useEffect } from "react";
 import styled, { createGlobalStyle, css, keyframes } from "styled-components";
 import gsap from "gsap"; 
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useBlocker } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
 import { DummyProductDetails } from "@/widgets/product-details";
 import type { ProductDetail } from "@/entities/product";
@@ -63,6 +63,16 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const scrollArrowRef = useRef(null);
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
+  const mounted = useRef(false);
+  const isMobile =
+  typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
+
+  useEffect(() => {
+    mounted.current = true;
+    return () => {
+      mounted.current = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (!product) return;
@@ -123,6 +133,23 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+
+  const blocker = useBlocker(
+    useCallback(() => isProcessing, [isProcessing])
+  );
+
+  useEffect(() => {
+    if (blocker.state === 'blocked') {
+      const confirmNavigation = window.confirm(
+        "가상 착용이 진행 중입니다. 페이지를 이동하면 작업이 취소될 수 있어요. 그래도 이동하시겠어요?"
+      );
+      if (confirmNavigation) {
+        blocker.proceed();
+      } else {
+        blocker.reset();
+      }
+    }
+  }, [blocker]);
 
   const loadUserGender = useCallback(async () => {
     if (!isLoggedIn) return;
@@ -299,7 +326,9 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);
         setSimulatedDelay(resultSimulatedDelay);
-        alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        if (mounted.current) {
+          alert("새 이미지로 가상 착용 이미지가 생성되었습니다.");
+        }
       } else {
         throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
       }
@@ -355,7 +384,9 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);
         setSimulatedDelay(resultSimulatedDelay);
-        alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
+        if (mounted.current) {
+          alert("가상 착용 이미지가 성공적으로 생성되었습니다.");
+        }
           
       } else {
         throw new Error("가상 착용 요청에 성공했으나, 결과 이미지를 받지 못했습니다.");
@@ -425,7 +456,7 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         start: "bottom bottom-=100",
         end: "+=200",
         scrub: 1,
-        onLeave: () => navigate('/products'),
+        onLeave: () => setTimeout(() => navigate('/products'), 0),
         id: 'scroll-arrow-nav'
       }
     });
@@ -449,7 +480,14 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
 
       <SectionWrap ref={wrapperRef}>
         <HeadlineText ref={headlineRef}>
-        지금 바실리움에서 가상착용 데모를 확인하세요.
+        {isMobile ? (
+            <>
+              지금 바실리움에서<br />
+              가상착용 데모를 확인하세요.
+            </>
+          ) : (
+            "지금 바실리움에서 가상착용 데모를 확인하세요."
+          )}
       </HeadlineText>
       <SubText ref={subTextRef}>
         고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
@@ -673,7 +711,7 @@ const HeadlineText = styled.div`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 32px;
+    font-size: 36px;
     padding-bottom: 32px;
   }
 `;

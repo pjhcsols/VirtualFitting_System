@@ -85,6 +85,7 @@ const SectionTitle = styled.h2`
 
 const ItemWrapper = styled.div`
   position: relative;
+  padding: 24px;
 `;
 
 const ButtonContainer = styled.div`

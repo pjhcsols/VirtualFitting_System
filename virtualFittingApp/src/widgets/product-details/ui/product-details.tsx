@@ -257,7 +257,7 @@ function ProductDetails({
           )}
         </S.ButtonBox>
         <S.ButtonBox>
-          <VirtualTryOnButton onClick={onTryOn} />
+          <VirtualTryOnButton onClick={onTryOn} disabled={isProcessing} />
         </S.ButtonBox>
       </S.ProductInfoBox>
 
