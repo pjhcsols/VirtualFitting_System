@@ -1,34 +1,44 @@
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useSetRecoilState } from 'recoil';
+import { authState } from '@/entities/auth';
 import { useMyDashboard } from '../hooks/use-my-dashboard';
-import { UserBriefProfile } from '@/entities/user'; 
-import { UserStats } from '@/features/user-stats'; 
+import { UserBriefProfile } from '@/entities/user';
+import { UserStats } from '@/features/user-stats';
 import { MyPageNavigation } from '@/features/my-page-navigation';
 import { GlassBox } from '@/shared/components/glass-box';
 import { useEffect } from 'react';
 import { fetchUserInfo } from '@/shared/api/get.api';
-import Cookies from "js-cookie"
-
 
 export function MyDashboard() {
   const navigate = useNavigate();
+  const setAuth = useSetRecoilState(authState);
   const { userId, reviewCount } = useMyDashboard();
 
   useEffect(() => {
-    const loadUserInfo = async () => {
-      const res = await fetchUserInfo();
-      const userId = res.data.id;
-      Cookies.set("userId", userId as string);
-    };
-    loadUserInfo();
-  }, [])
+    if (!userId) {
+      const loadUserInfo = async () => {
+        try {
+          const res = await fetchUserInfo();
+          if (res.data.id) {
+            setAuth({ isLoggedIn: true, userId: res.data.id });
+          }
+        } catch (error) {
+          console.error('Failed to fetch user info', error);
+        }
+      };
+      loadUserInfo();
+    }
+  }, [userId, setAuth]);
 
   return (
     <DashboardPanel>
-      <UserBriefProfile 
-        userId={userId} 
-        onClick={() => navigate("/mypage/detail")} 
-      />
+      {userId && (
+        <UserBriefProfile
+          userId={userId}
+          onClick={() => navigate('/mypage/detail')}
+        />
+      )}
       <Divider />
       <UserStats reviewCount={reviewCount} />
       <MyPageNavigation />
