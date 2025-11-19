@@ -103,7 +103,8 @@ function MainPage() {
             <TextSection>
               <CommerceTextSection/>
             </TextSection>
-            <SectionEmptySmall></SectionEmptySmall>
+
+            <SectionEmpty></SectionEmpty>
             <Section ref={saasRef}>
               <SolutionSection />
             </Section>
@@ -176,26 +177,34 @@ const TextSection = styled.div`
 
 const SaaSSection = styled.div`
   width: 100%;
-  heitht: 130vh;
+  heitht: 180vh;
   display: flex;
   justify-content: flex-start;;
   align-items: center;
 `;
 
-const SectionEmptySmall = styled.div`
+const SectionEmpty = styled.div`
+  width: 100%;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: 300px;
+  }
+`;
+
+const SectionEmptyMedium = styled.div`
   width: 100%;
   height: 100px;
   display: flex;
   justify-content: center;
   align-items: center;
-`;
 
-const SectionEmptyMedium = styled.div`
-  width: 100%;
-  height: 200px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: 400px;
+  }
 `;
 
 const SectionEmptyLarge = styled.div`
