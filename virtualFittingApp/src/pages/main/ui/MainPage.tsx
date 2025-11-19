@@ -187,18 +187,6 @@ const SaaSSection = styled.div`
   align-items: center;
 `;
 
-const SectionEmpty = styled.div`
-  width: 100%;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    height: 300px;
-  }
-`;
-
 const SectionEmptyMedium = styled.div`
   width: 100%;
   height: 100px;
