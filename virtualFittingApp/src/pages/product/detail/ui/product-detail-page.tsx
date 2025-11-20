@@ -237,19 +237,29 @@ function ProductDetailPage() {
     setIsProcessing(true);
     closeTryOn();
 
-    let imageBlob: Blob | null = null;
+    let imageFile: File | null = null;
     try {
         const response = await fetch(registeredImageUrl);
         if (!response.ok) throw new Error("등록된 이미지 URL을 가져오는 데 실패했습니다.");
-        imageBlob = await response.blob();
+        const imageBlob = await response.blob();
+        const fileName = registeredImageUrl.split('/').pop()?.split('?')[0] || 'registered-image.png';  
+        imageFile = new File([imageBlob], fileName, { type: imageBlob.type});
     } catch (e) {
-        console.error("등록 이미지 Blob 변환 실패:", e);
+        console.error("등록 이미지 처리 실패:", e);
         setIsProcessing(false);
         if (mounted.current) {
           alert("등록된 이미지 처리 중 오류가 발생했습니다.");
         }
         return;
     }
+
+    if (!imageFile) {
+      setIsProcessing(false);
+      if (mounted.current) {
+        alert("이미지 파일이 없어 가상 착용을 진행할 수 없습니다.");
+        }
+      return;
+    } 
 
     try {
       const params = {
@@ -258,8 +268,8 @@ function ProductDetailPage() {
         gender: userGender,
         authUserId: accessTokenString,
       };
-      const response = await tryOnPrivateFitting(params, imageBlob); 
-
+      const response = await tryOnPrivateFitting(params, imageFile); 
+      
       if (!response || response.status !== 200) {
         const serverMessage = response?.message;
         throw new Error(serverMessage); 

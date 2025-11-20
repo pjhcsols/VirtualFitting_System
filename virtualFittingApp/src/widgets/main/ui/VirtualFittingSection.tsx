@@ -596,12 +596,11 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
-            <ScrollArrow
+      <ScrollArrow
         ref={scrollArrowRef}
         onClick={() => navigate('/products')}
         dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }}
       />
-      
       {isResultModalOpen && generatedImageUrl && (
       <FittingResultModal
           open={isResultModalOpen}
@@ -619,11 +618,10 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  margin: 0 auto;
-  display: flex;
+  display: flex-start;
   flex-direction: column;
   align-items: center;
-  justify-content:flex-start;
+  justify-content:flex-center;
 `;
 
 const ContentWrapper = styled.div`
@@ -880,11 +878,12 @@ const CancelImg = styled.img`
 
 const ScrollArrow = styled.div`
   position: absolute;
-  bottom: 100px;
+  bottom: 150px;
   z-index: 10;
   animation: ${bounce} 2s infinite;
   left: 50%;
-  transform: translate(-50%, 0);
+  margin-left: -40px; 
+  transform: none;
   color: #E9FAFF; 
   cursor: pointer;
 

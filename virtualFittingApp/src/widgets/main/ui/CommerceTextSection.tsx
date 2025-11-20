@@ -11,6 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 function CommerceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null); 
+  const contentRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
@@ -42,43 +43,49 @@ function CommerceTextSection() {
     if (screenTextRef.current && wrapperRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: wrapperRef.current, 
+          trigger: wrapperRef.current,
           start: "top top",
           end: "bottom top",
           scrub: true,
           pin: true,
-          id: 'commerce-text-pin',
+          id: "service-text-pin",
         },
       });
 
-      tl.set(screenTextRef.current, { opacity: 0 });
+      tl.set(screenTextRef.current, { opacity: 0 })
+        .to(screenTextRef.current, { opacity: 1, duration: 1 })
+        .to(screenTextRef.current, { opacity: 0, duration: 1 });
+      
+      const h = window.innerHeight;
 
-      tl.to(
-        screenTextRef.current,
-        { opacity: 1, duration: 4, ease: "none" }
-      )
-
-      .to(
-        screenTextRef.current,
-        { opacity: 1, duration: 5, ease: "none" }
-      )
-
-      .to(
-        screenTextRef.current,
-        { opacity: 0, duration: 5, ease: "none" }
+      gsap.fromTo(
+        contentRef.current,
+        { y: h },
+        {
+          y: -h ,
+          ease: "none",
+          scrollTrigger: {
+            trigger: wrapperRef.current,
+            start: "top bottom",
+            end: "bottom top",
+            scrub: true,
+            id: "service-content-mobile-move",
+          },
+        }
       );
     }
 
     return () => {
-        ScrollTrigger.getById('commerce-text-pin')?.kill();
+      ScrollTrigger.getById("service-text-pin")?.kill();
+      ScrollTrigger.getById("service-content-mobile-move")?.kill();
     };
-  }, []);
+  }, [isMobile]);
 
   return (
     <SectionContainer>
       <Wrapper ref={wrapperRef}>
         <ScreenText ref={screenTextRef} style={{ opacity: 0 }}>SaaS</ScreenText> 
-          <Content>
+          <Content ref={contentRef}>
             <TextBox>
               <ContentText>Commerce</ContentText>
               <SubText>함께 나아갈 파트너십 기반의 기술 레퍼런스</SubText>
@@ -110,7 +117,7 @@ function CommerceTextSection() {
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 200vh;
+  height: 100vh;
   overflow: hidden;
 `;
 
@@ -154,7 +161,6 @@ const Wrapper = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     align-items: center;
     padding-right: 0;
-    justify-content: flex-start;
   }
 `;
 
@@ -176,7 +182,6 @@ const Content = styled.div`
     margin-right: 0;
     width: 90%;
     align-items: center;
-    margin-top: 22vh;
   }
 `;
 
@@ -207,7 +212,7 @@ const ContentText = styled.div`
   color: transparent;
   padding-bottom: 24px;
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 22px;
+    font-size: 20px;
     text-align: center;
     padding-bottom: 4px;
   }

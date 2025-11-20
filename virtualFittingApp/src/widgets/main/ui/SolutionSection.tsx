@@ -123,6 +123,7 @@ const Wrapper = styled.div`
   }
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 3rem 2rem;
+    gap: 16px;
   }
 `;
 
