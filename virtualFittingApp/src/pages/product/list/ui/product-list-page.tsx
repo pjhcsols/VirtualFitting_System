@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -13,6 +13,7 @@ function ProductListPage() {
   const navigate = useNavigate();
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const productGridRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const loadProducts = async () => {
@@ -36,9 +37,9 @@ function ProductListPage() {
   return (
     <Wrapper>
       <CarouselContainer>
-        <AdvertisementCarousel />
+        <AdvertisementCarousel targetRef={productGridRef} />
       </CarouselContainer>
-      <ProductGrid>
+      <ProductGrid ref={productGridRef}>
         {products.map((product) => (
           <ProductCard
             key={product.productId}

@@ -7,10 +7,23 @@ import PauseCircleIcon from '@mui/icons-material/PauseCircle';
 import { rawSvgContent } from "@/widgets/main/model/constants";
 import { BREAKPOINTS } from "@/shared";
 
-function AdvertisementCarousel() {
+interface CarouselProps {
+  targetRef: React.RefObject<HTMLElement>;
+}
+
+function AdvertisementCarousel({ targetRef }: CarouselProps) {
   const [banners, setBanners] = useState<Banner[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
+  
+  const handleScrollToGrid = () => {
+    if (targetRef.current) {
+      window.scrollTo({
+        top: targetRef.current.offsetTop,
+        behavior: 'smooth'
+      });
+    }
+  };
 
   useEffect(() => {
     const loadBanners = async () => {
@@ -70,7 +83,10 @@ function AdvertisementCarousel() {
             {isPaused ? <PlayCircleIcon fontSize="large" /> : <PauseCircleIcon fontSize="large" />}
         </PlayPauseButton>
       </Pagination>
-      <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} />
+      <ScrollArrow 
+        dangerouslySetInnerHTML={{ __html: rawSvgContent }}
+        onClick={handleScrollToGrid} 
+      />
     </Wrapper>
   );
 }
