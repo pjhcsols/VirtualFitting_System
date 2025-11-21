@@ -66,7 +66,7 @@ function CommerceTextSection() {
           ease: "none",
           scrollTrigger: {
             trigger: wrapperRef.current,
-            start: "top bottom",
+            start: "middle top",
             end: "bottom top",
             scrub: true,
             id: "service-content-mobile-move",
@@ -117,8 +117,8 @@ function CommerceTextSection() {
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 100vh;
-  overflow: hidden;
+  height: 150vh;
+  overflow: visible;
 `;
 
 const ScreenText = styled.div`
@@ -153,7 +153,7 @@ const Wrapper = styled.div`
   height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: end; 
   overflow: hidden; 
   padding-right: 10vw;

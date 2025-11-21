@@ -66,7 +66,7 @@ function AITextSection() {
           ease: "none",
           scrollTrigger: {
             trigger: wrapperRef.current,
-            start: "top bottom",
+            start: "middle top",
             end: "bottom top",
             scrub: true,
             id: "service-content-mobile-move",
