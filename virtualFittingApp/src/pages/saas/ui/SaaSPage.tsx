@@ -33,11 +33,9 @@ function SasSPage() {
       <TransparentHeader />
       <MainSection>
         <Article className="slider" ref={sliderRef}>
-          <ModelContainer>
-            <Section>
-              <SaaSSection />
-            </Section>
-          </ModelContainer>
+          <Section>
+            <SaaSSection />
+          </Section>
         </Article>
         <Footer />
       </MainSection>
@@ -74,19 +72,9 @@ const Article = styled.article`
   align-items: flex-start;
 `;
 
-const ModelContainer = styled.section`
-  position: relative;
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-flow: column nowrap;
-  justify-content: flex-start;
-  align-items: flex-start;
-`;
-
 const Section = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
