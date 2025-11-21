@@ -53,11 +53,8 @@ function AboutPage() {
       ref={lenisRef}
       root
     >
-      <Starfield theme="light"/>
-      <TooltipGlobalStyles /> 
-      <GlobalCursorStyle />
+      <Starfield theme="light"/> 
       <TransparentHeader />
-      <CustomCursor ref={cursorRef} />
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>

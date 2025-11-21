@@ -1,20 +1,40 @@
 import styled from "styled-components";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { PAPER_IMAGE } from "../model/constants";
 import { BREAKPOINTS } from "@/shared";
+import { PAPER_IMAGE, TAG_IMAGE } from "../model/constants";
 
 gsap.registerPlugin(ScrollTrigger);
+
+const IMAGES = [
+  PAPER_IMAGE,
+  TAG_IMAGE,
+];
 
 function AboutSection() {
   const sectionRef = useRef<HTMLDivElement>(null);
   const headline1Ref = useRef<HTMLDivElement>(null);
   const headline2Ref = useRef<HTMLDivElement>(null);
   const paperImageRef = useRef<HTMLImageElement>(null);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   useEffect(() => {
-    if (!sectionRef.current || !headline1Ref.current || !headline2Ref.current || !paperImageRef.current) return;
+    const intervalId = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => (prevIndex + 1) % IMAGES.length);
+    }, 3000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
+  useEffect(() => {
+    if (
+      !sectionRef.current ||
+      !headline1Ref.current ||
+      !headline2Ref.current ||
+      !paperImageRef.current
+    )
+      return;
 
     const tl = gsap.timeline({
       scrollTrigger: {
@@ -28,15 +48,14 @@ function AboutSection() {
 
     tl.to(paperImageRef.current, { scale: 1.1, ease: "power1.inOut" }, 0);
 
-    tl.to(headline1Ref.current, { opacity: 0, ease: "power1.out" }, 0)
-      .fromTo(
-        headline2Ref.current,
-        { opacity: 0 },
-        { opacity: 1, ease: "power1.out" },
-        0.1
-      );
+    tl.to(headline1Ref.current, { opacity: 0, ease: "power1.out" }, 0).fromTo(
+      headline2Ref.current,
+      { opacity: 0 },
+      { opacity: 1, ease: "power1.out" },
+      0.1
+    );
 
-    return () => ScrollTrigger.getAll().forEach(trigger => trigger.kill());
+    return () => ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
   }, []);
 
   return (
@@ -44,15 +63,23 @@ function AboutSection() {
       <Wrapper ref={sectionRef}>
         <TextContainer>
           <HeadlineText ref={headline1Ref}>
-            AI가 만든 첫 번째 피팅룸, <br />바실리움.
+            AI가 만든 첫 번째 피팅룸, <br />
+            바실리움.
           </HeadlineText>
           <HeadlineText ref={headline2Ref} style={{ opacity: 0 }}>
-            브랜드를 더 쉽게,<br />고객을 더 가깝게.<br />
+            브랜드를 더 쉽게,
+            <br />
+            고객을 더 가깝게.
+            <br />
             패션의 새로운 표준을 엽니다.
           </HeadlineText>
         </TextContainer>
         <ImageContainer>
-          <PaperImage ref={paperImageRef} src={PAPER_IMAGE} alt="Basilium concept image" />
+          <PaperImage
+            ref={paperImageRef}
+            src={IMAGES[currentImageIndex]}
+            alt="Basilium concept image"
+          />
         </ImageContainer>
       </Wrapper>
     </SectionContainer>
