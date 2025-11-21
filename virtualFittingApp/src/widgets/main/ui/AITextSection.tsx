@@ -119,7 +119,7 @@ function AITextSection() {
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 100vh;
+  height: 110vh;
   overflow: hidden;
 `;
 

@@ -22,11 +22,6 @@ function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
-  
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const serviceRef = useRef<HTMLDivElement>(null);
-
-  const saasRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -88,24 +83,21 @@ function MainPage() {
               <HeroSection />
             </Section>
 
-            <Section ref={aboutRef}>
+            <Section>
               <AboutSection />
             </Section>
             
-            <TextSection ref={serviceRef}>
+            <TextSection>
               <ServiceTextSection />
             </TextSection>
 
             <TextSection>
               <AITextSection/>
             </TextSection>
-
             <TextSection>
               <CommerceTextSection/>
             </TextSection>
-
-            <SectionEmptyMedium></SectionEmptyMedium>
-            <Section ref={saasRef}>
+            <Section>
               <SolutionSection />
             </Section>
             <SectionEmptyMedium></SectionEmptyMedium>
@@ -161,7 +153,7 @@ const ModelContainer = styled.section`
 
 const Section = styled.div`
   width: 100%;
-  height: 105vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -169,19 +161,19 @@ const Section = styled.div`
 
 const TextSection = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    height: 100vh;
+    min-height: 100vh;
   }
 `;
 
 const SaaSSection = styled.div`
   width: 100%;
-  heitht: 180vh;
+  min-heitht: 180vh;
   display: flex;
   justify-content: flex-start;;
   align-items: center;
