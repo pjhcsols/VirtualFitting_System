@@ -24,7 +24,7 @@ const bounce = keyframes`
   }
 `;
 
-function HeroSection() {
+function HeroSection({ onScrollToVirtualFitting }: { onScrollToVirtualFitting?: () => void }) {
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const textRef1 = useRef(null);
@@ -106,7 +106,7 @@ function HeroSection() {
             </ButtonContainer>
           </ContentContainer>
         </BackContainer>
-        <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} />
+        <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} onClick={onScrollToVirtualFitting} />
     </Wrapper>
   );
 }
@@ -197,7 +197,7 @@ const TitleText = styled.div`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 48px;
+    font-size: 38px;
     padding-right: 0;
     text-align: left;
     letter-spacing: -2px;

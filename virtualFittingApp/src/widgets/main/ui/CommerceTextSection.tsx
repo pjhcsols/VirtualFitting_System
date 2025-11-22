@@ -53,8 +53,8 @@ function CommerceTextSection() {
       });
 
       tl.set(screenTextRef.current, { opacity: 0 })
-        .to(screenTextRef.current, { opacity: 1, duration: 1 })
-        .to(screenTextRef.current, { opacity: 0, duration: 1 });
+        .to(screenTextRef.current, { opacity: 1, duration: 4 })
+        .to(screenTextRef.current, { opacity: 0, duration: 4 });
       
       const h = window.innerHeight;
 
@@ -117,7 +117,7 @@ function CommerceTextSection() {
 const SectionContainer = styled.div`
   position: relative;
   width: 100%;
-  height: 150vh;
+  min-height: 110vh;
   overflow: visible;
 `;
 

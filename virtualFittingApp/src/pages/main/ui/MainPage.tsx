@@ -9,7 +9,7 @@ import {
   VirtualFittingSection,
   AboutSection,
 } from "@/widgets/main";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
@@ -22,11 +22,7 @@ function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
-  
-  const aboutRef = useRef<HTMLDivElement>(null);
-  const serviceRef = useRef<HTMLDivElement>(null);
-
-  const saasRef = useRef<HTMLDivElement>(null);
+  const virtualFittingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -71,6 +67,12 @@ function MainPage() {
     };
   }, [isMobile]);
 
+  const scrollToVirtualFitting = useCallback(() => {
+    if (lenisRef.current?.lenis && virtualFittingRef.current) {
+      lenisRef.current.lenis.scrollTo(virtualFittingRef.current, { offset: -50, duration: 1.5 });
+    }
+  }, []);
+
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
@@ -85,31 +87,28 @@ function MainPage() {
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
             <Section>
-              <HeroSection />
+              <HeroSection onScrollToVirtualFitting={scrollToVirtualFitting} />
             </Section>
 
-            <Section ref={aboutRef}>
+            <Section>
               <AboutSection />
             </Section>
             
-            <TextSection ref={serviceRef}>
+            <TextSection>
               <ServiceTextSection />
             </TextSection>
 
             <TextSection>
               <AITextSection/>
             </TextSection>
-
             <TextSection>
               <CommerceTextSection/>
             </TextSection>
-
-            <SectionEmptyMedium></SectionEmptyMedium>
-            <Section ref={saasRef}>
+            <Section>
               <SolutionSection />
             </Section>
             <SectionEmptyMedium></SectionEmptyMedium>
-            <SaaSSection>
+            <SaaSSection ref={virtualFittingRef}>
               <VirtualFittingSection />
             </SaaSSection>
             <SectionEmptyLarge></SectionEmptyLarge>
@@ -161,7 +160,7 @@ const ModelContainer = styled.section`
 
 const Section = styled.div`
   width: 100%;
-  height: 105vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -169,19 +168,19 @@ const Section = styled.div`
 
 const TextSection = styled.div`
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    height: 100vh;
+    min-height: 100vh;
   }
 `;
 
 const SaaSSection = styled.div`
   width: 100%;
-  heitht: 180vh;
+  min-heitht: 180vh;
   display: flex;
   justify-content: flex-start;;
   align-items: center;

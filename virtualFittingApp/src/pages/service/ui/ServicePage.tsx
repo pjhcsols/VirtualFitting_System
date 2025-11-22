@@ -3,7 +3,7 @@ import { ScrollTrigger } from "gsap/all";
 import { useEffect, useRef } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
-import styled, { createGlobalStyle } from "styled-components";
+import styled from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
 import { Starfield } from "@/shared/components/star";
 import { ServiceSection } from "@/widgets/service";
@@ -15,7 +15,6 @@ gsap.registerPlugin(ScrollTrigger);
 function ServicePage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function update(time: number) {
@@ -24,26 +23,6 @@ function ServicePage() {
     gsap.ticker.add(update);
     return () => gsap.ticker.remove(update);
   }, []);
-    
-  useEffect(() => {
-  const cursor = cursorRef.current;
-
-  const handleMouseMove = (e: MouseEvent) => {
-    gsap.to(cursor, {
-      x: e.clientX - 20, 
-      y: e.clientY - 20, 
-      duration: 0.3, 
-      ease: "power2.out",
-    });
-  };
-
-  window.addEventListener('mousemove', handleMouseMove);
-
-  return () => {
-    window.removeEventListener('mousemove', handleMouseMove);
-  };
-  }, []);
-
 
   return (
     <Wrapper
@@ -52,11 +31,8 @@ function ServicePage() {
       root
     >
       <Starfield theme="light"/>
-      <TooltipGlobalStyles /> 
-      <GlobalCursorStyle />
       <TransparentHeader 
       />
-      <CustomCursor ref={cursorRef} />
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
@@ -121,40 +97,5 @@ const Section = styled.div`
   @media (max-width: ${BREAKPOINTS.md}px) {
     height: auto;
     padding: 4rem 0;
-  }
-`;
-
-const TooltipGlobalStyles = createGlobalStyle`
-  .basil-tooltip {
-    z-index: 100;
-    font-size: 18px;
-    background: rgba(255,255,255,0.14) !important;
-    color: rgba(255,255,255,0.95) !important;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255,255,255,0.35) !important;
-    box-shadow: 0 6px 24px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.25);
-    border-radius: 14px !important;
-    padding: 16px 18px !important;
-    max-width: 260px;
-    line-height: 1.55; font-weight: 500; letter-spacing: .2px;
-  }
-`;
-
-const CustomCursor = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4); 
-  // filter: blur(15px); 
-  pointer-events: none;
-  z-index: 99999;
-`;
-
-const GlobalCursorStyle = createGlobalStyle`
-  body {
-    cursor: none;
   }
 `;

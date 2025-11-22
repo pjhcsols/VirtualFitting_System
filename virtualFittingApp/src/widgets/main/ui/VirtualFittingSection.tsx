@@ -15,9 +15,10 @@ import manImg from "/img/user/base_m.png";
 import womanImg from "/img/user/base_w.png";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import CircularProgress from '@mui/material/CircularProgress';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { AddModelModal } from "@/features/virtual-try-on";
 import { ScrollTrigger } from "gsap/all";
-import { rawSvgDoubleContent } from "../model/constants";
 import { tryOnPublicFitting } from "@/entities/virtual-fitting";
 import { PublicTryOnQueryParams } from "@/entities/virtual-fitting";
 import { fetchMyRegisteredImageUrl } from "@/entities/user";
@@ -29,19 +30,6 @@ import { fetchMyUserGender } from "@/entities/user";
 import { FittingResultModal } from "@/features/virtual-try-on";
 import { cleanServerMessage } from "@/shared";
 import { uploadUserImage } from "@/entities/user";
-
-
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-`;
 
 const MODEL = { MAN: "man", WOMAN: "woman", CUSTOM: "custom" } as const;
 const VIRTUAL_FITTING_PRODUCT_ID = 1;
@@ -60,7 +48,6 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
   const headlineRef = useRef(null);
   const subTextRef = useRef(null);
-  const scrollArrowRef = useRef(null);
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const mounted = useRef(false);
@@ -133,6 +120,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showScrollUI, setShowScrollUI] = useState(false);
+  const [showArrow, setShowArrow] = useState(false);
 
   const blocker = useBlocker(
     useCallback(() => isProcessing, [isProcessing])
@@ -448,29 +437,44 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   }, [productId, selectedColor]);
 
   useEffect(() => {
-    if (!product || !scrollArrowRef.current || !wrapperRef.current) return;
+    if (!product || !wrapperRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
+    const trigger = ScrollTrigger.create({
         trigger: wrapperRef.current,
-        start: "bottom bottom-=100",
-        end: "+=200",
-        scrub: 1,
-        onLeave: () => setTimeout(() => navigate('/products'), 0),
-        id: 'scroll-arrow-nav'
-      }
-    });
-
-    tl.to(scrollArrowRef.current, {
-      scaleY: 2.5,
-      transformOrigin: "50% 100%",
-      ease: "none"
+        start: "bottom bottom-=150",
+        onEnter: () => {
+            setShowScrollUI(true);
+        },
+        onLeaveBack: () => {
+            setShowScrollUI(false);
+            setShowArrow(false);
+        },
     });
 
     return () => {
-      ScrollTrigger.getById('scroll-arrow-nav')?.kill();
+        trigger.kill();
     };
-  }, [product, navigate]);
+  }, [product]);
+
+  useEffect(() => {
+      if (showScrollUI && !showArrow) {
+          const timer = setTimeout(() => {
+              setShowArrow(true);
+          }, 1500);
+
+          return () => clearTimeout(timer);
+      }
+  }, [showScrollUI, showArrow]);
+
+  useEffect(() => {
+    if (showArrow) {
+      const navigationTimer = setTimeout(() => {
+        navigate('/products');
+      }, 2000);
+
+      return () => clearTimeout(navigationTimer);
+    }
+  }, [showArrow, navigate]);
   
   if (!product) return;
 
@@ -490,10 +494,22 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
           )}
       </HeadlineText>
       <SubText ref={subTextRef}>
-        고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
-        바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
-        체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
-        매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+        {isMobile ? (
+            <>
+              고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.
+            바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.
+            체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.
+            매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.
+            </>
+          ) : (
+            <>
+            고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
+            바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
+            체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
+            매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+            </>
+          )}
+        
       </SubText>
         <ContentWrapper>
           <RailAndModelWrapper>
@@ -596,11 +612,15 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
-      <ScrollArrow
-        ref={scrollArrowRef}
-        onClick={() => navigate('/products')}
-        dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }}
-      />
+      {showScrollUI && (
+        <BottomNavigationWrapper>
+          {!showArrow ? (
+            <CircularProgress color="inherit" />
+          ) : (
+                <AnimatedArrowIcon onClick={() => navigate('/products')} />
+          )}
+        </BottomNavigationWrapper>
+      )}
       {isResultModalOpen && generatedImageUrl && (
       <FittingResultModal
           open={isResultModalOpen}
@@ -618,10 +638,49 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  display: flex-start;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content:flex-center;
+  justify-content:center;
+  padding-bottom: 80px;
+`;
+
+const BottomNavigationWrapper = styled.div`
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #E9FAFF;
+  z-index: 100;
+  
+  .MuiCircularProgress-root {
+    width: 60px !important;
+    height: 60px !important;
+  }
+`;
+
+const shake = keyframes`
+  10%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+`;
+
+const AnimatedArrowIcon = styled(ArrowCircleRightOutlinedIcon)`
+  animation: ${shake} 0.82s cubic-bezier(.36,.07,.19,.97) both infinite;
+  transform: translate3d(0, 0, 0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+  cursor: pointer;
+  font-size: 80px !important;
 `;
 
 const ContentWrapper = styled.div`
@@ -629,7 +688,7 @@ const ContentWrapper = styled.div`
   flex-direction: row;
   align-items: start;
   margin-top: 30px;
-  gap: 14px;
+  gap: 24px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
@@ -641,7 +700,7 @@ const ContentWrapper = styled.div`
 const RailAndModelWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: 14px;
 `;
 
 const Rail = styled.div`
@@ -728,6 +787,8 @@ const SubText = styled.div`
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 1rem;
+    padding: 12px;
+    text-align: left;
   }
 `;
 
@@ -874,27 +935,4 @@ const CancelImg = styled.img`
   display: block;
   filter: brightness(0) invert(1); 
   opacity: .95;
-`;
-
-const ScrollArrow = styled.div`
-  position: absolute;
-  bottom: 150px;
-  z-index: 10;
-  animation: ${bounce} 2s infinite;
-  left: 50%;
-  margin-left: -40px; 
-  transform: none;
-  color: #E9FAFF; 
-  cursor: pointer;
-
-  svg {
-    width: 80px; 
-    height: 100px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    display: block;
-    vertical-align: middle;
-  }
 `;
