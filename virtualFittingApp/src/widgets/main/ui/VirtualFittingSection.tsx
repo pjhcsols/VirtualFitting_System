@@ -490,10 +490,22 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
           )}
       </HeadlineText>
       <SubText ref={subTextRef}>
-        고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
-        바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
-        체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
-        매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+        {isMobile ? (
+            <>
+              고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.
+            바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.
+            체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.
+            매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.
+            </>
+          ) : (
+            <>
+            고객이 <StrongHighlight>‘입어본 듯’ 확신하고 결제하도록.</StrongHighlight> 단순히 옷을 보여주는 데서 그치지 않습니다.<br/>
+            바실리움의 가상 피팅 기술은 실제 착용한 듯한 실감으로, 고객이 자신에게 어울리는 핏과 스타일을 직접 확인할 수 있게 합니다.<br/>
+            체형에 꼭 맞는 추천을 제공하고, <StrongHighlight>쿠폰·결제·재고까지 한 번에 연동</StrongHighlight>되어 쇼핑 과정 전반이 매끄럽게 이어집니다.<br/>
+            매장에서 직접 입어보는 듯한 경험을, 화면 속에서도 손끝 하나로 완성하세요.<br/>
+            </>
+          )}
+        
       </SubText>
         <ContentWrapper>
           <RailAndModelWrapper>
@@ -618,10 +630,10 @@ export { VirtualFittingSection };
 
 const SectionWrap = styled.section`
   width: 100%;
-  display: flex-start;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content:flex-center;
+  justify-content:center;
 `;
 
 const ContentWrapper = styled.div`
@@ -629,7 +641,7 @@ const ContentWrapper = styled.div`
   flex-direction: row;
   align-items: start;
   margin-top: 30px;
-  gap: 14px;
+  gap: 24px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     flex-direction: column;
@@ -641,7 +653,7 @@ const ContentWrapper = styled.div`
 const RailAndModelWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  gap: 24px;
+  gap: 14px;
 `;
 
 const Rail = styled.div`
@@ -728,6 +740,8 @@ const SubText = styled.div`
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 1rem;
+    padding: 12px;
+    text-align: left;
   }
 `;
 
