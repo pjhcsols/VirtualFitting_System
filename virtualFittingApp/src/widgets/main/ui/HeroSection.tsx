@@ -24,7 +24,7 @@ const bounce = keyframes`
   }
 `;
 
-function HeroSection() {
+function HeroSection({ onScrollToVirtualFitting }: { onScrollToVirtualFitting?: () => void }) {
   const navigate = useNavigate();
   const titleRef = useRef(null);
   const textRef1 = useRef(null);
@@ -106,7 +106,7 @@ function HeroSection() {
             </ButtonContainer>
           </ContentContainer>
         </BackContainer>
-        <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} />
+        <ScrollArrow dangerouslySetInnerHTML={{ __html: rawSvgContent }} onClick={onScrollToVirtualFitting} />
     </Wrapper>
   );
 }

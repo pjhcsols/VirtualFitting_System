@@ -9,7 +9,7 @@ import {
   VirtualFittingSection,
   AboutSection,
 } from "@/widgets/main";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
@@ -22,6 +22,7 @@ function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
   const cursorRef = useRef<HTMLDivElement>(null);
+  const virtualFittingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
@@ -66,6 +67,12 @@ function MainPage() {
     };
   }, [isMobile]);
 
+  const scrollToVirtualFitting = useCallback(() => {
+    if (lenisRef.current?.lenis && virtualFittingRef.current) {
+      lenisRef.current.lenis.scrollTo(virtualFittingRef.current, { offset: -50, duration: 1.5 });
+    }
+  }, []);
+
   return (
     <Wrapper
       options={{ smoothWheel: true, autoRaf: false }}
@@ -80,7 +87,7 @@ function MainPage() {
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
             <Section>
-              <HeroSection />
+              <HeroSection onScrollToVirtualFitting={scrollToVirtualFitting} />
             </Section>
 
             <Section>
@@ -101,7 +108,7 @@ function MainPage() {
               <SolutionSection />
             </Section>
             <SectionEmptyMedium></SectionEmptyMedium>
-            <SaaSSection>
+            <SaaSSection ref={virtualFittingRef}>
               <VirtualFittingSection />
             </SaaSSection>
             <SectionEmptyLarge></SectionEmptyLarge>
