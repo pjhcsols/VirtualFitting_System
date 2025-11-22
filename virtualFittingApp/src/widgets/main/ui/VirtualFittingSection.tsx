@@ -1,5 +1,5 @@
 import { useCallback, useState, useRef, useEffect } from "react";
-import styled, { createGlobalStyle, css, keyframes } from "styled-components";
+import styled, { createGlobalStyle, css } from "styled-components";
 import gsap from "gsap"; 
 import { useNavigate, useBlocker } from "react-router-dom";
 import { BREAKPOINTS } from "@/shared";
@@ -15,9 +15,10 @@ import manImg from "/img/user/base_m.png";
 import womanImg from "/img/user/base_w.png";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg";
 import RefreshIcon from '@mui/icons-material/Refresh';
+import CircularProgress from '@mui/material/CircularProgress';
+import ArrowCircleRightOutlinedIcon from '@mui/icons-material/ArrowCircleRightOutlined';
 import { AddModelModal } from "@/features/virtual-try-on";
 import { ScrollTrigger } from "gsap/all";
-import { rawSvgDoubleContent } from "../model/constants";
 import { tryOnPublicFitting } from "@/entities/virtual-fitting";
 import { PublicTryOnQueryParams } from "@/entities/virtual-fitting";
 import { fetchMyRegisteredImageUrl } from "@/entities/user";
@@ -29,19 +30,6 @@ import { fetchMyUserGender } from "@/entities/user";
 import { FittingResultModal } from "@/features/virtual-try-on";
 import { cleanServerMessage } from "@/shared";
 import { uploadUserImage } from "@/entities/user";
-
-
-const bounce = keyframes`
-  0%, 20%, 50%, 80%, 100% {
-    transform: translateY(0);
-  }
-  40% {
-    transform: translateY(-10px);
-  }
-  60% {
-    transform: translateY(-5px);
-  }
-`;
 
 const MODEL = { MAN: "man", WOMAN: "woman", CUSTOM: "custom" } as const;
 const VIRTUAL_FITTING_PRODUCT_ID = 1;
@@ -60,7 +48,6 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]); 
   const headlineRef = useRef(null);
   const subTextRef = useRef(null);
-  const scrollArrowRef = useRef(null);
   const { isLoggedIn, userId } = useRecoilValue(authState);
   const [product, setProduct] = useState<ProductDetail | null>(null);
   const mounted = useRef(false);
@@ -133,6 +120,8 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   const [simulatedDelay, setSimulatedDelay] = useState<number | null>(null);
   const [isResultModalOpen, setIsResultModalOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showScrollUI, setShowScrollUI] = useState(false);
+  const [showArrow, setShowArrow] = useState(false);
 
   const blocker = useBlocker(
     useCallback(() => isProcessing, [isProcessing])
@@ -448,29 +437,34 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
   }, [productId, selectedColor]);
 
   useEffect(() => {
-    if (!product || !scrollArrowRef.current || !wrapperRef.current) return;
+    if (!product || !wrapperRef.current) return;
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
+    const trigger = ScrollTrigger.create({
         trigger: wrapperRef.current,
-        start: "bottom bottom-=100",
-        end: "+=200",
-        scrub: 1,
-        onLeave: () => setTimeout(() => navigate('/products'), 0),
-        id: 'scroll-arrow-nav'
-      }
-    });
-
-    tl.to(scrollArrowRef.current, {
-      scaleY: 2.5,
-      transformOrigin: "50% 100%",
-      ease: "none"
+        start: "bottom bottom-=150",
+        onEnter: () => {
+            setShowScrollUI(true);
+        },
+        onLeaveBack: () => {
+            setShowScrollUI(false);
+            setShowArrow(false);
+        },
     });
 
     return () => {
-      ScrollTrigger.getById('scroll-arrow-nav')?.kill();
+        trigger.kill();
     };
-  }, [product, navigate]);
+  }, [product]);
+
+  useEffect(() => {
+      if (showScrollUI && !showArrow) {
+          const timer = setTimeout(() => {
+              setShowArrow(true);
+          }, 3000);
+
+          return () => clearTimeout(timer);
+      }
+  }, [showScrollUI, showArrow]);
   
   if (!product) return;
 
@@ -608,11 +602,15 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
         previewUrl={uploadPreview}
         isLoggedIn={isLoggedIn}
       />
-      <ScrollArrow
-        ref={scrollArrowRef}
-        onClick={() => navigate('/products')}
-        dangerouslySetInnerHTML={{ __html: rawSvgDoubleContent }}
-      />
+      {showScrollUI && (
+        <BottomNavigationWrapper>
+          {!showArrow ? (
+            <CircularProgress color="inherit" />
+          ) : (
+                <ArrowCircleRightOutlinedIcon onClick={() => navigate('/products')} style={{ cursor: 'pointer', fontSize: '80px' }} />
+          )}
+        </BottomNavigationWrapper>
+      )}
       {isResultModalOpen && generatedImageUrl && (
       <FittingResultModal
           open={isResultModalOpen}
@@ -634,6 +632,21 @@ const SectionWrap = styled.section`
   flex-direction: column;
   align-items: center;
   justify-content:center;
+  padding-bottom: 80px;
+`;
+
+const BottomNavigationWrapper = styled.div`
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #E9FAFF;
+  z-index: 100;
+  
+  .MuiCircularProgress-root {
+    width: 60px !important;
+    height: 60px !important;
+  }
 `;
 
 const ContentWrapper = styled.div`
@@ -888,27 +901,4 @@ const CancelImg = styled.img`
   display: block;
   filter: brightness(0) invert(1); 
   opacity: .95;
-`;
-
-const ScrollArrow = styled.div`
-  position: absolute;
-  bottom: 150px;
-  z-index: 10;
-  animation: ${bounce} 2s infinite;
-  left: 50%;
-  margin-left: -40px; 
-  transform: none;
-  color: #E9FAFF; 
-  cursor: pointer;
-
-  svg {
-    width: 80px; 
-    height: 100px;
-    fill: none;
-    stroke: currentColor;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-    display: block;
-    vertical-align: middle;
-  }
 `;
