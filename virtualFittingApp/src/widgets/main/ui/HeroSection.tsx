@@ -197,7 +197,7 @@ const TitleText = styled.div`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 38px;
+    font-size: 34px;
     padding-right: 0;
     text-align: left;
     letter-spacing: -2px;

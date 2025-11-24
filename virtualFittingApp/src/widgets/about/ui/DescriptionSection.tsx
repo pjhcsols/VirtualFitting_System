@@ -117,7 +117,7 @@ const BasiliumText = styled.span`
   text-transform: uppercase;
   display: inline-block;
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 5rem;
+    font-size: 3.5rem;
     line-height: 1.6;
   }
 `;
