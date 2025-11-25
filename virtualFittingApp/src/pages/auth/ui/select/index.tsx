@@ -101,7 +101,7 @@ const Section = styled.div`
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     height: auto;
-    padding: 4rem 0;
+    padding: 4rem 2rem;
   }
 `;
 
