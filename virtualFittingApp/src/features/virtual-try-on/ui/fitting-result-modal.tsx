@@ -2,6 +2,7 @@ import React from 'react';
 import styled from "styled-components";
 import { GlassBox } from "@/shared/components/glass-box";
 import icon_cancel from "@/shared/assets/icons/icon-cancel2.svg"; 
+import { BREAKPOINTS } from "@/shared";
 
 type FittingResultModalProps = {
     open: boolean;
@@ -46,6 +47,12 @@ const ResultModalCard = styled(GlassBox)`
   align-items: center;
   gap: 15px;
   position: relative;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    width: 90%;
+    max-width: 400px;
+    padding: 20px;
+  }
 `;
 
 const ModalTitle = styled.h3`
@@ -84,4 +91,9 @@ const ResultImage = styled.img`
   border-radius: 12px;
   background-color: #ffffff;
   box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: auto;
+    max-height: 60vh;
+  }
 `;

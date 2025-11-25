@@ -7,6 +7,7 @@ import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import AddBusinessIcon from '@mui/icons-material/AddBusiness';
 import AutoAwesomeIcon from '@mui/icons-material/AutoAwesome';
 import DataAnalyticsIcon from '@mui/icons-material/Assessment'; 
+import CurrencyBitcoinIcon from '@mui/icons-material/CurrencyBitcoin';
 import { BREAKPOINTS } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger); 
@@ -102,6 +103,16 @@ function SolutionSection() {
               </>}
           />
         </div>
+        <div ref={el => cardRefs.current[4] = el as HTMLDivElement}>
+          <FeatureCard 
+            icon={<CurrencyBitcoinIcon style={{ fontSize: '1em' }} />}
+            title="Web3.0 신원·AI 이미지" 
+            content={<>
+                AI 가상착용 이미지 메타데이터와 블록체인을 결합한 탈중앙화 분산원장(Distributed Ledger) 기술로 
+                차세대 Web 3.0 기반 인하우스 신원·자격증명 시스템을 구축했습니다.
+            </>}
+          />
+        </div>
       </CardGrid>
     </Wrapper>
   );
@@ -159,16 +170,12 @@ const CardGrid = styled.div`
   display: grid;
   width: 100%;
   gap: 1.5rem;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 
-  & > div:nth-child(even) {
-    margin-top: 40px;
-  }
-
-  @media (max-width: ${BREAKPOINTS.lg}px) {
+  @media (min-width: ${BREAKPOINTS.lg}px) {
+    grid-template-columns: repeat(3, 1fr);
     & > div:nth-child(even) {
-      margin-top: 0;
-
+      transform: translateY(40px);
     }
   }
 

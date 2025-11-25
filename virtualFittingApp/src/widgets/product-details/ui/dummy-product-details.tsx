@@ -9,6 +9,7 @@ import { GlassButton } from "@/shared/components/glass-button";
 import { ProductLikeButton } from "@/features/product-like";
 import CircularProgress from '@mui/material/CircularProgress';
 import { PopUpBottom } from "@/shared/ui/PopUpBottom";
+import { BREAKPOINTS } from "@/shared";
 
 const bounce = keyframes`
   0%, 20%, 50%, 80%, 100% {
@@ -64,6 +65,10 @@ function DummyProductDetails({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [showSoldOutPopup, setShowSoldOutPopup] = useState(false);
   const POPUP_DURATION = 2200;
+  const isMobile = typeof window !== "undefined" && window.innerWidth < BREAKPOINTS.md;
+  const [touchStart, setTouchStart] = useState<number | null>(null);
+  const [touchEnd, setTouchEnd] = useState<number | null>(null);
+  const minSwipeDistance = 50;
 
   const price = {
     original: 50350
@@ -117,11 +122,38 @@ function DummyProductDetails({
     return Promise.resolve();
   };
 
+  const onTouchStart = (e: React.TouchEvent) => {
+    if (!isMobile) return;
+    setTouchEnd(null);
+    setTouchStart(e.targetTouches[0].clientX);
+  };
+
+  const onTouchMove = (e: React.TouchEvent) => {
+    if (!isMobile) return;
+    setTouchEnd(e.targetTouches[0].clientX);
+  };
+
+  const onTouchEnd = () => {
+    if (!isMobile || !touchStart || !touchEnd) return;
+    const distance = touchStart - touchEnd;
+    const isLeftSwipe = distance > minSwipeDistance;
+    const isRightSwipe = distance < -minSwipeDistance;
+    if (isLeftSwipe) {
+      goToNext();
+    } else if (isRightSwipe) {
+      goToPrevious();
+    }
+  };
+
   if (!price) return null;
 
   return (
     <S.ProductBox>
-      <S.ImageCarouselContainer>
+      <S.ImageCarouselContainer
+        onTouchStart={onTouchStart}
+        onTouchMove={onTouchMove}
+        onTouchEnd={onTouchEnd}
+      >
         {isProcessing ? (
           <S.FittingButton disabled>
             <CircularProgress size={20} style={{ color: '#fff', marginRight: '8px' }} />
