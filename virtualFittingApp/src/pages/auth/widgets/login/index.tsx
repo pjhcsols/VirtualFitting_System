@@ -27,7 +27,7 @@ function LoginForm() {
         <S.LoginButtonWrapper onClick={onSubmitLoginInfo}>
           <S.ButtonText>로그인</S.ButtonText>
         </S.LoginButtonWrapper>
-        <S.SignUpButtonWrapper to={"/service"}>
+        <S.SignUpButtonWrapper to={"/signup"}>
           <S.SignUpText>회원가입</S.SignUpText>
         </S.SignUpButtonWrapper>
       </S.ButtonContainer>

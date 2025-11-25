@@ -1,11 +1,11 @@
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { 
+import {
   CommerceTextSection,
-  HeroSection, 
+  HeroSection,
   ServiceTextSection,
   AITextSection,
-  SolutionSection, 
+  SolutionSection,
   VirtualFittingSection,
   AboutSection,
 } from "@/widgets/main";
@@ -30,11 +30,11 @@ function MainPage() {
       setIsMobile(window.innerWidth < BREAKPOINTS.md);
     };
 
-    checkMobile(); 
-    window.addEventListener('resize', checkMobile); 
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
 
     return () => {
-      window.removeEventListener('resize', checkMobile);
+      window.removeEventListener("resize", checkMobile);
     };
   }, []);
 
@@ -45,7 +45,7 @@ function MainPage() {
     gsap.ticker.add(update);
     return () => gsap.ticker.remove(update);
   }, []);
-    
+
   useEffect(() => {
     if (isMobile) return;
 
@@ -53,23 +53,26 @@ function MainPage() {
 
     const handleMouseMove = (e: MouseEvent) => {
       gsap.to(cursor, {
-        x: e.clientX - 20, 
-        y: e.clientY - 20, 
-        duration: 0.3, 
+        x: e.clientX - 20,
+        y: e.clientY - 20,
+        duration: 0.3,
         ease: "power2.out",
       });
     };
 
-    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener("mousemove", handleMouseMove);
 
     return () => {
-      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener("mousemove", handleMouseMove);
     };
   }, [isMobile]);
 
   const scrollToVirtualFitting = useCallback(() => {
     if (lenisRef.current?.lenis && virtualFittingRef.current) {
-      lenisRef.current.lenis.scrollTo(virtualFittingRef.current, { offset: -50, duration: 1.5 });
+      lenisRef.current.lenis.scrollTo(virtualFittingRef.current, {
+        offset: -50,
+        duration: 1.5,
+      });
     }
   }, []);
 
@@ -79,7 +82,7 @@ function MainPage() {
       ref={lenisRef}
       root
     >
-      <TooltipGlobalStyles /> 
+      <TooltipGlobalStyles />
       {!isMobile && <GlobalCursorStyle />}
       <TransparentHeader />
       {!isMobile && <CustomCursor ref={cursorRef} />}
@@ -93,16 +96,16 @@ function MainPage() {
             <Section>
               <AboutSection />
             </Section>
-            
+
             <TextSection>
               <ServiceTextSection />
             </TextSection>
 
             <TextSection>
-              <AITextSection/>
+              <AITextSection />
             </TextSection>
             <TextSection>
-              <CommerceTextSection/>
+              <CommerceTextSection />
             </TextSection>
             <Section>
               <SolutionSection />
@@ -180,9 +183,9 @@ const TextSection = styled.div`
 
 const SaaSSection = styled.div`
   width: 100%;
-  min-heitht: 180vh;
+  min-height: 180vh;
   display: flex;
-  justify-content: flex-start;;
+  justify-content: flex-start;
   align-items: center;
 `;
 
@@ -229,8 +232,8 @@ const CustomCursor = styled.div`
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4); 
-  // filter: blur(15px); 
+  background-color: rgba(255, 255, 255, 0.4);
+  // filter: blur(15px);
   pointer-events: none;
   z-index: 99999;
 `;

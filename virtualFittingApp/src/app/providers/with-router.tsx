@@ -31,14 +31,12 @@ import {
   BrandPage,
   LoginPage,
   AdminLogin,
-  NormalSignUpPage,
   SuccessSignUpPage,
   FailedPage,
   AdminHome,
   AdminBanner,
   BrandSignUp,
   AdminBrandUsers,
-  AuthLobby,
 } from "@/pages";
 
 import { MainLayout } from "@/app/layouts/main/MainLayout";
@@ -55,6 +53,8 @@ import { BrandProduct } from "@/pages/brand/ui/product";
 import { AboutPage } from "@/pages/about";
 import { SasSPage } from "@/pages/saas/ui/SaaSPage";
 import { ServicePage } from "@/pages/service";
+import { SignUpSelectPage } from "@/pages/auth/ui/select";
+import { UserInfoForm } from "@/pages/auth/ui/normal";
 
 const RootLayout = () => {
   return (
@@ -128,11 +128,11 @@ const routes: RouteObject[] = [
         children: [
           {
             index: true,
-            element: <AuthLobby />,
+            element: <SignUpSelectPage />,
           },
           {
             path: "normal",
-            element: <NormalSignUpPage />,
+            element: <UserInfoForm />,
           },
           {
             path: "brand",
