@@ -13,6 +13,7 @@ import { Footer } from "@/widgets/footer";
 import { signUpBrand } from "../../api/brand.action";
 import { validateBusiness } from "../../api/business.action";
 import { TBrandUser } from "../../types/auth";
+import { GlassButton } from "@/shared/components/glass-button";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -20,6 +21,8 @@ function BrandSignUpPage() {
   const lenisRef = useRef<LenisRef>(null);
   const router = useNavigate();
   const contentRef = useRef<HTMLDivElement>(null);
+  const [businessRegistrationError, setBusinessRegistrationError] =
+    useState("");
   const [formData, setFormData] = useState<TBrandUser>({
     id: "",
     password: "",
@@ -53,8 +56,9 @@ function BrandSignUpPage() {
     const res = await validateBusiness(formData.businessRegistration);
     if (res) {
       alert("인증 성공");
+      setBusinessRegistrationError("");
     } else {
-      alert("인증 실패");
+      setBusinessRegistrationError("사업자 등록번호 인증에 실패했습니다.");
     }
   };
 
@@ -80,7 +84,7 @@ function BrandSignUpPage() {
       <MainSection>
         <Section>
           <GlassBoxStyled>
-            <TitleText>브랜드 회원 가입하기</TitleText>
+            <TitleText>브랜드회원 가입하기</TitleText>
             <ContentWrapper ref={contentRef} onWheel={handleWheel}>
               <FormSection>
                 <SectionTitle>
@@ -95,7 +99,7 @@ function BrandSignUpPage() {
                       name="id"
                       value={formData.id}
                       onChange={handleChange}
-                      placeholder="사용자 아이디"
+                      placeholder="아이디"
                     />
                   </InputGroup>
                   <InputGroup>
@@ -164,10 +168,17 @@ function BrandSignUpPage() {
                       placeholder="000-00-00000"
                     />
                     <div
-                      className="absolute w-20 h-9 rounded-xl bottom-2 right-0 flex justify-center items-center bg-white duration-200 hover:-translate-x-1 z-10 cursor-pointer"
+                      className="absolute w-20 h-9 rounded-xl bottom-8 right-2 flex justify-center items-center bg-white duration-200 hover:-translate-x-1 z-10 cursor-pointer"
                       onClick={handleBusiness}
                     >
                       <ButtonText>확인</ButtonText>
+                    </div>
+                    <div style={{ height: "1.5rem" }}>
+                      {businessRegistrationError && (
+                        <ErrorMessage>
+                          {businessRegistrationError}
+                        </ErrorMessage>
+                      )}
                     </div>
                   </InputGroup>
                   <InputGroup style={{ gridColumn: "1 / -1" }}>
@@ -224,9 +235,13 @@ function BrandSignUpPage() {
                   </InputGroup>
                 </InputGrid>
               </FormSection>
-              <SubmitButton onClick={handleSubmit}>
-                브랜드 등록하기
-              </SubmitButton>
+              <GlassButton 
+                width="100%"
+                size="large"
+                onClick={handleSubmit}
+              >
+                가입하기
+              </GlassButton>
             </ContentWrapper>
           </GlassBoxStyled>
         </Section>
@@ -270,6 +285,7 @@ const GlassBoxStyled = styled(GlassBox)`
   @media (max-width: ${BREAKPOINTS.md}px) {
     padding: 1.5rem;
   }
+  text-align: left;
 `;
 
 const TitleText = styled.h2`
@@ -345,6 +361,12 @@ const SectionTitle = styled.h2`
   align-items: center;
 `;
 
+const ErrorMessage = styled.p`
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 0.5rem;
+`;
+
 const Dot = styled.div<{ color: string }>`
   width: 0.5rem;
   height: 0.5rem;
@@ -373,7 +395,7 @@ const Label = styled.label`
   display: block;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #bfdbfe;
+  color: #ffffffff;
   margin-bottom: 0.5rem;
 `;
 
@@ -409,30 +431,6 @@ const InputWithIcon = styled.div`
     width: 1.25rem;
     height: 1.25rem;
     color: #9ca3af;
-  }
-`;
-
-const SubmitButton = styled.button`
-  width: 100%;
-  padding: 1rem 1.5rem;
-  border-radius: 0.75rem;
-  background: linear-gradient(to right, #292e49, #bbd2c5);
-  color: white;
-  font-weight: 600;
-  font-size: 1.125rem;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-  transition: all 0.3s ease;
-  border: none;
-  cursor: pointer;
-  margin-top: 1rem;
-
-  &:hover {
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-    transform: scale(1.02);
-  }
-
-  &:focus {
-    outline: none;
   }
 `;
 
