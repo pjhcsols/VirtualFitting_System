@@ -76,6 +76,7 @@
     "three": "^0.174.0",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.18.2",
-    "vite": "6.0.5"
+    "vite": "6.0.5",
+    "vite-plugin-svgr": "^4.5.0"
   }
 }
