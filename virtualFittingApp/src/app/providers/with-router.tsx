@@ -35,8 +35,8 @@ import {
   FailedPage,
   AdminHome,
   AdminBanner,
-  BrandSignUp,
   AdminBrandUsers,
+  BrandSignUpPage,
 } from "@/pages";
 
 import { MainLayout } from "@/app/layouts/main/MainLayout";
@@ -136,7 +136,7 @@ const routes: RouteObject[] = [
           },
           {
             path: "brand",
-            element: <BrandSignUp />,
+            element: <BrandSignUpPage />,
           },
           {
             path: "success",
