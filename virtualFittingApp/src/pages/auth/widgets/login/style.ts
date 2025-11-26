@@ -35,7 +35,7 @@ export const Wrapper = styled.form`
       transparent
     );
     @media (max-width: 768px) {
-      padding: 0rem 1rem;
+      padding: 0;
     }
   }
 

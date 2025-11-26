@@ -52,5 +52,5 @@ export type TBrandUser = {
   firmWebUrl: string;
   firmEmail: string;
   firmPhone: string;
-  saleAllowed: false;
+  saleAllowed: boolean;
 };
