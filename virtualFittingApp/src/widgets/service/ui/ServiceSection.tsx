@@ -37,6 +37,11 @@ function ServiceSection() {
             "멤버만을 위한 혜택 한눈에 보기."
           )}
       </Headline>
+      <ButtonWrapper>
+        <GlassButton size="large" onClick={() => navigate("/signup")}>
+          시작하기
+        </GlassButton>
+      </ButtonWrapper>
       <BoxesWrapper>
         <GlassBoxStyled>
           <ColumnTitle>브랜드 유저 혜택</ColumnTitle>
@@ -67,12 +72,6 @@ function ServiceSection() {
               <ServiceText>IP 보호, 신뢰성 강화, 불법 유통 차단</ServiceText>
             </ServiceCard>
           </ServicesGrid>
-
-          <ButtonWrapper>
-            <GlassButton size="large" onClick={() => navigate("/signup/brand")}>
-              시작하기
-            </GlassButton>
-          </ButtonWrapper>
         </GlassBoxStyled>
 
         <GlassBoxStyled>
@@ -104,12 +103,6 @@ function ServiceSection() {
               <ServiceText>개인 이미지와 정보 안전 보장</ServiceText>
             </ServiceCard>
           </ServicesGrid>
-
-          <ButtonWrapper>
-            <GlassButton size="large" onClick={() => navigate("/signup/normal")}>
-              시작하기
-            </GlassButton>
-          </ButtonWrapper>
         </GlassBoxStyled>
       </BoxesWrapper>
     </Wrapper>
@@ -196,7 +189,7 @@ const ServiceText = styled.p`
 `;
 
 const ButtonWrapper = styled.div`
-  margin-top: 2rem;
+  margin-bottom: 6rem;
   display: flex;
   justify-content: center;
 `;

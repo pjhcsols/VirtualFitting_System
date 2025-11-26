@@ -33,7 +33,7 @@ function HeroSection({ onScrollToVirtualFitting }: { onScrollToVirtualFitting?: 
   const scrollProgress = useRef({ value: 0 });
 
   const handleScheduleClick = () => {
-    navigate('/login');
+    navigate('/signup');
   };
 
   const handleStoreClick = () => {
