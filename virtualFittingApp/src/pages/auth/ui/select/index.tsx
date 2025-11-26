@@ -11,7 +11,6 @@ import { BREAKPOINTS } from "@/shared";
 import { GlassBox } from "@/shared/components/glass-box";
 import { NavLink } from "react-router-dom";
 import { ICON_PERSON, ICON_STORE } from "@/shared";
-import { GlassButton } from "@/shared/components/glass-button";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -46,14 +45,14 @@ function SignUpSelectPage() {
                   <img src={ICON_PERSON} alt="일반회원" />
                 </StyledIcon>
                 <ColumnTitle>일반회원</ColumnTitle>
-                <GlassButton size="large">가입하기</GlassButton>
+                <Description>{`개인 사용자분들을 위한\n기본 AI 착용·쇼핑 기능이 제공됩니다.`}</Description>
               </SignUpPanel>
               <SignUpPanel to={"/signup/brand"}>
                 <StyledIcon>
                   <img src={ICON_STORE} alt="브랜드회원" />
                 </StyledIcon>
                 <ColumnTitle>브랜드회원</ColumnTitle>
-                <GlassButton size="large">가입하기</GlassButton>
+                <Description>{`브랜드·셀러를 위한\n제품·고객 관리 기능이 제공됩니다.`}</Description>
               </SignUpPanel>
             </GlassBoxStyled>
           </CardSection>
@@ -181,12 +180,13 @@ const SignUpPanel = styled(NavLink)`
   display: flex;
   flex-flow: column;
   justify-content: center;
-  gap: 2rem;
+  gap: 1.5rem;
   align-items: center;
   text-align: center;
 `;
 
 const StyledIcon = styled.div`
+  margin-top: 1rem;
   transition: 0.3s transform ease-out;
   width: 8rem;
   height: 8rem;
@@ -197,4 +197,11 @@ const StyledIcon = styled.div`
     opacity: 0.95;
     transition: transform .18s ease, opacity .18s ease;
   }
+`;
+
+const Description = styled.p`
+  font-size: 1rem;
+  margin-bottom: 3rem;
+  color: white;
+  white-space: pre-line;
 `;

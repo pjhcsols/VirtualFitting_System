@@ -44,38 +44,7 @@ function ServiceSection() {
       </ButtonWrapper>
       <BoxesWrapper>
         <GlassBoxStyled>
-          <ColumnTitle>브랜드 유저 혜택</ColumnTitle>
-          <ServicesGrid>
-            <ServiceCard>
-              <ServiceIcon><SmartToyIcon fontSize="large" /></ServiceIcon>
-              <ServiceTitle>AI 가상착용</ServiceTitle>
-              <ServiceText>제품을 빠르게 시각화, 마케팅·디자인 활용 가능</ServiceText>
-            </ServiceCard>
-            <ServiceCard>
-              <ServiceIcon><ShoppingCartIcon fontSize="large" /></ServiceIcon>
-              <ServiceTitle>온라인 쇼핑</ServiceTitle>
-              <ServiceText>실시간 재고/옵션 반영, 고객 유입 확대</ServiceText>
-            </ServiceCard>
-            <ServiceCard>
-              <ServiceIcon><LocalOfferIcon fontSize="large" /></ServiceIcon>
-              <ServiceTitle>맞춤형 쿠폰 & 할인</ServiceTitle>
-              <ServiceText>쿠폰·프로모션 자동화로 운영 효율화</ServiceText>
-            </ServiceCard>
-            <ServiceCard>
-              <ServiceIcon><LocalShippingIcon fontSize="large" /></ServiceIcon>
-              <ServiceTitle>배송·반품 관리</ServiceTitle>
-              <ServiceText>재고·주문 관리 효율, 반품 처리 최소화</ServiceText>
-            </ServiceCard>
-            <ServiceCard>
-              <ServiceIcon><SecurityIcon fontSize="large" /></ServiceIcon>
-              <ServiceTitle>안전 데이터 관리</ServiceTitle>
-              <ServiceText>IP 보호, 신뢰성 강화, 불법 유통 차단</ServiceText>
-            </ServiceCard>
-          </ServicesGrid>
-        </GlassBoxStyled>
-
-        <GlassBoxStyled>
-          <ColumnTitle>일반 유저 혜택</ColumnTitle>
+          <ColumnTitle>일반 회원 혜택</ColumnTitle>
           <ServicesGrid>
             <ServiceCard>
               <ServiceIcon><SmartToyIcon fontSize="large" /></ServiceIcon>
@@ -101,6 +70,36 @@ function ServiceSection() {
               <ServiceIcon><SecurityIcon fontSize="large" /></ServiceIcon>
               <ServiceTitle>안전 데이터 관리</ServiceTitle>
               <ServiceText>개인 이미지와 정보 안전 보장</ServiceText>
+            </ServiceCard>
+          </ServicesGrid>
+        </GlassBoxStyled>
+        <GlassBoxStyled>
+          <ColumnTitle>브랜드 회원 혜택</ColumnTitle>
+          <ServicesGrid>
+            <ServiceCard>
+              <ServiceIcon><SmartToyIcon fontSize="large" /></ServiceIcon>
+              <ServiceTitle>AI 가상착용</ServiceTitle>
+              <ServiceText>제품을 빠르게 시각화, 마케팅·디자인 활용 가능</ServiceText>
+            </ServiceCard>
+            <ServiceCard>
+              <ServiceIcon><ShoppingCartIcon fontSize="large" /></ServiceIcon>
+              <ServiceTitle>온라인 쇼핑</ServiceTitle>
+              <ServiceText>실시간 재고/옵션 반영, 고객 유입 확대</ServiceText>
+            </ServiceCard>
+            <ServiceCard>
+              <ServiceIcon><LocalOfferIcon fontSize="large" /></ServiceIcon>
+              <ServiceTitle>맞춤형 쿠폰 & 할인</ServiceTitle>
+              <ServiceText>쿠폰·프로모션 자동화로 운영 효율화</ServiceText>
+            </ServiceCard>
+            <ServiceCard>
+              <ServiceIcon><LocalShippingIcon fontSize="large" /></ServiceIcon>
+              <ServiceTitle>배송·반품 관리</ServiceTitle>
+              <ServiceText>재고·주문 관리 효율, 반품 처리 최소화</ServiceText>
+            </ServiceCard>
+            <ServiceCard>
+              <ServiceIcon><SecurityIcon fontSize="large" /></ServiceIcon>
+              <ServiceTitle>안전 데이터 관리</ServiceTitle>
+              <ServiceText>IP 보호, 신뢰성 강화, 불법 유통 차단</ServiceText>
             </ServiceCard>
           </ServicesGrid>
         </GlassBoxStyled>
