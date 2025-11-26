@@ -5,15 +5,16 @@ import ReactLenis, { type LenisRef } from "lenis/react";
 import "lenis/dist/lenis.css";
 import styled from "styled-components";
 import { Starfield } from "@/shared/components/star";
+import { TransparentHeader } from "@/widgets/header";
 import { Footer } from "@/widgets/footer";
 import { BREAKPOINTS } from "@/shared";
 import { GlassBox } from "@/shared/components/glass-box";
 import { NavLink } from "react-router-dom";
+import { ICON_PERSON, ICON_STORE } from "@/shared";
 
 gsap.registerPlugin(ScrollTrigger);
 
 function SignUpSelectPage() {
-  const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
 
   useEffect(() => {
@@ -31,28 +32,31 @@ function SignUpSelectPage() {
       root
     >
       <Starfield theme="light" />
+      <TransparentHeader />
       <MainSection>
-        <Article className="slider" ref={sliderRef}>
-          <Section>
-            <div className="w-full flex justify-center items-center">
-              <TitleText>BASILIUM</TitleText>
-            </div>
-            <CardSection>
-              <GlassBoxStyled>
-                <SignUpPanel to={"/signup/normal"}>
-                  <ColumnTitle>일반 유저</ColumnTitle>
-                  <AnimationColumnTitle>➤ 회원가입하기 </AnimationColumnTitle>
-                </SignUpPanel>
-              </GlassBoxStyled>
-              <GlassBoxStyled>
-                <SignUpPanel to={"/signup/brand"}>
-                  <ColumnTitle>브랜드 유저</ColumnTitle>
-                  <AnimationColumnTitle>➤ 등록하기 </AnimationColumnTitle>
-                </SignUpPanel>
-              </GlassBoxStyled>
-            </CardSection>
-          </Section>
-        </Article>
+        <Section>
+          <div className="w-full flex justify-center items-center">
+            <TitleText>회원 유형 선택</TitleText>
+          </div>
+          <CardSection>
+            <GlassBoxStyled>
+              <SignUpPanel to={"/signup/normal"}>
+                <StyledIcon>
+                  <img src={ICON_PERSON} alt="일반회원" />
+                </StyledIcon>
+                <ColumnTitle>일반회원</ColumnTitle>
+                <Description>{`개인 사용자분들을 위한\n기본 AI 착용·쇼핑 기능이 제공됩니다.`}</Description>
+              </SignUpPanel>
+              <SignUpPanel to={"/signup/brand"}>
+                <StyledIcon>
+                  <img src={ICON_STORE} alt="브랜드회원" />
+                </StyledIcon>
+                <ColumnTitle>브랜드회원</ColumnTitle>
+                <Description>{`브랜드·셀러를 위한\n제품·고객 관리 기능이 제공됩니다.`}</Description>
+              </SignUpPanel>
+            </GlassBoxStyled>
+          </CardSection>
+        </Section>
         <Footer />
       </MainSection>
     </Wrapper>
@@ -64,6 +68,7 @@ export { SignUpSelectPage };
 const Wrapper = styled(ReactLenis)``;
 const MainSection = styled.section`
   box-sizing: border-box;
+  min-height: 100vh;
   width: 100%;
   transition: 0.3s padding ease-out;
   background: radial-gradient(
@@ -73,31 +78,24 @@ const MainSection = styled.section`
     #bbd2c5 100%
   );
   display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: space-between;
   overflow-x: hidden;
-`;
+  text-align: center;
 
-const Article = styled.article`
-  width: 100%;
-  height: auto;
-  display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: flex-start;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    padding: 2rem 1rem;
+  }
 `;
 
 const Section = styled.div`
   box-sizing: border-box;
-  padding: 1rem 10rem;
   width: 100%;
-  min-height: 100vh;
   display: flex;
+  flex: 1; /* Add this line */
   flex-flow: column nowrap;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 5rem;
+  align-items: center;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     height: auto;
@@ -105,16 +103,34 @@ const Section = styled.div`
   }
 `;
 
+const TitleText = styled.h2`
+  font-size: 3rem;
+  font-weight: 700;
+  padding: 5rem;
+  background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 36px;
+  }
+`;
+
+const ColumnTitle = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: white;
+`;
+
 const CardSection = styled.div`
   width: 100%;
-  min-height: 100vh;
+  height: auto;
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  align-items: flex-start;
-  padding-top: 5rem;
-  gap: 1rem;
-  @media (max-width: 768px) {
+  align-items: center;
+  @media (max-width: ${BREAKPOINTS.md}px) {
     flex-flow: column nowrap;
     justify-content: center;
     align-items: center;
@@ -122,62 +138,82 @@ const CardSection = styled.div`
 `;
 
 const GlassBoxStyled = styled(GlassBox)`
-  flex: 1;
-  padding: 2rem;
-  width: 300px;
-  transition: 0.2s all ease-out;
+  width: 900px;
+  height: 400px;
+  max-width: 90%;
+  padding: 3rem 0rem;
+  display: flex;
+  justify-content: space-around;
+  position: relative;
 
-  &:hover {
-    transform: translateY(-16px);
+  &::after {
+    content: '';
+    position: absolute;
+    top: 10%; 
+    height: 80%; 
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    background: rgba(255, 255, 255, 0.4);
   }
 
-  @media (max-width: 1200px) {
-    width: 100%;
-    max-width: 500px;
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    flex-flow: column nowrap;
+    align-items: center;
+    height: auto; 
+    gap: 4rem;
+
+    &::after {
+      top: 50%;
+      height: 1px;
+      left: 10%;
+      width: 80%;
+      transform: translateY(-50%);
+    }
   }
-  cursor: pointer;
+  cursor: default;
+`;
+
+const StyledIcon = styled.div`
+  margin-top: 1rem;
+  transition: 0.3s transform ease-out;
+  width: 8rem;
+  height: 8rem;
+
+  & img {
+    width: 100%;           
+    height: 100%;
+    opacity: 0.95;
+    transition: transform .18s ease, opacity .18s ease;
+  }
 `;
 
 const SignUpPanel = styled(NavLink)`
-  width: 100%;
+  flex: 1;
+  padding: 0 1rem;
   display: flex;
   flex-flow: column;
-  justify-content: flex-start;
-  align-items: flex-start;
-  text-align: left;
-`;
+  justify-content: center;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  cursor: pointer;
 
-const TitleText = styled.div`
-  font-family: "Prata-Regular";
-  font-size: 96px;
-  font-weight: 600;
-  text-align: right;
-  letter-spacing: -4px;
-  padding-right: 84px;
-  padding-bottom: 24px;
-  margin: 0;
-  background-image: linear-gradient(to right, #e9faff, #b8d2ff);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  &:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 38px;
-    padding-right: 0;
-    text-align: left;
-    letter-spacing: -2px;
+    ${StyledIcon} img {
+      transform: scale(1.1);
+      opacity: 1;
+    }
   }
 `;
 
-const ColumnTitle = styled.h3`
-  font-size: 1.5rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-`;
-
-const AnimationColumnTitle = styled(ColumnTitle)`
-  transition: 0.2s all ease-out;
-  ${GlassBoxStyled}&:hover {
-    transform: translateX(16px);
-  }
+const Description = styled.p`
+  font-size: 1rem;
+  margin-bottom: 3rem;
+  color: white;
+  white-space: pre-line;
 `;
