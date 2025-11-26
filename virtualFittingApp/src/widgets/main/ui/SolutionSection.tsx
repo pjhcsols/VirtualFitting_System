@@ -161,6 +161,7 @@ const Card = styled(GlassBox)`
   flex-shrink: 0; 
   scroll-snap-align: none;
   padding: 24px; 
+  height: 280px;
   display: flex;
   flex-direction: column;
   text-align: left;
