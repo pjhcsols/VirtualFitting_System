@@ -174,17 +174,6 @@ const GlassBoxStyled = styled(GlassBox)`
   cursor: default;
 `;
 
-const SignUpPanel = styled(NavLink)`
-  flex: 1;
-  padding: 0 1rem;
-  display: flex;
-  flex-flow: column;
-  justify-content: center;
-  gap: 1.5rem;
-  align-items: center;
-  text-align: center;
-`;
-
 const StyledIcon = styled.div`
   margin-top: 1rem;
   transition: 0.3s transform ease-out;
@@ -196,6 +185,29 @@ const StyledIcon = styled.div`
     height: 100%;
     opacity: 0.95;
     transition: transform .18s ease, opacity .18s ease;
+  }
+`;
+
+const SignUpPanel = styled(NavLink)`
+  flex: 1;
+  padding: 0 1rem;
+  display: flex;
+  flex-flow: column;
+  justify-content: center;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.3s ease-in-out, filter 0.3s ease-in-out;
+  cursor: pointer;
+
+  &:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+
+    ${StyledIcon} img {
+      transform: scale(1.1);
+      opacity: 1;
+    }
   }
 `;
 
