@@ -17,6 +17,13 @@ export const Wrapper = styled.div`
   @media (max-width: 768px) {
     padding: 1rem 2rem;
   }
+
+   background: radial-gradient(
+    circle at 15% 25%,
+    #292e49 0%,
+    #536976 60%,
+    #bbd2c5 100%
+  );
 `;
 
 export const ButtonContainer = styled.div`
