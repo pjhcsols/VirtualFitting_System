@@ -161,6 +161,7 @@ const Card = styled(GlassBox)`
   flex-shrink: 0; 
   scroll-snap-align: none;
   padding: 24px; 
+  height: 280px;
   display: flex;
   flex-direction: column;
   text-align: left;
@@ -173,7 +174,14 @@ const CardGrid = styled.div`
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 
   @media (min-width: ${BREAKPOINTS.lg}px) {
-    grid-template-columns: repeat(3, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    & > div {
+      width: 360px;
+    }
+
     & > div:nth-child(even) {
       transform: translateY(40px);
     }

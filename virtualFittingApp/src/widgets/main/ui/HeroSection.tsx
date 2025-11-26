@@ -33,7 +33,7 @@ function HeroSection({ onScrollToVirtualFitting }: { onScrollToVirtualFitting?: 
   const scrollProgress = useRef({ value: 0 });
 
   const handleScheduleClick = () => {
-    navigate('/login');
+    navigate('/signup');
   };
 
   const handleStoreClick = () => {
@@ -218,7 +218,7 @@ const ContentText = styled.div`
   color: transparent;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 18px;
+    font-size: 16px;
     padding-right: 0;
     text-align: left;
   }
