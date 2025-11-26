@@ -168,6 +168,8 @@ export function CartItemList({
         initialColor={itemToEdit.item.color}
         initialSize={itemToEdit.item.size}
         initialQuantity={itemToEdit.item.quantity}
+        initialOriginalPrice={itemToEdit.item.price}
+        initialDiscountedPrice={itemToEdit.item.discountedPrice}
         onClose={handleClosePopup}
         onUpdateSuccess={handleUpdateSuccess}
       />

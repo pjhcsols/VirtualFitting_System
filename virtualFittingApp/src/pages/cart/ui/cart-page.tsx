@@ -34,10 +34,10 @@ function CartPage() {
         alert("로그인이 필요한 페이지입니다.");
         navigate('/login');
       }
-  }, [isLoggedIn, navigate, location]);
+  }, [isLoggedIn, navigate, location, cartData]);
 
   const cartItems: BatchCheckoutItemDetail[] = cartData?.items
-  ? cartData.items.map(item => ({ 
+  ? cartData.items.map(item => ({
       id: item.itemId,
       productId: item.productId,
       name: item.productName,

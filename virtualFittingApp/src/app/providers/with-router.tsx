@@ -2,7 +2,6 @@ import { createBrowserRouter, RouteObject, Outlet } from "react-router-dom";
 import { ScrollToTop } from "@/shared/lib/ui/ScrollToTop";
 
 import {
-  PaymentFailPage,
   PaymentSuccessPage,
   PaymentPage,
 } from "@/pages/payment";
@@ -238,7 +237,7 @@ const routes: RouteObject[] = [
           },
           {
             path: "fail",
-            element: <PaymentFailPage />,
+            element: <CartPage />,
           },
         ],
       },
