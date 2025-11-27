@@ -120,13 +120,14 @@ const BasiliumText = styled.span`
     font-size: 3.5rem;
     line-height: 1.6;
   }
+  letter-spacing: 0px;
 `;
 
 const TextBlock = styled.div`
   max-width: 960px;
   display: flex;
   flex-direction: column;
-  gap: 2.2rem;
+  gap: 3rem;
 `;
 
 const Paragraph = styled.p`
@@ -139,6 +140,7 @@ const Paragraph = styled.p`
   background-clip: text;
   color: #E9FAFF; 
   z-index: 3;
+  letter-spacing: -1px;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 1rem;
@@ -149,6 +151,7 @@ const Paragraph = styled.p`
 const Highlight = styled.span`
   font-family: "Prata-Regular";
   font-weight: 700;
+  letter-spacing: 0px;
 `;
 
 const Letter = styled.span`

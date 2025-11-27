@@ -43,7 +43,7 @@ function ServiceSection() {
         </GlassButton>
       </ButtonWrapper>
       <BoxesWrapper>
-        <GlassBoxStyled>
+        <GlassBoxStyled borderRadius="18px">
           <ColumnTitle>일반 회원 혜택</ColumnTitle>
           <ServicesGrid>
             <ServiceCard>
@@ -73,7 +73,7 @@ function ServiceSection() {
             </ServiceCard>
           </ServicesGrid>
         </GlassBoxStyled>
-        <GlassBoxStyled>
+        <GlassBoxStyled borderRadius="18px">
           <ColumnTitle>브랜드 회원 혜택</ColumnTitle>
           <ServicesGrid>
             <ServiceCard>
@@ -167,7 +167,7 @@ const ServicesGrid = styled.div`
 const ServiceCard = styled.div`
   background: rgba(255,255,255,0.05);
   padding: 1.5rem;
-  border-radius: 12px;
+  border-radius: 24px;
   text-align: left;
 `;
 

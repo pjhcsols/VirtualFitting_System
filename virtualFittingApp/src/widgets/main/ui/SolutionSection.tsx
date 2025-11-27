@@ -19,7 +19,7 @@ type FeatureCardProps = {
 };
 
 const FeatureCard = ({ title, content, icon }: FeatureCardProps) => (
-    <Card>
+    <Card borderRadius="24px">
       <CardIcon>{icon}</CardIcon>
       <CardTitle>{title}</CardTitle>
       <CardContent>{content}</CardContent>
@@ -161,10 +161,14 @@ const Card = styled(GlassBox)`
   flex-shrink: 0; 
   scroll-snap-align: none;
   padding: 24px; 
-  height: 280px;
+  height: 270px;
   display: flex;
   flex-direction: column;
   text-align: left;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    height: auto;
+  }
 `;
 
 const CardGrid = styled.div`
