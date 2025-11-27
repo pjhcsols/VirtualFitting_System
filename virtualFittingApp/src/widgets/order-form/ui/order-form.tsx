@@ -28,7 +28,8 @@ export const OrderForm = ({
         <Header>
           <SectionTitle>주문 상품</SectionTitle>
         </Header>
-        {items.map((item, index) => {
+        {/* {items.map((item, index) => { */}
+        {items.map((item) => {
           const itemPrice = item.discountedPrice ?? item.price;
           const selectedCoupon = selectedCouponMap.get(item.id) || null;
           const finalPriceForItem = calculateFinalPrice(itemPrice, item.quantity, selectedCoupon);
