@@ -1,12 +1,17 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchDiscountQuote } from '../api/discount.api';
 
-export const useProductPriceQuery = (productId: number, accessToken: string | null) => {
+export const useProductPriceQuery = (
+    productId: number,
+    color: string,
+    size: string,
+    accessToken: string | null
+) => {
     return useQuery<{ original: number; discounted: number } | null, Error>({
-        queryKey: ['productPrice', productId, accessToken],
+        queryKey: ['productPrice', productId, color, size, accessToken],
         queryFn: async () => {
             if (!accessToken) return null;
-            const quote = await fetchDiscountQuote({ productId, userId: accessToken });
+            const quote = await fetchDiscountQuote({ productId, userId: accessToken, color, size });
             
             if (quote) {
                 return {
@@ -16,7 +21,7 @@ export const useProductPriceQuery = (productId: number, accessToken: string | nu
             }
             return null;
         },
-        enabled: !!accessToken && !!productId,
+        enabled: !!accessToken && !!productId && !!color && !!size,
         staleTime: 60000,
     });
 };

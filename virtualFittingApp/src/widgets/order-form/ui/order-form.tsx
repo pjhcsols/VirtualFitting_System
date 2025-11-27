@@ -28,7 +28,8 @@ export const OrderForm = ({
         <Header>
           <SectionTitle>주문 상품</SectionTitle>
         </Header>
-        {items.map((item, index) => {
+        {/* {items.map((item, index) => { */}
+        {items.map((item) => {
           const itemPrice = item.discountedPrice ?? item.price;
           const selectedCoupon = selectedCouponMap.get(item.id) || null;
           const finalPriceForItem = calculateFinalPrice(itemPrice, item.quantity, selectedCoupon);
@@ -52,7 +53,7 @@ export const OrderForm = ({
                   excludedWalletIds={excludedIdsForThisItem}
                 />
               </ButtonContainer>
-              {index < items.length - 1 && <ItemSeparator />}
+              {/* {index < items.length - 1 && <ItemSeparator />} */}
             </ItemWrapper>
           );
         })}
@@ -95,7 +96,7 @@ const ButtonContainer = styled.div`
   display: flex;
 `;
 
-const ItemSeparator = styled.div`
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-`;
+// const ItemSeparator = styled.div`
+//   border: none;
+//   border-top: 1px solid rgba(255, 255, 255, 0.1);
+// `;

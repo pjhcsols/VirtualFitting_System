@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { useNavigate } from 'react-router-dom';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 
 interface OrderItemCardProps {
@@ -7,18 +8,24 @@ interface OrderItemCardProps {
 }
 
 export const OrderItemCard = ({ item, finalPrice }: OrderItemCardProps) => {
+  const navigate = useNavigate();
+
   const regularPrice = item.price * item.quantity;
   const preCouponPrice = (item.discountedPrice ?? item.price) * item.quantity;
   const displayPrice = finalPrice !== undefined ? finalPrice : preCouponPrice;
   const showOriginalPrice = displayPrice < regularPrice;
 
+  const handleClick = () => {
+    navigate(`/products/${item.productId}`);
+  };
+
   return (
-    <CardContainer>
-      <ItemImage src={item.image} alt={item.name} />
+    <CardContainer >
+      <ItemImage src={item.image} alt={item.name} onClick={handleClick} />
       <ItemInfo>
         <div>
           <Brand>{item.brand}</Brand>   
-          <Name>{item.name}</Name>
+          <Name onClick={handleClick}>{item.name}</Name>
           <Option>
             {item.color} · {item.size} / {item.quantity}개
           </Option>
@@ -45,6 +52,7 @@ const ItemImage = styled.img`
   height: 100px;
   object-fit: cover;
   border-radius: 8px;
+  cursor: pointer;
 `;
 
 const ItemInfo = styled.div`
@@ -65,6 +73,7 @@ const Name = styled.div`
   color: white;
   margin: 4px 0;
   line-height: 1.4;
+  cursor: pointer; /* Add cursor pointer to indicate clickability */
 `;
 
 const Option = styled.div`

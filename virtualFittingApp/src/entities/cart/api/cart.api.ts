@@ -35,7 +35,9 @@ export const updateCartItem = async (
   const config: AxiosRequestConfig = {
     method: 'patch',
     url: `/b1/carts/me/items/${itemId}`,
-    params: { authUserId },
+    headers: {
+        Authorization: `Bearer ${authUserId}`,
+    },
     data: updateData,
   };
 

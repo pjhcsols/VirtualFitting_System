@@ -1,9 +1,9 @@
-import styled from "styled-components";
+import styled, { keyframes }from "styled-components";
 import { PAPER_VIRTUAL } from "../model/constants";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
-import { BREAKPOINTS } from "@/shared/constants";
+import { BREAKPOINTS, ICON_HALFTONE_ARROW } from "@/shared/constants";
 import { ScrollTrigger } from "gsap/all";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -99,13 +99,16 @@ function CommerceTextSection() {
                 <Img src={PAPER_VIRTUAL} alt="virtual" />
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
-                    <OverlayHeaderText>↗고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
+                    <OverlayHeaderText>고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
                     <OverlayText>
                       재고·결제·정산·프로모션 자동화로 운영 효율성을 극대화합니다.
                       모델 확보와 가상착용 서비스 제공을 통해 브랜드 런칭 기회를 드립니다.
                     </OverlayText>
                   </SubtextOverlay>
                 )}
+                <ArrowIcon>
+                  <img src={ICON_HALFTONE_ARROW}/>
+                </ArrowIcon>
               </ImageContainer>
             </ImageBox>
           </Content>
@@ -310,6 +313,33 @@ const OverlayText = styled.div`
   
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 14px;
+  }
+`;
+
+const bounce = keyframes`
+  0% {
+    transform: translate(0, 0); 
+  }
+  100% {
+    transform: translate(8px, -8px); 
+  }
+`;
+
+const ArrowIcon = styled.div`
+  position: absolute;
+  width: 48px;
+  top: 28px;
+  right: 28px;
+  font-size: 36px;
+  color: #fff;
+  z-index: 2; 
+
+  animation: ${bounce} 1.2s infinite alternate;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 24px;
+    top: 16px;
+    right: 16px;
   }
 `;
 

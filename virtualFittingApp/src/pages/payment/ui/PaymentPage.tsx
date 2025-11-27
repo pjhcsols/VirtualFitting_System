@@ -159,7 +159,6 @@ export const PaymentPage = () => {
 
   return (
     <PageContainer>
-      <PageTitle>주문서</PageTitle>
       <Layout>
         <MainContent>
           <FormContainer>
@@ -201,13 +200,6 @@ const PageContainer = styled.div`
   max-width: 1200px;
   margin: 40px auto;
   padding: 0 20px;
-`;
-
-const PageTitle = styled.h1`
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 32px;
-  color: #fff;
 `;
 
 const Layout = styled.div`

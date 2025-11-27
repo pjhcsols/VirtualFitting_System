@@ -8,7 +8,6 @@ import { ProductOptions } from "@/features/product-options";
 import { SIZE_ORDER } from "@/shared";
 import type { ProductDetail } from "@/entities/product/model/types";
 import { useUpdateCartItem, type UpdateCartItemRequest } from '@/entities/cart';
-import { useProductPriceQuery } from '@/entities/discount';
 
 interface UpdateCartItemOptionsPopupProps {
   productDetail: ProductDetail;
@@ -16,6 +15,8 @@ interface UpdateCartItemOptionsPopupProps {
   initialColor: string;
   initialSize: string;
   initialQuantity: number;
+  initialOriginalPrice: number;
+  initialDiscountedPrice?: number | null;
   onClose: () => void;
   onUpdateSuccess?: () => void;
 }
@@ -26,6 +27,8 @@ export const UpdateCartItemOptionsPopup = ({
   initialColor,
   initialSize,
   initialQuantity,
+  initialOriginalPrice,
+  initialDiscountedPrice,
   onClose,
   onUpdateSuccess
 }: UpdateCartItemOptionsPopupProps) => {
@@ -36,15 +39,14 @@ export const UpdateCartItemOptionsPopup = ({
   const [selectedColor, setSelectedColor] = useState(initialColor);
   const [selectedSize, setSelectedSize] = useState(initialSize);
 
-  const { data: price } = useProductPriceQuery(
-      productDetail.productId,
-      accessToken
-  );
+  const currentPrice = { 
+    original: initialOriginalPrice,
+    discounted: initialDiscountedPrice ?? initialOriginalPrice,
+  };
 
-  const currentPrice = price || { original: 0, discounted: 0 }; 
   const hasDiscount = currentPrice.discounted < currentPrice.original;
   const discountRate = hasDiscount
-    ? Math.round(((currentPrice.original - currentPrice.discounted!) / currentPrice.original) * 100)
+    ? Math.round(((currentPrice.original - currentPrice.discounted) / currentPrice.original) * 100)
     : 0;
 
   const mainImageUrl = useMemo(() => {
@@ -64,7 +66,9 @@ export const UpdateCartItemOptionsPopup = ({
   const handleColorChange = (color: string) => {
     setSelectedColor(color);
     const newSize = productDetail.productOptions.find(opt => opt.productColor === color)?.productSize;
-    if (newSize) setSelectedSize(newSize);
+    if (newSize) {
+      setSelectedSize(newSize);
+    }
   };
 
   const { mutate: updateItem } = useUpdateCartItem();
@@ -87,6 +91,9 @@ export const UpdateCartItemOptionsPopup = ({
         onSuccess: () => {
           onUpdateSuccess?.(); 
           onClose(); 
+        },
+        onError: () => {
+          alert("옵션 변경에 실패했습니다. 다시 시도해주세요.");
         }
       }
     );

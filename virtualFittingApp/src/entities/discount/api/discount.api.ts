@@ -5,6 +5,8 @@ import type { ProductPrice, DiscountQuoteData } from "../model/types";
 export const fetchDiscountQuote = async (params: { 
   productId: number; 
   userId?: string; 
+  color?: string;
+  size?: string;
 }): Promise<DiscountQuoteData | null> => {
   try {
     const response = await API_BASILIUM.get("/b1/discounts/quote", { params });

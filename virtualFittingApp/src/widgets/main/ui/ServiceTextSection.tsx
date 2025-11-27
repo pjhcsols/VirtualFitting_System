@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled, { keyframes }from "styled-components";
 import { PAPER_SCREEN } from "../model/constants";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/all";
-import { BREAKPOINTS } from "@/shared/constants";
+import { BREAKPOINTS, ICON_HALFTONE_ARROW } from "@/shared/constants";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,7 +99,7 @@ function ServiceTextSection() {
                 <Img src={PAPER_SCREEN} alt="Service" />
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
-                    <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
+                    <OverlayHeaderText>통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>
                       원앱 및 통합 사이트에서 일반/기업 고객이 역할·권한에 따라
                       다른 화면을 봅니다.
@@ -110,6 +110,9 @@ function ServiceTextSection() {
                     </OverlayText>
                   </SubtextOverlay>
                 )}
+                <ArrowIcon>
+                  <img src={ICON_HALFTONE_ARROW}/>
+                </ArrowIcon>
               </ImageContainer>
             </ImageBox>
           </Content>
@@ -313,6 +316,33 @@ const OverlayText = styled.div`
   
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 14px;
+  }
+`;
+
+const bounce = keyframes`
+  0% {
+    transform: translate(0, 0); 
+  }
+  100% {
+    transform: translate(8px, -8px); 
+  }
+`;
+
+const ArrowIcon = styled.div`
+  position: absolute;
+  width: 48px;
+  top: 28px;
+  right: 28px;
+  font-size: 36px;
+  color: #fff;
+  z-index: 2; 
+
+  animation: ${bounce} 1.2s infinite alternate;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 24px;
+    top: 16px;
+    right: 16px;
   }
 `;
 

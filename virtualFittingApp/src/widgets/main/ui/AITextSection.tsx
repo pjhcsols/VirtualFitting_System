@@ -1,10 +1,10 @@
-import styled from "styled-components";
+import styled, { keyframes }from "styled-components";
 import { PAPER_WEB3 } from "../model/constants";
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap"; 
-import { BREAKPOINTS } from "@/shared/constants";
-import { ScrollTrigger } from "gsap/all"; 
+import { BREAKPOINTS, ICON_HALFTONE_ARROW } from "@/shared/constants";
+import { ScrollTrigger } from "gsap/all";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -99,14 +99,17 @@ function AITextSection() {
                 <Img src={PAPER_WEB3} alt="about" />
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
-                    <OverlayHeaderText>↗Web3.0 기반의 기술 혁신</OverlayHeaderText>
+                    <OverlayHeaderText>Web3.0 기반의 기술 혁신</OverlayHeaderText>
                     <OverlayText>
-                      BASILIUM은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다.
+                      바실리움은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다.
                       메타데이터 신뢰성, DID 인프라, 모듈형 API/SDK 아키텍처로 확장성을 확보합니다.
                       고객은 비용 제약 없는 편리함을, 고객사는 낮은 초기비용과 빠른 ROI를 경험합니다.
                     </OverlayText>
                   </SubtextOverlay>
                 )}
+                <ArrowIcon>
+                  <img src={ICON_HALFTONE_ARROW}/>
+                </ArrowIcon>
               </ImageContainer>
             </ImageBox>
           </Content>
@@ -311,6 +314,33 @@ const OverlayText = styled.div`
   
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 14px;
+  }
+`;
+
+const bounce = keyframes`
+  0% {
+    transform: translate(0, 0); 
+  }
+  100% {
+    transform: translate(8px, -8px); 
+  }
+`;
+
+const ArrowIcon = styled.div`
+  position: absolute;
+  width: 48px;
+  top: 28px;
+  right: 28px;
+  font-size: 36px;
+  color: #fff;
+  z-index: 2; 
+
+  animation: ${bounce} 1.2s infinite alternate;
+
+  @media (max-width: ${BREAKPOINTS.md}px) {
+    font-size: 24px;
+    top: 16px;
+    right: 16px;
   }
 `;
 
