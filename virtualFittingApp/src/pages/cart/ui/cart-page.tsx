@@ -23,7 +23,7 @@ function CartPage() {
   const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
   const accessToken = cookiesInstance.get('access-token');
 
-  const { data: cartData, isLoading: isCartLoading, refetch: refetchCart } = useMyCartQuery(accessToken!); 
+  const { data: cartData, isLoading: isCartLoading } = useMyCartQuery(accessToken!); 
   const isLoggedIn = useRecoilValue(authState);
   const navigate = useNavigate();
 
@@ -87,7 +87,6 @@ function CartPage() {
               isCartLoading={isCartLoading}
               selectedCouponMap={selectedCouponMap} 
               handleCouponSelect={handleCouponSelect}
-              refetchCart={refetchCart}
               accessToken={accessToken}
             />
           </MainContent>

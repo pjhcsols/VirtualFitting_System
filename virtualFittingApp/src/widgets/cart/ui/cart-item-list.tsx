@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { type CartItem } from '@/entities/cart';
 import { GlassBox } from '@/shared/components/glass-box';
 import { GlassButton } from '@/shared/components/glass-button';
@@ -33,7 +34,6 @@ interface CartItemListProps {
   isCartLoading: boolean;
   selectedCouponMap: Map<number, ClaimableCoupon | null>;
   handleCouponSelect: (coupon: ClaimableCoupon | null, itemId: number) => void;
-  refetchCart: () => void;
   accessToken: string;
 }
 
@@ -42,10 +42,10 @@ export function CartItemList({
   isCartLoading,
   selectedCouponMap,
   handleCouponSelect,
-  refetchCart,
   accessToken,
 }: CartItemListProps) {
   
+  const queryClient = useQueryClient();
   const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -73,7 +73,7 @@ export function CartItemList({
     if (confirm("정말로 이 상품을 장바구니에서 삭제하시겠습니까?")) {
       deleteItems({ itemIds: [itemIdToRemove] }, {
         onSuccess: () => {
-          refetchCart();
+          queryClient.invalidateQueries({ queryKey: ['cart', 'me', accessToken]});
         },
         onError: () => {
           alert("항목 삭제 중 오류가 발생했습니다.");
@@ -93,7 +93,7 @@ export function CartItemList({
   };
   
   const handleUpdateSuccess = () => {
-    refetchCart();
+    queryClient.invalidateQueries({ queryKey: ['cart', 'me', accessToken]});
   };
 
   const groupedItems = groupByBrand(cartItems);
