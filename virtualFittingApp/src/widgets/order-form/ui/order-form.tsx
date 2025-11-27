@@ -52,7 +52,7 @@ export const OrderForm = ({
                   excludedWalletIds={excludedIdsForThisItem}
                 />
               </ButtonContainer>
-              {index < items.length - 1 && <ItemSeparator />}
+              {/* {index < items.length - 1 && <ItemSeparator />} */}
             </ItemWrapper>
           );
         })}
@@ -95,7 +95,7 @@ const ButtonContainer = styled.div`
   display: flex;
 `;
 
-const ItemSeparator = styled.div`
-  border: none;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-`;
+// const ItemSeparator = styled.div`
+//   border: none;
+//   border-top: 1px solid rgba(255, 255, 255, 0.1);
+// `;
