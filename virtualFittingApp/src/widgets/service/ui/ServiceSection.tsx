@@ -185,6 +185,7 @@ const ServiceTitle = styled.h4`
 const ServiceText = styled.p`
   font-size: 1rem;
   line-height: 1.6;
+  letter-spacing: -1px;
 `;
 
 const ButtonWrapper = styled.div`
