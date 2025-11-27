@@ -99,7 +99,7 @@ function CommerceTextSection() {
                 <Img src={PAPER_VIRTUAL} alt="virtual" />
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
-                    <OverlayHeaderText>↗고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
+                    <OverlayHeaderText>고객 경험 극대화 및 운영 자동화</OverlayHeaderText>
                     <OverlayText>
                       재고·결제·정산·프로모션 자동화로 운영 효율성을 극대화합니다.
                       모델 확보와 가상착용 서비스 제공을 통해 브랜드 런칭 기회를 드립니다.

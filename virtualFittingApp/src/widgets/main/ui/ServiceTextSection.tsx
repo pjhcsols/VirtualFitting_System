@@ -99,7 +99,7 @@ function ServiceTextSection() {
                 <Img src={PAPER_SCREEN} alt="Service" />
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
-                    <OverlayHeaderText>↗통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
+                    <OverlayHeaderText>통합 플랫폼 및 역할별 접근성</OverlayHeaderText>
                     <OverlayText>
                       원앱 및 통합 사이트에서 일반/기업 고객이 역할·권한에 따라
                       다른 화면을 봅니다.
