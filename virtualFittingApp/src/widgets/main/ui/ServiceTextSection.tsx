@@ -12,6 +12,7 @@ function ServiceTextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
@@ -39,7 +40,7 @@ function ServiceTextSection() {
   };
 
   useEffect(() => {
-    if (screenTextRef.current && wrapperRef.current) {
+    if (screenTextRef.current && wrapperRef.current && contentRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapperRef.current,
@@ -48,6 +49,11 @@ function ServiceTextSection() {
           scrub: true,
           pin: true,
           id: "service-text-pin",
+          onToggle: (self) => {
+            if (!self.isActive && isMobile) {
+              setIsOverlayVisible(false);
+            }
+          },
         },
       });
 
@@ -73,12 +79,12 @@ function ServiceTextSection() {
           },
         }
       );
-    }
 
-    return () => {
-      ScrollTrigger.getById("service-text-pin")?.kill();
-      ScrollTrigger.getById("service-content-mobile-move")?.kill();
-    };
+      return () => {
+        ScrollTrigger.getById("service-text-pin")?.kill();
+        ScrollTrigger.getById("service-content-mobile-move")?.kill();
+      };
+    }
   }, [isMobile]);
 
   return (
@@ -92,6 +98,7 @@ function ServiceTextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
+                ref={imageContainerRef}
                 onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
                 onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
@@ -340,7 +347,7 @@ const ArrowIcon = styled.div`
   animation: ${bounce} 1.2s infinite alternate;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 24px;
+    width: 32px;
     top: 16px;
     right: 16px;
   }

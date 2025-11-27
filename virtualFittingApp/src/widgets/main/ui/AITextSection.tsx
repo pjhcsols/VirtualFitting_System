@@ -12,6 +12,7 @@ function AITextSection() {
   const screenTextRef = useRef<HTMLDivElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
   const contentRef = useRef<HTMLDivElement>(null);
+  const imageContainerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
   const [isOverlayVisible, setIsOverlayVisible] = useState(false);
   const navigate = useNavigate();
@@ -39,7 +40,7 @@ function AITextSection() {
   };
 
   useEffect(() => {
-    if (screenTextRef.current && wrapperRef.current) {
+    if (screenTextRef.current && wrapperRef.current && contentRef.current) {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: wrapperRef.current,
@@ -48,6 +49,11 @@ function AITextSection() {
           scrub: true,
           pin: true,
           id: "service-text-pin",
+          onToggle: (self) => {
+            if (!self.isActive && isMobile) {
+              setIsOverlayVisible(false);
+            }
+          },
         },
       });
 
@@ -62,7 +68,7 @@ function AITextSection() {
         contentRef.current,
         { y: h },
         {
-          y: -h ,
+          y: -h,
           ease: "none",
           scrollTrigger: {
             trigger: wrapperRef.current,
@@ -73,12 +79,12 @@ function AITextSection() {
           },
         }
       );
-    }
 
-    return () => {
-      ScrollTrigger.getById("service-text-pin")?.kill();
-      ScrollTrigger.getById("service-content-mobile-move")?.kill();
-    };
+      return () => {
+        ScrollTrigger.getById("service-text-pin")?.kill();
+        ScrollTrigger.getById("service-content-mobile-move")?.kill();
+      };
+    }
   }, [isMobile]);
 
   return (
@@ -92,6 +98,7 @@ function AITextSection() {
             </TextBox>
             <ImageBox>
               <ImageContainer
+                ref={imageContainerRef}
                 onMouseEnter={!isMobile ? () => setIsHovered(true) : undefined}
                 onMouseLeave={!isMobile ? () => setIsHovered(false) : undefined}
                 onClick={handleImageClick}
@@ -100,11 +107,8 @@ function AITextSection() {
                 {(isHovered || isOverlayVisible) && (
                   <SubtextOverlay>
                     <OverlayHeaderText>Web3.0 기반의 기술 혁신</OverlayHeaderText>
-                    <OverlayText>
-                      바실리움은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다.
-                      메타데이터 신뢰성, DID 인프라, 모듈형 API/SDK 아키텍처로 확장성을 확보합니다.
-                      고객은 비용 제약 없는 편리함을, 고객사는 낮은 초기비용과 빠른 ROI를 경험합니다.
-                    </OverlayText>
+                    <OverlayText>{`바실리움은 AI 접근성, 저지연 운영에 신원관리와 Web3.0 기술을 결합했습니다. 메타데이터 신뢰성, DID 인프라, 모듈형 API/SDK 아키텍처로 확장성을 확보합니다. 고객은 비용 제약 없는 편리함을, 고객사는 낮은 초기비용과 빠른 ROI를 경험합니다. \n\n블록체인 기반으로 사용자의 가상착용 이력과 인증 정보를 위변조가 불가능한 형태로 관리하여, 브랜드와 소비자 모두에게 신뢰 가능한 디지털 아이덴티티 인프라를 제공합니다.
+                    `}</OverlayText>
                   </SubtextOverlay>
                 )}
                 <ArrowIcon>
@@ -248,8 +252,7 @@ const ImageBox = styled.div`
   align-items: center;
   margin-left: auto; 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    width: 90vw;
-    height: 50vh;
+    width: 90vw;\n    height: 50vh;
     margin-left: 0;
   }
 `;
@@ -267,8 +270,7 @@ const Img = styled.img`
   width: 100%;
   height: 100%;
   object-fit: cover; 
-  display: block;
-`;
+  display: block;\n`;
 
 const SubtextOverlay = styled.div`
   display: flex;
@@ -311,6 +313,7 @@ const OverlayText = styled.div`
   font-weight: 400;
   line-height: 1.2;
   padding-top: 20px;
+  white-space: pre-wrap;
   
   @media (max-width: ${BREAKPOINTS.md}px) {
     font-size: 14px;
@@ -323,8 +326,7 @@ const bounce = keyframes`
   }
   100% {
     transform: translate(8px, -8px); 
-  }
-`;
+  }\n`;
 
 const ArrowIcon = styled.div`
   position: absolute;
@@ -338,10 +340,9 @@ const ArrowIcon = styled.div`
   animation: ${bounce} 1.2s infinite alternate;
 
   @media (max-width: ${BREAKPOINTS.md}px) {
-    font-size: 24px;
+    width: 32px;
     top: 16px;
     right: 16px;
-  }
-`;
+  }\n`;
 
 export { AITextSection };
