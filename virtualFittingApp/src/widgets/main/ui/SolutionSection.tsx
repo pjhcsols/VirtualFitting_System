@@ -63,7 +63,7 @@ function SolutionSection() {
         AI 기반의 미래형 커머스 플랫폼으로 <br/>고객 경험과 비즈니스 효율을 혁신합니다.
       </HeadlineText>
       <CardGrid>
-        <div ref={el => cardRefs.current[0] = el as HTMLDivElement}> 
+        <CardWrapper ref={el => { if (el) cardRefs.current[0] = el; }}> 
           <FeatureCard 
               icon={<TrendingUpIcon style={{ fontSize: '1em' }} />}
               title="높은 구매 전환율" 
@@ -72,8 +72,8 @@ function SolutionSection() {
                   고객에게 망설임 없는 즉시 결제 확신을 선사하여 구매 전환율을 극대화합니다.
               </>}
             />
-        </div>
-        <div ref={el => cardRefs.current[1] = el as HTMLDivElement}>
+        </CardWrapper>
+        <CardWrapper ref={el => { if (el) cardRefs.current[1] = el; }}>
           <FeatureCard 
               icon={<AddBusinessIcon style={{ fontSize: '1em' }} />}
               title="반품 오류 최소화"
@@ -82,8 +82,8 @@ function SolutionSection() {
                   불필요한 반품 오류를 획기적으로 낮추고, 물류 및 운영 비용을 절감합니다.
               </>}
           />
-        </div>
-        <div ref={el => cardRefs.current[2] = el as HTMLDivElement}>
+        </CardWrapper>
+        <CardWrapper ref={el => { if (el) cardRefs.current[2] = el; }}>
           <FeatureCard 
               icon={<AutoAwesomeIcon style={{ fontSize: '1em' }} />}
               title="입점 자동화" 
@@ -92,8 +92,8 @@ function SolutionSection() {
                   브랜드 성장에 필요한 모든 과정을 자동화하여 운영 효율을 높입니다.
               </>}
           />
-        </div>
-        <div ref={el => cardRefs.current[3] = el as HTMLDivElement}>
+        </CardWrapper>
+        <CardWrapper ref={el => { if (el) cardRefs.current[3] = el; }}>
           <FeatureCard 
               icon={<DataAnalyticsIcon style={{ fontSize: '1em' }} />}
               title="맞춤형 성장 지원" 
@@ -102,8 +102,8 @@ function SolutionSection() {
                   이를 통해 맞춤형 마케팅 전략을 수립하고, 비즈니스 성장의 방향을 정교하게 제시합니다.
               </>}
           />
-        </div>
-        <div ref={el => cardRefs.current[4] = el as HTMLDivElement}>
+        </CardWrapper>
+        <CardWrapper ref={el => { if (el) cardRefs.current[4] = el; }}>
           <FeatureCard 
             icon={<CurrencyBitcoinIcon style={{ fontSize: '1em' }} />}
             title="Web3.0 신원·AI 이미지" 
@@ -112,7 +112,7 @@ function SolutionSection() {
                 차세대 Web 3.0 기반 인하우스 신원·자격증명 시스템을 구축했습니다.
             </>}
           />
-        </div>
+        </CardWrapper>
       </CardGrid>
     </Wrapper>
   );
@@ -123,7 +123,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center; 
-  align-items: start;
+  align-items: center;
   gap: 40px;
   overflow: visible; 
   padding: 5rem 10rem;
@@ -145,6 +145,7 @@ const HeadlineText = styled.div`
   letter-spacing: -2px;
   padding-bottom: 32px;
   margin: 0;
+  width: 100%; /* Added to make it span full width */
   background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
   -webkit-background-clip: text;
   background-clip: text;
@@ -172,27 +173,24 @@ const Card = styled(GlassBox)`
 `;
 
 const CardGrid = styled.div`
-  display: grid;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  justify-content: center;
   width: 100%;
-  gap: 1.5rem;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  max-width: 1200px;
+  margin-top: 3rem;
+`;
 
-  @media (min-width: ${BREAKPOINTS.lg}px) {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
+const CardWrapper = styled.div`
+  flex-basis: 100%;
 
-    & > div {
-      width: 360px;
-    }
-
-    & > div:nth-child(even) {
-      transform: translateY(40px);
-    }
+  @media (min-width: ${BREAKPOINTS.md}px) {
+    flex-basis: 45%;
   }
 
-  @media (max-width: ${BREAKPOINTS.md}px) {
-    grid-template-columns: 1fr;
+  @media (min-width: ${BREAKPOINTS.lg}px) {
+    flex-basis: 30%;
   }
 `;
 

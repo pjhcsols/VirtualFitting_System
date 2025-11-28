@@ -50,7 +50,7 @@ function Footer() {
 
 const Wrapper = styled.footer`
   width: 100%;
-  color: #888;
+  color: #fff;
   font-size: 13px;
   z-index: 50;
   margin-top: auto; 
@@ -70,7 +70,7 @@ const Links = styled.div`
 `;
 
 const FooterLink = styled.a`
-  color: #ccc;
+  color: #fff;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
@@ -81,7 +81,7 @@ const FooterLink = styled.a`
   cursor: pointer;
 
   &:hover {
-    color: #fff;
+    color: #b8d2ff;
     text-decoration: underline;
   }
 `;
@@ -92,20 +92,20 @@ const InfoBlock = styled.div`
 `;
 
 const InfoText = styled.span`
-  color: #ccc;
+  color: #fff;
   display: inline;
 `;
 
 const Separator = styled.span`
   margin: 0 0.75em;
-  color: #888;
+  color: #fff;
 `;
 
 const Copyright = styled.p`
   margin-top: 50px;
   margin-bottom: 30px;
   font-size: 12px;
-  color: #ccc;
+  color: #fff;
 `;
 
 export { Footer };
