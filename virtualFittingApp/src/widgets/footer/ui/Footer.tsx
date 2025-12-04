@@ -3,7 +3,6 @@ import React from "react";
 
 const businessInfo = [
   "바실리움(BASILIUM)",
-  "대표자 : 박한솔",
   "사업자등록번호 : 872-25-01125",
   "주소 : 서울특별시 강남구 역삼로 555",
   "통신판매업 : 2022-대구달서-0162",
