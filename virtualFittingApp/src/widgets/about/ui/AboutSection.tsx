@@ -105,7 +105,7 @@ const Wrapper = styled.div`
 
   @media (max-width: 768px) {
     flex-direction: column;
-    padding: 10vw 5vw;
+    padding: 120px 5vw 10vw 5vw;
     justify-content: center;
   }
 `;
