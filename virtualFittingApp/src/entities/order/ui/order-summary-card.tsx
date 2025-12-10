@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { formatSimpleDate } from '@/shared/lib/date.util';
 import type { OrderItem } from '../model/types';
-import { StyledGlassCard, CardHeader, DateText, ActiveDivider, OrderCard, ImageBox, RightSection, TitleLine, Brand, OrderDetail, ProductName, OptionText, Price, ButtonWrapper } from './canceled-order-card';
+import { StyledGlassCard, CardHeader, DateText, ActiveDivider, OrderCard, ImageBox, RightSection, TitleLine, Brand, ProductName, OptionText, Price, ButtonWrapper } from './canceled-order-card';
 import { ActionButton } from '@/features/review-actions/review-actions';
 
 type Props = { order: OrderItem };
