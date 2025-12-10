@@ -21,3 +21,29 @@ export type OrderItemWithReview = OrderItem & {
   reviewData?: ReviewData;
   deadline?: string; // ← optional
 };
+
+export interface MyOrderItem {
+  orderId: string;
+  createdAt: string;
+  status: string;
+  brandFirmName: string;
+  productName: string;
+  productPhotoUrls: string[];
+  productId: number;
+  size: string;
+  color: string;
+  quantity: number;
+  finalLinePayable: number;
+  productTotalQuantity: number;
+}
+
+export interface OrderItemLine extends MyOrderItem {
+    productPrice: number;
+}
+
+export interface OrderList {
+    totalPages: number;
+    totalElements: number;
+    number: number;
+    content: OrderItemLine[];
+}
