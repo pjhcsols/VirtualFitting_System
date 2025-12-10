@@ -10,9 +10,10 @@ interface PaymentSummaryProps {
     totalAmount: number;
   };
   onConfirm: () => void;
+  confirmDisabled?: boolean;
 }
 
-export const PaymentSummary = ({ totals, onConfirm }: PaymentSummaryProps) => {
+export const PaymentSummary = ({ totals, onConfirm, confirmDisabled = false }: PaymentSummaryProps) => {
   return (
     <StyledGlassBox>
       <Content>
@@ -49,6 +50,7 @@ export const PaymentSummary = ({ totals, onConfirm }: PaymentSummaryProps) => {
           size="large"
           width="100%"
           onClick={onConfirm}
+          disabled={confirmDisabled}
         >
           {totals.totalAmount.toLocaleString()}원 결제하기
         </GlassButton>

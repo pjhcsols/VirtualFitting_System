@@ -118,24 +118,24 @@ export const useSingleOfflineConfirmCheckout = () => {
 
       if (reservedOrderId) {
         try {
-            await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
-            shouldReAddToCart = true;
+          await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
+          shouldReAddToCart = true;
         } catch (rollbackError) {
-            console.error("[재고 롤백 실패]", rollbackError);
+          console.error("[재고 롤백 실패]", rollbackError);
         }
       }
       
       if (shouldReAddToCart) {
         const accessToken = cookies['access-token'];
           try {
-              await upsertCart(accessToken, {
-                  items: [{
-                      productId: itemToReAdd.productId,
-                      size: itemToReAdd.size,
-                      color: itemToReAdd.color,
-                      quantity: itemToReAdd.quantity,
-                  }],
-              });
+            await upsertCart(accessToken, {
+              items: [{
+                productId: itemToReAdd.productId,
+                size: itemToReAdd.size,
+                color: itemToReAdd.color,
+                quantity: itemToReAdd.quantity,
+              }],
+            });
           } catch (cartError) {
           }
       } else {

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect, useCallback } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
@@ -127,14 +127,9 @@ export const PaymentPage = () => {
     });
   };
 
-  const handleConfirm = useCallback(async () => {
-    if (!user?.address?.address) {
+  const handleConfirm = async () => {
+    if (!user?.address?.address || !user?.address?.detailAddress) {
       alert("배송지 정보를 입력해주세요.");
-      return;
-    }
-
-    if (isBatchCheckout) {
-      setIsModalOpen(true);
       return;
     }
 
@@ -144,28 +139,33 @@ export const PaymentPage = () => {
       if (response?.data.status === 'ACTIVATED') {
         setIsModalOpen(true);
       } else if (response?.data.status === 'INACTIVE') {
-        if (auth.userId) {
-          addToCartMutation.mutate({
-            authUserId: auth.userId,
-            itemData: {
-              productId: singleItem.productId,
-              size: singleItem.size,
-              color: singleItem.color,
-              quantity: singleItem.quantity,
-              brandUserNumber: 0, 
-              brandFirmName: singleItem.brand,
-            }
-          }, {
-            onSuccess: () => {
-              alert('상품 예약 시간이 만료되어 상품을 장바구니에 다시 담았습니다. 장바구니로 이동합니다.');
-              navigate('/cart');
-            },
-            onError: () => {
-              alert('일시적인 오류로 상품을 장바구니에 담지 못했습니다. 잠시 후 다시 시도해주세요.');
-            }
-          });
+        if (isBatchCheckout) {
+            alert('장바구니 상품들의 예약 시간이 만료되었습니다. 장바구니로 이동하여 다시 결제를 시도해주세요.');
+            navigate('/cart');
         } else {
-            alert('로그인이 만료되었습니다. 다시 로그인 후 결제를 진행해주세요.');
+          if (auth.userId) {
+            addToCartMutation.mutate({
+              authUserId: auth.userId,
+              itemData: {
+                productId: singleItem.productId,
+                size: singleItem.size,
+                color: singleItem.color,
+                quantity: singleItem.quantity,
+                brandUserNumber: 0, 
+                brandFirmName: singleItem.brand,
+              }
+            }, {
+              onSuccess: () => {
+                alert('상품 예약 시간이 만료되어 상품을 장바구니에 다시 담았습니다. 장바구니로 이동합니다.');
+                navigate('/cart');
+              },
+              onError: () => {
+                alert('일시적인 오류로 상품을 장바구니에 담지 못했습니다. 잠시 후 다시 시도해주세요.');
+              }
+            });
+          } else {
+              alert('로그인이 만료되었습니다. 다시 로그인 후 결제를 진행해주세요.');
+          }
         }
       } else {
         alert('예약 상태를 확인할 수 없습니다. 다시 시도해주세요.');
@@ -174,7 +174,7 @@ export const PaymentPage = () => {
       console.error("Error checking reservation status:", error);
       alert('예약 상태 확인 중 오류가 발생했습니다.');
     }
-  }, [user, isBatchCheckout, reservationData, auth.userId, singleItem, navigate, addToCartMutation]);
+  };
 
   const handlePayment = (selectedMethod: string) => {
     setIsModalOpen(false);
@@ -196,10 +196,15 @@ export const PaymentPage = () => {
     };
 
     if (isBatchCheckout) {
+      if (!reservationData) {
+        alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
+        return;
+      }
       const finalBatchData: BatchOfflineCheckoutData = {
         ...sharedCheckoutData,
         items: itemsToCheckout,
         coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
+        reservation: reservationData,
       };
       batchHook.confirmAndProceed(finalBatchData);
     } else {

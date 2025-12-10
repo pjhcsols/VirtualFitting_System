@@ -2,36 +2,14 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { CheckoutItemDetail } from '@/shared/types/checkout'; 
-import type { ShippingAddressData } from "@/entities/shipping-address";
-
-export interface BatchCheckoutItemDetail extends CheckoutItemDetail {
-    id: number;
-    productId: number;
-    name: string;
-    brand: string;
-    image: string;
-    price: number;
-    discountedPrice?: number;
-}
-
-export interface BatchOfflineCheckoutData {
-  items: BatchCheckoutItemDetail[];
-  coupons: (ClaimableCoupon | CouponInWallet | null)[]; 
-  paymentMethod: "BANK_TRANSFER";
-  finalPrice: number;
-  customerName: string;
-  customerEmail: string;
-  shippingAddress: ShippingAddressData; 
-}
 
 export const useInitiateBatchCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
   const isLoggedIn = useRecoilValue(authState);
 
-  const initiateBatchCheckout = (data: { items: BatchCheckoutItemDetail[], totals: { totalAmount: number } }) => {
+  const initiateBatchCheckout = (data: { items: CheckoutItemDetail[], totals: { totalAmount: number } }) => {
     setIsLoading(true);
     try {
       if (!isLoggedIn) {
@@ -50,7 +28,7 @@ export const useInitiateBatchCheckout = () => {
       };
 
       navigate('/payment', { 
-          state: { checkoutData: checkoutData }
+          state: { isBatch: true, checkoutData: checkoutData }
       });
 
     } catch (error: any) {
