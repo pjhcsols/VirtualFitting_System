@@ -15,6 +15,8 @@ import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared/constants";
+import awardAiImage from "@/assets/awards/award-ai.png";
+import awardWebImage from "@/assets/awards/award-web.png";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +26,54 @@ function MainPage() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const virtualFittingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const openAwardPopup = (imageSrc: string, name: string) => {
+      const width = 477;
+      const height = 490;
+      const left = (window.screen.width / 2) - (width / 2);
+      const top = (window.screen.height / 2) - (height / 2);
+      const features = `width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes,status=yes`;
+      
+      const popupWindow = window.open('', name, features);
+      if (popupWindow) {
+        popupWindow.document.write(`
+          <html>
+          <head>
+            <title>${name}</title>
+            <style>
+              body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #f0f0f0; }
+              img { max-width: 100%; max-height: 100%; object-fit: contain; }
+            </style>
+          </head>
+          <body>
+            <img src="${imageSrc}" alt="${name}" />
+          </body>
+          </html>
+        `);
+        popupWindow.document.close(); 
+        return popupWindow;
+      }
+      return null;
+    };
+
+    let aiPopup: Window | null = null;
+    let webPopup: Window | null = null;
+
+    aiPopup = openAwardPopup(awardAiImage, '2025 AI어워드코리아 AI서비스분야 대상');
+
+    const timer = setTimeout(() => {
+      if (aiPopup && !aiPopup.closed) {
+      }
+      webPopup = openAwardPopup(awardWebImage, '2025 웹어워드코리아 IT솔루션분야 대상');
+    }, 3000); 
+
+    return () => {
+      clearTimeout(timer);
+      if (aiPopup && !aiPopup.closed) aiPopup.close();
+      if (webPopup && !webPopup.closed) webPopup.close();
+    };
+  }, []); 
 
   useEffect(() => {
     const checkMobile = () => {
