@@ -8,6 +8,7 @@ import { ShippingAddressWidget } from '@/widgets/shipping-address';
 import { PaymentSummary } from '@/widgets/payment-summary';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon } from '@/entities/coupon';
+import { PaymentReservationData, fetchReservationStatus } from '@/entities/payment';
 import { BREAKPOINTS } from '@/shared';
 import { 
   useBatchOfflineConfirmCheckout,
@@ -17,6 +18,7 @@ import {
   SingleOfflineCheckoutData,
 } from '@/features/process-checkout';
 import { useOrderForm as useUserForm } from '@/entities/user';
+import { useAddToCart } from '@/features/add-to-cart';
 
 const calculateItemCouponDiscount = (
   itemPriceAfterBrandDiscount: number,
@@ -33,7 +35,8 @@ export const PaymentPage = () => {
   const navigate = useNavigate();
 
   const batchCheckoutData = location.state?.checkoutData as { items: CheckoutItemDetail[], finalPrice: number } | undefined;
-  const singleItem = location.state?.item as CheckoutItemDetail | undefined;
+  const singleItem = location.state?.item as CheckoutItemDetail;
+  const reservationData = location.state?.reservation as PaymentReservationData;
   
   const isBatchCheckout = !!batchCheckoutData;
   const itemsToCheckout = useMemo(() => 
@@ -42,10 +45,11 @@ export const PaymentPage = () => {
   );
 
   const { user, isLoading: isUserLoading, handleSaveAddress } = useUserForm();
-  const isLoggedIn = useRecoilValue(authState);
+  const auth = useRecoilValue(authState);
   
   const singleHook = useSingleOfflineConfirmCheckout();
   const batchHook = useBatchOfflineConfirmCheckout();
+  const addToCartMutation = useAddToCart();
 
   const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -62,14 +66,18 @@ export const PaymentPage = () => {
   }, [selectedCouponMap]);
 
   useEffect(() => {
-    if (!isLoggedIn) {
+    if (!auth.isLoggedIn) {
       alert("로그인이 필요한 페이지입니다.");
       navigate('/login');
     }
     if (itemsToCheckout.length === 0) {
         navigate('/'); 
     }
-  }, [isLoggedIn, navigate, itemsToCheckout]);
+    if (!isBatchCheckout && !reservationData) {
+      alert("잘못된 접근입니다. 결제 정보가 없습니다.");
+      navigate('/cart');
+    }
+  }, [auth.isLoggedIn, navigate, itemsToCheckout, isBatchCheckout, reservationData]);
 
   const paymentTotals = useMemo(() => {
     let productAmount = 0; 
@@ -119,6 +127,55 @@ export const PaymentPage = () => {
     });
   };
 
+  const handleConfirm = async () => {
+    if (!user?.address?.address || !user?.address?.detailAddress) {
+      alert("배송지 정보를 입력해주세요.");
+      return;
+    }
+
+    try {
+      const response = await fetchReservationStatus(reservationData.reserveTaskOrderPayId);
+
+      if (response?.data.status === 'ACTIVATED') {
+        setIsModalOpen(true);
+      } else if (response?.data.status === 'INACTIVE') {
+        if (isBatchCheckout) {
+            alert('장바구니 상품들의 예약 시간이 만료되었습니다. 장바구니로 이동하여 다시 결제를 시도해주세요.');
+            navigate('/cart');
+        } else {
+          if (auth.userId) {
+            addToCartMutation.mutate({
+              authUserId: auth.userId,
+              itemData: {
+                productId: singleItem.productId,
+                size: singleItem.size,
+                color: singleItem.color,
+                quantity: singleItem.quantity,
+                brandUserNumber: 0, 
+                brandFirmName: singleItem.brand,
+              }
+            }, {
+              onSuccess: () => {
+                alert('상품 예약 시간이 만료되어 상품을 장바구니에 다시 담았습니다. 장바구니로 이동합니다.');
+                navigate('/cart');
+              },
+              onError: () => {
+                alert('일시적인 오류로 상품을 장바구니에 담지 못했습니다. 잠시 후 다시 시도해주세요.');
+              }
+            });
+          } else {
+              alert('로그인이 만료되었습니다. 다시 로그인 후 결제를 진행해주세요.');
+          }
+        }
+      } else {
+        alert('예약 상태를 확인할 수 없습니다. 다시 시도해주세요.');
+      }
+    } catch (error) {
+      console.error("Error checking reservation status:", error);
+      alert('예약 상태 확인 중 오류가 발생했습니다.');
+    }
+  };
+
   const handlePayment = (selectedMethod: string) => {
     setIsModalOpen(false);
     
@@ -139,17 +196,27 @@ export const PaymentPage = () => {
     };
 
     if (isBatchCheckout) {
+      if (!reservationData) {
+        alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
+        return;
+      }
       const finalBatchData: BatchOfflineCheckoutData = {
         ...sharedCheckoutData,
         items: itemsToCheckout,
         coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
+        reservation: reservationData,
       };
       batchHook.confirmAndProceed(finalBatchData);
     } else {
+      if (!reservationData) {
+        alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
+        return;
+      }
       const finalSingleData: SingleOfflineCheckoutData = {
         ...sharedCheckoutData,
         item: itemsToCheckout[0],
         coupon: selectedCouponMap.get(itemsToCheckout[0].id) || null,
+        reservation: reservationData,
       }; 
       singleHook.confirmAndProceed(finalSingleData);
     }
@@ -179,7 +246,7 @@ export const PaymentPage = () => {
         <SideContent>
           <PaymentSummary 
             totals={paymentTotals} 
-            onConfirm={() => setIsModalOpen(true)}
+            onConfirm={handleConfirm}
           />
         </SideContent>
       </Layout>

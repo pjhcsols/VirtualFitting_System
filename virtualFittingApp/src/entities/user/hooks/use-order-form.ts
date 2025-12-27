@@ -24,7 +24,16 @@ export const useOrderForm = () => {
 
     const userDetail: UserDetail | null = useMemo(() => {
         if (responseData && responseData.data) {
-            return responseData.data as UserDetail; 
+            const detail = { ...responseData.data };
+
+            if (typeof detail.address === 'string') {
+                detail.address = {
+                    address: detail.address,
+                    detailAddress: ' ',
+                    zonecode: '',
+                };
+            }
+            return detail as UserDetail; 
         }
         return null;
     }, [responseData]);

@@ -7,14 +7,13 @@ import {
   confirmOrderPurchase, 
 } from '@/entities/order';
 import { 
-  createPaymentReservation,
   createPaymentIntent,
   confirmFinalPayment,
   reportPaymentResult,
  } from '@/entities/payment';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
-import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
+import type { PaymentReservationData } from '@/entities/payment';
 import type { ShippingAddressData } from "@/entities/shipping-address";
 import { upsertCart } from '@/entities/cart';
 
@@ -26,6 +25,7 @@ export interface SingleOfflineCheckoutData {
   customerName: string;
   customerEmail: string;
   shippingAddress: ShippingAddressData;
+  reservation: PaymentReservationData;
 }
 
 export const useSingleOfflineConfirmCheckout = () => {
@@ -37,7 +37,7 @@ export const useSingleOfflineConfirmCheckout = () => {
   
   const confirmAndProceed = async (checkoutData: SingleOfflineCheckoutData) => {
     setIsLoading(true);
-    let reservedOrderId: string | undefined;
+    const reservedOrderId = checkoutData.reservation.reserveTaskOrderPayId;
 
     try {
       if (!isLoggedIn) {
@@ -47,19 +47,8 @@ export const useSingleOfflineConfirmCheckout = () => {
       }
       const accessToken = cookies['access-token'];
       
-      const reservationResponse = await createPaymentReservation({
-        productId: checkoutData.item.productId,
-        productColor: checkoutData.item.color as ProductColorPayment,
-        productSize: checkoutData.item.size as ProductSizePayment,
-        count: checkoutData.item.quantity,
-        userId: accessToken,
-      });
+      const reservationData = checkoutData.reservation;
 
-      const reservationData = reservationResponse?.data;
-      if (!reservationData?.reserveTaskOrderPayId) {
-        throw new Error("상품 재고를 예약하는 데 실패했습니다.");
-      }
-      const reservedOrderId = reservationData.reserveTaskOrderPayId;
       const couponWalletId = (checkoutData.coupon as any)?.normalCouponWalletId 
                              ?? (checkoutData.coupon as any)?.walletId 
                              ?? undefined;
@@ -129,24 +118,24 @@ export const useSingleOfflineConfirmCheckout = () => {
 
       if (reservedOrderId) {
         try {
-            await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
-            shouldReAddToCart = true;
+          await reportPaymentResult({ reserveTaskOrderPayId: reservedOrderId, success: false });
+          shouldReAddToCart = true;
         } catch (rollbackError) {
-            console.error("[재고 롤백 실패]", rollbackError);
+          console.error("[재고 롤백 실패]", rollbackError);
         }
       }
       
       if (shouldReAddToCart) {
         const accessToken = cookies['access-token'];
           try {
-              await upsertCart(accessToken, {
-                  items: [{
-                      productId: itemToReAdd.productId,
-                      size: itemToReAdd.size,
-                      color: itemToReAdd.color,
-                      quantity: itemToReAdd.quantity,
-                  }],
-              });
+            await upsertCart(accessToken, {
+              items: [{
+                productId: itemToReAdd.productId,
+                size: itemToReAdd.size,
+                color: itemToReAdd.color,
+                quantity: itemToReAdd.quantity,
+              }],
+            });
           } catch (cartError) {
           }
       } else {

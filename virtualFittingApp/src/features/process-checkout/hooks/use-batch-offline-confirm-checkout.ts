@@ -7,49 +7,39 @@ import {
   confirmOrderPurchase, 
 } from '@/entities/order';
 import { 
-  createBatchPaymentReservation,
   createPaymentIntent,
   reportPaymentResult,
   confirmFinalPayment,
  } from '@/entities/payment';
 import type { 
-    BatchPaymentRequestBody, 
-    ReservedItem, 
+    // ReservedItem, 
     PaymentIntentLine,
+    PaymentReservationData,
  } from '@/entities/payment';
 import type { ClaimableCoupon, CouponInWallet } from '@/entities/coupon';
 import type { ShippingAddressData } from "@/entities/shipping-address";
 import type { CheckoutItemDetail } from '@/shared/types/checkout'; 
-import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 import { deleteCartItems } from '@/entities/cart';
 
-export interface BatchCheckoutItemDetail extends CheckoutItemDetail {
-    id: number;
-    productId: number;
-    name: string;
-    color: ProductColorPayment;
-    size: ProductSizePayment;
-    quantity: number;
-}
-
 export interface BatchOfflineCheckoutData {
-  items: BatchCheckoutItemDetail[];
+  items: CheckoutItemDetail[];
   coupons: (ClaimableCoupon | CouponInWallet | null)[]; 
   paymentMethod: "BANK_TRANSFER"
   finalPrice: number;
   customerName: string;
   customerEmail: string;
   shippingAddress: ShippingAddressData;
+  reservation: PaymentReservationData;
 }
 
-const mapToBatchRequestItems = (checkoutData: BatchOfflineCheckoutData): ReservedItem[] => {
-  return checkoutData.items.map(item => ({
-    productId: item.productId,
-    count: item.quantity,
-    productSize: item.size,
-    productColor: item.color,
-  }));
-};
+// const mapToBatchRequestItems = (checkoutData: BatchOfflineCheckoutData): ReservedItem[] => {
+//   return checkoutData.items.map(item => ({
+//     productId: item.productId,
+//     count: item.quantity,
+//     productSize: item.size,
+//     productColor: item.color,
+//   }));
+// };
 
 export const useBatchOfflineConfirmCheckout = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -60,7 +50,8 @@ export const useBatchOfflineConfirmCheckout = () => {
   
   const confirmAndProceed = async (checkoutData: BatchOfflineCheckoutData) => {
     setIsLoading(true);
-    let reservedOrderId: string | undefined;
+    const reservationData = checkoutData.reservation;
+    const reservedOrderId = reservationData?.reserveTaskOrderPayId;
 
      try {
       if (!isLoggedIn) {
@@ -68,21 +59,10 @@ export const useBatchOfflineConfirmCheckout = () => {
         navigate('/login');
         return;
       }
-      const accessToken = cookies['access-token'];
-
-      const batchRequestItems = mapToBatchRequestItems(checkoutData);
-      const requestBody: BatchPaymentRequestBody = { items: batchRequestItems };
-
-      const reservationResponse = await createBatchPaymentReservation(
-        accessToken, 
-        requestBody
-      );
-
-      const reservationData = reservationResponse?.data;
-      if (!reservationData?.reserveTaskOrderPayId) {
-        throw new Error("상품 재고를 예약하는 데 실패했습니다.");
+      if (!reservedOrderId) {
+        throw new Error("결제 예약 정보가 유효하지 않습니다.");
       }
-      const reservedOrderId = reservationData.reserveTaskOrderPayId;
+      const accessToken = cookies['access-token'];
 
       const intentLines: PaymentIntentLine[] = checkoutData.items.map((item, index) => {
         const coupon = checkoutData.coupons[index]; 

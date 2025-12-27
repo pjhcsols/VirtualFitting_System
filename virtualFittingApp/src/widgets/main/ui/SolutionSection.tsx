@@ -145,7 +145,7 @@ const HeadlineText = styled.div`
   letter-spacing: -2px;
   padding-bottom: 32px;
   margin: 0;
-  width: 100%; /* Added to make it span full width */
+  width: 100%;
   background-image: linear-gradient(to right, #E9FAFF, #B8D2FF);
   -webkit-background-clip: text;
   background-clip: text;

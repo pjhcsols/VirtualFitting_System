@@ -4,12 +4,14 @@ import type { ApiResponse } from "@/shared/types/api";
 export const OrderInfo = async ({
   page,
   size,
+  authUserId,
 }: {
   page: number;
   size: number;
+  authUserId: number;
 }) => {
   const res = await API_BASILIUM.get(
-    `/b1/orders/my?page=${page}&size=${size}`,
+    `/b1/orders/my?authUserId=${authUserId}&page=${page}&size=${size}`,
   );
   if (res.status === 200) {
     console.log("주문 내역을 가져오는데 성공했습니다.");

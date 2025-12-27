@@ -93,7 +93,7 @@ const ModelContainer = styled.section`
 
 const Section = styled.div`
   width: 100%;
-  height: 120vh;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -101,7 +101,7 @@ const Section = styled.div`
 
 const TextSection = styled.div`
   width: 100%;
-  height: 200vh;
+  height: auto;
   display: flex;
   justify-content: center;
   align-items: center;

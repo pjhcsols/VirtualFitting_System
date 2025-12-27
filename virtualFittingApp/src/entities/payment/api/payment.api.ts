@@ -112,7 +112,6 @@ export const getPaymentInfo = async ({
     `/b1/payment/my?page=${page}&size=${size}`,
   );
   if (res.status === 200) {
-    console.log("결제 내역을 가져오는데 성공했습니다.");
     return res.data;
   }
   throw new Error(`Failed to fetch payment: ${res.status}`); 

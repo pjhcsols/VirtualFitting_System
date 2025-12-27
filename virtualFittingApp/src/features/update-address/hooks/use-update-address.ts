@@ -15,12 +15,12 @@ export const useUpdateAddress = () => {
       return updateAddress(userId, addressData);
     },
       
-    onSuccess: (updatedUserDetail) => {
+    onSuccess: async (updatedUserDetail) => {
       if (updatedUserDetail) {
-        queryClient.invalidateQueries({ queryKey: ['userDetails', 'me'] });
-        queryClient.invalidateQueries({ queryKey: ['userInfo'] }); 
+        await queryClient.invalidateQueries({ queryKey: ['userDetails', 'me'], exact: false });
+        await queryClient.invalidateQueries({ queryKey: ['userInfo'], exact: false }); 
 
-        console.log("주소 변경 성공. 캐시 무효화 완료.");
+        console.log("주소 변경 성공. 캐시 무효화 및 리페치 완료.");
         alert("배송 정보가 수정되었습니다.")
       }
     },

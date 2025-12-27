@@ -15,6 +15,9 @@ import "lenis/dist/lenis.css";
 import styled, { createGlobalStyle } from "styled-components";
 import { TransparentHeader } from "@/widgets/header";
 import { BREAKPOINTS } from "@/shared/constants";
+import awardAiImage from "@/assets/awards/award-ai.png";
+import awardWebImage from "@/assets/awards/award-web.png";
+import AwardModal from "@/widgets/main/ui/AwardModal";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -24,6 +27,27 @@ function MainPage() {
   const cursorRef = useRef<HTMLDivElement>(null);
   const virtualFittingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [isAiModalOpen, setIsAiModalOpen] = useState(false);
+  const [isWebModalOpen, setIsWebModalOpen] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsAiModalOpen(true);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  const handleCloseAiModal = () => {
+    setIsAiModalOpen(false);
+    setTimeout(() => {
+      setIsWebModalOpen(true);
+    }, 500);
+  };
+
+  const handleCloseWebModal = () => {
+    setIsWebModalOpen(false);
+  };
 
   useEffect(() => {
     const checkMobile = () => {
@@ -82,6 +106,18 @@ function MainPage() {
       ref={lenisRef}
       root
     >
+      <AwardModal
+        isOpen={isAiModalOpen}
+        onClose={handleCloseAiModal}
+        imageSrc={awardAiImage}
+        title="2025 AI어워드코리아 AI서비스분야 대상"
+      />
+      <AwardModal
+        isOpen={isWebModalOpen}
+        onClose={handleCloseWebModal}
+        imageSrc={awardWebImage}
+        title="2025 웹어워드코리아 IT솔루션분야 대상"
+      />
       <TooltipGlobalStyles />
       {!isMobile && <GlobalCursorStyle />}
       <TransparentHeader />

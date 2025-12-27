@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 
 interface OrderItemCardProps {
-  item: CheckoutItemDetail;
+  item: CheckoutItemDetail & { isSoldOut?: boolean };
   finalPrice?: number;
 }
 
@@ -20,12 +20,15 @@ export const OrderItemCard = ({ item, finalPrice }: OrderItemCardProps) => {
   };
 
   return (
-    <CardContainer >
+    <CardContainer>
       <ItemImage src={item.image} alt={item.name} onClick={handleClick} />
       <ItemInfo>
         <div>
           <Brand>{item.brand}</Brand>   
-          <Name onClick={handleClick}>{item.name}</Name>
+          <NameRow>
+            <Name onClick={handleClick}>{item.name}</Name>
+            {item.isSoldOut && <SoldOutText>품절</SoldOutText>}
+          </NameRow>
           <Option>
             {item.color} · {item.size} / {item.quantity}개
           </Option>
@@ -68,12 +71,28 @@ const Brand = styled.div`
   color: white;
 `;
 
+const NameRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0;
+`;
+
 const Name = styled.div`
   font-size: 14px;
   color: white;
-  margin: 4px 0;
   line-height: 1.4;
   cursor: pointer; /* Add cursor pointer to indicate clickability */
+`;
+
+const SoldOutText = styled.div`
+  font-size: 11px;
+  font-weight: 600;
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
+  padding: 1px 4px;
+  border-radius: 4px;
+  white-space: nowrap;
 `;
 
 const Option = styled.div`
@@ -100,4 +119,3 @@ const OriginalPrice = styled.div`
   text-decoration: line-through;
   font-weight: 400;
 `;
-

@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { formatSimpleDate } from '@/shared/lib/date.util';
 import type { OrderItem } from '../model/types';
-import { StyledGlassCard, CardHeader, DateText, ActiveDivider, OrderCard, ImageBox, RightSection, TitleLine, Brand, OrderDetail, ProductName, OptionText, Price, ButtonWrapper } from './canceled-order-card';
+import { StyledGlassCard, CardHeader, DateText, ActiveDivider, OrderCard, ImageBox, RightSection, TitleLine, Brand, ProductName, OptionText, Price, ButtonWrapper } from './canceled-order-card';
 import { ActionButton } from '@/features/review-actions/review-actions';
 
 type Props = { order: OrderItem };
@@ -24,9 +24,9 @@ export function OrderSummaryCard({ order }: Props) {
         <RightSection>
           <TitleLine>
             <Brand>{order.brand}</Brand>
-            <OrderDetail onClick={() => navigate(`/mypage/order/${order.id}`)}>
+            {/* <OrderDetail onClick={() => navigate(`/mypage/order/${order.id}`)}>
               주문 상세 ›
-            </OrderDetail>
+            </OrderDetail> */}
           </TitleLine>
           <ProductName>{order.productName}</ProductName>
           <OptionText>
@@ -40,7 +40,7 @@ export function OrderSummaryCard({ order }: Props) {
 
       {/* 액션 */}
       <ButtonWrapper>
-        <ActionButton size="medium">배송조회</ActionButton>
+        {/* <ActionButton size="medium">배송조회</ActionButton> */}
         <ActionButton size="medium">재구매</ActionButton>
         <ActionButton size="medium">문의하기</ActionButton>
       </ButtonWrapper>
