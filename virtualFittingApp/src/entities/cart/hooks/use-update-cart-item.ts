@@ -3,7 +3,7 @@ import { updateCartItem } from "../api/cart.api";
 import type { Cart, UpdateCartItemRequest } from "../model/types";
 
 interface UpdateCartItemVariables {
-  authUserId: string;
+  accessToken: string;
   itemId: number;
   updateData: UpdateCartItemRequest;
 }
@@ -12,8 +12,8 @@ export const useUpdateCartItem = () => {
   const queryClient = useQueryClient();
 
   return useMutation<Cart | null, Error, UpdateCartItemVariables>({
-    mutationFn: ({ authUserId, itemId, updateData }) => {
-      return updateCartItem(authUserId, itemId, updateData);
+    mutationFn: ({ accessToken, itemId, updateData }) => {
+      return updateCartItem(accessToken, itemId, updateData);
     },
     
     onSuccess: (updatedCart) => {

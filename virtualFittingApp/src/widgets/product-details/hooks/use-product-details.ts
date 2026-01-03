@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
-import { Cookies } from 'react-cookie';
 import { useRecoilValue } from 'recoil';
-import { authState } from '@/entities/auth'; 
+import { authState, getAccessTokenStringFromCookie } from '@/entities/auth'; 
 import { useNavigate } from "react-router-dom";
 import type { ProductDetail } from "@/entities/product/model/types";
 import { useAddToCart } from '@/features/add-to-cart';
 import { useProductOptions } from '@/features/product-options';
 import { createPaymentReservation } from "@/entities/payment";
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
-
-const cookiesInstance = new Cookies();
+import type { PostCartMeRequest } from "@/entities/cart";
 
 export const useProductDetails = (
   product: ProductDetail, 
@@ -37,31 +35,31 @@ export const useProductDetails = (
 
   const selectedProductImages = product.productImages?.productPhotoUrls ?? [];
   
-  const { mutate: addToCart, isPending: isAddingToCart } = useAddToCart();
+  const { addToCart, isPending: isAddingToCart } = useAddToCart();
 
   const handleAddToCart = () => {
-    const authUserId = cookiesInstance.get('access-token');
-    if (!authUserId) {
+    const accessToken = getAccessTokenStringFromCookie();
+    if (!accessToken) {
       navigate('/login');
       return;
     }
 
-    const itemData = {
-      productId: product.productId,
-      color: selectedColor,
-      size: selectedSize,
-      quantity: quantity,
-      brandUserNumber: product.brandUser.userNumber,
-      brandFirmName: product.brandUser.firmName,
+    const itemData: PostCartMeRequest = {
+      items: [{
+        productId: product.productId,
+        size: selectedSize,
+        color: selectedColor,
+        quantity: quantity,
+      }]
     };
-
-    addToCart({ authUserId, itemData });
+    
+    addToCart({ accessToken, itemData });
   };
 
   const handlePurchaseClick = async () => {
     setIsProcessingPurchase(true);
     try {
-      const accessToken = cookiesInstance.get('access-token');
+      const accessToken = getAccessTokenStringFromCookie();
       if (!isLoggedIn || !accessToken) {
         navigate('/login');
         return;

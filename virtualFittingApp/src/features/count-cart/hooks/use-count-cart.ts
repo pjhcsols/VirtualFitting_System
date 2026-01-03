@@ -1,28 +1,21 @@
 import { useQuery } from '@tanstack/react-query';
-import { upsertCart } from '@/entities/cart/api/cart.api';
-import type { Cart } from '@/entities/cart/model/types'; 
+import { upsertCart } from '@/entities/cart';
+import { cartKeys } from '../cart.keys';
 
-const cartKeys = {
-  count: (authUserId: string | null) => ['cart', 'count', authUserId] as const,
-};
-
-export const useCartCountQuery = (authUserId: string | null) => {
-
-  return useQuery<Cart | null, Error, number>({ 
-    queryKey: cartKeys.count(authUserId),
+export const useCartCountQuery = (accessToken: string | null) => {
+  return useQuery({
+    queryKey: cartKeys.count(accessToken),
     queryFn: async () => {
-        return upsertCart(authUserId!, null); 
+      if (!accessToken) return null;
+      try {
+        const cart = await upsertCart(accessToken, null);
+        return cart?.items.length ?? 0;
+      } catch (error) {
+        console.error("장바구니 정보를 가져오는 데 실패했습니다.", error);
+        return null;
+      }
     },
-    enabled: !!authUserId, 
-    
-    select: (data) => {
-      return (
-        data?.items?.reduce((total, item) => {
-          return total + item.quantity;
-        }, 0) || 0
-      );
-    },
-    
-    staleTime: 5000,
+    enabled: !!accessToken,
+    staleTime: 5 * 60 * 1000, 
   });
 };

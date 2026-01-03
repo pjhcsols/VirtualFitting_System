@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { useState, useMemo } from "react";
-import { useCookies } from 'react-cookie';
+import { getAccessTokenStringFromCookie } from "@/entities/auth";
 import { Portal } from "@/shared/ui/Portal";
 import { GlassButton } from '@/shared/components/glass-button';
 import { GlassBox } from "@/shared/components/glass-box";
@@ -32,8 +32,7 @@ export const UpdateCartItemOptionsPopup = ({
   onClose,
   onUpdateSuccess
 }: UpdateCartItemOptionsPopupProps) => {
-  const [cookies] = useCookies(['access-token']);
-  const accessToken = cookies['access-token'];
+  const accessToken = getAccessTokenStringFromCookie();
 
   const [quantity, setQuantity] = useState(initialQuantity);
   const [selectedColor, setSelectedColor] = useState(initialColor);
@@ -86,7 +85,7 @@ export const UpdateCartItemOptionsPopup = ({
     };
 
     updateItem(
-      { authUserId: accessToken, itemId: cartItemId, updateData },
+      { accessToken: accessToken, itemId: cartItemId, updateData },
       {
         onSuccess: () => {
           onUpdateSuccess?.(); 

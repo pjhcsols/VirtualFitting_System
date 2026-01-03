@@ -24,9 +24,9 @@ gsap.registerPlugin(ScrollTrigger);
 function MainPage() {
   const sliderRef = useRef<HTMLElement>(null);
   const lenisRef = useRef<LenisRef>(null);
-  const cursorRef = useRef<HTMLDivElement>(null);
   const virtualFittingRef = useRef<HTMLDivElement>(null);
   const [isMobile, setIsMobile] = useState(false);
+  console.log("isMobile:", isMobile);
   const [isAiModalOpen, setIsAiModalOpen] = useState(false);
   const [isWebModalOpen, setIsWebModalOpen] = useState(false);
 
@@ -70,27 +70,6 @@ function MainPage() {
     return () => gsap.ticker.remove(update);
   }, []);
 
-  useEffect(() => {
-    if (isMobile) return;
-
-    const cursor = cursorRef.current;
-
-    const handleMouseMove = (e: MouseEvent) => {
-      gsap.to(cursor, {
-        x: e.clientX - 20,
-        y: e.clientY - 20,
-        duration: 0.3,
-        ease: "power2.out",
-      });
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [isMobile]);
-
   const scrollToVirtualFitting = useCallback(() => {
     if (lenisRef.current?.lenis && virtualFittingRef.current) {
       lenisRef.current.lenis.scrollTo(virtualFittingRef.current, {
@@ -119,9 +98,7 @@ function MainPage() {
         title="2025 웹어워드코리아 IT솔루션분야 대상"
       />
       <TooltipGlobalStyles />
-      {!isMobile && <GlobalCursorStyle />}
       <TransparentHeader />
-      {!isMobile && <CustomCursor ref={cursorRef} />}
       <MainSection>
         <Article className="slider" ref={sliderRef}>
           <ModelContainer>
@@ -261,21 +238,21 @@ const TooltipGlobalStyles = createGlobalStyle`
   }
 `;
 
-const CustomCursor = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.4);
-  // filter: blur(15px);
-  pointer-events: none;
-  z-index: 99999;
-`;
+// const CustomCursor = styled.div`
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 40px;
+//   height: 40px;
+//   border-radius: 50%;
+//   background-color: rgba(255, 255, 255, 0.4);
+//   // filter: blur(15px);
+//   pointer-events: none;
+//   z-index: 99999;
+// `;
 
-const GlobalCursorStyle = createGlobalStyle`
-  body {
-    cursor: none;
-  }
-`;
+// const GlobalCursorStyle = createGlobalStyle`
+//   body {
+//     cursor: none;
+//   }
+// `;

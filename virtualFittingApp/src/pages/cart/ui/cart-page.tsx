@@ -3,26 +3,23 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { BREAKPOINTS } from '@/shared';
 import { useRecoilValue } from 'recoil';
-import { authState } from '@/entities/auth';
+import { authState, getAccessTokenStringFromCookie } from '@/entities/auth';
 import { CartItemList } from '@/widgets';
 import { PaymentSummary } from "@/widgets/payment-summary";
 import { useMyCartQuery } from "@/entities/cart";
 import { useCartTotals } from '@/features/cart';
 import type { ClaimableCoupon } from '@/entities/coupon';
-import { Cookies } from 'react-cookie';
 import type { ProductColorPayment, ProductSizePayment } from '@/entities/payment';
 
 import type { CheckoutItemDetail } from '@/shared/types/checkout';
 import { useBatchPaymentReservation } from '@/features/process-checkout/hooks/use-batch-payment-reservation';
-
-const cookiesInstance = new Cookies();
 
 type CartItemWithStatus = CheckoutItemDetail & { isSoldOut: boolean };
 
 function CartPage() {
   const location = useLocation();
   const [selectedCouponMap, setSelectedCouponMap] = useState<Map<number, ClaimableCoupon | null>>(new Map());
-  const accessToken = cookiesInstance.get('access-token');
+  const accessToken = getAccessTokenStringFromCookie();
 
   const { data: cartData, isLoading: isCartLoading, refetch: refetchCart } = useMyCartQuery(accessToken!); 
   const auth = useRecoilValue(authState);
@@ -112,7 +109,7 @@ function CartPage() {
               selectedCouponMap={selectedCouponMap} 
               handleCouponSelect={handleCouponSelect}
               refetchCart={refetchCart}
-              accessToken={accessToken}
+              accessToken={accessToken!}
             />
           </MainContent>
           <SideContent>

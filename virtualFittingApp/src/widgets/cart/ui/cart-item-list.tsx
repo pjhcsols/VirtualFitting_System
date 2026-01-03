@@ -46,7 +46,11 @@ export function CartItemList({
   accessToken,
 }: CartItemListProps) {
   
-  const { mutate: deleteItems } = useDeleteCartItems({ authUserId: accessToken });
+  const { mutate: deleteItems } = useDeleteCartItems({
+    accessToken,
+    onSuccess: refetchCart,
+    onError: () => alert("항목 삭제 중 오류가 발생했습니다."),
+  });
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ItemToEdit | null>(null);
@@ -71,14 +75,7 @@ export function CartItemList({
     }
 
     if (confirm("정말로 이 상품을 장바구니에서 삭제하시겠습니까?")) {
-      deleteItems({ itemIds: [itemIdToRemove] }, {
-        onSuccess: () => {
-          refetchCart();
-        },
-        onError: () => {
-          alert("항목 삭제 중 오류가 발생했습니다.");
-        }
-      });
+      deleteItems([itemIdToRemove]);
     }
   };
 

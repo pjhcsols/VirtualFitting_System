@@ -1,9 +1,9 @@
-export type ProductColorFitting = "BLACK" | "WHITE" | "GRAY" | "BLUE" | "RED" | "YELLOW" | "GREEN" | "ORANGE";
+import { ProductColor, ProductMaterial } from "./enums";
 
 export interface VirtualFittingRequestParams {
   authUserId: string;
   productId: number;
-  color: ProductColorFitting;
+  color: ProductColor;
   gender: string;
 }
 
@@ -31,13 +31,13 @@ export interface ProductBase {
 
 export interface Product extends ProductBase {
   totalQuantity: number;
-  productColors: string[];
+  productColors: ProductColor[];
   productPhotoUrls: string[];
 }
 
 export interface ProductDetail extends Product {
   productDesc: string;
-  productMaterials: string[];
+  productMaterials: ProductMaterial[];
   brandUser: {
     userNumber: number;
     id: string;

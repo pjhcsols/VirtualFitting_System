@@ -1,19 +1,13 @@
 import { useQuery } from '@tanstack/react-query';
-import { upsertCart } from '../api/cart.api'; 
-import type { Cart } from '../model/types'; 
+import { cartKeys } from './cart.keys';
+import { upsertCart } from '../api/cart.api';
 
-const cartKeys = {
-  all: ['cart'] as const,
-  myCart: (authUserId: string) => [...cartKeys.all, 'me', authUserId] as const,
-};
-
-export const useMyCartQuery = (authUserId: string) => {
-  return useQuery<Cart | null, Error, Cart | null>({ 
-    queryKey: cartKeys.myCart(authUserId),
+export const useMyCartQuery = (accessToken: string) => {
+  return useQuery({
+    queryKey: cartKeys.myCart(accessToken),
     queryFn: () => {
-        return upsertCart(authUserId, null);
+        return upsertCart(accessToken, null);
     },
-    enabled: !!authUserId,
-    staleTime: 0, 
+    enabled: !!accessToken,
   });
 };

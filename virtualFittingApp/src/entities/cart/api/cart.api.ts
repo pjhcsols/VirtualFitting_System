@@ -4,7 +4,7 @@ import type { Cart, PostCartMeRequest, UpdateCartItemRequest } from "../model/ty
 
 
 export const upsertCart = async (
-    authUserId: string,
+    accessToken: string,
     requestData?: PostCartMeRequest | null
 ): Promise<Cart | null> => {
 
@@ -12,7 +12,7 @@ export const upsertCart = async (
         method: 'post',
         url: "/b1/carts/me",
         headers: {
-            Authorization: `Bearer ${authUserId}`,
+            Authorization: `Bearer ${accessToken}`,
         },
         data: requestData || {},
     };
@@ -27,7 +27,7 @@ export const upsertCart = async (
 };
 
 export const updateCartItem = async (
-  authUserId: string,
+  accessToken: string,
   itemId: number,
   updateData: UpdateCartItemRequest
 ): Promise<Cart | null> => {
@@ -36,7 +36,7 @@ export const updateCartItem = async (
     method: 'patch',
     url: `/b1/carts/me/items/${itemId}`,
     headers: {
-        Authorization: `Bearer ${authUserId}`,
+        Authorization: `Bearer ${accessToken}`,
     },
     data: updateData,
   };
@@ -51,12 +51,11 @@ export const updateCartItem = async (
 };
 
 export async function deleteCartItems(
-  authUserId: string,
+  accessToken: string,
   itemIds: number[],
 ): Promise<Cart | null> { 
 
   const usp = new URLSearchParams();
-  usp.set("authUserId", authUserId);
   for (const id of itemIds) {
       usp.append("itemIds", String(id));
   }
@@ -66,6 +65,9 @@ export async function deleteCartItems(
     method: 'delete', 
     url: `/b1/carts/me/items?${queryString}`, 
     data: null, 
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    }
   };
 
   const response = await apiClient<Cart>(config); 
