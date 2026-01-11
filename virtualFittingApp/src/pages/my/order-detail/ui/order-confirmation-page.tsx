@@ -4,11 +4,28 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { GlassButton } from '@/shared/components/glass-button';
 import { BREAKPOINTS } from '@/shared';
 import { BankAccountInfoCard } from '@/entities/payment';
-import { OrderInfoCard } from '@/entities/order';
+import { OrderInfoCard, type OrderItem } from '@/entities/order';
 import { saveReviewPayload } from '@/widgets/review-list/utils/review-payload';
 import { searchProducts } from '@/entities/product';
 import { ShippingAddressWidget } from '@/widgets/shipping-address';
 import { useOrderForm as useUserForm } from '@/entities/user';
+import type { CheckoutItemDetail } from '@/shared/types/checkout';
+
+const transformToOrderItem = (item: CheckoutItemDetail): OrderItem => ({
+  productName: item.name,
+  options: {
+    color: item.color,
+    size: item.size,
+    quantity: item.quantity,
+  },
+  price: item.discountedPrice ?? item.price,
+  id: String(item.id),
+  date: new Date().toISOString(),
+  brand: item.brand,
+  productId: item.productId,
+  productImageUrl: item.image || '',
+  category: '',
+});
 
 export function OrderConfirmationPage() {
   const navigate = useNavigate();
@@ -17,46 +34,52 @@ export function OrderConfirmationPage() {
 
   const { 
     orderId, 
-    item, 
+    item,
+    items, 
     totalAmount,
     deadline,
     senderName,
   } = location.state || {};
 
+  const displayItems: CheckoutItemDetail[] = items && items.length > 0 ? items : (item ? [item] : []);
+  const transformedItems: OrderItem[] = displayItems.map(transformToOrderItem);
+
    useEffect(() => {
-    if (!orderId) {
+    if (!orderId || displayItems.length === 0) {
       return;
     }
 
-    (async () => {
-      try {
-        const results = await searchProducts(item.productName);
-        const first = results?.[0];
-        
-        const addItem = {
-          ...item,
-          ...(first
-            ? {
-                productId: first.productId,
-                productImageUrl: first.productPhotoUrls?.[0] ?? item.productImageUrl,
-              }
-            : {}),
-        };
+    displayItems.forEach(anItem => {
+        (async () => {
+        try {
+            const results = await searchProducts(anItem.name);
+            const first = results?.[0];
+            
+            const newItemPayload = {
+            ...anItem,
+            ...(first
+                ? {
+                    productId: first.productId,
+                    productImageUrl: first.productPhotoUrls?.[0] ?? (anItem as any).productImageUrl,
+                }
+                : {}),
+            };
 
-        saveReviewPayload({
-          orderId: String(orderId),
-          item: addItem,
-          ...(deadline ? { deadline: String(deadline) } : {}),
-        });
-      } catch (e) {
-        saveReviewPayload({
-          orderId: String(orderId),
-          item,
-          ...(deadline ? { deadline: String(deadline) } : {}),
-        });
-      }
-    })();
-  }, [orderId, item, deadline]);
+            saveReviewPayload({
+            orderId: String(orderId),
+            item: newItemPayload,
+            ...(deadline ? { deadline: String(deadline) } : {}),
+            });
+        } catch (e) {
+            saveReviewPayload({
+            orderId: String(orderId),
+            item: anItem,
+            ...(deadline ? { deadline: String(deadline) } : {}),
+            });
+        }
+        })();
+    });
+  }, [orderId, items, item, deadline, displayItems]);
 
   return (
     <PageContainer>
@@ -70,8 +93,12 @@ export function OrderConfirmationPage() {
           depositDeadline={deadline}
         />
       )}
-        {orderId && item && (
-          <OrderInfoCard orderId={orderId} item={item} />
+        
+        {orderId && transformedItems.length > 0 && (
+          <OrderInfoCard
+            orderId={orderId}
+            items={transformedItems}
+          />
         )}
         
         {!isUserLoading && user && (
