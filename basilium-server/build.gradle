@@ -63,6 +63,10 @@ dependencies {
 	// Kafka
 	implementation 'org.springframework.kafka:spring-kafka'
 
+	// Cache
+	implementation "org.springframework.boot:spring-boot-starter-cache"
+	implementation "com.github.ben-manes.caffeine:caffeine:3.1.8"
+
 	// SSE & JSON
 	implementation 'com.fasterxml.jackson.core:jackson-databind' // Boot BOM이 버전 관리
 	implementation 'com.google.code.gson:gson:2.13.1'
