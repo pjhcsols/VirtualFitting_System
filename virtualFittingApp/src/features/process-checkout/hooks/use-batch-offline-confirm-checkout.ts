@@ -3,9 +3,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import { 
-  confirmOrderPurchase, 
-} from '@/entities/order';
+// import { 
+  // confirmOrderPurchase, 
+// } from '@/entities/order';
 import { 
   createPaymentIntent,
   reportPaymentResult,
@@ -104,11 +104,9 @@ export const useBatchOfflineConfirmCheckout = () => {
       
       await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
       
-      const authUserId = accessToken;
-          const orderId = intentData.orderId;
+      // const authUserId = accessToken;
+      // const orderId = intentData.orderId;
 
-      await confirmOrderPurchase(authUserId, orderId); 
-      
       const itemIdsToDelete = checkoutData.items.map(item => item.id);
 
       await deleteCartItems(accessToken, itemIdsToDelete); 

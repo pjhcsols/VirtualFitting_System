@@ -3,9 +3,9 @@ import { useCookies } from 'react-cookie';
 import { useNavigate } from 'react-router-dom';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
-import { 
-  confirmOrderPurchase, 
-} from '@/entities/order';
+// import { 
+//   confirmOrderPurchase, 
+// } from '@/entities/order';
 import { 
   createPaymentIntent,
   confirmFinalPayment,
@@ -45,7 +45,7 @@ export const useSingleOfflineConfirmCheckout = () => {
         navigate('/login');
         return;
       }
-      const accessToken = cookies['access-token'];
+      // const accessToken = cookies['access-token'];
       
       const reservationData = checkoutData.reservation;
 
@@ -86,10 +86,10 @@ export const useSingleOfflineConfirmCheckout = () => {
 
       await reportPaymentResult({ reserveTaskOrderPayId: intentData.orderId, success: true });
 
-      const authUserId = accessToken;
-      const orderId = intentData.orderId;
+      // const authUserId = accessToken;
+      // const orderId = intentData.orderId;
 
-      await confirmOrderPurchase(authUserId, orderId); 
+      // await confirmOrderPurchase(authUserId, orderId); 
 
       navigate(`/mypage/order/confirmation`, { 
         replace: true,
