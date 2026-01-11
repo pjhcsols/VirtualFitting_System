@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
@@ -33,6 +33,7 @@ const calculateItemCouponDiscount = (
 export const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const alertedRef = useRef(false);
 
   const batchCheckoutData = location.state?.checkoutData as { items: CheckoutItemDetail[], finalPrice: number } | undefined;
   const singleItem = location.state?.item as CheckoutItemDetail;
@@ -78,6 +79,31 @@ export const PaymentPage = () => {
       navigate('/cart');
     }
   }, [auth.isLoggedIn, navigate, itemsToCheckout, isBatchCheckout, reservationData]);
+
+  useEffect(() => {
+    if (!reservationData?.expiresAt) return;
+
+    const intervalId = setInterval(() => {
+      if (alertedRef.current) return;
+
+      const expirationTime = new Date(reservationData.expiresAt).getTime();
+      const currentTime = Date.now();
+      const fiveSeconds = 5 * 1000;
+
+      if (expirationTime - currentTime < fiveSeconds) {
+        alertedRef.current = true;
+        clearInterval(intervalId);
+
+        alert(
+          '장바구니 상품들의 예약 시간이 만료되었습니다. 장바구니로 이동하여 다시 결제를 시도해주세요.'
+        );
+        navigate('/cart');
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [reservationData?.expiresAt, navigate]);
+
 
   const paymentTotals = useMemo(() => {
     let productAmount = 0; 
