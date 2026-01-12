@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { useRecoilValue } from 'recoil';
 import { authState } from '@/entities/auth';
 import { OrderForm } from '@/widgets/order-form';
@@ -33,6 +33,7 @@ const calculateItemCouponDiscount = (
 export const PaymentPage = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const alertedRef = useRef(false);
 
   const batchCheckoutData = location.state?.checkoutData as { items: CheckoutItemDetail[], finalPrice: number } | undefined;
   const singleItem = location.state?.item as CheckoutItemDetail;
@@ -78,6 +79,31 @@ export const PaymentPage = () => {
       navigate('/cart');
     }
   }, [auth.isLoggedIn, navigate, itemsToCheckout, isBatchCheckout, reservationData]);
+
+  useEffect(() => {
+    if (!reservationData?.expiresAt) return;
+
+    const intervalId = setInterval(() => {
+      if (alertedRef.current) return;
+
+      const expirationTime = new Date(reservationData.expiresAt).getTime();
+      const currentTime = Date.now();
+      const fiveSeconds = 5 * 1000;
+
+      if (expirationTime - currentTime < fiveSeconds) {
+        alertedRef.current = true;
+        clearInterval(intervalId);
+
+        alert(
+          '장바구니 상품들의 예약 시간이 만료되었습니다. 장바구니로 이동하여 다시 결제를 시도해주세요.'
+        );
+        navigate('/cart');
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId);
+  }, [reservationData?.expiresAt, navigate]);
+
 
   const paymentTotals = useMemo(() => {
     let productAmount = 0; 
@@ -176,49 +202,87 @@ export const PaymentPage = () => {
     }
   };
 
-  const handlePayment = (selectedMethod: string) => {
+  const handlePayment = async (selectedMethod: string) => {
     setIsModalOpen(false);
     
     if (!user || itemsToCheckout.length === 0) return; 
 
-    const shippingAddress = {
-      name: user.name,
-      address: `(${user.address.zonecode}) ${user.address.address} ${user.address.detailAddress}`,
-      phone: user.phoneNumber,
-    };
+    try {
+      const response = await fetchReservationStatus(reservationData.reserveTaskOrderPayId);
 
-    const sharedCheckoutData = {
-      paymentMethod: selectedMethod as "BANK_TRANSFER",
-      finalPrice: paymentTotals.totalAmount,
-      customerName: user.name,
-      customerEmail: user.emailAddress,
-      shippingAddress: shippingAddress,
-    };
-
-    if (isBatchCheckout) {
-      if (!reservationData) {
-        alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
-        return;
+      if (response?.data.status === 'ACTIVATED') {
+        const shippingAddress = {
+          name: user.name,
+          address: `(${user.address.zonecode}) ${user.address.address} ${user.address.detailAddress}`,
+          phone: user.phoneNumber,
+        };
+    
+        const sharedCheckoutData = {
+          paymentMethod: selectedMethod as "BANK_TRANSFER",
+          finalPrice: paymentTotals.totalAmount,
+          customerName: user.name,
+          customerEmail: user.emailAddress,
+          shippingAddress: shippingAddress,
+        };
+    
+        if (isBatchCheckout) {
+          if (!reservationData) {
+            alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
+            return;
+          }
+          const finalBatchData: BatchOfflineCheckoutData = {
+            ...sharedCheckoutData,
+            items: itemsToCheckout,
+            coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
+            reservation: reservationData,
+          };
+          batchHook.confirmAndProceed(finalBatchData);
+        } else {
+          if (!reservationData) {
+            alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
+            return;
+          }
+          const finalSingleData: SingleOfflineCheckoutData = {
+            ...sharedCheckoutData,
+            item: itemsToCheckout[0],
+            coupon: selectedCouponMap.get(itemsToCheckout[0].id) || null,
+            reservation: reservationData,
+          }; 
+          singleHook.confirmAndProceed(finalSingleData);
+        }
+      } else {
+        if (isBatchCheckout) {
+            alert('장바구니 상품들의 예약 시간이 만료되었습니다. 장바구니로 이동하여 다시 결제를 시도해주세요.');
+            navigate('/cart');
+        } else {
+          if (auth.userId) {
+            addToCartMutation.mutate({
+              authUserId: auth.userId,
+              itemData: {
+                productId: singleItem.productId,
+                size: singleItem.size,
+                color: singleItem.color,
+                quantity: singleItem.quantity,
+                brandUserNumber: 0, 
+                brandFirmName: singleItem.brand,
+              }
+            }, {
+              onSuccess: () => {
+                alert('상품 예약 시간이 만료되어 상품을 장바구니에 다시 담았습니다. 장바구니로 이동합니다.');
+                navigate('/cart');
+              },
+              onError: () => {
+                alert('일시적인 오류로 상품을 장바구니에 담지 못했습니다. 잠시 후 다시 시도해주세요.');
+              }
+            });
+          } else {
+              alert('로그인이 만료되었습니다. 다시 로그인 후 결제를 진행해주세요.');
+          }
+        }
       }
-      const finalBatchData: BatchOfflineCheckoutData = {
-        ...sharedCheckoutData,
-        items: itemsToCheckout,
-        coupons: itemsToCheckout.map(item => selectedCouponMap.get(item.id) || null),
-        reservation: reservationData,
-      };
-      batchHook.confirmAndProceed(finalBatchData);
-    } else {
-      if (!reservationData) {
-        alert("결제 예약 정보가 없습니다. 다시 시도해주세요.");
-        return;
-      }
-      const finalSingleData: SingleOfflineCheckoutData = {
-        ...sharedCheckoutData,
-        item: itemsToCheckout[0],
-        coupon: selectedCouponMap.get(itemsToCheckout[0].id) || null,
-        reservation: reservationData,
-      }; 
-      singleHook.confirmAndProceed(finalSingleData);
+    } catch (error) {
+      console.error("Error checking reservation status:", error);
+      alert('예약 상태 확인 중 오류가 발생했습니다.');
     }
   };
 

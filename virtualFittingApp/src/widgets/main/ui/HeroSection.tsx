@@ -9,6 +9,9 @@ import { Starfield } from "@/shared/components/star";
 import { useRef, useEffect } from "react";
 import { rawSvgContent } from "../model/constants";
 import { BREAKPOINTS } from "@/shared/constants";
+import awardAiIconColor from "@/assets/awards/award-ai-icon-color.svg";
+import awardWebIconColor from "@/assets/awards/award-web-icon-color.svg";
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -93,6 +96,10 @@ function HeroSection({ onScrollToVirtualFitting }: { onScrollToVirtualFitting?: 
         </ModelContainer>
         <BackContainer>
           <ContentContainer>
+            <AwardIconsContainer>
+              <AwardIcon src={awardWebIconColor} alt="Web Award" />
+              <AwardIcon src={awardAiIconColor} alt="AI Award" />
+            </AwardIconsContainer>
             <TitleText ref={titleRef}>Virtual Fitting System</TitleText> 
             <ContentText ref={textRef1}>바실리움의 다양한 IT 솔루션을 한곳에서 만나보세요.</ContentText>
             <ContentText ref={textRef2}>지금, 비즈니스의 성장을 시작하세요.</ContentText>
@@ -202,6 +209,21 @@ const TitleText = styled.div`
     text-align: left;
     letter-spacing: -2px;
   }
+`;
+
+const AwardIconsContainer = styled.div`
+  display: flex;
+  justify-content: right;
+  align-items: center;
+  gap: 20px;
+  padding-right: 84px;
+  padding-bottom: 16px;
+  width: 100%;
+`;
+
+const AwardIcon = styled.img`
+  height: 50px;
+  width: auto;
 `;
 
 const ContentText = styled.div`

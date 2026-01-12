@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import React from "react";
+import awardAiIcon from "@/assets/awards/award-ai-icon-color.svg";
+import awardWebIcon from "@/assets/awards/award-web-icon-color.svg";
 
 const businessInfo = [
   "바실리움(BASILIUM)",
@@ -41,6 +43,10 @@ function Footer() {
             </React.Fragment>
           ))}
         </InfoBlock>
+        <MedalIconsContainer>
+          <MedalIcon src={awardWebIcon} alt="Web award icon" />
+          <MedalIcon src={awardAiIcon} alt="AI award icon" />
+        </MedalIconsContainer>
         <Copyright>© 2025 BASILIUM. All rights reserved.</Copyright>
       </Content>
     </Wrapper>
@@ -100,11 +106,23 @@ const Separator = styled.span`
   color: #fff;
 `;
 
+const MedalIconsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 16px;
+`;
+
+const MedalIcon = styled.img`
+  height: 40px;
+  width: auto;
+`;
+
 const Copyright = styled.p`
-  margin-top: 50px;
   margin-bottom: 30px;
   font-size: 12px;
   color: #fff;
+  text-align: center;
 `;
 
 export { Footer };
