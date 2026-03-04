@@ -36,6 +36,7 @@ export const useSingleOfflineConfirmCheckout = () => {
 
   
   const confirmAndProceed = async (checkoutData: SingleOfflineCheckoutData) => {
+    if (isLoading) return;
     setIsLoading(true);
     const reservedOrderId = checkoutData.reservation.reserveTaskOrderPayId;
 
