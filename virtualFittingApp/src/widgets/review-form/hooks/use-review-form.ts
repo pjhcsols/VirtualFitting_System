@@ -48,7 +48,6 @@ export const useReviewForm = () => {
       try {
         const res = await getPaymentInfo({page: 0, size: 10});
         const paymentId = res?.data?.content;
-        console.log(paymentId);
 
         setPaymentId(paymentId);
       } catch (e) {
@@ -124,7 +123,6 @@ export const useReviewForm = () => {
 
       await postProductReview(order.item.productId, body, photoFiles);
       alert(editReview ? "리뷰가 수정되었습니다." : "리뷰가 등록되었습니다.");
-      console.log(body);
       navigate("/mypage/review");
     } catch (err: any) {
       // 사용자 birthDate, address 없으면 400
