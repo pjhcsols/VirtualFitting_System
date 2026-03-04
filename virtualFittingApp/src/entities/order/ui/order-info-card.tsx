@@ -34,7 +34,7 @@ export const OrderInfoCard = ({ orderId, items }: OrderInfoCardProps) => {
         <InfoText>
           {item.options.color} / {item.options.size} / {item.options.quantity}개
         </InfoText>
-        <ProductPrice>{item.price.toLocaleString()}원</ProductPrice>
+        <ProductPrice>{(item.price * item.options.quantity).toLocaleString()}원</ProductPrice>
       </ProductDetails>
     </Content>
   );
