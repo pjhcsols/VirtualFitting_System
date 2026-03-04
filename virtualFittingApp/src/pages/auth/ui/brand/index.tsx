@@ -21,8 +21,8 @@ function BrandSignUpPage() {
   const lenisRef = useRef<LenisRef>(null);
   const router = useNavigate();
   const contentRef = useRef<HTMLDivElement>(null);
-  const [businessRegistrationError, setBusinessRegistrationError] =
-    useState("");
+  const [businessRegistrationError, setBusinessRegistrationError] = useState("");
+  const [isValidating, setIsValidating] = useState(false);
   const [formData, setFormData] = useState<TBrandUser>({
     id: "",
     password: "",
@@ -52,14 +52,32 @@ function BrandSignUpPage() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleBusiness = async () => {
-    const res = await validateBusiness(formData.businessRegistration);
-    if (res) {
-      alert("인증 성공");
-      setBusinessRegistrationError("");
-    } else {
-      setBusinessRegistrationError("사업자 등록번호 인증에 실패했습니다.");
+  const handleVerify = async () => {
+    if (isValidating) return;
+
+    if (!formData.businessRegistration) {
+      setBusinessRegistrationError("사업자등록번호를 입력해주세요.");
+      return;
     }
+
+    setIsValidating(true);
+
+    const pureNumber = formData.businessRegistration.replace(/-/g, "");
+
+    try {
+      const result = await validateBusiness(pureNumber);
+
+      if (result) {
+        setBusinessRegistrationError("");
+        alert("국세청에 등록된 정상 사업자입니다.");
+      } else {
+        setBusinessRegistrationError("유효하지 않은 사업자 번호입니다.");
+      }
+    } catch (e) {
+      setBusinessRegistrationError("사업자 확인 중 오류가 발생했습니다.");
+    }
+
+    setIsValidating(false);
   };
 
   const handleSubmit = async () => {
@@ -169,7 +187,7 @@ function BrandSignUpPage() {
                     />
                     <div
                       className="absolute w-20 h-9 rounded-xl bottom-8 right-2 flex justify-center items-center bg-white duration-200 hover:-translate-x-1 z-10 cursor-pointer"
-                      onClick={handleBusiness}
+                      onClick={handleVerify}
                     >
                       <ButtonText>확인</ButtonText>
                     </div>
