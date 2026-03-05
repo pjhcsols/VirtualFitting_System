@@ -97,15 +97,7 @@ export const useSingleOfflineConfirmCheckout = () => {
         state: { 
           shippingAddress: checkoutData.shippingAddress,
           orderId: intentData.orderId,
-          item: {
-            productName: checkoutData.item.name,
-            options: {
-              color: checkoutData.item.color,
-              size: checkoutData.item.size,
-              quantity: checkoutData.item.quantity,
-            },
-            price: checkoutData.finalPrice,
-          },
+          item: checkoutData.item,
           totalAmount: checkoutData.finalPrice,
           senderName: checkoutData.customerName,
           deadline: reservationData.expiresAt,
