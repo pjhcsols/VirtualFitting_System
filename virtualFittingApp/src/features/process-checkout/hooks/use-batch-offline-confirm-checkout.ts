@@ -49,6 +49,7 @@ export const useBatchOfflineConfirmCheckout = () => {
 
   
   const confirmAndProceed = async (checkoutData: BatchOfflineCheckoutData) => {
+    if (isLoading) return null;
     setIsLoading(true);
     const reservationData = checkoutData.reservation;
     const reservedOrderId = reservationData?.reserveTaskOrderPayId;

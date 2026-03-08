@@ -368,7 +368,6 @@ function VirtualFittingSection({ productId = VIRTUAL_FITTING_PRODUCT_ID }: { pro
       
       const resultImageUrl = response?.data.resultImageUrl;
       const resultSimulatedDelay = response?.data.simulatedDelayMillis ?? null;
-      console.log(resultImageUrl);
 
       if (resultImageUrl) {
         setGeneratedImageUrl(resultImageUrl);

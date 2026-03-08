@@ -21,7 +21,7 @@ export const createPaymentReservation = async (
     });
     return response.data;
   } catch (error) {
-    console.error("Payment reservation failed:", error);
+    console.error("createPaymentReservation failed:", error);
     return null;
   }
 };
@@ -108,11 +108,16 @@ export const getPaymentInfo = async ({
   page: number;
   size: number;
 }) => {
-  const res = await API_BASILIUM.get(
-    `/b1/payment/my?page=${page}&size=${size}`,
-  );
-  if (res.status === 200) {
-    return res.data;
+  try {
+    const res = await API_BASILIUM.get(
+      `/b1/payment/my?page=${page}&size=${size}`,
+    );
+    if (res.status === 200) {
+      return res.data;
+    }
+    throw new Error(`Failed to fetch payment: ${res.status}`);
+  } catch (error) {
+    console.error('getPaymentInfo failed:', error);
+    throw error;
   }
-  throw new Error(`Failed to fetch payment: ${res.status}`); 
 };

@@ -26,16 +26,6 @@ function ProductReviews({ productId }: ProductReviewsProps) {
   const averageRating = data.averageRating;
   const totalPages = data.reviews.totalPages;
 
-  console.log(`🟢 Reviews Loaded Successfully for Product ID ${productId}:`);
-  console.log({
-      averageRating: averageRating,
-      totalPages: totalPages,
-      currentPageDataCount: reviews.length,
-      // 데이터가 너무 길어지는 것을 방지하기 위해 첫 번째 리뷰만 출력
-      firstReviewExample: reviews.length > 0 ? reviews[0] : "No reviews on this page.",
-      fullDataStructure: data,
-  });
-
   return (
     <ReviewWrapper>
       <ReviewHeader>

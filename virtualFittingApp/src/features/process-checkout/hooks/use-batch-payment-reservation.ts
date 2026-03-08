@@ -12,6 +12,7 @@ export const useBatchPaymentReservation = () => {
   const navigate = useNavigate();
 
   const reserveBatch = async (items: CheckoutItemDetail[]): Promise<PaymentReservationData | null> => {
+    if (isLoading) return null; 
     setIsLoading(true);
     try {
       if (!auth.isLoggedIn || !auth.userId) {

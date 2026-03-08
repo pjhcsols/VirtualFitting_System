@@ -1,22 +1,30 @@
 import styled from "styled-components";
-import React from "react";
+import { useEffect, useState } from "react";
 import awardAiIcon from "@/assets/awards/award-ai-icon-color.svg";
 import awardWebIcon from "@/assets/awards/award-web-icon-color.svg";
-
-const businessInfo = [
-  "바실리움(BASILIUM)",
-  "사업자등록번호 : 872-25-01125",
-  "주소 : 서울특별시 강남구 역삼로 555",
-  "통신판매업 : 2022-대구달서-0162",
-];
+import { type FooterInfo, getFooterInfo } from "@/shared/api/footer.api";
 
 function Footer() {
+  const [footerData, setFooterData] = useState<FooterInfo>({
+    firmName: "",
+    firmAddress: "",
+    businessRegistration: "",
+  });
+
+  useEffect(() => {
+    const fetchFooter = async () => {
+      const res = await getFooterInfo();
+      if (res) setFooterData(res.data);
+    };
+    fetchFooter();
+  }, []);
+
   const openPopup = (url: string, title: string) => {
     const width = 600;
     const height = 700;
-    const left = (window.screen.width / 2) - (width / 2);
-    const top = (window.screen.height / 2) - (height / 2);
-    
+    const left = window.screen.width / 2 - width / 2;
+    const top = window.screen.height / 2 - height / 2;
+
     window.open(
       url,
       title,
@@ -28,26 +36,31 @@ function Footer() {
     <Wrapper>
       <Content>
         <Links>
-          <FooterLink as="button" onClick={() => openPopup('/terms', '전자상거래 표준약관')}>
+          <FooterLink as="button" onClick={() => openPopup("/terms", "전자상거래 표준약관")}>
             전자상거래 표준약관
           </FooterLink>
-          <FooterLink as="button" onClick={() => openPopup('/privacy', '개인정보 처리방침')}>
+          <FooterLink as="button" onClick={() => openPopup("/privacy", "개인정보 처리방침")}>
             개인정보 처리방침
           </FooterLink>
         </Links>
+
         <InfoBlock>
-          {businessInfo.map((info, index) => (
-            <React.Fragment key={index}>
-              <InfoText>{info}</InfoText>
-              {index < businessInfo.length - 1 && <Separator>|</Separator>}
-            </React.Fragment>
-          ))}
+          <InfoText>{footerData.firmName}</InfoText>
+          <Separator>|</Separator>
+
+          <InfoText>주소 : {footerData.firmAddress}</InfoText>
+          <Separator>|</Separator>
+          
+          <FooterLink as="button" onClick={() => {}}>
+            {footerData.businessRegistration}
+          </FooterLink>
         </InfoBlock>
+
         <MedalIconsContainer>
           <MedalIcon src={awardWebIcon} alt="Web award icon" />
           <MedalIcon src={awardAiIcon} alt="AI award icon" />
         </MedalIconsContainer>
-        <Copyright>© 2025 BASILIUM. All rights reserved.</Copyright>
+        <Copyright>© 2026 BASILIUM. All rights reserved.</Copyright>
       </Content>
     </Wrapper>
   );
@@ -58,7 +71,8 @@ const Wrapper = styled.footer`
   color: #fff;
   font-size: 13px;
   z-index: 50;
-  margin-top: auto; 
+  margin-top: auto;
+  text-align: center;
 `;
 
 const Content = styled.div`
@@ -74,12 +88,11 @@ const Links = styled.div`
   padding: 16px;
 `;
 
-const FooterLink = styled.a`
+const FooterLink = styled.button`
   color: #fff;
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
-  
   background: none;
   border: none;
   padding: 0;
@@ -93,12 +106,11 @@ const FooterLink = styled.a`
 
 const InfoBlock = styled.div`
   line-height: 1.6;
-  word-break: keep-all; 
+  word-break: keep-all;
 `;
 
 const InfoText = styled.span`
   color: #fff;
-  display: inline;
 `;
 
 const Separator = styled.span`
@@ -122,7 +134,6 @@ const Copyright = styled.p`
   margin-bottom: 30px;
   font-size: 12px;
   color: #fff;
-  text-align: center;
 `;
 
 export { Footer };
