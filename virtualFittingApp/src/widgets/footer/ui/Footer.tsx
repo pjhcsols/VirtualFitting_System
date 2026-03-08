@@ -60,7 +60,7 @@ function Footer() {
           <MedalIcon src={awardWebIcon} alt="Web award icon" />
           <MedalIcon src={awardAiIcon} alt="AI award icon" />
         </MedalIconsContainer>
-        <Copyright>© 2025 BASILIUM. All rights reserved.</Copyright>
+        <Copyright>© 2026 BASILIUM. All rights reserved.</Copyright>
       </Content>
     </Wrapper>
   );
@@ -111,26 +111,6 @@ const InfoBlock = styled.div`
 
 const InfoText = styled.span`
   color: #fff;
-`;
-
-const VerifyButton = styled.button`
-  background: none;
-  border: none;
-  color: #fff;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 0;
-  text-decoration: underline;
-  text-underline-offset: 3px;
-
-  &:hover {
-    color: #b8d2ff;
-  }
-  
-  &:disabled {
-    cursor: default;
-    opacity: 0.7;
-  }
 `;
 
 const Separator = styled.span`
