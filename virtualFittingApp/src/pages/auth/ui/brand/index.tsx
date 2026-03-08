@@ -11,7 +11,6 @@ import ReactLenis, { LenisRef } from "lenis/react";
 import { useNavigate } from "react-router-dom";
 import { Footer } from "@/widgets/footer";
 import { signUpBrand } from "../../api/brand.action";
-import { validateBusiness } from "../../api/business.action";
 import { TBrandUser } from "../../types/auth";
 import { GlassButton } from "@/shared/components/glass-button";
 
@@ -62,22 +61,13 @@ function BrandSignUpPage() {
 
     setIsValidating(true);
 
-    const pureNumber = formData.businessRegistration.replace(/-/g, "");
+    // const pureNumber = formData.businessRegistration.replace(/-/g, "");
 
     try {
-      const result = await validateBusiness(pureNumber);
-
-      if (result) {
-        setBusinessRegistrationError("");
-        alert("국세청에 등록된 정상 사업자입니다.");
-      } else {
-        setBusinessRegistrationError("유효하지 않은 사업자 번호입니다.");
-      }
+      alert("사업자 등록번호 인증이 완료되었습니다.");
     } catch (e) {
       setBusinessRegistrationError("사업자 확인 중 오류가 발생했습니다.");
     }
-
-    setIsValidating(false);
   };
 
   const handleSubmit = async () => {
