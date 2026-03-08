@@ -48,7 +48,10 @@ function Footer() {
           <InfoText>{footerData.firmName}</InfoText>
           <Separator>|</Separator>
 
-          <InfoText>사업자등록번호 : {footerData.businessRegistration}</InfoText>
+          <InfoText>사업자등록번호 : </InfoText>
+          <FooterLink as="button" onClick={() => {}}>
+            {footerData.businessRegistration}
+          </FooterLink>
           <Separator>|</Separator>
 
           <InfoText>주소 : {footerData.firmAddress}</InfoText>
