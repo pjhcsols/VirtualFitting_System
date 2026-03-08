@@ -1,34 +1,23 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import awardAiIcon from "@/assets/awards/award-ai-icon-color.svg";
 import awardWebIcon from "@/assets/awards/award-web-icon-color.svg";
-import { validateBusiness } from "@/pages/auth/api/business.action";
-
-const businessData = {
-  name: "바실리움(BASILIUM)",
-  regNo: "872-25-01125",
-  address: "서울특별시 강남구 역삼로 555",
-  mailOrder: "2022-대구달서-0162",
-};
+import { type FooterInfo, getFooterInfo } from "@/shared/api/footer.api";
 
 function Footer() {
-  const [isValidating, setIsValidating] = useState(false);
+  const [footerData, setFooterData] = useState<FooterInfo>({
+    firmName: "",
+    firmAddress: "",
+    businessRegistration: "",
+  });
 
-  const handleVerify = async () => {
-    if (isValidating) return;
-    
-    setIsValidating(true);
-    const pureNumber = businessData.regNo.replace(/-/g, "");
-    
-    const result = await validateBusiness(pureNumber);
-    
-    if (result) {
-      alert("국세청에 등록된 정상 사업자입니다.");
-    } else {
-      alert("유효하지 않은 사업자 번호이거나 확인이 불가능합니다.");
-    }
-    setIsValidating(false);
-  };
+  useEffect(() => {
+    const fetchFooter = async () => {
+      const res = await getFooterInfo();
+      if (res) setFooterData(res.data);
+    };
+    fetchFooter();
+  }, []);
 
   const openPopup = (url: string, title: string) => {
     const width = 600;
@@ -56,17 +45,15 @@ function Footer() {
         </Links>
 
         <InfoBlock>
-          <InfoText>{businessData.name}</InfoText>
+          <InfoText>{footerData.firmName}</InfoText>
+          <Separator>|</Separator>
+
+          <InfoText>주소 : {footerData.firmAddress}</InfoText>
           <Separator>|</Separator>
           
-          <VerifyButton onClick={handleVerify} disabled={isValidating}>
-            사업자등록번호 : {businessData.regNo} 
-          </VerifyButton>
-          
-          <Separator>|</Separator>
-          <InfoText>주소 : {businessData.address}</InfoText>
-          <Separator>|</Separator>
-          <InfoText>통신판매업 : {businessData.mailOrder}</InfoText>
+          <FooterLink as="button" onClick={() => {}}>
+            {footerData.businessRegistration}
+          </FooterLink>
         </InfoBlock>
 
         <MedalIconsContainer>
