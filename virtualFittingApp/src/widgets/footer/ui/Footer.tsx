@@ -48,11 +48,18 @@ function Footer() {
           <InfoText>{footerData.firmName}</InfoText>
           <Separator>|</Separator>
 
-          <InfoText>주소 : {footerData.firmAddress}</InfoText>
-          <Separator>|</Separator>
-          
+          <InfoText>사업자등록번호 : </InfoText>
           <FooterLink as="button" onClick={() => {}}>
             {footerData.businessRegistration}
+          </FooterLink>
+          <Separator>|</Separator>
+
+          <InfoText>주소 : {footerData.firmAddress}</InfoText>
+          <Separator>|</Separator>
+
+          <InfoText>통신판매업 : </InfoText>
+          <FooterLink as="button" onClick={() => {}}>
+            상세보기
           </FooterLink>
         </InfoBlock>
 
